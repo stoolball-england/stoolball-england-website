@@ -75,7 +75,6 @@ RewriteCond %{QUERY_STRING} _REQUEST(=|[|%[0-9A-Z]{0,2})
 RewriteRule ^(.*)$ index.php [F,L]
 
 # Extensionless URLs
-RewriteRule ^createalbum/?$ /play/galleryedit.php [L,NC,QSA]
 RewriteRule ^contact/email/?$ /contact/email.php [L,NC,QSA]
 RewriteRule ^search/?$ /search.php [L,NC,QSA]
 RewriteRule ^you/(request-password-reset|reset-password|sign-out)$ /you/$1.php [L,NC,QSA]
@@ -108,7 +107,6 @@ RewriteRule ^play/statistics-and-photos/?$ /play/statistics-and-photos.php [L,NC
 RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^play/statistics/([a-z0-9-]+)/?$ /play/statistics/$1.php [L,NC,QSA]
 RewriteRule ^play/statistics/([a-z0-9-]+)/?$ /play/statistics/table.php?statistic=$1 [L,NC,QSA]
-RewriteRule ^play/photos/?$ /play/photos.php [L,NC,QSA]
 
 # redirect to real static files - full in dev, minified in production
 RewriteCond %{HTTP_HOST}   ^www\.stoolball\.org\.uk [NC]

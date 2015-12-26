@@ -1,7 +1,5 @@
 <?php
-require_once('media/has-media.interface.php');
-
-class Category implements IHasMedia
+class Category
 {
 	var $i_id;
 	var $s_name;
@@ -13,14 +11,6 @@ class Category implements IHasMedia
 	var $s_site;
 	var $i_hierarchy_level;
 	var $i_sort_override;
-
-
-	/**
-	 * Gets a ContentType identifying this as a category
-	 *
-	 * @return ContentType
-	 */
-	public function GetContentType() { return ContentType::CATEGORY; }
 
 	/**
 	* @return void

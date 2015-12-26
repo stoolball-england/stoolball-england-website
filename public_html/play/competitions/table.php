@@ -6,7 +6,6 @@ require_once('stoolball/competition-manager.class.php');
 require_once('stoolball/season-manager.class.php');
 require_once('stoolball/match-manager.class.php');
 require_once('stoolball/user-edit-panel.class.php');
-require_once('media/media-gallery-manager.class.php');
 
 class CurrentPage extends StoolballPage
 {

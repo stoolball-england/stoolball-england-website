@@ -214,41 +214,6 @@ CREATE TABLE IF NOT EXISTS `nsa_forum_topic_link` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
 
-
--- -----------------------------------------------------
--- Table `nsa_gallery`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_gallery` (
-  `gallery_id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `gallery_title` VARCHAR(100) NOT NULL,
-  `gallery_desc` TEXT NOT NULL,
-  `short_url` VARCHAR(100) NULL DEFAULT NULL,
-  `cover_image` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `added_by` INT(10) UNSIGNED NOT NULL DEFAULT '1',
-  `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`gallery_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Media galleries for stoolball site';
-
-
--- -----------------------------------------------------
--- Table `nsa_gallery_link`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_gallery_link` (
-  `gallery_id` INT(5) UNSIGNED NOT NULL DEFAULT '0',
-  `item_id` INT(5) UNSIGNED NOT NULL DEFAULT '0',
-  `item_type` INT(5) UNSIGNED NOT NULL DEFAULT '7',
-  `short_url` VARCHAR(100) NULL DEFAULT NULL,
-  `sort_override` TINYINT(3) NULL DEFAULT NULL,
-  PRIMARY KEY (`gallery_id`, `item_id`, `item_type`),
-  INDEX `sort_override` (`sort_override` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Link between nsa_gallery and tables such as nsa_image';
-
-
 -- -----------------------------------------------------
 -- Table `nsa_ground`
 -- -----------------------------------------------------
@@ -278,28 +243,6 @@ CREATE TABLE IF NOT EXISTS `nsa_ground` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'Stoolball grounds';
-
-
--- -----------------------------------------------------
--- Table `nsa_image`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_image` (
-  `image_id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_checked` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `checked_by` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `original_url` VARCHAR(200) NULL DEFAULT NULL,
-  `url` VARCHAR(200) NOT NULL,
-  `thumb_url` VARCHAR(200) NULL DEFAULT NULL,
-  `alternate` VARCHAR(200) NOT NULL,
-  `longdesc` TEXT NULL DEFAULT NULL,
-  `date_uploaded` INT(10) NOT NULL DEFAULT '0',
-  `uploaded_by` INT(10) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`image_id`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Stoolball images';
 
 
 -- -----------------------------------------------------

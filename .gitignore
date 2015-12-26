@@ -9,9 +9,6 @@ htmlpurifier/HTMLPurifier/DefinitionCache/*
 
 #Uploadeddatafiles
 wordpress_image_uploads
-public_html/images/uploaded
-public_html/images/originals
-public_html/images/thumbnails
 
 #Minifiedfiles
 public_html/css/*.min.css

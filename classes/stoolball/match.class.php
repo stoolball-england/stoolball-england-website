@@ -728,16 +728,6 @@ class Match implements IHasShortUrl
 	}
 
 	/**
-	 * Gets the content type of this item
-	 *
-	 * @return ContentType
-	 */
-	public function GetContentType()
-	{
-		return ContentType::STOOLBALL_MATCH;
-	}
-
-	/**
 	 * @return void
 	 * @param Match $o_match
 	 * @desc Sets the tournament this match is a part of

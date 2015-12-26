@@ -21,7 +21,6 @@ class CurrentPage extends StoolballPage
 		if (isset($_POST["topics"])) $this->IndexTopics();
 		if (isset($_POST["pages"])) $this->IndexPages();
 		if (isset($_POST["posts"])) $this->IndexPosts();
-		if (isset($_POST["photos"])) $this->IndexPhotos();
 		if (isset($_POST["other"])) $this->IndexOtherPages();
 	}
 
@@ -225,24 +224,6 @@ class CurrentPage extends StoolballPage
 		$index->commit();
 	}
 
-	private function IndexPhotos()
-	{
-		$index = $this->search->GetIndex();
-		$this->search->DeleteDocumentsByType("photos");
-
-		require_once('media/media-gallery-manager.class.php');
-		$manager = new MediaGalleryManager($this->GetSettings(), $this->GetDataConnection());
-		$manager->ReadAll();
-		$photos = $manager->GetItems();
-		unset($manager);
-
-		foreach ($photos as $album)
-		{
-		    $this->search->IndexGallery($album);
-		}
-		$index->commit();
-	}
-
 	private function IndexOtherPages()
 	{
 		$index = $this->search->GetIndex();
@@ -357,8 +338,6 @@ class CurrentPage extends StoolballPage
 		type="submit" name="posts" value="Index WordPress posts" />
 		<br />
 		<input type="submit" name="pages" value="Index WordPress pages" />
-		<br />
-		<input type="submit" name="photos" value="Index photos" />
 		<br />
 		<input
 		type="submit" name="other" value="Index other pages" />

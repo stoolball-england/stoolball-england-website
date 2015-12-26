@@ -247,29 +247,6 @@ class LuceneSearch
     }
 
     /**
-     * Add a photo album to the index without committing the changes
-     * @param $album MediaGallery
-     */
-    public function IndexGallery(MediaGallery $album)
-    {
-        $description = trim($album->GetDescription());
-        if ($description and !(substr_compare($description, ".", -1, 1) === 0))
-        {
-            $description .= ".";
-        }
-        if ($description)
-        {
-            $description .= " ";
-        }
-        $photos_count = $album->Images()->GetCount();
-        $photos = ($photos_count == 1) ? " 1 photo" : $photos_count . " photos";
-        $description .= "This album contains $photos.";
-
-        $doc = $this->CreateStandardDocument("photos", "photos" . $album->GetId(), $album->GetNavigateUrl(), $album->GetTitle(), $description);
-        # $this->GetIndex()->addDocument($doc);
-    }
-
-    /**
      * Add a WordPress post to search results
      * @param $post_id int
      * @param $url string

@@ -191,10 +191,7 @@ class Page
 		# Change of browser is suspicious, might be session fixation. Sign out immediately.
 		# Note that this call must come after SignInIfRemembered, probably because it sets a cookie
 		# overwriting the attempt by SignOut() to kill the cookie.
-		#
-		# Exempt Flash from this test because otherwise SWFUpload will not work
-		$exempt_user_agent = 'Shockwave Flash';
-		if (isset($_SERVER['HTTP_USER_AGENT']) and !(strpos($_SERVER['HTTP_USER_AGENT'], $exempt_user_agent) === false))
+		if (isset($_SERVER['HTTP_USER_AGENT']))
 		{
 			if (isset($_SESSION['prev_user_agent']) and $_SERVER['HTTP_USER_AGENT'] !== $_SESSION['prev_user_agent'])
 			{

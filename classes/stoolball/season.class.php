@@ -6,9 +6,8 @@ require_once('collection.class.php');
 require_once('data/date.class.php');
 require_once('http/has-short-url.interface.php');
 require_once('http/short-url.class.php');
-require_once('media/has-media.interface.php');
 
-class Season extends Collection implements IHasShortUrl, IHasMedia
+class Season extends Collection implements IHasShortUrl
 {
 	/**
 	 * Sitewide settings
@@ -31,7 +30,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 	 * @var Collection
 	 */
 	private $teams_withdrawn_from_league;
-	private $a_galleries;
 	/**
 	 * The competition of which this season is a part
 	 *
@@ -73,7 +71,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 
 		$this->a_teams = array();
 		$this->teams_withdrawn_from_league = new Collection();
-		$this->a_galleries = array();
 		$this->match_types = new Collection();
 		$this->o_possible_results = new Collection(null, 'MatchResult');
 		$this->o_points_adjustments = new Collection(null, 'PointsAdjustment');
@@ -85,13 +82,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 		# Default to hiding league table
 		$this->SetShowTable(false);
 	}
-
-	/**
-	 * Gets a ContentType that identifies this as a season
-	 *
-	 * @return ContentType
-	 */
-	public function GetContentType() { return ContentType::STOOLBALL_SEASON; }
 
 	/**
 	 * @return void
@@ -293,29 +283,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 
 	/**
 	 * @return void
-	 * @param MediaGallery $o_gallery
-	 * @desc Add a media gallery
-	 */
-	function AddMediaGallery(MediaGallery $o_gallery)
-	{
-		$this->a_galleries[] = $o_gallery;
-	}
-
-	/**
-	 * @return void
-	 * @param MediaGallery[] $a_galleries
-	 * @desc Sets the media galleries related to the season
-	 */
-	function SetMediaGalleries($a_galleries) { if (is_array($a_galleries)) $this->a_galleries = &$a_galleries; }
-
-	/**
-	 * @return MediaGallery[]
-	 * @desc Gets the media galleries related to the season
-	 */
-	function GetMediaGalleries() { return $this->a_galleries; }
-
-	/**
-	 * @return void
 	 * @param Season $o_season
 	 * @desc Merge details from supplied season into this season. Where both copies have info, this copy is assumed correct.
 	 */
@@ -328,7 +295,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 		if (!$this->s_intro) $this->SetIntro($o_season->GetIntro());
 		if (!$this->s_results) $this->SetResults($o_season->GetResults());
 		if (!count($this->a_teams)) $this->a_teams = $o_season->GetTeams();
-		if (!count($this->a_galleries)) $this->a_galleries = $o_season->GetMediaGalleries();
 		if (!is_object($this->o_competition)) $this->SetCompetition($o_season->GetCompetition());
 	}
 
@@ -405,25 +371,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 	public function GetCalendarNavigateUrl()
 	{
         return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/calendar';
-	}
-
-	/**
-	 * @return string
-	 * @desc Gets the URL for adding a new media gallery associated with the season
-	 */
-	public function GetAddMediaGalleryNavigateUrl()
-	{
-		$s_url = '';
-		if ($this->GetShortUrl())
-		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . 'createalbum';
-		}
-		else
-		{
-			$s_url = str_replace('{0}', $this->GetId(), $this->o_settings->GetUrl('SeasonAddMediaGallery'));
-		}
-
-		return $s_url;
 	}
 
 	/**
@@ -545,7 +492,6 @@ class Season extends Collection implements IHasShortUrl, IHasMedia
 		'{0}/matches/tournaments/add' => "/play/tournaments/add.php?season={0}",
 		'{0}/matches/edit' => $settings->GetUrl('SeasonResults'),
 		'{0}/calendar' => $settings->GetUrl('SeasonCalendar'),
-		'{0}createalbum' => $settings->GetUrl('SeasonAddMediaGallery'),
 		'{0}/statistics' => '/play/statistics/summary-season.php?season={0}',
         '{0}/table' => '/play/competitions/table.php?season={0}',
         '{0}/map' => '/play/competitions/map.php?season={0}'

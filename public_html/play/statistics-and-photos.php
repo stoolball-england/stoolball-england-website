@@ -17,7 +17,6 @@ class CurrentPage extends StoolballPage
 
 <nav><ul class="nav tiles">
 <li><a href="/play/statistics/" class="statistics-tile"><div><h2>Statistics</h2></div></a></li>
-<li><a href="/play/photos/" class="photos-tile"><div><h2>Photos</h2></div></a></li>
 <li><a href="http://www.facebook.com/stoolball/photos_albums" class="facebook-tile"><div><h2>Photos on Facebook</h2></div></a></li>
 </ul></nav>
 			<?php

@@ -74,7 +74,6 @@ class TeamEditPanel extends UserEditPanel
     			}
     			$this->AddLink('add matches to your calendar', $team->GetCalendarNavigateUrl());
     		}
-            $this->AddLink('create a photo album', $team->GetAddMediaGalleryNavigateUrl());
 		}
 	}
 }

@@ -7,7 +7,6 @@ require_once('stoolball/match-manager.class.php');
 require_once('stoolball/season-manager.class.php');
 require_once('stoolball/team-edit-panel.class.php');
 require_once('stoolball/team-name-control.class.php');
-require_once('media/media-gallery-manager.class.php');
 require_once('markup/xhtml-markup.class.php');
 require_once('stoolball/club.class.php');
 require_once('stoolball/season-list-control.class.php');
@@ -105,12 +104,6 @@ class CurrentPage extends StoolballPage
 			$this->has_player_stats = (bool)count($player_of_match);
 		}
 		unset($statistics_manager);
-
-		# Get galleries
-		$o_media_manager = new MediaGalleryManager($this->GetSettings(), $this->GetDataConnection());
-		$o_media_manager->ReadByRelatedItemId($this->team->GetId(), ContentType::STOOLBALL_TEAM);
-		$this->team->SetMediaGalleries($o_media_manager->GetItems());
-		unset($o_media_manager);
 
 		# Get whether to show add league/cup links
 		$season_manager = new SeasonManager($this->GetSettings(), $this->GetDataConnection());
@@ -379,14 +372,6 @@ class CurrentPage extends StoolballPage
 </div>
 </div>
 			<?php
-	
-		# Add media galleries
-		$a_galleries = $this->team->GetMediaGalleries();
-		if (count($a_galleries) > 0)
-		{
-	        require_once('media/media-gallery-list-control.class.php');
-    		echo new MediaGalleryListControl($a_galleries);
-		}
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

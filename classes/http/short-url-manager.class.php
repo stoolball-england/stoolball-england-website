@@ -16,7 +16,7 @@ How short URLs work
 
 3.	Update object in db
 
-4.	Optionally update any related objects in db with related short URLs, then repeat 2.2 (MediaGalleryManager does this)
+4.	Optionally update any related objects in db with related short URLs, then repeat 2.2
 
 5.  Save new short URLs to database, deleting any old short URL for the same thing
 */

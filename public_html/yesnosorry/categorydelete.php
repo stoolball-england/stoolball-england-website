@@ -96,7 +96,6 @@ class CurrentPage extends StoolballPage
 				<ul>
 					<li>All forum messages will be put in the category with the lowest ID</li>
 					<li>Its competitions will not be listed in a category</li>
-					<li>Albums will no longer be in the category</li>
 				</ul> 
 					
 				<p>Are you sure you want to delete this category?</p>

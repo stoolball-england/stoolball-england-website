@@ -6,7 +6,6 @@ require_once('stoolball/competition-manager.class.php');
 require_once('stoolball/season-manager.class.php');
 require_once('stoolball/match-manager.class.php');
 require_once('stoolball/user-edit-panel.class.php');
-require_once('media/media-gallery-manager.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -135,12 +134,6 @@ class CurrentPage extends StoolballPage
 		}
 
 		unset($o_season_manager);
-
-		# Get galleries
-		$o_media_manager = new MediaGalleryManager($this->GetSettings(), $this->GetDataConnection());
-		$o_media_manager->ReadByRelatedItemId($this->season->GetId(), ContentType::STOOLBALL_SEASON);
-		$this->season->SetMediaGalleries($o_media_manager->GetItems());
-		unset($o_media_manager);
 	}
 
 	function OnPrePageLoad()
@@ -156,7 +149,6 @@ class CurrentPage extends StoolballPage
 	{
         require_once('stoolball/match-list-control.class.php');
         require_once('stoolball/season-list-control.class.php');
-        require_once('media/media-gallery-list-control.class.php');
 
         /* @var $season Season */
         $season = $this->competition->GetWorkingSeason();
@@ -353,7 +345,6 @@ class CurrentPage extends StoolballPage
 			}
 			$you_can->AddLink('add matches to your calendar', $this->season->GetCalendarNavigateUrl());
 		}
-		$you_can->AddLink('create a photo album', $this->season->GetAddMediaGalleryNavigateUrl());
 
 		if ($this->has_player_stats)
 		{
@@ -369,13 +360,6 @@ class CurrentPage extends StoolballPage
 		{
 			require_once('stoolball/statistics-highlight-table.class.php');
 			echo new StatisticsHighlightTable($this->best_batting, $this->most_runs, $this->best_bowling, $this->most_wickets, $this->most_catches, $this->season->GetName() . " season");
-		}
-		
-		# Add media galleries
-		$a_galleries = $this->season->GetMediaGalleries();
-		if (count($a_galleries) > 0)
-		{
-			echo new MediaGalleryListControl($a_galleries);
 		}
 	}
 }

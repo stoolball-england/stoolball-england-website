@@ -256,11 +256,6 @@ class CategoryManager extends DataManager
 		$sql = "UPDATE $competitions SET category_id = NULL WHERE category_id IN ($s_ids)";
 		$this->GetDataConnection()->query($sql);
 		
-		# Remove galleries from category
-		$galleries = $this->GetSettings()->GetTable('MediaGalleryLink');
-		$sql = "DELETE FROM $galleries WHERE item_id IN ($s_ids) AND item_type = " . ContentType::CATEGORY;
-		$this->GetDataConnection()->query($sql);
-		
 		# delete category(s)
 		$sql = 'DELETE FROM ' . $category . ' WHERE id IN (' . $s_ids . ') ';
 		$o_result = $this->GetDataConnection()->query($sql);

@@ -27,10 +27,6 @@ class PermissionType
             case PermissionType::EditPersonalInfo(): return "edit own profile";
             case PermissionType::MANAGE_CATEGORIES: return "manage categories";
             case PermissionType::MANAGE_USERS_AND_PERMISSIONS: return "manage users and permissions";
-            case PermissionType::AddImage(): return "add and edit own images";
-            case PermissionType::AddMediaGallery(): return "add and edit own albums";
-            case PermissionType::MANAGE_ALBUMS: return "manage albums";
-            case PermissionType::ApproveImage(): return "approve uploaded images";
             case PermissionType::PageSubscribe(): return "subscribe to alerts for comments on pages";
             case PermissionType::MANAGE_URLS: return "manage URLs";
             case PermissionType::MANAGE_SEARCH: return "manage search";
@@ -79,37 +75,12 @@ class PermissionType
      * Permission to add, edit and delete users, roles and permissions
      */
 	const MANAGE_USERS_AND_PERMISSIONS = 8;
-
-	/**
-	* @return int
-	* @desc Permission to add or edit Images
-	*/
-	public static function AddImage() { return 9; }
-
-	/**
-	* @return int
-	* @desc Permission to add or edit media galleries
-	*/
-	public static function AddMediaGallery() { return 10; }
-
-    /**
-     * Permission to edit albums and photos added by others
-     */
-    const MANAGE_ALBUMS = 11;
     
 	/**
 	* @return int
 	* @desc Permission to subscribe to comments on a page of content
 	*/
 	public static function PageSubscribe() { return 12; }
-
-	/**
-	 * Permission to approve or reject uploaded images
-	 *
-	 * @return int
-	 */
-	public static function ApproveImage() { return 13; }
-    
     
     /**
      * Permission to manage URLs, including regenerating the derived list

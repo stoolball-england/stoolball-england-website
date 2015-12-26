@@ -6,9 +6,8 @@ require_once('stoolball/team-role.enum.php');
 require_once 'stoolball/player-type.enum.php';
 require_once('http/has-short-url.interface.php');
 require_once('http/short-url.class.php');
-require_once('media/has-media.interface.php');
 
-class Team implements IHasShortUrl, IHasMedia
+class Team implements IHasShortUrl
 {
 	/**
 	 * Sitewide settings
@@ -26,7 +25,6 @@ class Team implements IHasShortUrl, IHasMedia
      * @var Collection
      */
 	private $seasons;
-	private $a_galleries;
 	private $b_active;
 	private $team_type;
 	/**
@@ -56,19 +54,8 @@ class Team implements IHasShortUrl, IHasMedia
 	{
 		$this->o_settings = $o_settings;
 		$this->seasons = new Collection(null, "TeamInSeason");
-		$this->a_galleries = array();
 		$this->b_active = true;
 		$this->o_ground = new Ground($this->o_settings);
-	}
-
-	/**
-	 * Gets a numeric identifier for the team content type
-	 *
-	 * @return int
-	 */
-	public function GetContentType()
-	{
-		return ContentType::STOOLBALL_TEAM;
 	}
 
 	/**
@@ -321,29 +308,6 @@ class Team implements IHasShortUrl, IHasMedia
 	public function Seasons() { return $this->seasons; }
 
 	/**
-	 * @return void
-	 * @param MediaGallery $o_gallery
-	 * @desc Add a media gallery
-	 */
-	function AddMediaGallery(MediaGallery $o_gallery)
-	{
-		$this->a_galleries[] = &$o_gallery;
-	}
-
-	/**
-	 * @return void
-	 * @param MediaGallery[] $a_galleries
-	 * @desc Sets the media galleries related to the team
-	 */
-	function SetMediaGalleries($a_galleries) { if (is_array($a_galleries)) $this->a_galleries = &$a_galleries; }
-
-	/**
-	 * @return MediaGallery[]
-	 * @desc Gets the media galleries related to the team
-	 */
-	function GetMediaGalleries() { return $this->a_galleries; }
-
-	/**
 	 * Gets the URI which uniquely identifies this team
 	 */
 	public function GetLinkedDataUri()
@@ -413,25 +377,6 @@ class Team implements IHasShortUrl, IHasMedia
 	public function GetStatsNavigateUrl()
 	{
 		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/statistics';
-	}
-
-	/**
-	 * @return string
-	 * @desc Gets the URL for adding a new media gallery associated with the team
-	 */
-	public function GetAddMediaGalleryNavigateUrl()
-	{
-		$s_url = '';
-		if ($this->GetShortUrl())
-		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . 'createalbum';
-		}
-		else
-		{
-			$s_url = str_replace('{0}', $this->GetId(), $this->o_settings->GetUrl('TeamAddMediaGallery'));
-		}
-
-		return $s_url;
 	}
 
 	/**
@@ -627,7 +572,6 @@ class Team implements IHasShortUrl, IHasMedia
 		'{0}/matches/tournaments/add' => '/play/tournaments/add.php?team={0}',
 		'{0}/matches/edit' => $settings->GetUrl('TeamResults'),
 		'{0}/calendar' => $settings->GetUrl('TeamCalendar'),
-		'{0}createalbum' => $settings->GetUrl('TeamAddMediaGallery'),
 		'{0}/statistics' => $settings->GetUrl('TeamStats'),
 		'{0}/players' => $settings->GetUrl('Players'),
 		'{0}/players/add' => $settings->GetUrl('PlayerAdd'),

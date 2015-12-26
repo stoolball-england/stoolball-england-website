@@ -2,7 +2,6 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . ABSPATH . '../' . PATH_SEPARATOR . ABSPATH . '../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('media/image-manager.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -58,11 +57,6 @@ class CurrentPage extends StoolballPage
 		while (!$has_player_stats);
 
 		unset($statistics_manager);
-		
-		# fire checks
-		$images = new ImageManager($this->GetSettings(), $this->GetDataConnection());
-		$images->NotifyUncheckedImages($this->GetSettings()->GetTechnicalContactEmail(), 'https://' . $this->GetSettings()->GetDomain() . '/yesnosorry/gallerycheck.php');
-		unset($images);
 	}
 
 	function OnPrePageLoad()

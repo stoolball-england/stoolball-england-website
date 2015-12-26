@@ -74,8 +74,6 @@ div.nav p { display: block; }
 #constraint .supportedContentContainer { width: 100%; float: left; margin-right: -220px; }
 #constraint .supportedContent { margin-right: 220px;}
 #constraint .supportingContent { width: 185px; float: right; margin-left: 20px; }
-.image #constraint .supportedContentContainer { min-width: 822px; } /* 622 photo + 200 negative margin in albums */
-/*.hasLargeImage #constraint .supportedContentContainer { min-width: 770px; } /* 570 photo + 200 negative margin in blog */
 
 #navbar { padding: 0; margin: 0; z-index: 100; position: absolute; width: 64%; height: 45px; right: 2%; top: 15px; min-width: 250px; white-space: nowrap; }
 #navbar li { float: left; padding: 0; margin: 0 22px 0 0; list-style: none; }
@@ -274,7 +272,6 @@ ul.tiles .schools-tile { background: url(/images/play/child.jpg) no-repeat cente
 ul.tiles .statistics-tile { background: url(/images/play/chart.png) no-repeat center bottom; }
 ul.tiles .manage-tile { background: url(/images/play/diary.jpg) no-repeat center bottom; }
 ul.tiles .equipment-tile { background: url(/images/play/bat.jpg) no-repeat center bottom; }
-ul.tiles .photos-tile { background: url(/images/play/lee.jpg) no-repeat center bottom; }
 ul.tiles .coaching-tile { background: url(/images/play/coaching.jpg) no-repeat center bottom; }
 ul.tiles .facebook-tile { background: url(/images/play/facebook.jpg) no-repeat center bottom; }
 
@@ -635,58 +632,10 @@ tr.unavailable { opacity: .5; }
 #wicket2wicket { width: 700px; height: 460px; margin: 2em 0; }
 #wicket2wicketFallback { float: none; margin: 1em 0; }
 
-.photo, .wp-caption { border: 1px solid #008044; width: 600px; max-width: 100%; text-align: center; padding: 10px; background: #eee url(/images/wicket-light-tile.jpg); margin: 1em 0 0; display: block; }
-.photo img, .wp-caption img { border: 1px solid #008044; display: block; margin: auto; max-width: 97%; }
-.thumbPhoto { width: 150px; }
-.thumbPhoto { margin-bottom: 0; }
-.photoCaption {  background: #008044 url(/images/corner-br.gif) no-repeat right bottom; width: 622px; margin: 0 0 1em; color: #fff;  }
-.photoCaption * { font: bold .85em 'Trebuchet MS', Arial, Helvetica, sans-serif; background: url(/images/corner-bl.gif) no-repeat left bottom; padding: .5em 12px; display: block; margin: 0; text-align: left; } 
-.photoCaption * * { font-size: 1em; background: none; padding: 0; display: inline; }
-.ie67 .photoCaption { overflow: hidden; }
-.ie67 .photoCaption * { float: left; }
-.ie67 .photoCaption * * { float: none; }
-.photoCaption input { background: #fff; margin-top: .3em; width: 145px; }
-.photoCaption a:link, .photoCaption a:hover, .photoCaption a:focus, .photoCaption a:active, .photoCaption a:visited { color: #fff; }
-.adminCaption {  background: #008044 url(/images/corner-br.gif) no-repeat right bottom; width: 572px; margin: 0 0 1em;  }
-.adminCaption * { font: bold .85em 'Trebuchet MS', Arial, Helvetica, sans-serif; background: url(/images/corner-bl.gif) no-repeat left bottom; padding: .5em 12px; } 
-.adminCaption * * { font-size: 1em; background: none; padding: 0; }
-.adminCaption select { background: #fff; }
-.adminCaption option { padding: 0 3px 0 5px; }
-.adminCaption .checkBox { margin-left: 0; }
-.thumbnail { float: left; margin-right: 20px; height: 250px; }
-.thumbCaption { width: 172px; color: #fff; }
-.thumbCaption a:visited { color: #ccc; }
-* html .thumbCaption { width: 174px; }
-.supportingContent .photo { width: 163px; margin-top: 0; }
-.supportingContent .photoCaption { width: 185px; }
-.supportingContent .thumbnail { height: auto; }
-* html .thumbnail { height: 265px; }
-.wordLimit { font-size: .85em; display: block;}
-.PhotosAdd .albumCover { float: right; margin: 0 0 1em 1em; }
-.PhotosAdd .thumbnail { height: 300px; }
-
-.ie67 .progressName { margin-top: 0; } /* SWFUpload */
-* html body .progressName { margin-top: .5em; }
-
-.wp-caption { padding: 0; border-bottom: 0; margin-bottom: 1em; }
-.wp-caption img { margin: 9px auto 5px; }
+.wp-caption { border: 1px solid #008044; border-bottom: 0; width: 600px; max-width: 100%; text-align: center; padding: 0; background: #eee url(/images/wicket-light-tile.jpg); margin: 1em 0; display: block; }
+.wp-caption img { border: 1px solid #008044; display: block; margin: auto; max-width: 97%; margin: 9px auto 5px; }
 #content .wp-caption .photoCaption { margin: 0; width: 100%; max-width: 100%; position: relative; top: 5px; }
 * html #content .wp-caption .photoCaption { width: 102%; }
-
-.mediaEdit { width: 96%; float: left; margin-right: 1em; }
-* html .mediaEdit { width: 90%; }
-.mediaEditFields { margin-left: 180px; }
-.mediaEdit .cover { float: left; overflow: hidden; }
-.mediaEdit .cover .photo { margin-top: 0; }
-.mediaEditFields label { display: block; margin: 0 1em .2em 0; }
-.mediaEdit textarea { margin-bottom: 1em; min-height: 5.5em; height: 5.5em; }
-.mediaEdit .title { width: 100%; margin-bottom: 1em; }
-.ie67 .mediaEdit textarea, .ie67 .mediaEdit .title { width: 95%; }
-.image .paging { background: #eee url(/images/wicket-light-tile.jpg); border: 0; margin: 0; padding-top: 0; }
-.image .paging p { margin: 0; text-align: left;  }
-.image .paging .pageContext { text-align: right; }
-.image #longDesc { margin-top: 1em; }
-.ie67 body .image .pages { margin-left: -68px; } /* View photo in gallery */ 
 
 .printable { width: 250px; float: right; margin: 10px 0 10px 10px; }
 .printable h2 { margin-top: 0; }

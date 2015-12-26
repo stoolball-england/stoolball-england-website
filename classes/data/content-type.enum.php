@@ -18,12 +18,7 @@ class ContentType
 			case ContentType::PAGE_COMMENTS: return 'page';
 			case ContentType::TOPIC: return 'topic';
 			case ContentType::FORUM: return 'category';
-			case ContentType::IMAGE: return 'image';
-			case ContentType::CATEGORY: return 'contentcategory';
 			case ContentType::STOOLBALL_MATCH: return 'match';
-			case ContentType::STOOLBALL_TEAM: return 'team';
-			case ContentType::STOOLBALL_SEASON: return 'season';
-			case ContentType::STOOLBALL_COMPETITION: return 'competition';
 		}
 	}
 
@@ -53,38 +48,8 @@ class ContentType
 
 	/**
 	 * @return int
-	 * @desc An image in GIF, JPEG or PNG format
-	 */
-	const IMAGE = 7;
-
-	/**
-	 * @return int
-	 * @desc A category of content
-	 */
-	const CATEGORY = 9;
-
-	/**
-	 * @return int
-	 * @desc A season of a stoolball competition
-	 */
-	const STOOLBALL_SEASON = 3000;
-
-	/**
-	 * @return int
 	 * @desc A stoolball match
 	 */
 	const STOOLBALL_MATCH = 3002;
-
-	/**
-	 * @return int
-	 * @desc A stoolball team
-	 */
-	const STOOLBALL_TEAM = 3003;
-
-	/**
-	 * @return int
-	 * @desc A stoolball competition
-	 */
-	const STOOLBALL_COMPETITION = 3004;
 }
 ?>

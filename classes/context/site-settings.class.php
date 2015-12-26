@@ -85,8 +85,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'ground.php?item=';
             case 'GroundStatistics':
                 return $this->GetFolder('Play') . 'statistics/summary-ground.php?item={0}';
-            case 'ImagePage':
-                return 'image.php?gallery={0}&image={1}';
             case 'Match':
                 return $this->GetFolder('Play') . 'match.php?item=';
             case 'MatchAddFriendlyToSeason':
@@ -107,18 +105,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'matchadd.php?team={0}&type=' . MatchType::PRACTICE;
             case 'MatchCalendar':
                 return $this->GetFolder('Play') . 'calendar.php?match={0}';
-            case 'MediaGalleryAdd':
-                return $this->GetClientRoot() . 'createalbum';
-            case 'MediaGalleryAddPhoto':
-                return $this->GetFolder('Play') . 'photoadd.php?album={0}';
-            case 'MediaGalleryAddPhotos':
-                return $this->GetFolder('Play') . 'photosadd.php?album={0}';
-            case 'MediaGalleryEdit':
-                return $this->GetFolder('Play') . 'galleryedit.php?item={0}';
-            case 'MediaGalleryDelete':
-                return $this->GetFolder('Play') . 'gallerydelete.php?item={0}';
-            case 'MediaGalleryPage':
-                return 'gallery.php?item={0}'; # in current directory
             case 'Players':
                 return $this->GetFolder('Play') . 'players.php?team={0}';
             case 'Player':
@@ -135,8 +121,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'calendar.php?season={0}';
             case 'SeasonResults':
                 return $this->GetFolder('Play') . 'results.php?season={0}';
-            case 'SeasonAddMediaGallery':
-                return $this->GetFolder('Play') . 'galleryedit.php?season={0}';
             case 'Team':
                 return $this->GetFolder('Play') . 'teams/team.php?item=';
             case 'TeamAdd':
@@ -145,8 +129,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'calendar.php?team={0}';
             case 'TeamResults':
                 return $this->GetFolder('Play') . 'results.php?team={0}';
-            case 'TeamAddMediaGallery':
-                return $this->GetFolder('Play') . 'galleryedit.php?team={0}';
             case 'TeamStats':
                 return $this->GetFolder('Play') . 'statistics/summary-team.php?item={0}';
             case 'TournamentEdit':
@@ -189,20 +171,12 @@ abstract class SiteSettings
                 return $this->GetClientRoot() . 'images/';
             case 'ImagesServer':
                 return $this->GetServerRoot() . 'images/';
-            case 'ImageUploadOriginals':
-                return $this->GetFolder('ImagesServer') . 'originals/';
-            case 'ImageUpload':
-                return $this->GetFolder('ImagesServer') . 'uploaded/';
-            case 'MediaGallery':
-                return $this->GetFolder('Play');
             case 'News':
                 return '/news/';
             case 'Play':
                 return '/play/';
             case 'Rules':
                 return '/rules/';
-            case 'ThumbnailUpload':
-                return $this->GetFolder('ImagesServer') . 'thumbnails/';
             default:
                 return '/';
         }
@@ -242,16 +216,10 @@ abstract class SiteSettings
                 return 'nsa_forum_message';
             case 'Ground':
                 return 'nsa_ground';
-            case 'Image':
-                return 'nsa_image';
             case 'Match':
                 return 'nsa_match';
             case 'MatchTeam':
                 return 'nsa_match_team';
-            case 'MediaGallery':
-                return 'nsa_gallery';
-            case 'MediaGalleryLink':
-                return 'nsa_gallery_link';
             case 'PermissionRoleLink':
                 return 'nsa_permission_role';
             case 'Player':
@@ -455,15 +423,8 @@ abstract class SiteSettings
         require_once('stoolball/team.class.php');
         $a_formats[] = Team::GetShortUrlFormatForType($this);
 
-        require_once('media/media-gallery.class.php');
-        $a_formats[] = MediaGallery::GetShortUrlFormatForType($this);
-
         require_once 'stoolball/player.class.php';
         $a_formats[] = Player::GetShortUrlFormatForType($this);
-
-        # Pages for individual images in each of their media galleries
-        require_once('xhtml/xhtml-image.class.php');
-        $a_formats[] = XhtmlImage::GetShortUrlFormatForType($this);
 
         return $a_formats;
 

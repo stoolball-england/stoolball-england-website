@@ -152,12 +152,6 @@ input.year { width: 3em; }
 /* WordPress pages */
 .screenshot { margin: 1em 0; border: 1px solid #503C03; }
 
-/* Upload photos */
-p.progressName { width: 100%; white-space: normal; }
-
-/* Photo albums */
-body ul.thumbnails { width: 100%; overflow: hidden; list-style: none; padding-left: 0; margin: 1em 0; } /* Container for several albums */
-
 /* Tabs used in Play! section. */
 .tab-inactive p { margin-top: 0;}
 
@@ -282,7 +276,6 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 .forumTopicList img { display: inline; }
 
 /* Forum - write message */
-.graphic img { display: inline; }
 #forumMessageForm textarea { height: 10em; }
 
 /* Forum - view a topic */
