@@ -1,0 +1,9 @@
+The Standard Analyzer Code is in StandardAnalyzer/. To get this project working,
+keep the Zend directory in the same directory as this file. Then drop this folder
+into your favorite dev environment (or just your web server) and check it out.
+
+License information and a few more comments on usage of StandardAnalyzer in general
+are in StandardAnalyzer/Readme.txt
+
+Best,
+Kenneth Katzgrau
