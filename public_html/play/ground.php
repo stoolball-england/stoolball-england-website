@@ -96,7 +96,7 @@ class CurrentPage extends StoolballPage
 	{
 		$this->SetPageTitle($this->ground->GetName());
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
-		$this->LoadClientScript('maps-3.js');
+		$this->LoadClientScript('/scripts/maps-3.js');
 		$this->LoadClientScript('ground-4.js', true);
 		
 		$description = $this->ground->GetNameAndTown();

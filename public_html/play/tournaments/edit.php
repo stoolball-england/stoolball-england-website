@@ -164,7 +164,7 @@ class CurrentPage extends StoolballPage
 
 		$this->SetContentCssClass('matchEdit');
 		$this->SetContentConstraint(StoolballPage::ConstrainText());
-		$this->LoadClientScript('tournament-edit-control-3.js');
+		$this->LoadClientScript('/scripts/tournament-edit-control-3.js');
   	}
 
 	function OnPageLoad()

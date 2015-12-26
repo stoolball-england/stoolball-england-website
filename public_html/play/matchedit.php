@@ -315,7 +315,7 @@ class CurrentPage extends StoolballPage
 		switch($this->editor->GetCurrentPage())
 		{
 			case MatchEditControl::FIXTURE:
-				if ($this->b_user_is_match_admin or $this->b_user_is_match_owner) $this->LoadClientScript('match-fixture-edit-control-5.js');
+				if ($this->b_user_is_match_admin or $this->b_user_is_match_owner) $this->LoadClientScript('/scripts/match-fixture-edit-control-5.js');
 				if ($this->b_user_is_match_admin) $this->LoadClientScript('matchedit-admin-3.js', true);
 				break;
 

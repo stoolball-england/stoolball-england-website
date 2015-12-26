@@ -70,7 +70,7 @@ class CurrentPage extends StoolballPage
     {
         # set page title
         $this->SetPageTitle(is_object($this->ground) ? $this->ground->GetNameAndTown() . ': Edit stoolball ground' : 'New stoolball ground');
-        $this->LoadClientScript('maps-3.js');
+        $this->LoadClientScript('/scripts/maps-3.js');
         $this->LoadClientScript('/play/grounds/groundedit.js');
     }
 

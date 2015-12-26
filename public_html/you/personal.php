@@ -26,7 +26,7 @@ class PersonalInfoPage extends StoolballPage
 		$this->SetPageTitle('More about you, ' . AuthenticationManager::GetUser()->GetName());
 
 		$this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-		$this->LoadClientScript("tinymce.js");
+		$this->LoadClientScript("/scripts/tinymce.js");
 
 		# create form object
 		$this->o_form = new PersonalInfoForm($this->o_editing_user);

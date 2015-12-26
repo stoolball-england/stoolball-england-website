@@ -35,7 +35,7 @@ class NewTopicPage extends StoolballPage
 	{
 		$this->SetPageTitle('Start a new topic');
 		$this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-		$this->LoadClientScript("tinymce.js");
+		$this->LoadClientScript("/scripts/tinymce.js");
 	}
 
 	function OnPageLoad()

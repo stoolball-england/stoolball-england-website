@@ -208,7 +208,7 @@ class CurrentPage extends StoolballPage
              $this->SetPageTitle('Match results for ' . $this->tournament->GetTitle());
         }
 
-		$this->LoadClientScript('match-results-3.js');
+		$this->LoadClientScript('/scripts/match-results-3.js');
 	}
 
 	function OnPageLoad()

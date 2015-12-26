@@ -143,7 +143,7 @@ class CommentPage extends StoolballPage
 
 		$this->SetPageTitle('Add your comments');
 		$this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-		$this->LoadClientScript("tinymce.js");
+		$this->LoadClientScript("/scripts/tinymce.js");
 	}
 
 	function OnPageLoad()

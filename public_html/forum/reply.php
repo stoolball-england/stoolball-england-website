@@ -47,7 +47,7 @@ class ReplyPage extends StoolballPage
     {
         $this->SetPageTitle('Reply to topic');
         $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-        $this->LoadClientScript("tinymce.js");
+        $this->LoadClientScript("/scripts/tinymce.js");
     }
 
     function OnPageLoad()

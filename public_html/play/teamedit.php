@@ -119,7 +119,7 @@ class CurrentPage extends StoolballPage
 		$this->SetPageTitle(is_object($this->team) ? $this->team->GetName() . ': Edit stoolball team' : 'New stoolball team');
 		$this->SetContentConstraint(StoolballPage::ConstrainText());
         $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-        $this->LoadClientScript("tinymce.js");
+        $this->LoadClientScript("/scripts/tinymce.js");
 	}
 
 	function OnPageLoad()

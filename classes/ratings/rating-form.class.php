@@ -53,7 +53,7 @@ class RatingForm extends XhtmlForm
 		# Register script
 		$o_script = new XhtmlElement('script');
 		$o_script->AddAttribute('type', 'text/javascript');
-		$o_script->AddAttribute('src', $o_settings->GetFolder('Scripts') . 'rating-form.js');
+		$o_script->AddAttribute('src', '/scripts/rating-form.js');
 		$this->AddControl($o_script);
 
 		# Build header

@@ -461,15 +461,7 @@ class Page
 	function LoadClientScript($s_script, $b_current_folder = false)
 	{
 		$s_folder = '';
-		if (!$b_current_folder)
-		{
-			if (substr($s_script, 0, 2) != '//' and substr($s_script, 0, 8) != 'https://' and substr($s_script, 0, 1) != '/')
-			{
-				$s_folder = $this->settings->GetFolder('Scripts');
-			}
-
-		}
-		else
+		if ($b_current_folder)
 		{
 			$s_url = $_SERVER['PHP_SELF'];
 			$s_folder = substr($s_url, 0, strlen($s_url) - strlen(basename($s_url)));

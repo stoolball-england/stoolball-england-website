@@ -201,8 +201,6 @@ abstract class SiteSettings
                 return '/play/';
             case 'Rules':
                 return '/rules/';
-            case 'Scripts':
-                return $this->GetClientRoot() . 'scripts/';
             case 'ThumbnailUpload':
                 return $this->GetFolder('ImagesServer') . 'thumbnails/';
             default:

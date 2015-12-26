@@ -324,7 +324,7 @@ class CurrentPage extends StoolballPage
 
 		$this->SetContentConstraint(StoolballPage::ConstrainText());
 		$this->SetContentCssClass('matchEdit');
-		$this->LoadClientScript('match-fixture-edit-control-5.js');
+		$this->LoadClientScript('/scripts/match-fixture-edit-control-5.js');
 	}
 
 	function OnPageLoad()
