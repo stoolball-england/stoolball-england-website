@@ -167,7 +167,7 @@ class CurrentPage extends StoolballPage
             }
         } 
 
-        $this->LoadClientScript("jquery-ui-1.8.11.custom.min.js");
+        $this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
         $this->LoadClientScript("/play/teams/suggest-teams.js.php?except=" . trim(implode(",", $except),","));
         ?>
         <link rel="stylesheet" type="text/css" href="/css/custom-theme/jquery-ui-1.8.11.custom.css" media="all" />

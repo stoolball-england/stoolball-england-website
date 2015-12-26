@@ -76,7 +76,7 @@ class CurrentPage extends StoolballPage
         $this->SetPageTitle("Map of the " . $this->season->GetCompetitionName());
 		$this->SetPageDescription("See a map of all the stoolball teams playing in the " . $this->season->GetCompetitionName() . ".");
 		
-		$this->LoadClientScript("markerclusterer_compiled.js");
+		$this->LoadClientScript("/scripts/lib/markerclusterer_compiled.js");
 		$this->LoadClientScript('maps-3.js');
 		$this->LoadClientScript("map.js.php?season=" . $this->season->GetId(), true);
 	}

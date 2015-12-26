@@ -172,7 +172,7 @@ class CurrentPage extends StoolballPage
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 		$this->SetContentCssClass("playerStats");
 
-		$this->LoadClientScript("jquery-ui-1.8.11.custom.min.js");
+		$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 		$this->LoadClientScript("/play/statistics/statistics-filter.js");
         $this->LoadClientScript("/scripts/lib/chart.min.js");
         $this->LoadClientScript("/scripts/chart.js");

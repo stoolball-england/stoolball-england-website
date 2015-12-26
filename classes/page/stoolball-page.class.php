@@ -121,7 +121,7 @@ class StoolballPage extends Page
 <meta property="og:site_name" content="Stoolball England" />
 <meta property="fb:app_id" content="259918514021950" />
 <meta name="twitter:site" content="@stoolball" />
-<script src="<?php echo $this->resource_root ?>/scripts/modernizr.js"></script>
+<script src="<?php echo $this->resource_root ?>/scripts/lib/modernizr.js"></script>
 		<?php
 		#	'<link rel="search" href="' . $this->GetSettings()->GetUrl('Search') . '" title="Go to ' . $this->GetSettings()->GetSiteName() . '\'s search page" />' . "\n";
 

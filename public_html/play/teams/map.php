@@ -42,7 +42,7 @@ class CurrentPage extends StoolballPage
         $this->SetPageTitle("Map of " . strtolower($this->player_type_text) . " stoolball teams");
 		$this->SetPageDescription("See a map of all the " . strtolower($this->player_type_text) . "stoolball teams currently playing.");
 		
-		$this->LoadClientScript("markerclusterer_compiled.js");
+		$this->LoadClientScript("/scripts/lib/markerclusterer_compiled.js");
 		$this->LoadClientScript('maps-3.js');
 		$this->LoadClientScript("map.js.php?player=" . $this->player_type, true);
 	}

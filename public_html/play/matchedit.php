@@ -338,7 +338,7 @@ class CurrentPage extends StoolballPage
 			if ($this->match->GetAwayTeamId()) $autocomplete_team_ids[] = $this->match->GetAwayTeamId();
 			if (count($autocomplete_team_ids))
 			{
-				$this->LoadClientScript("jquery-ui-1.8.11.custom.min.js");
+				$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 				$this->LoadClientScript("/play/playersuggest.js.php?v=2&amp;team=" . implode(",", $autocomplete_team_ids));// . "&amp;time=" . time());
 				?>
 <link rel="stylesheet" type="text/css" href="/css/custom-theme/jquery-ui-1.8.11.custom.css" media="all" />

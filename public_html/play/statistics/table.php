@@ -251,7 +251,7 @@ INTRO;
 		$this->SetPageTitle("$this->statistic_title $this->filter");
 		$this->SetPageDescription($this->statistic_intro ? strip_tags($this->statistic_intro) : $this->statistic_description);
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
-		$this->LoadClientScript("jquery-ui-1.8.11.custom.min.js");
+		$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 		$this->LoadClientScript("/play/statistics/statistics-filter.js");
 		?>
 <link rel="stylesheet" href="/css/custom-theme/jquery-ui-1.8.11.custom.css" media="screen" />
