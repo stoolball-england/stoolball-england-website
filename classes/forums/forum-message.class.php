@@ -28,7 +28,6 @@ class ForumMessage
 	private $s_body;
 	private $s_body_filtered;
 	private $s_body_formatted;
-	private $i_rating;
 
 	/**
 	 * Creates a new instance of ForumMessage
@@ -342,16 +341,6 @@ class ForumMessage
 		$s_text = str_replace('[protectedquote]', '&quot;', $s_text);
 
 		return $s_text;
-	}
-
-	function SetRating($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_rating = (int)$i_input;
-	}
-
-	function GetRating()
-	{
-		return $this->i_rating;
 	}
 
 	function GetExcerpt()

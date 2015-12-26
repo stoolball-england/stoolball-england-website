@@ -134,7 +134,7 @@ class ForumMessageForm extends XhtmlForm
 	function GetForm()
 	{
 		# if a new topic, check a category has been specified
-		if (($this->GetFormat() == ForumMessageFormat::NewTopic()) or ($this->GetFormat() == ForumMessageFormat::Review()) or ($this->GetFormat() == ForumMessageFormat::ReviewAndRate()))
+		if (($this->GetFormat() == ForumMessageFormat::NewTopic()) or ($this->GetFormat() == ForumMessageFormat::Review()))
 		{
 			if ($this->o_topic->GetCategory() == null)
 			{
@@ -143,7 +143,7 @@ class ForumMessageForm extends XhtmlForm
 			}
 		}
 		# if a new reply, check a topic has been specified
-		else if (($this->GetFormat() == ForumMessageFormat::Reply()) or ($this->GetFormat() == ForumMessageFormat::ReviewReply()) or ($this->GetFormat() == ForumMessageFormat::ReviewAndRateReply()))
+		else if (($this->GetFormat() == ForumMessageFormat::Reply()) or ($this->GetFormat() == ForumMessageFormat::ReviewReply()))
 		{
 			if ($this->o_topic->GetId() == null)
 			{
@@ -168,9 +168,7 @@ class ForumMessageForm extends XhtmlForm
 				break;
 
 			case ForumMessageFormat::Review():
-			case ForumMessageFormat::ReviewAndRate():
 			case ForumMessageFormat::ReviewReply():
-			case ForumMessageFormat::ReviewAndRateReply():
 
 				$s_topic_name = 'comments';
 				switch ($o_review_item->GetType())
@@ -214,7 +212,7 @@ class ForumMessageForm extends XhtmlForm
 		$s_text .= '<input type="hidden" name="topic_id" id="topic_id" value="' . $this->o_topic->GetId() . '" />' . "\n" .
 		'<input type="hidden" name="topic_title" id="topic_title" value="' . stripslashes($s_topic_title) . '" />' . "\n";
 
-		if ($o_review_item instanceof RatedItem)
+		if ($o_review_item instanceof ReviewItem)
 		{
 			$s_text .= '<input type="hidden" name="type" id="type" value="' . $o_review_item->GetType() . '" />' . "\n" .
 			'<input type="hidden" name="item" id="item" value="';
@@ -226,8 +224,7 @@ class ForumMessageForm extends XhtmlForm
 
 		if(
 		($this->GetFormat() == ForumMessageFormat::Reply()) or
-		($this->GetFormat() == ForumMessageFormat::ReviewReply()) or
-		($this->GetFormat() == ForumMessageFormat::ReviewAndRateReply())
+		($this->GetFormat() == ForumMessageFormat::ReviewReply())
 		)
 		{
 			$s_text .= ' <small>(optional)</small>';
@@ -241,26 +238,6 @@ class ForumMessageForm extends XhtmlForm
 	    $this->ReadIcons();
 		if (isset($_POST['icon'])) $this->SetIcon($_POST['icon']);
 		$s_text .= $this->GetIconsXhtml();
-
-		if ($this->GetFormat() == ForumMessageFormat::ReviewAndRate() or $this->GetFormat() == ForumMessageFormat::ReviewAndRateReply())
-		{
-			$i_rating = 0;
-			if (isset($_GET['rating'])) $i_rating = (int)$_GET['rating'];
-			else if (isset($_POST['rating'])) $i_rating = (int)$_POST['rating'];
-
-			$s_text .= '<h4>Your rating</h4>' . "\n";
-
-			for ($i_count = 1; $i_count <= 10; $i_count++)
-			{
-				$s_text .= '<input type="radio" name="rating" id="rating_' . $i_count . '" value="' . $i_count . '"';
-				if ($i_rating == $i_count) $s_text .= ' checked="checked"';
-				$s_text .= ' />' . "\n" . '<label for="rating_' . $i_count . '">' . $i_count . '</label>' . "\n";
-			}
-
-			$s_text .= '<input type="hidden" name="rating_id" id="rating_id" value="';
-			if (isset($_GET['ratingid'])) $s_text .= $_GET['ratingid']; else if (isset($_POST['rating_id'])) $s_text .= $_POST['rating_id'];
-			$s_text .= '" />' . "\n\n";
-		}
 
 		$s_text .= '<label for="message" class="aural">Your ' . $this->GetMessageText() . '</label>' . "\n" .
 		'<textarea name="message" id="message">';

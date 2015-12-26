@@ -1,7 +1,7 @@
 <?php
 require_once('page/stoolball-page.class.php');
 require_once('forums/subscription-manager.class.php');
-require_once('ratings/rated-item.class.php');
+require_once('review-item.class.php');
 
 /**
  * Page which processes an email subscription request
@@ -12,7 +12,7 @@ class SubscribePage extends StoolballPage
 	/**
 	 * The item being subscribed to
 	 *
-	 * @var RatedItem
+	 * @var ReviewItem
 	 */
 	private $o_review_item;
 
@@ -27,7 +27,7 @@ class SubscribePage extends StoolballPage
 
 	function OnPageInit()
 	{
-		$this->o_review_item = new RatedItem($this->GetSettings(), $this->GetDataConnection());
+		$this->o_review_item = new ReviewItem($this->GetSettings());
 		$this->o_review_item->SetId($_GET['item']);
 		$this->o_review_item->SetType($_GET['type']);
 		if (isset($_GET['title'])) $this->o_review_item->SetTitle($_GET['title']); // data already sanitised in OnSiteInit

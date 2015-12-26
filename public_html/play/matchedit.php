@@ -167,12 +167,12 @@ class CurrentPage extends StoolballPage
 					if (trim($this->match->GetNewComment()))
 					{
 						require_once('forums/topic-manager.class.php');
-						require_once('ratings/rated-item.class.php');
+						require_once('forums/review-item.class.php');
 						require_once('forums/subscription-manager.class.php');
 						$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
 						$comments_category = $this->GetSettings()->GetCommentsCategory($this->GetCategories(), ContentType::STOOLBALL_MATCH);
 
-						$item_to_comment_on = new RatedItem($this->GetSettings());
+						$item_to_comment_on = new ReviewItem($this->GetSettings());
 						$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
 						$item_to_comment_on->SetId($this->match->GetId());
 						$topic = $topic_manager->SaveComment($item_to_comment_on, $comments_category, $this->match->GetTitle(), $this->match->GetNewComment(), null);

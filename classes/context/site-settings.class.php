@@ -230,8 +230,6 @@ abstract class SiteSettings
                 return 'nsa_point';
             case 'Queue':
                 return 'nsa_queue';
-            case 'Rating':
-                return 'nsa_rating';
             case 'Role':
                 return 'nsa_role';
             case 'Season':

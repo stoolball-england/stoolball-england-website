@@ -218,7 +218,7 @@ class SubscriptionManager extends DataManager
 		}
 	}
 
-	function SendCommentsSubscriptions(RatedItem $review_item)
+	function SendCommentsSubscriptions(ReviewItem $review_item)
 	{
 		# get all subscriptions for this item
 		if(is_object($this->o_topic) and AuthenticationManager::GetUser()->IsSignedIn() and $review_item->GetId())

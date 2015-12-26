@@ -139,17 +139,14 @@ class TopicManager extends DataManager
 		$s_person = $this->GetSettings()->GetTable('User');
         $s_message = $this->GetSettings()->GetTable('ForumMessage');
 		$s_topic = $this->GetSettings()->GetTable('ForumTopic');
-		$s_rating = $this->GetSettings()->GetTable('Rating');
 
 		# prepare command
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
 		'location, signature, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
 		$s_message . '.id, ' . $s_message . '.title, message, icon, ' . $s_message . '.topic_id, ' .
-		$s_message . ".date_added AS message_date, category_id, " .
-		$s_rating . '.rating ' .
+		$s_message . ".date_added AS message_date, category_id " .
 		'FROM ((' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id) ' .
-		'INNER JOIN ' . $s_topic . ' ON ' . $s_message . '.topic_id = ' . $s_topic . '.id) ' .
-		'LEFT OUTER JOIN ' . $s_rating . ' ON ' . $s_message . '.id = ' . $s_rating . '.message_id ';
+		'INNER JOIN ' . $s_topic . ' ON ' . $s_message . '.topic_id = ' . $s_topic . '.id) ';
 
 		if (is_array($a_ids)) $s_sql .= 'WHERE ' . $s_message . '.topic_id IN (' . join(', ', $a_ids) . ') ';
 
@@ -188,7 +185,6 @@ class TopicManager extends DataManager
 			$o_message->SetBody($o_row->message);
 			$o_message->SetIcon($o_row->icon);
 			$o_message->SetUser($o_person);
-			$o_message->SetRating($o_row->rating);
 
 			$o_category = new Category();
 			$o_category->SetId($o_row->category_id);
@@ -286,9 +282,9 @@ class TopicManager extends DataManager
 	/**
 	 * Reads the topic associated with the supplied review item, if any
 	 *
-	 * @param RatedItem $o_item
+	 * @param ReviewItem $o_item
 	 */
-	function ReadReviewTopicId(RatedItem $o_item)
+	function ReadReviewTopicId(ReviewItem $o_item)
 	{
 		if (!$o_item->GetId() or !$o_item->GetType()) die('No item specified for comments'); # check we've got an id and type
 
@@ -311,7 +307,7 @@ class TopicManager extends DataManager
 	/**
 	 * Reads the item which the specified topic is commenting upon
 	 * @param int $topic_id
-	 * @return RatedItem
+	 * @return ReviewItem
 	 */
 	public function ReadReviewedItem($topic_id)
 	{
@@ -354,7 +350,7 @@ class TopicManager extends DataManager
 				# get data
 				$result = $this->GetDataConnection()->query($s_sql);
 
-				$reviewed_item = new RatedItem($this->GetSettings(), $this->GetCategories());
+				$reviewed_item = new ReviewItem($this->GetSettings());
 				$reviewed_item->SetType($i_item_type);
 
 				while($o_row = $result->fetch())
@@ -663,7 +659,7 @@ class TopicManager extends DataManager
 	/**
 	 * Saves a comment on an item
 	 *
-	 * @param RatedItem $item_to_comment_on
+	 * @param ReviewItem $item_to_comment_on
 	 * @param Category $category
 	 * @param string $s_title
 	 * @param string $s_body

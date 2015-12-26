@@ -144,14 +144,8 @@ class ForumTopicListing extends Placeholder
 				/* @var $message ForumMessage */
 				$message = $a_messages[$i];
                 
-				# clean up previous
-				$s_rating = '';
-
 				# get person
 				$o_person = $message->GetUser();
-
-				# prepare rating
-				if ($message->GetRating()) $s_rating = '<div class="rating">Rating: ' . $message->GetRating() . '/10</div>';
 
 				# highlight search terms
 				if (isset($_GET['hi']) and $_GET['hi'])
@@ -195,7 +189,7 @@ class ForumTopicListing extends Placeholder
                 # add the message
                 $s_text .= '<div about="' . $message->MessageLinkedDataUri() . '" rel="awol:content" class="message';
                 if ($b_alternate) $s_text .= " altMessage";
-                $s_text .= '"><div typeof="awol:Content"><meta property="awol:type" content="text/html" /><div property="awol:body">' . $s_rating;
+                $s_text .= '"><div typeof="awol:Content"><meta property="awol:type" content="text/html" /><div property="awol:body">';
                 if($message->GetTitle() or $message->GetIconXhtml($this->o_settings))
                 {
                     $title = $message->GetTitle() ? '<span about="' . $message->MessageLinkedDataUri() . '" property="dcterms:title">' . $message->GetFormattedTitle() . '</span>' : "";

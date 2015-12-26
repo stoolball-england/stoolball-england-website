@@ -4,7 +4,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('page/stoolball-page.class.php');
 require_once('data/paged-results.class.php');
 require_once('collection-builder.class.php');
-require_once('ratings/rated-item.class.php');
+require_once('forums/review-item.class.php');
 require_once('forums/forum-topic-listing.class.php');
 require_once('forums/topic-manager.class.php');
 require_once('forums/subscription-manager.class.php');
@@ -114,7 +114,7 @@ class TopicPage extends StoolballPage
 	{
 		$s_text = '';
 
-		if ($this->topic->GetReviewItem() instanceof RatedItem)
+		if ($this->topic->GetReviewItem() instanceof ReviewItem)
 		{
 			switch ($this->topic->GetReviewItem()->GetType())
 			{

@@ -436,26 +436,6 @@ COMMENT = 'Actions queued for later execution';
 
 
 -- -----------------------------------------------------
--- Table `nsa_rating`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_rating` (
-  `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `date_added` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `date_changed` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `item_id` INT(8) UNSIGNED NOT NULL DEFAULT '0',
-  `item_type` SMALLINT(5) NOT NULL DEFAULT '0',
-  `user_id` INT(5) UNSIGNED NULL DEFAULT NULL,
-  `rating` INT(2) UNSIGNED NOT NULL DEFAULT '0',
-  `weighting` INT(3) UNSIGNED NOT NULL DEFAULT '1',
-  `message_id` INT(5) UNSIGNED NULL DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  INDEX `item_id` (`item_id` ASC, `item_type` ASC, `user_id` ASC, `rating` ASC, `weighting` ASC, `message_id` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Ratings for items in the database';
-
-
--- -----------------------------------------------------
 -- Table `nsa_role`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nsa_role` (

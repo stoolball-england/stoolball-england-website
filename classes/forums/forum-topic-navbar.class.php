@@ -40,7 +40,7 @@ class ForumTopicNavbar extends XhtmlElement
 	{
 		$s_reply_link = $this->o_settings->GetFolder('Forums') . 'reply.php?topic=' . $this->o_topic->GetId();
 
-		if (isset($this->o_review_item) and $this->o_review_item instanceof RatedItem)
+		if (isset($this->o_review_item) and $this->o_review_item instanceof ReviewItem)
 		{
 			$s_reply_link .= '&amp;type=' . $this->o_review_item->GetType() . '&amp;item=' . $this->o_review_item->GetId();
 		}

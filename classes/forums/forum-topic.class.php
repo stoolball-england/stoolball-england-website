@@ -1,7 +1,7 @@
 <?php 
 require_once('collection.class.php');
 require_once('forum-message.class.php');
-require_once('ratings/rated-item.class.php');
+require_once('review-item.class.php');
 
 class ForumTopic extends Collection
 {
@@ -127,16 +127,16 @@ class ForumTopic extends Collection
 
 	/**
 	* @return void
-	* @param RatedItem $o_input
+	* @param ReviewItem $o_input
 	* @desc Sets the item being reviewed
 	*/
-	function SetReviewItem(RatedItem $o_input)
+	function SetReviewItem(ReviewItem $o_input)
 	{
 		$this->o_review_item = $o_input;
 	}
 	
 	/**
-	* @return RatedItem
+	* @return ReviewItem
 	* @desc Gets the item being reviewed
 	*/
 	function GetReviewItem()

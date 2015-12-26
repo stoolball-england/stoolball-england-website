@@ -22,7 +22,7 @@ class CommentPage extends StoolballPage
 	function OnPageInit()
 	{        
 		# store review type and item
-		$this->o_review_item = new RatedItem($this->GetSettings(), $this->GetCategories());
+		$this->o_review_item = new ReviewItem($this->GetSettings());
 		if (isset($_GET['type'])) $this->o_review_item->SetType($_GET['type']);
         if (isset($_POST['type'])) $this->o_review_item->SetType($_POST['type']);
 		if (isset($_GET['item'])) $this->o_review_item->SetId($_GET['item']); 
@@ -78,26 +78,6 @@ class CommentPage extends StoolballPage
 			if (isset($_POST['subscribe']) and $this->o_review_item->GetId())
 				$o_subs->SaveSubscription($this->o_review_item->GetId(), $this->o_review_item->GetType(), AuthenticationManager::GetUser()->GetId());
 
-			# see if a rating has been added
-			if (isset($_POST['rating']) and (int)$_POST['rating'] >= 1 and (int)$_POST['rating'] <= 10)
-			{
-				# create rating
-				require_once ('ratings/rating-manager.class.php');
-
-				$o_rating = new Rating();
-				if (isset($_POST['rating_id']) and (int)$_POST['rating_id'] > 0)
-					$o_rating->SetRatingId($_POST['rating_id']);
-				$o_rating->SetRating($_POST['rating']);
-				$o_rating->SetUserId(AuthenticationManager::GetUser()->GetId());
-				$o_rating->SetMessageId($o_new_message->GetId());
-
-				# save the rating
-				$this->o_review_item->SetNewRating($o_rating);
-				$o_rating_manager = new RatingManager($this->GetSettings(), $this->GetDataConnection());
-				$o_rating_manager->Save($this->o_review_item);
-				unset($o_rating_manager);
-			}
-
 			# redirect user back to the item
 			$s_redirect_location = ($_POST['page']) ? str_replace('&amp;', '&', $_POST['page']) : $o_new_message->GetNavigateUrl(true, false, false);
 			# override defaults if path has been remembered intact
@@ -128,7 +108,7 @@ class CommentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		/* @var $o_review_item RatedItem */
+		/* @var $o_review_item ReviewItem */
 
 		# store category id
 		if (isset($_POST['category_id']) and is_numeric($_POST['category_id']))

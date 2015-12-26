@@ -7,7 +7,5 @@ class ForumMessageFormat
 	public static function Reply() { return 3; }
 	public static function Review() { return 4; }
 	public static function ReviewReply() { return 5; }
-	public static function ReviewAndRate() { return 6; }
-	public static function ReviewAndRateReply() { return 7; }
 }
 ?>

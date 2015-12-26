@@ -4,7 +4,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/match-manager.class.php');
 require_once('stoolball/user-edit-panel.class.php');
-require_once('ratings/rated-item.class.php');
+require_once('forums/review-item.class.php');
 require_once('forums/topic-manager.class.php');
 require_once('forums/forum-comments-topic-listing.class.php');
 
@@ -74,7 +74,7 @@ class CurrentPage extends StoolballPage
 		unset($match_manager);
 
 		# Get comments
-		$this->review_item = new RatedItem($this->GetSettings());
+		$this->review_item = new ReviewItem($this->GetSettings());
 		$this->review_item->SetId($this->match->GetId());
 		$this->review_item->SetType(ContentType::STOOLBALL_MATCH);
 		$this->review_item->SetTitle($this->match->GetTitle());
