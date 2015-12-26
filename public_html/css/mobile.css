@@ -1,0 +1,319 @@
+/* Setup the main content area */
+html { background: url(/images/wicket-tile.jpg) repeat #D0CCCA; }
+body { padding: 8px; margin: 0; background: url(/images/mobile/bat.jpg) no-repeat; font: 80%/150% Arial, Helvetica, sans-serif; min-height: 522px; max-width: 1000px; }
+
+/* Show and hide elements depending on which design is active */
+.large { display: none; }
+
+/* Setup the header. Container div needs to be in-line to avoid an unexplained space at the top */
+#board { display: inline; }
+#logo-small { vertical-align: middle; margin: 0; }
+#logo-small img { border: none; }
+#blog, #menu { position: absolute; top: 8px; padding: 8px; font-size: 1.33em; font-weight: bold; color: #503C03; font-style: normal; }
+#menu { left: 166px; }
+#blog { left: 230px; }
+.editProfile { position: absolute; top: 40px; left: 160px; }
+.sign-out { position: absolute; top: 40px; left: 238px; background: none!important;-webkit-appearance: none!important; border: none; display: inline;}
+
+/* Set up the content area, clearing after the header. Maintain the baseline grid within this area. */
+#content { clear: left; }
+#content .aural { position: absolute; top: -9999px; left: -9999px; }
+
+h1, h2, h3, h4, h5, h6 { font: bold 1em/1em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #503C03; margin: 0; }
+h1 { font-size: 1.5em; line-height: 1.2em; padding: .9em 0 .5em; } 
+h2 { font-size: 1.33em; line-height: 1.125em; font-weight: normal; margin: .75em 0 .375em; } /* 16px/18px, 12px and 6px margin */
+h3 { font-size: 1.16em; line-height: 1.285em; font-weight: normal; margin: .85714em 0 0.42857em;} /* 16px/18px, 12px and 6px margin */
+
+p { margin: .5em 0 1em; } /* 6px and 12px margin */
+
+ul, ol { margin: 0; padding: 0 0 0 16px; }
+ol { margin-left: 9px; }
+dt { font-weight: bold; }
+dd { margin: .5em 0 1em; }
+
+hr { color: #503C03; height: 1px; margin: 1em 0; }
+
+a:link, a:hover, a:focus, a:active { color: #005920; }
+a:visited { color: #008044; }
+
+img { display: block; max-width: 100%; }
+.map img, .gmnoprint img { max-width: none; } /* Don't break Google maps */
+
+/* Tables */
+table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+thead tr { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: top; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; }
+th, td { text-align: left; padding: 2px; vertical-align: top; }
+tbody td, tbody th { border-top: 1px solid #999; border-bottom: 1px groove #999; }
+caption { text-align: left; font-weight: bold; padding: 6px 4px 16px; border-radius: 3px 3px 0 0; background: #008044 url(/images/noise-bottom-light.gif) repeat-x left bottom; font: 1.2em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; }
+
+/* Menu of sub-pages.
+ *
+ * Possible variants of HTML:
+ * <nav><ul class="nav"><li>...</li></ul></nav>
+ * <div class="nav"><h2>...</h2><p>...</p></div> 
+ * <nav><ul class="nav"><li><a href=""><h2>...</h2></a></li></ul></nav> 
+ */
+ul.nav, div.nav { list-style: none; margin: 0 0 10px; padding: 0; font-size: 1.4em; line-height: 1.3em; }
+.nav li, div.nav h2 { padding: 10px 0; margin: 0; border-bottom: 1px solid #333; background: rgba(255, 255, 255, .2) }
+ul.nav h2 { font: 1em Arial, Helvetica, sans-serif; margin: 0; }
+ul.nav a:link h2, ul.nav a:hover h2, ul.nav a:focus h2, ul.nav a:active h2 { color: #005920; }
+ul.nav a:visited h2 { color: #008044; }
+.nav p { display: none;}
+
+/* Microformats */
+.metadata { display: none; }
+abbr.dtstart { border-bottom: 0; }
+.geo { font-size: .75em; }
+
+/* Subscription options */
+.rss { background: url(/images/sprite.2.png) no-repeat -172px -48px; padding: 0 20px; }
+.twitter-follow-button { vertical-align: bottom; }
+
+/* A heading which is a link should just display at normal size. Typically applies on a landing page where the HTML can't be altered for mobile. */
+h2 a { font-size: 0.75em; line-height: 1.5em; font-family: Arial, Helvetica, sans-serif; } /* down to 12px from 16px */
+
+/* Forms */
+.validationSummary { color: #850000; font-weight: bold; }
+
+fieldset { border: 0; padding: 0; margin: 1em 0; }
+legend { font-weight: bold; margin: 0; padding: 0; }
+
+label { display: block; }
+.form label { margin: 1.5em 0 3px; font-weight: bold; }
+.form .label-hint { margin: -3px 0 3px; }
+
+.requiredField { font-family: Verdana, Arial, Helvetica, sans-serif; color: #900; padding: 0 .3em; font-weight: bold; }
+
+textarea { width: 100%; font-family: Arial, Helvetica, sans-serif; }
+input[type=text], input[type=email], input[type=password] { width: 100%; }
+select { max-width: 100%; }
+
+.form .mceLayout { width: 100%!important;}
+
+.radioButtonList label { position: relative; padding: 1px 0 0 25px; }
+.radioButtonList input { position: absolute; top: 0; left: 0; }
+
+/* Common field contents */
+input.year { width: 3em; }
+
+/* action buttons inside panel */
+.panelHide { float: right; }
+
+/* Last modified by... */
+.audit { margin: 0; font-size: .7em; max-width: none; color: #555; padding-top: 1em; }
+
+/* primary action after a form */
+.form .buttonGroup { margin: 1em 0 0 ; }
+
+.form .primary {
+  border: 1px solid #aaa;
+  box-shadow:inset 1px 1px 0px 0px #006000;
+  background: #008000;
+  background-image: linear-gradient(to bottom, #008000, #00b000);
+  border-radius: 5px;
+  color: #ffffff;
+  font-size: 1.2em;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+}
+.form .primary:hover, .form .primary:focus {
+  border: 1px solid #ccc;
+  cursor: pointer;
+  background: #00a000;
+  background-image: linear-gradient(to bottom, #00a000, #00d000);
+}
+.form .primary:active {
+	position:relative;
+	top:1px;
+}
+
+/*  Button to add one more item in a list */
+.add-one:before { content: '+'; padding: 3px; font-weight: bold; font-size: 15px; line-height: 9px; vertical-align: baseline; position: relative; top: 1px; background: #00aa00; border-radius: 34px; margin-right: 6px; display: inline-block; }
+.add-one:link, .add-one:visited { display: inline-block; border-radius: 5px; padding: 2px 10px 2px 7px; background: #008044; color: #fff; text-decoration: none; border: 1px solid #999; font-size: .8em; }
+.add-one:hover, .add-one:focus, .add-one:active { background: #008800;}
+
+
+/* Rules of stoolball */
+.outline li { list-style: none; padding-left: 3em; position: relative; }
+.outline h2 { position: relative; padding-left: 30px; }
+.outline h3, .outline p { padding-left: 30px; }
+.outline ul { margin-left: 30px; }
+.outline ol { margin-left: 0; padding-left: 30px; }
+.outline ol ol { padding-left: 0; }
+.outline ol ol li { padding-left: 60px; }
+.outline ul li { list-style: disc; padding-left: 15px; }
+.outline li p { padding-left: 0; }
+.outline span { position: absolute; left: 0; top: 0; }
+* html .outline span { left: -30px; }
+* html .outline li span { left: -45px; }
+* html .outline li li span { left: -60px; }
+#positions, #bowler { margin: 24px 0; }
+
+/* WordPress pages */
+.screenshot { margin: 1em 0; border: 1px solid #503C03; }
+
+/* Upload photos */
+p.progressName { width: 100%; white-space: normal; }
+
+/* Photo albums */
+body ul.thumbnails { width: 100%; overflow: hidden; list-style: none; padding-left: 0; margin: 1em 0; } /* Container for several albums */
+
+/* Tabs used in Play! section. */
+.tab-inactive p { margin-top: 0;}
+
+/* Identity images on pages in the Play section */
+.tab-box img { margin: 10px 0;}
+
+/* Filter options for listings 
+ *
+ * <div class="dataFilter">
+ * 		<p>Show me: </p>
+ * 		<ul />
+ * 		<p><span class="or">or</span>...</p>
+ * </div>
+ * 
+ * <form class="dataFilter">
+ * 		<div />
+ * </form>
+*/
+.dataFilter { margin: 0 0 10px; background: #008040; color: #fff; padding: 3px 10px; overflow: hidden; border-radius: 5px; }
+.dataFilter ul { float: left; padding: 0; margin: 5px 0; }
+.dataFilter li { float: left; list-style: none; padding: 0; margin: 0;}
+.dataFilter a:link, .dataFilter a:visited { padding: 0 5px; color: #fff; }
+.dataFilter ul a:link, .dataFilter ul a:visited { display: block; padding: 2px 10px; }
+.dataFilter ul em { display: block; padding: 2px 10px; font-style: normal; background: #eee url(/images/wicket-light-tile.jpg) repeat; color: #008040; border-radius: 5px; }
+.dataFilter p { clear: both; margin: 5px 0; padding: 2px 0; }
+.dataFilter .or { font-weight: bold; margin: 0 2px; }
+.dataFilter div { padding: 5px 0; }
+
+/* Lists of matches */
+.matchPlayed { opacity: 0.7; }
+.matchNext { font-weight: bold; }
+#board .tournament-detail { font-size: 1em; margin: 0; padding: 0; background: none; }
+.spaces-left { white-space: nowrap; }
+
+/* Lists of seasons and players */
+.season-list h2, .player-list h2 { clear: left; }
+body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; margin: 0 0 1em; padding: 0; overflow: hidden; list-style: none; }
+.season-list li, .player-list li { float: left; margin: 0 0 .5em; padding: 0; }
+.season-list li { width: 9em; }
+.player-list li { width: 50%; }
+
+/* View match */
+.sunset { background: url(/images/sunset.gif) no-repeat 10px center; padding-left: 40px; font-size: .8em; white-space: nowrap; }
+
+/* Add a match */
+.time { white-space: nowrap; } /* Drop-down lists to enter a time */
+
+/* Scorecards */
+td.batsman, td.bowler { padding-left: 0;}
+tr.extras th { text-align: right; font-weight: normal; vertical-align: middle; }
+tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: middle; text-align: right; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-color: #999; }
+
+/* Edit scorecard - results control */
+.matchResults .formControl label { display: inline; }
+
+/* Edit scorecard - full scorecard */
+table.scorecard .qualifier { display: block; font: normal .8em Arial, Helvetica, sans-serif; }
+table.scorecardEditor.bowling {margin-bottom: .5em;}
+table.scorecardEditor th.numeric, table.scorecardEditor td { text-align: center; }
+table.scorecardEditor .add-one-container { text-align: left; padding-left: 0;}
+
+/* Edit scorecard - results control and full scorecard */
+input.numeric { width: 3.5em; }
+
+/* Edit tournaments */
+.TournamentEdit .max-teams { width: 3em; }
+.TournamentEdit.panel { margin-bottom: .5em; }
+.facebook-tournaments { margin-top: 1em; }
+
+/* View team 
+   -- clear h2 in case it follows .season-list
+ */
+.team h2 { clear: both; }
+
+/* View player */
+table.numeric th, table.numeric td, .numeric { text-align: right; }
+table.numeric .nonNumeric { text-align: left; }
+
+/* League table */
+table.league .resultCount { width: 10%; text-align: center; white-space: nowrap; }
+table.league .runs { white-space: normal; }
+table.league .withdrawn { background-image: url(/images/wicket-dark-tile.jpg); }
+table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Trebuchet MS', Arial, Helvetica, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
+
+/* Statistics styles which appear on multiple pages */
+.get-the-data { border-top: 2px solid #666; margin: 18px 0; }
+
+/* Charts rendered using charts.js */
+.chart-js-template { display: none; }
+.chart-js { display: block;}
+
+.chart-pie { text-align: center; max-width: 300px; }
+.chart-bar{ margin-top: 36px;}
+
+.chart-title { margin-bottom: 0; text-align: center; }
+.chart-subtitle { margin-top: 0; font-size: .9em; }
+
+.chart-axis-x { text-align: center; margin-top: -5px;}
+
+.chart-legend { margin: .5em 0; padding: 0; display: block; text-align: center; }
+.chart-legend li { list-style: none; padding: 0; margin: 0; }
+.chart-legend li:before { content: ' '; display: inline-block; width: 10px; height: 10px; border: 1px solid #eee; }
+.chart-legend .chart-colour-1:before { background: #7FAA84; }
+.chart-legend .chart-colour-2:before { background: #008044; }
+.chart-legend .chart-colour-3:before { background: #002b17; }
+.chart-legend .chart-colour-4:before { background: #503C03; }
+.chart-legend .chart-colour-5:before { background: #9a854b; }
+.chart-legend .chart-colour-6:before { background: #e7d197; }
+.chart-legend .chart-colour-7:before { background: #7FAA84; }
+.chart-legend .chart-colour-8:before { background: #008044; }
+
+.chart-legend.horizontal li { display: inline-block; margin: 0 4px; }
+
+/* Forum - home */
+.forumSummary h2 { font-size: 1.5em; font-weight: bold; }
+.forumAction a { margin-right: 2em; white-space: nowrap; }
+
+/* Forum - list topics, and view a topic */
+.forumNavbar a { display: block; }
+
+/* Forum - list topics */
+.forumTopicList img { display: inline; }
+
+/* Forum - write message */
+.graphic img { display: inline; }
+#forumMessageForm textarea { height: 10em; }
+
+/* Forum - view a topic */
+.forumTopic .forumIcon { display: inline; vertical-align: middle; margin-right: .5em; }
+.emotIcon { display: inline; }
+
+/* Paging - initially displayed just previous and next links */
+.paging .numbers { display: none; }
+
+/* Search results */
+.search dt { font-weight: normal; font-size: 1.1em; margin: 0 0 .1em;}
+.search dd { margin: 0 0 1em;}
+.search p, .search ul { margin: 0; padding: 0;}
+.search .url { font-size: .8em; color: #503C03;}
+.search li { display: inline; margin: 0 1em 0 0; font-size: .9em;}
+
+/* Subscribe to RSS feeds using blogTrottr */
+.rss-form { clear: both; margin: 15px 0 0; padding: 15px; background: #999 url(/images/wicket-extra-dark.jpg) repeat; border-radius: 5px; }
+.rss-form h2, .rss-form label, .rss-form a:link, .rss-form a:visited, .rss-form p { margin: 0; color: #fff;}
+.rss-form h2 { margin: 0 0 10px;}
+.rss-form h2 small { font-family: Arial, Helvetica, sans-serif; }
+.rss-form h2 a { font-size: 1em;}
+.rss-form label { font-size: 1.1em; }
+.rss-form input[type=email] { width: 400px; max-width: 50%; border-radius: 5px; }
+.rss-form input {  font-size: 1.2em; }
+.rss-form p { margin: 10px 0 0;}
+
+/* Link to an iCalendar */
+a.icalendar { padding-left: 20px; background: url(/images/sprite.2.png) no-repeat -171px -110px; }
+
+/* Print styles */
+@media print {
+	.screen { display: none!important;}
+}

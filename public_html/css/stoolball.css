@@ -1,0 +1,718 @@
+/* Template */
+body { font-size: 100%; line-height: 120%; padding: 0; margin: 0; color: #000; background: url(/images/clouds-tile.jpg) repeat 0 0 #A8C2E3; max-width: none; }
+#boardRight, #sidebar, #content, #navbar a { position: relative; }
+body, p, div, table, legend, input, label, textarea, select, optgroup { font-family: Arial, Helvetica, sans-serif; }
+h1, h2, h3, h4, h5, h6, p, blockquote { max-width: 40em; line-height: 140%; }
+h1, h2, h3, h4, h5, h6 { color: #503C03; font: bold 1.4em 'Trebuchet MS', Arial, Helvetica, sans-serif; margin: 1em 0 .5em; padding: 0; }
+h1 { margin-top: 0; }
+h2, h3, h4 { font-size: 1.2em; font-weight: normal; }
+h3, h6 { font-style: italic; }
+h5, h6 { font-size: .9em; font-weight: bold; }
+p, li, blockquote { margin: 0 0 .8em; padding: 0; }
+table { background: url(/images/table.gif) no-repeat right 40px; }
+th, td { padding: .2em .5em; }
+tbody td, tbody th { border-top: 1px #ddd solid; border-bottom: 1px #ddd groove; }
+caption { padding: 10px .4em 20px; }
+legend { color: #000; }
+h2 + table { margin-top: 0; }
+h2 a { font: inherit; line-height: inherit; } /* Undo customisation from mobile stylesheet */
+img { border: 0; }
+input[disabled] { text-decoration: line-through; }
+
+/* Show and hide elements depending on which design is active */
+.small { display: none; }
+.large { display: block; }
+th.large, td.large { display: table-cell; }
+li.large { display: list-item; }
+
+.aural-when-large { position: absolute; top: -9999px; left: -9999px; }
+
+/* Menu of sub-pages.
+ * Reset from mobile styles back to standard lists, headings and paragraphs 
+ */
+ul.nav { list-style: disc; margin: 0; padding: 0 0 0 16px; font-size: 1em; line-height: 1.5em; }
+.nav li { padding: 0; margin: 0 0 .8em; border: none; background: none; }
+div.nav { margin: 0; padding: 0; font-size: 1em; line-height: 1.5em; }
+div.nav h2 { padding: 0; margin: .75em 0 .375em; border: none; background: none; }
+div.nav p { display: block; }
+
+#logo-large { position: absolute; top: 18px; left: 12px; z-index: 1000; display: block; width: 210px; } /* IE8 needs width */
+#involved { width: 140px; height: 31px; background: url(/images/sprite.2.png) no-repeat 0 -132px; margin: 12px 12px 0; }
+
+#handle { height: 30px; padding: 12px 3% 18px; width: 94%; color: #fff; background: url(/images/wicket-top-tiles.jpg) repeat-x #000; text-align: right; z-index: 0; }
+
+#search { border-radius: 5px; -webkit-appearance: none; font-size: 1.1em; padding: 3px 5px; width: 30%; }
+#go { font-size: 1.1em; padding: 2px 10px; }
+.ie67 #search, .ie67 #go { font-size: .9em;}
+
+#board { color: #000; background: url(/images/wicket-tile.jpg) repeat #D0CCCA; margin: 30px 25px 0; width: 95%; z-index: 200; float: left; min-width: 720px; }
+.ie67 #board { margin-top: 7px;}
+* html body #board { margin-top: 0; margin-left: 13px; margin-right: 0; }
+#boardTop { background: transparent url(/images/wicket-top-tiles.jpg) repeat-x 0 -59px; width: 100%; height: 88px; position: absolute; }
+#boardTop div { background: transparent url(/images/wicket-top-right.jpg) no-repeat 100% 0; width: 100%; height: 138px; position: absolute;  }
+#boardBottom { background: transparent url(/images/wicket-bottom-right.jpg) no-repeat 100% 100%; width: 100%; height: 43px; clear: both;  }
+#boardBottom div { background: transparent url(/images/wicket-bottom-tile.jpg) repeat-x 0 100%; width: 100%; height: 43px; clear: both;  }
+#boardBottom div div { background: transparent url(/images/wicket-bottom-left.jpg) no-repeat 0 100%; width: 100%; height: 43px; clear: both;  }
+#boardLeft { background: transparent url(/images/wicket-post-left-tiles.jpg) repeat-y -200px 0; float: left; width: 100%;  }
+#boardRight { background: transparent url(/images/wicket-right-tile.jpg) repeat-y 100% 0; float: left; width: 100%; }
+
+#bat1 { background: url(/images/sprite-1.jpg) no-repeat; z-index: 10; width: 470px; height: 321px; margin-top: -60px; margin-bottom: -261px; }
+#bat2 { height: 321px; width: 470px; color: #000; background: url(/images/sprite-1.jpg) no-repeat; position: absolute; top: -89px; left: -25px; z-index: 20; padding: 88px 0 0; }
+#bat2 ul, #bat2 li { margin: 12px 22px 0; padding: 0; list-style-type: none; }
+#bat2 li { margin: 0 0 .2em; font: normal .8em Arial, Helvetica, sans-serif; }
+
+#content { float: right; width: 64%; margin: 110px 2% -.8em 0; z-index: 1000; min-width: 250px; font-size: .95em; }
+.content ul { max-width: 40em; list-style-type: disc; } /* max-w needs disc, or IE breaks. #navbar can't have max-w */
+.content ol { max-width: 40em; }
+.ie67 .content ol { margin-left: 15px; max-width: none; } /* IE7 can't handle max-width, loses numbers */ 
+.constrainColumns { max-width: 55em; }
+.constrainText { max-width: 40em; }
+* html .constrainColumns { width: 55em; }
+* html .constrainText { width: 40em; }
+
+/* Content with right sidebar */
+#constraint .supportedContentContainer { width: 100%; float: left; margin-right: -220px; }
+#constraint .supportedContent { margin-right: 220px;}
+#constraint .supportingContent { width: 185px; float: right; margin-left: 20px; }
+.image #constraint .supportedContentContainer { min-width: 822px; } /* 622 photo + 200 negative margin in albums */
+/*.hasLargeImage #constraint .supportedContentContainer { min-width: 770px; } /* 570 photo + 200 negative margin in blog */
+
+#navbar { padding: 0; margin: 0; z-index: 100; position: absolute; width: 64%; height: 45px; right: 2%; top: 15px; min-width: 250px; white-space: nowrap; }
+#navbar li { float: left; padding: 0; margin: 0 22px 0 0; list-style: none; }
+#navbar a, #navbar em { padding: 30px 0; position: relative; overflow: hidden; height: 23px; float: left; font: bold 1.1em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #900; }
+#navbar span { position: absolute; width: 100%; height: 23px; }
+
+a#play:hover, em#play, #play.current { background: url(/images/sprite.2.png) no-repeat -33px 63px; }
+a#news:hover, em#news, #news.current { background: url(/images/sprite.2.png) no-repeat -32px 63px; }
+a#rules:hover, #rules.current, em#rules { background: url(/images/sprite.2.png) no-repeat -118px 63px; }
+a#forums:hover, em#forums, #forums.current { background: url(/images/sprite.2.png) no-repeat -32px 63px; }
+a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) no-repeat 0 63px; }
+#news { width: 61px; }
+#news span { background: url(/images/sprite.2.png) no-repeat -85px -186px; }
+#rules { width: 68px; }
+#rules span { background: url(/images/sprite.2.png) no-repeat -105px -163px; }
+#play { width: 59px; }
+#play span { background: url(/images/sprite.2.png) no-repeat 0 -209px; }
+#forums { width: 72px; }
+#forums span { background: url(/images/sprite.2.png) no-repeat 0 -186px; }
+#about { width: 105px; }
+#about span { background: url(/images/sprite.2.png) no-repeat 0 -163px; }
+
+#sidebar { margin-top: 180px; padding: 10px 5px 0 20px; width: 210px; z-index: 1000; min-height: 500px; }
+#sidebar ul li, #sidebar p, #authControl { font: normal .8em Arial, Helvetica, sans-serif; }
+#sidebar ul { margin: 0 0 .5em 0; padding: 0; }
+#sidebar ul li { list-style: none; background: url(/images/sprite.2.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
+#sidebar p { padding-left: 12px; background: url(/images/sprite.2.png) no-repeat -181px -167px; }
+#sidebar h2 { margin-top: 1.5em; font-size: 1em; font-weight:bold; letter-spacing:-0.05em; line-height:1em; text-transform:uppercase; position: relative; overflow: hidden; height: 16px; }
+#sidebar h2 span { position: absolute; width: 100%; height: 100%; }
+* html body #sidebar { padding-top: 30px; }
+.ie67 #sidebar h2 { height: 19px; } /* random numbers for IE sprite sizes */
+* html #sidebar h2 { height: 16px; }
+.ie67 #sidebar ul li, .ie67 #sidebar p { background-position-y: -165px; }
+
+#your { width: 186px; }
+#your span { background: url(/images/sprite.2.png) no-repeat 0 -20px; }
+.ie67 #sidebar #your { height: 22px; }
+* html #sidebar #your { height: 19px; }
+.ie67 #your span { background-position-y: -14px; }
+#next1 { width: 109px; }
+#next2, #next3, #next4, #next5 { width: 143px; }
+#next1 span { background: url(/images/sprite.2.png) no-repeat 0 -100px; }
+#next2 span { background: url(/images/sprite.2.png) no-repeat 0 -84px; }
+#next3 span { background: url(/images/sprite.2.png) no-repeat 0 -68px; }
+#next4 span { background: url(/images/sprite.2.png) no-repeat 0 -52px; }
+#next5 span { background: url(/images/sprite.2.png) no-repeat 0 -36px; }
+.ie67 #next1 span { background-position-y: -97px; }
+.ie67 #next2 span { background-position-y: -81px; }
+.ie67 #next3 span { background-position-y: -65px; }
+.ie67 #next4 span { background-position-y: -49px; }
+.ie67 #next5 span { background-position-y: -33px; }
+#topics { width: 128px; }
+#topics span { background: url(/images/sprite.2.png) no-repeat 0 -116px; }
+.ie67 #topics span { background-position-y: -113px; }
+
+/* Authentication */
+.SignUpForm .buttonGroup { text-align: left; }
+.SignUpForm .buttonGroup input { margin: 0 1em 0 0; }
+
+#authGetPassword { margin: 18px 0; } /* Link on sign in form */
+
+#authControl { padding: .8em; background: #eee url(/images/wicket-tile.jpg); font-size: .8em; }
+#authControl p { background: transparent; padding: 0; font-size: 1em; margin-bottom: .5em; color: #594D03; font-weight: bold; }
+#authControl:hover { background-image: url(/images/wicket-light-tile.jpg); }
+#authControl .signIn { display: block; margin-bottom: .5em; }
+#authControl .sign-out { position: static; display: block; margin-bottom: .5em; }
+#authControl .editProfile { position: static; display: block; }
+
+.EssentialInfoForm fieldset p { margin: 0; padding-top: 10px; clear: both; }
+.inlineButton { margin: 0 1em; } /* when signing in with unactivated account */
+
+#facebook { margin-top: 10px; clear: both; }
+
+#post { margin: auto; width: 200px; text-align: center; height: 300px; background: url(/images/wicket-post-left-tiles.jpg) repeat-y 0 0; clear: both; }
+#post div { background: url(/images/wicket-post-top.jpg) no-repeat 0 0 #D0CCCA; height: 16px; }
+
+/* Re-usable box style
+ * 
+ * <div class="box">
+ * 		<div class="box-content" />
+ * </div>
+ * */
+.box { background: #eee url(/images/wicket-light-tile.jpg); margin: 15px 0; overflow: hidden; width: 100%; border-radius: 5px; }
+.box-content { padding: 15px; }
+
+.box-content > h2:first-child { margin-top: 0;}
+
+.box-content table { background: none;}
+.box-content tr { border: 1px solid #BBB;}
+.box-content thead tr { border-top: none;}
+.box-content td, .box-content th { border-color: #BBB; }
+
+/* Forms 
+   .legacy-form indicates a style which has been limited to old .formPart-style forms
+ */
+fieldset { overflow: hidden; }
+optgroup { font-style: normal; padding: .5em 0 0; margin: .5em 0 0; border-top: 1px solid #99f; }
+.legacy-form label { margin: 0; }
+.formPart { float: left; width: 100%; margin: .2em 0; }
+.formPart .formLabel { float: left; width: 24%; vertical-align: top; }
+.formPart .formControl { float: right; width: 74%; vertical-align: top; }
+.formPart fieldset.formControl { border: 0; padding: 0; margin: 0; }
+.formPart input.formControl { width: 73.6%; }
+.formPart table { float: right; width: 74%; vertical-align: top; }
+.formPart .formControl table { float: none; width: 100%; vertical-align: top; }
+.formPart .formControl .mceToolbar { width: auto; }
+* html body #content .formControl { width: 70%; }
+.formPart td.action { width: 10%; }
+label.checkBox { clear: left; display: block; }
+.legacy-form label.checkBox { margin: .5em 0 .5em 25.3%;  }
+input.checkBox { margin-right: .5em; }
+.dateControl label { margin: 0 1em; }
+div.buttonGroup { clear: both; padding: .5em 0; }
+.legacy-form div.buttonGroup input { margin-left: 1em; }
+.legacy-form div.buttonGroup { text-align: right; }
+textarea { min-height: 7em; height: 10em; }
+body div.buttonGroupTop { padding-bottom: 0; }
+fieldset.formPart { border: 0; margin: 0; padding: 0; }
+legend.formLabel { font-weight: normal; padding: 0; margin: 0; }
+.deleteButtons { margin-top: 1.5em; }
+
+/* Standard width for any text field which accepts a date. Initial use is on statistics filter. */
+input.date { width: 9em; }
+
+/* action buttons inside panel */
+.actions { clear: both; margin: 0; padding-top: 10px; } 
+
+/* Non-standard, but reliable way to target Webkit. IE8 needs same fix, so this may need to become the rule rather than the exception */ 
+@media screen and (-webkit-min-device-pixel-ratio:0){
+fieldset.formPart .formControl { margin-top: 0; }
+}
+
+/* Two fields on one line, both within .formControl:
+	<div class="formPart twoFields">
+		<label class="formLabel" />
+		<div class="formControl">
+			<input class="firstField" />
+			<label><input /></label>
+		</div>
+	</div>
+ */
+.twoFields { text-align: right; white-space: nowrap; }
+.twoFields .firstField { float: left; }
+.twoFields label { float: right; }
+.twoFields label input { margin-left: 5px; }
+
+.text-placeholder {color: #888; }
+
+/* Home */
+.home .articleList li { margin-bottom: 5px; }
+.home .articleListTopItem p { margin-bottom: 0; }
+.articleList .subscribe { padding-top: 5px; margin-top: 10px; border-top: 1px solid #aaa; }
+.articleList .subscribe a { white-space: nowrap; }
+
+.audienceColumn { clear: left; float: left; width: 49%; margin-right: 2%; }
+.audienceColumn2 { clear: none; margin-right: 0; }
+.audienceColumn h2 { margin: -5px 0 5px; }
+.audienceColumn ul { margin: 0; padding: 0; min-height: 120px; } 
+* html .audienceColumn ul { height: 120px; } 
+.audienceColumn li { margin: 0 0 2px; font-size: .9em; list-style-type: none; padding: 0; }
+.audience a { padding-right:3px; background-image: url(/images/wicket-light-tile.jpg); white-space: nowrap; }
+.home .players ul { background: url(/images/sprite.2.png) no-repeat right -254px; }
+.home .schools ul { background: url(/images/sprite.2.png) no-repeat right -395px; }
+.home .manage ul { background: url(/images/sprite.2.png) no-repeat right -524px; }
+.home .history ul { background: url(/images/sprite.2.png) no-repeat right -654px; }
+.audience .more { margin-top: -20px; border-top: 1px solid #aaa; padding: 5px 0 0; margin-right: 55px; overflow: visible; }
+.home .manage .more { margin-right: 70px; }
+.home .history .more { margin-right: 40px; }
+.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.2.png) no-repeat right -786px; }
+
+.volunteer { clear: left; } /* for older webkit, used on ipad */
+.volunteer h2, .volunteer p { display: inline; padding-right: 5px; }
+
+.home .playerStats { width: 185px; margin: .3em 0 1em; }
+.home .playerStats h2, .home .playerStats table { margin: 0; }
+.home .playerStats img { display: block; }
+.home .playerStats li { font-size: .9em; }
+.home .playerStats p { padding: .5em 0 0 .5em; }
+.home .playerStats p.more { margin: 0; padding: .2em 0 .2em .5em; border-bottom: 1px groove #aaa;}
+.ie678 .playerStats p.more { border-bottom-color: #ddd;}
+
+/* Play */
+.tiles-intro { max-width: none; }
+
+ul.tiles { margin: 20px 0 0; padding: 0; max-width: none; }
+ul.tiles li { float: left; width: 15em; height: 15em; margin: 0 20px 20px 0; list-style: none; background-image: url(/images/wicket-light-tile.jpg); }
+ul.tiles a { float: left; width: 15em; height: 15em; text-decoration: none; border-radius: 5px; }
+ul.tiles div {background: url(/images/noise.gif) repeat-x left bottom; overflow: hidden; }
+ul.tiles a:link h2, ul.tiles a:visited h2 { font: 1.33em 'Trebuchet MS', Arial, Helvetica, sans-serif; line-height: 1.125em; margin: 0 0 9px; padding: 10px; text-decoration: underline; color: #fff; background: #008040; border-radius: 5px 5px 0 0;}
+ul.tiles .competitions-tile { background: url(/images/play/catcher.jpg) no-repeat center bottom; }
+ul.tiles .matches-tile { background: url(/images/play/winterfold.jpg) no-repeat center bottom; }
+ul.tiles .tournaments-tile { background: url(/images/play/angmering.jpg) no-repeat center bottom; }
+ul.tiles .host-tile { background: url(/images/play/scorers.jpg) no-repeat center bottom; }
+ul.tiles .teams-tile { background: url(/images/play/england.jpg) no-repeat center bottom; }
+ul.tiles .schools-tile { background: url(/images/play/child.jpg) no-repeat center bottom; }
+ul.tiles .statistics-tile { background: url(/images/play/chart.png) no-repeat center bottom; }
+ul.tiles .manage-tile { background: url(/images/play/diary.jpg) no-repeat center bottom; }
+ul.tiles .equipment-tile { background: url(/images/play/bat.jpg) no-repeat center bottom; }
+ul.tiles .photos-tile { background: url(/images/play/lee.jpg) no-repeat center bottom; }
+ul.tiles .coaching-tile { background: url(/images/play/coaching.jpg) no-repeat center bottom; }
+ul.tiles .facebook-tile { background: url(/images/play/facebook.jpg) no-repeat center bottom; }
+
+/* Tabs used in Play! section.
+ * .tab-box should be longer than the tabs, and can have a rounded top right corner */
+
+.tab-option { margin: 10px 1px 0 0; float: left; min-width: 100px; max-width: 300px; height: 2.5em; font-size: 1.33em; border-radius: 10px 10px 0 0; }
+.tab-active { background: #008040; color: #fff;}
+.tab-inactive { background: #503C03 url(/images/tab-inactive.gif) repeat; color: #fff;}
+.tab-active h2 { margin: 10px 15px; color: #fff; font-size: 1em; line-height: 1.4em; }
+.tab-inactive a:link, .tab-inactive a:visited { display: block; padding: 10px 15px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; text-decoration: none; }
+.tab-inactive a:hover, .tab-inactive a:focus, .tab-inactive a:active { background-image: url(/images/tab-hover.gif); border-radius: 10px 10px 0 0; }
+.tab-box { clear:both; border-radius: 0 5px 5px 5px; }
+.tab-box .dataFilter { border-radius: 0 5px 0 0; }
+.tab-box img { float: right; margin: 0 0 15px 15px;}
+
+.dataFilter { margin: 0; background: #008040 url(/images/noise-bottom-light.gif) repeat-x left bottom; padding: 5px 15px 18px; }
+.dataFilter h1 { color: #FFF; padding: 4px 12px 0; margin: 0; font-size: 1.2em; }
+.dataFilter p { clear: both; margin: 5px 15px 5px 0; }
+.dataFilter p.follow-on { clear: none; float: left; }
+.dataFilter p.total { clear: none; float: right; margin: 5px 0 5px 15px; }
+.dataFilter ul { max-width: none; }
+.dataFilter .multiple-filters { float: left; margin: 0 0 5px; }
+.dataFilter .first-filter { border-bottom: 1px solid #CCC; padding-bottom: 10px; margin: 0 0 -1px; }
+.dataFilter .following-filter { clear: both; border-top: 1px solid #CCC; margin-top: 0; padding: 10px 0 0; } 
+
+/* Listings in Play! section */
+.play img { float: right; margin: 0 0 15px 15px; border: 1px solid #999; border-radius: 5px; }
+
+.az { margin: 0;  padding: 0; font: normal 1.2em Arial, Helvetica, sanf-serif; overflow: hidden; }
+.az li { color: #999; float: left; list-style: none; padding: 3px; }
+.az strong { color: #000; }
+.az a { font-weight: normal; }
+
+.map p { margin: 10px; max-width: none; }
+.map small { display: block; padding-bottom: 1em; }
+.map-info { width: 400px; height: 100px; }
+.map-info h2 { font: bold 1em Arial, Helvetica, sans-serif; margin: 0; color: #000; }
+.map-info p { margin: 0; }
+.map-info a { white-space: nowrap; }
+
+/* Buttons in right col, including advert for bats */
+a.promo { margin: 15px 0; display: block; }
+.topPromo { margin-top: 43px; }
+
+/* Subscribe to RSS feeds using blogTrottr */
+.rss-form label { display: inline; }
+
+/* Highlighted item from spread shirt shop */
+.spreadshirt { text-align: center; margin: 0 0 1em; }
+.spreadshirt h2 { margin: -20px 0 0; }
+.spreadshirt h2 img { max-width: none; }
+.spreadshirt a { text-decoration: none; color: #000; }
+.spreadshirt p { margin: 0; }
+.spreadshirt .price { font-weight: bold; font-size: .85em; }
+.spreadshirt a:link .buy, .spreadshirt a:hover .buy, .spreadshirt a:focus .buy, .spreadshirt a:active .buy { color: #005920; text-decoration: underline; }
+.spreadshirt a:visited .buy { color: #008044; text-decoration: underline; }
+.spreadshirt .buy span { background: url(/images/sprite.2.png) no-repeat right -786px; padding-right: 12px; }
+.spreadshirt-box { border: 3px solid #008044; border-top: 0; margin: 0 0 15px; border-radius: 0 0 5px 5px; padding: 10px; overflow: hidden;}
+
+/* Teams, seasons and competitions */
+.player-list li { width: 30%; }
+
+/* League table for a season - when it's missing, need to clear after the image */
+.season-table .box-content h2 { clear: both; }
+
+/* In a tabbed area it's always at the end where there is padding anyway */
+.box-content .season-list ul { margin-bottom: 0;}
+
+/* Content panels */
+.panel { background: #eee url(/images/wicket-light-tile.jpg);margin: 1em 0 1.5em; overflow: hidden; width: 100%; max-width: 40em;  }
+.panel div { overflow: hidden; background: url(/images/corner-br-light.gif) no-repeat bottom right; }
+.panel div div { overflow: hidden; background: url(/images/corner-bl-light.gif) no-repeat bottom left; padding: 0 1em .5em; }
+.panel div div div { background-image: none; padding: 0; }
+.panel h2 {  margin: 0 -1em 10px; color: #fff; background: url(/images/tile-green.jpg) top left; }
+.panel h2 span { color: #fff; background: url(/images/noise-bottom-light.gif) repeat-x bottom left; display: block; }
+.panel h2 span span { color: #fff; background: url(/images/corner-tr.gif) no-repeat 0 -2px; }
+.panel h2 span span span { color: #fff; background: url(/images/corner-tl.gif) no-repeat 100% -2px; padding: .5em 1em 1em; }
+
+* html .panel h2 span span { height: 2em;  }
+* html .panel h2 span span span { padding-bottom: 1px;  }
+
+.instructionPanel h2 {  color: #fff; background: url(/images/tile-red.gif) top left; }
+.instructionPanel h2 span { color: #fff; background: url(/images/noise-bottom-red-light.gif) repeat-x bottom left; }
+.instructionPanel h2 span span, .instructionPanel h2 span span span { color: #fff; }
+.instructionPanel ul, .instructionPanel .instructionContent { background-image: url(/images/panel-instruction-ball.gif); background-repeat: no-repeat; background-position: top right; padding-top: 50px; margin-top: -50px; }
+.tab { background: url(/images/tab-key.gif) no-repeat 5px center; padding-left: 35px; }
+.instructionContent .wrapper { float:right; width: 65px; height: 20px; visibility: hidden; }
+.instructionAside { width: 250px; float: right; margin: -2em 0 0 1em; }
+.instructionAside p { font-size: .85em; }
+
+.addAnotherPanel { margin-top: 3em; }
+
+/* "You can" options panel on the right of pages */
+.supportingPanel ul { background-image: url(/images/panel-ball.gif); background-repeat: no-repeat; background-position: top right; padding-top: 60px; margin-top: -50px; }
+.with-tabs { margin-top: 6.4em;}
+* html .instructionPanel ul, .ie67 .supportingPanel ul { margin-top: -56px; }
+
+/* Add matches/results */
+.matchResults { margin-top: 1em; }
+.matchResults .buttonGroup { max-width: 40em; }
+.matchResults .panel h3 {  margin: 0 -1em 10px; color: #fff; background: url(/images/tile-green.jpg) top left; font-style: normal; }
+.matchResults .panel h3 span { color: #fff; background: url(/images/noise-bottom-light.gif) repeat-x bottom left; display: block; }
+.matchResults .panel h3 span span { color: #fff; background: url(/images/corner-tr.gif) no-repeat 0 -2px; }
+.matchResults .panel h3 span span span { color: #fff; background: url(/images/corner-tl.gif) no-repeat 100% -2px; padding: .5em 1em 1em; }
+label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
+
+.MatchEdit h3 { clear:left; color:#000; font: bold 1em Arial, Helvetica, sans-serif; font-style: normal; margin: 0; }
+.MatchEdit h3.ifNotPlayed { padding-top: 1em; }
+
+.MatchFixtureEdit { margin-bottom: 0; clear: left; }
+
+.scorecardPage h1 { margin-bottom: 0; }
+.scorecardPage .validationSummary { margin: 1em 0 -1em; }
+.scorecardPage .audit { margin-bottom: 1em; }
+
+.TournamentEdit .playersPerTeam, .TournamentEdit .overs { margin-bottom: 10px; }
+.TournamentEdit .playersPerTeam select, .TournamentEdit .overs select { width: 3em; }
+
+.radioButtonList .column { float: left; width: 50%; margin: 0 0 5px; } /* player types */
+.checkBoxList label.checkBox { margin-left: 0; } /* seasons */
+
+/* adding matches */
+.ie678 fieldset.formPart .formControl { margin-top: 0; }
+
+/* editing matches - IE can't size controls correctly */
+.ie678 table.batting td { padding-left: 0; padding-right: 0; }
+.ie678 table.batting input.player { width: 130px; }
+.ie678 table.bowling input.player { width: 200px; }
+.ie67 table.bowling th.numeric { width: 5.7em; }
+.ie67 table.bowling th.balls { width: 7em; }
+
+/* Scorecards */
+table.scorecardEditor { width: 40em; margin-bottom: 0; }
+table.scorecard th.dismissedBy { white-space: nowrap; padding-right:0; }
+table.scorecard td.bowler { text-align: left; }
+table.scorecard input.player { width: 100%; }
+table.bowling th.numeric { width: 5em; white-space: nowrap; } 
+table.scorecard td.runs { width: 3em; }
+table.scorecard .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
+
+tr.totals, tr.totals th { border-color: #ccc; }
+
+div.match h2.hasScorecard { margin-bottom: 0; }
+div.match table.scorecard { margin-bottom: 25px; }
+div.match td.batter, div.match td.bowler { width: 27%; }
+div.match table.overs td.numeric { width: 18%; }
+
+.playerName { white-space: nowrap; }
+.playerStats table { margin-bottom: 5px; }
+.playerStats .statsViewAll { padding: 0; }
+.playerStats .chart { text-align: center; margin: 20px 0; }
+
+/* List of players in a team*/
+.playersPage ol { margin-top: 1.5em;}
+.playersPage .supportedContent ul { padding-left: 0; }
+.playersPage .supportedContent ul li { list-style: none; } 
+
+/* Edit player */
+dl.decision dd { margin-left: 22px; }
+
+/* Stats highlight table */
+.playerSummary { background: url(/images/sprite-1.jpg) no-repeat -470px 0; margin-top: 0; }
+.playerSummary tr {background: none; }
+.playerSummary th { padding-top: 14px; }
+.playerSummary th.scope { color: #CCC; font-style: italic; letter-spacing: 1.5px; padding-right: 7px; padding-top: 61px; text-align: right; text-transform: uppercase; }
+.playerSummary .total { text-align: center; width: 30%; } 
+.playerSummary td { vertical-align: middle; }
+.playerSummary ul { margin-left: 0; padding-left: 0; }
+.playerSummary li { list-style: none; margin: 0 0 5px; padding-left: 0; }
+.playerSummary .stat { text-align: center; font-size: .8em; }
+.playerSummary .stat .stat { font-weight: bold; font-size: 1.2em; display: block; }
+
+/* Equipment agents */
+.contact { width: 49%; display: inline-block; vertical-align: top; }
+.contact h3 { color: #000; margin: 0; font-style: normal; font: bold 1em Arial, Helvetica, sans-serif; }
+
+/* Isolated forum elements */
+.forumSubscribe { font-size: .85em; margin: 1em 0; }
+.subscriptionNone { font-weight: bold; }
+
+/* Navbar */
+.forumNavbar { width: 100%; margin: 1em 0; overflow: hidden; clear: left; }
+.forumNavbar a { display: inline; }
+.forumNavbar .forumSubscribe { padding-top: 1em; }
+.forumNavbar .forumPost { float: right; }
+
+/* Forums home */
+.forumSummary { margin: 0; overflow: auto; width: 100%; clear: both; z-index: 19000;  position: relative; }
+.forumSummary h2 { font-size: 1.2em; }
+.forumSummary h3 { font-style: normal; font-size: 1.1em; border-bottom: 2px solid #503C03; margin: 0 0 1em; max-width: none;  }
+* html .forumSummary { margin-left: -25%; }
+.forumAction { z-index: 20000; position: relative; float: none; width: auto; border-top: 2px solid #503C03; border-bottom: 2px solid #503C03; padding: .5em 0; margin: 0 0 1em; }
+.forumAction a { margin-right: 2em; padding: 0 12px 0 0; background: url(/images/sprite.2.png) no-repeat right -786px; }
+* html .forumAction { width: 75%; }
+.forumStats { float: right; margin: -1.5em 0 .5em 2em; padding: 0; width: 40%; text-align: center; background: #008044 url(/images/corner-tl.gif) no-repeat top left; color: #fff; }
+.forumStats div { background-image: url(/images/corner-tr.gif); background-repeat: no-repeat; background-position: top right; }
+.forumStats p { margin: 0; background-image: url(/images/noise-bottom.gif); background-repeat: repeat-x; background-position: bottom left; padding: .2em 0 .8em; }
+.forumLatest { margin: 1em 0;  }
+.forumLatest ul { margin-left: 16px; }
+
+/* Table of topics in a forum */
+.forumTopicList { margin: .3em 0; clear: both; }
+.forumTopicList td { vertical-align: middle; padding: .3em; }
+.forumTopicList th, .forumTopic th { padding: .3em; }
+.forumTopicList .icon { width: 4%; }
+.forumTopicList .title { width: 45%; }
+.forumTopicList .detail { font-size: .85em; width: 20%; }
+.forumTopicList .status { text-align: center; width: 5%; }
+.forumTopicList .latestMessage { float: right; margin-left: .2em; }
+
+/* Table of messages in a topic */
+.forumTopic { margin: .5em 0; width: 100%; clear: both; }
+.forumMessage { overflow: hidden;  width: 99.7%; position: relative; top: 0; left: 0; border-top: #008044 solid 2px; background: url(/images/noise-bottom.gif) repeat-x top left ; }
+
+.forumTopic .profile { width: 20%; vertical-align: top; }
+.forumTopic .profile { overflow: hidden; float: left; width: 20%; padding: 1em 0; z-index: 10; position: relative; top: 0; left: 0; }
+.forumTopic .profile a { margin: 0; }
+.forumTopic .profile ul { margin: 1em .5em 0 0; padding: 0; list-style-type: none; font-size: .75em; }
+.forumTopic .profile ul li { margin: .5em 0; }
+.forumTopic .forumRole { display: block; margin: .5em 0; }
+
+.forumTopic .message { width: 78%; float: left; padding: 1em 0 1em 2%; margin-left: -2px; z-index: 10; position: relative; top: 0; left: 0; }
+.forumTopic .rating { float: right; font-size: .85em; }
+.forumTopic h3 { margin: 0 0 .3em; font-style: normal; text-indent: -.1em; } 
+.forumTopic .signature { border-top: #008044 solid 2px; font-size: .9em; }
+.forumTopic .signature p { font-size: .85em; margin: .5em 0 0; }
+.forumTopic .emotIcon { vertical-align: middle; border: 0; margin: 0 .5em; }
+
+.forumTopic hr  { position: absolute; top: -10000px; left: -10000px; }
+
+#comments-topic { margin-top: 2em; padding: 1em; background: #eee url(/images/wicket-light-tile.jpg); overflow: hidden; }
+#comments-topic h2 { margin-top: 0; }
+
+/* New message form */
+#forumMessageForm textarea { height: 20em; }
+#forumMessageForm .forumIcon { white-space: nowrap; display: inline; }
+#forumMessageForm .forumIcon img { vertical-align: middle; display: inline; }
+
+* html body .forumNavbar, html body .forumTopic { width: 97%; }
+* html body .forumRelatedItem { width: 95%; }
+* html body .forumLatest { margin-left: 25%;  }
+* html body .forumLatest, body html .forumAction { margin-top: 0; }
+
+/* Paging */
+.paging { border-top: 2px solid #008044; border-bottom: 2px solid #008044; padding: .5em 0; margin: 1em 0; clear: both; overflow: hidden; width: 100%; }
+.paging .pages { width: 50%; }
+.paging .pageContext { float: right; width: 38%; text-align: right; }
+.paging .numbers { display: inline; }
+* html .paging { width: 97%; }
+
+.pagedTable .paging { margin-bottom: 0; }
+
+/* Microformats */
+.geo { font-family: 'Trebuchet MS'; }
+
+/* League table */
+p.resultPending { font-weight: bold; }
+ul.resultPending { background: #eee url(/images/wicket-light-tile.jpg); margin: 0; padding: 0 0 10px; }
+ul.resultPending li { margin: 0 0 0 25px; padding: 0; }
+
+/* Other specific content */
+.articleList ol { margin: 0; }
+.articleList li { list-style: disc; }
+.articleList .articleListTopItem { margin-left: -16px; list-style: none; }
+.articleListTopItem h2 { margin-top: 0; font-size: 1.4em; font-weight: bold; }
+.articleListItem img, .articleListTopItem img { float: right; margin: 0 0 .5em .5em; border: 2px solid #008044; }
+.articleListItem { clear: both; }
+.articleListItem h2 { color: #1F4C85; }
+li.articleListItem .more-link { margin-top: 0; }
+.supportedContent .first h2 { margin-top: 0; }
+
+.post { margin-bottom: 3em; max-width: 40em; }
+.post h1, .post h2 {margin-bottom: 5px;}
+.post .date, .post .tags { font-size: .8em; color: #555; }
+.post .more-link { display: block; margin: .7em 0; }
+.post .edit { padding-left: 10px; white-space: nowrap; }
+
+.articleList .post { margin-bottom: 0; }
+.articleList .post img { max-width: 200px; max-height: 200px; height: auto; margin: 0 0 1em 1em; }
+* html .articleList .post img { width: 200px; height: auto; }
+.articleList .post .wp-caption { border: none; width: auto; background: none; margin: 0; }
+
+.News-Thumbnail { float: right; margin: 0 0 1em 1em; }
+
+.supportingContent .twitter-follow-button { padding-bottom: 5px; }
+
+.newsNav { margin: 0 0 1em; overflow: hidden; width: 100%; background: url(/images/wicket-dark-tile.jpg); }
+.newsNav div { overflow: hidden; width: 100%; background: url(/images/corner-tl.gif) no-repeat 0 0; }
+.newsNav div div { background: url(/images/corner-tr.gif) no-repeat 100% 0; }
+.newsNav div div div { background: url(/images/corner-bl.gif) no-repeat 0 100%; }
+.newsNav div div div div { background: url(/images/corner-br.gif) no-repeat 100% 100%; }
+.newsNav div div div div div { width: auto; overflow: visible; background: none; padding: 10px; }
+.newsNav .prev { float: left; }
+.newsNav .next { float: right; }
+
+/**
+ * 	News archive navigation
+ *  <div class="monthNav"><h2>...</h2><ol>...</ol></div>
+ */
+.monthNav { border-left: 2px solid #008044; padding-left: 10px; }
+.monthNav h2 { margin-top: 0; }
+.monthNav ol { list-style-type: none; margin-left: 0; padding: 0; }
+.monthNav li { display: inline; margin: 0 1.5em .2em 0; }
+
+.calendar { float: right; width: 65%; background: #eee url(/images/features/calendar-tl.png) no-repeat left top; color: #000; margin: 0 0 1.5em 1.5em; padding: 0; }
+.calendar div { background-image: url(/images/features/calendar-bl.png); background-position: left bottom; background-repeat: no-repeat; overflow: hidden; }
+.calendar a { color: #fff; display: block; font-weight: bold; font-size: 1.3em; padding: 30px 10px 100px 120px; margin-bottom: -80px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; background-image: url(/images/features/calendar-tr.png); background-position: right top; background-repeat: no-repeat; }
+.calendar a:visited { color: #fff; } /* Don't change link */
+.calendar p { background-image: url(/images/features/calendar-br.png); background-position: right bottom; background-repeat: no-repeat; margin: 0; padding: 0 10px 10px 120px; }
+.calendarPage li img { margin-top: 1em; }
+
+.chart { background: none; border: none; padding: 0; }
+
+.supportingContent .chart { margin: 0 0 1em; }
+.supportingContent img { display: block; }
+.statsGroup { width: 100%; overflow: hidden; margin-bottom: 40px; }
+.statsColumns { width: 100%; overflow: hidden; }
+.statsColumns h2 { margin-bottom: 0; }
+.statsColumn { float: left; width: 278px; margin: 0 22px 0 0; }
+.statsColumn table.stats td.date { white-space: nowrap; }
+.statsGroup .chart { margin-top: 16px; }
+
+.statsAd div div div div { padding: 10px 7px 10px 13px; } 
+.statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/sprite-1.jpg) no-repeat -655px bottom; }
+.statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
+.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.2.png) no-repeat right -782px; }
+.ie67 .statsAd span { background-position: right -762px; padding-right: 20px; }
+
+/* Stats - accomodate not out* in scores */
+td.out { padding-right: .9em; }
+
+/* Stats tables */
+.statsOverall td.position { width: 5%; }
+.statsOverall td.player, .statsOverall td.date { width: 24%; }
+.statsOverall td.team { width: 27%; } 
+.statsViewAll { padding: 0 10px; }
+.box-content .statsViewAll { padding: 0;}
+
+/* WordPress pages */
+.alignright, .screenshot { float: right; margin: 0 0 10px 10px; border: 0; }
+.alignleft { float: left; margin: 0 10px 10px 0; border: 0; }
+
+/* Who are Stoolball England? page */
+.who { overflow: hidden; padding-left: 90px; margin-bottom: 10px; }
+.who img { float: left; margin: 3px 10px 0 -90px; border: 2px solid black; border-radius: 3px; }
+.who h2 { margin: 0; }
+
+/* Manage */
+.filterForm { margin: 1em 0; }
+.pointsBox { width: 2em; }
+tr.unavailable { opacity: .5; }
+.relatedItemEditor label.checkBox { margin: 0; float: none; text-align: center; }
+.relatedItemEditor label.checkBox input { margin: 0; }
+
+/* images */
+.svg { width: 100%; overflow: visible; }
+#wicket2wicket { width: 700px; height: 460px; margin: 2em 0; }
+#wicket2wicketFallback { float: none; margin: 1em 0; }
+
+.photo, .wp-caption { border: 1px solid #008044; width: 600px; max-width: 100%; text-align: center; padding: 10px; background: #eee url(/images/wicket-light-tile.jpg); margin: 1em 0 0; display: block; }
+.photo img, .wp-caption img { border: 1px solid #008044; display: block; margin: auto; max-width: 97%; }
+.thumbPhoto { width: 150px; }
+.thumbPhoto { margin-bottom: 0; }
+.photoCaption {  background: #008044 url(/images/corner-br.gif) no-repeat right bottom; width: 622px; margin: 0 0 1em; color: #fff;  }
+.photoCaption * { font: bold .85em 'Trebuchet MS', Arial, Helvetica, sans-serif; background: url(/images/corner-bl.gif) no-repeat left bottom; padding: .5em 12px; display: block; margin: 0; text-align: left; } 
+.photoCaption * * { font-size: 1em; background: none; padding: 0; display: inline; }
+.ie67 .photoCaption { overflow: hidden; }
+.ie67 .photoCaption * { float: left; }
+.ie67 .photoCaption * * { float: none; }
+.photoCaption input { background: #fff; margin-top: .3em; width: 145px; }
+.photoCaption a:link, .photoCaption a:hover, .photoCaption a:focus, .photoCaption a:active, .photoCaption a:visited { color: #fff; }
+.adminCaption {  background: #008044 url(/images/corner-br.gif) no-repeat right bottom; width: 572px; margin: 0 0 1em;  }
+.adminCaption * { font: bold .85em 'Trebuchet MS', Arial, Helvetica, sans-serif; background: url(/images/corner-bl.gif) no-repeat left bottom; padding: .5em 12px; } 
+.adminCaption * * { font-size: 1em; background: none; padding: 0; }
+.adminCaption select { background: #fff; }
+.adminCaption option { padding: 0 3px 0 5px; }
+.adminCaption .checkBox { margin-left: 0; }
+.thumbnail { float: left; margin-right: 20px; height: 250px; }
+.thumbCaption { width: 172px; color: #fff; }
+.thumbCaption a:visited { color: #ccc; }
+* html .thumbCaption { width: 174px; }
+.supportingContent .photo { width: 163px; margin-top: 0; }
+.supportingContent .photoCaption { width: 185px; }
+.supportingContent .thumbnail { height: auto; }
+* html .thumbnail { height: 265px; }
+.wordLimit { font-size: .85em; display: block;}
+.PhotosAdd .albumCover { float: right; margin: 0 0 1em 1em; }
+.PhotosAdd .thumbnail { height: 300px; }
+
+.ie67 .progressName { margin-top: 0; } /* SWFUpload */
+* html body .progressName { margin-top: .5em; }
+
+.wp-caption { padding: 0; border-bottom: 0; margin-bottom: 1em; }
+.wp-caption img { margin: 9px auto 5px; }
+#content .wp-caption .photoCaption { margin: 0; width: 100%; max-width: 100%; position: relative; top: 5px; }
+* html #content .wp-caption .photoCaption { width: 102%; }
+
+.mediaEdit { width: 96%; float: left; margin-right: 1em; }
+* html .mediaEdit { width: 90%; }
+.mediaEditFields { margin-left: 180px; }
+.mediaEdit .cover { float: left; overflow: hidden; }
+.mediaEdit .cover .photo { margin-top: 0; }
+.mediaEditFields label { display: block; margin: 0 1em .2em 0; }
+.mediaEdit textarea { margin-bottom: 1em; min-height: 5.5em; height: 5.5em; }
+.mediaEdit .title { width: 100%; margin-bottom: 1em; }
+.ie67 .mediaEdit textarea, .ie67 .mediaEdit .title { width: 95%; }
+.image .paging { background: #eee url(/images/wicket-light-tile.jpg); border: 0; margin: 0; padding-top: 0; }
+.image .paging p { margin: 0; text-align: left;  }
+.image .paging .pageContext { text-align: right; }
+.image #longDesc { margin-top: 1em; }
+.ie67 body .image .pages { margin-left: -68px; } /* View photo in gallery */ 
+
+.printable { width: 250px; float: right; margin: 10px 0 10px 10px; }
+.printable h2 { margin-top: 0; }
+.printable div.pdf { background: url(/images/icons/pdf.gif) no-repeat left top; padding-left: 55px; }
+.printable a { text-decoration: underline; }
+.printable p { margin-bottom: 0; }
+
+.get-the-data { border: none; width: 230px; float: right; margin: -10px 0 10px 20px; }
+.get-the-data h2 { margin: 0 0 4px; }
+.get-the-data div.csv { background: url(/images/icons/csv.gif) no-repeat left top; padding-left: 55px; } 
+.get-the-data a { text-decoration: underline; }
+.get-the-data p { margin-bottom: 0; }
+
+/* Subscription options */
+.rss { font-size: .85em; }
+.social { clear: both; }
+.twitter-follow-button { }
+.twitter-share-button { float: left; margin: 2px 0 0; }
+
+#debug { position: absolute; background: #fff; color: #000; border: 1px solid #000; padding: 5px; opacity: .5; right: 5px; bottom: 5px; font: .8em Verdana; list-style: none; }
+#debug li { margin: 0; }
+
+@media print 
+{
+	#bat2, #navbar, #sidebar, #post, .printable { display: none; }
+	#content { width: 100%; float: none; margin-top: 20px; }
+	
+	* html body * { position: static; } /* Prevent IE6 crash */
+}
