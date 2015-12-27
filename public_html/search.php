@@ -156,7 +156,7 @@ class CurrentPage extends StoolballPage
 			?>
 			<p>Sorry, we didn't find anything matching your search.</p>
 			<p>Please check your spelling, or try rewording your search.</p>
-			<p>If you still can't find what you're looking for, please <a href="/contact/"> contact us</a> or <a href="/forum/">ask a question on our forum</a>.</p>
+			<p>If you still can't find what you're looking for, please <a href="/contact/"> contact us</a>.</p>
 			<?php
 		}
         

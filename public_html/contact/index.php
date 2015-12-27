@@ -65,7 +65,7 @@ class CurrentPage extends StoolballPage
 		}
 		else
 		{
-			$o_message->AddControl('You can also contact us via <a href="http://Facebook.com/stoolball">Facebook</a> or <a href="http://twitter.com/stoolball">Twitter</a>, or post your question on our <a href="/forum">forum</a>.');
+			$o_message->AddControl('You can also contact us via <a href="http://Facebook.com/stoolball">Facebook</a> or <a href="http://twitter.com/stoolball">Twitter</a>.');
 			echo $o_message;
 		}
 
