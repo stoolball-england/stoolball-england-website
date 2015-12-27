@@ -397,9 +397,7 @@ class Page
 	           'awol: http://bblfish.net/work/atom-owl/2006-06-06/AtomOwl.html#"'; 
                 
 	    echo "<!DOCTYPE html>
-		      <!--[if lt IE 7 ]> <html class=\"no-js ie6 ie67 ie678\" $attributes> <![endif]-->
-              <!--[if IE 7 ]>    <html class=\"no-js ie7 ie67 ie678\" $attributes> <![endif]-->
-              <!--[if IE 8 ]>    <html class=\"no-js ie8 ie678\" $attributes> <![endif]-->
+              <!--[if IE 8 ]>    <html class=\"no-js ie8\" $attributes> <![endif]-->
               <!--[if (gte IE 9)|!(IE)]><!--> <html class=\"no-js\" $attributes> <!--<![endif]-->
               <head>
               <meta charset=\"utf-8\" />";

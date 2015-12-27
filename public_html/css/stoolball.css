@@ -43,11 +43,8 @@ div.nav p { display: block; }
 
 #search { border-radius: 5px; -webkit-appearance: none; font-size: 1.1em; padding: 3px 5px; width: 30%; }
 #go { font-size: 1.1em; padding: 2px 10px; }
-.ie67 #search, .ie67 #go { font-size: .9em;}
 
 #board { color: #000; background: url(/images/wicket-tile.jpg) repeat #D0CCCA; margin: 30px 25px 0; width: 95%; z-index: 200; float: left; min-width: 720px; }
-.ie67 #board { margin-top: 7px;}
-* html body #board { margin-top: 0; margin-left: 13px; margin-right: 0; }
 #boardTop { background: transparent url(/images/wicket-top-tiles.jpg) repeat-x 0 -59px; width: 100%; height: 88px; position: absolute; }
 #boardTop div { background: transparent url(/images/wicket-top-right.jpg) no-repeat 100% 0; width: 100%; height: 138px; position: absolute;  }
 #boardBottom { background: transparent url(/images/wicket-bottom-right.jpg) no-repeat 100% 100%; width: 100%; height: 43px; clear: both;  }
@@ -64,11 +61,8 @@ div.nav p { display: block; }
 #content { float: right; width: 64%; margin: 110px 2% -.8em 0; z-index: 1000; min-width: 250px; font-size: .95em; }
 .content ul { max-width: 40em; list-style-type: disc; } /* max-w needs disc, or IE breaks. #navbar can't have max-w */
 .content ol { max-width: 40em; }
-.ie67 .content ol { margin-left: 15px; max-width: none; } /* IE7 can't handle max-width, loses numbers */ 
 .constrainColumns { max-width: 55em; }
 .constrainText { max-width: 40em; }
-* html .constrainColumns { width: 55em; }
-* html .constrainText { width: 40em; }
 
 /* Content with right sidebar */
 #constraint .supportedContentContainer { width: 100%; float: left; margin-right: -220px; }
@@ -100,16 +94,9 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) 
 #sidebar p { padding-left: 12px; background: url(/images/sprite.2.png) no-repeat -181px -167px; }
 #sidebar h2 { margin-top: 1.5em; font-size: 1em; font-weight:bold; letter-spacing:-0.05em; line-height:1em; text-transform:uppercase; position: relative; overflow: hidden; height: 16px; }
 #sidebar h2 span { position: absolute; width: 100%; height: 100%; }
-* html body #sidebar { padding-top: 30px; }
-.ie67 #sidebar h2 { height: 19px; } /* random numbers for IE sprite sizes */
-* html #sidebar h2 { height: 16px; }
-.ie67 #sidebar ul li, .ie67 #sidebar p { background-position-y: -165px; }
 
 #your { width: 186px; }
 #your span { background: url(/images/sprite.2.png) no-repeat 0 -20px; }
-.ie67 #sidebar #your { height: 22px; }
-* html #sidebar #your { height: 19px; }
-.ie67 #your span { background-position-y: -14px; }
 #next1 { width: 109px; }
 #next2, #next3, #next4, #next5 { width: 143px; }
 #next1 span { background: url(/images/sprite.2.png) no-repeat 0 -100px; }
@@ -117,11 +104,6 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) 
 #next3 span { background: url(/images/sprite.2.png) no-repeat 0 -68px; }
 #next4 span { background: url(/images/sprite.2.png) no-repeat 0 -52px; }
 #next5 span { background: url(/images/sprite.2.png) no-repeat 0 -36px; }
-.ie67 #next1 span { background-position-y: -97px; }
-.ie67 #next2 span { background-position-y: -81px; }
-.ie67 #next3 span { background-position-y: -65px; }
-.ie67 #next4 span { background-position-y: -49px; }
-.ie67 #next5 span { background-position-y: -33px; }
 
 /* Authentication */
 .SignUpForm .buttonGroup { text-align: left; }
@@ -174,7 +156,6 @@ optgroup { font-style: normal; padding: .5em 0 0; margin: .5em 0 0; border-top: 
 .formPart table { float: right; width: 74%; vertical-align: top; }
 .formPart .formControl table { float: none; width: 100%; vertical-align: top; }
 .formPart .formControl .mceToolbar { width: auto; }
-* html body #content .formControl { width: 70%; }
 .formPart td.action { width: 10%; }
 label.checkBox { clear: left; display: block; }
 .legacy-form label.checkBox { margin: .5em 0 .5em 25.3%;  }
@@ -226,7 +207,6 @@ fieldset.formPart .formControl { margin-top: 0; }
 .audienceColumn2 { clear: none; margin-right: 0; }
 .audienceColumn h2 { margin: -5px 0 5px; }
 .audienceColumn ul { margin: 0; padding: 0; min-height: 120px; } 
-* html .audienceColumn ul { height: 120px; } 
 .audienceColumn li { margin: 0 0 2px; font-size: .9em; list-style-type: none; padding: 0; }
 .audience a { padding-right:3px; background-image: url(/images/wicket-light-tile.jpg); white-space: nowrap; }
 .home .players ul { background: url(/images/sprite.2.png) no-repeat right -254px; }
@@ -247,7 +227,7 @@ fieldset.formPart .formControl { margin-top: 0; }
 .home .playerStats li { font-size: .9em; }
 .home .playerStats p { padding: .5em 0 0 .5em; }
 .home .playerStats p.more { margin: 0; padding: .2em 0 .2em .5em; border-bottom: 1px groove #aaa;}
-.ie678 .playerStats p.more { border-bottom-color: #ddd;}
+.ie8 .playerStats p.more { border-bottom-color: #ddd;}
 
 /* Play */
 .tiles-intro { max-width: none; }
@@ -345,9 +325,6 @@ a.promo { margin: 15px 0; display: block; }
 .panel h2 span span { color: #fff; background: url(/images/corner-tr.gif) no-repeat 0 -2px; }
 .panel h2 span span span { color: #fff; background: url(/images/corner-tl.gif) no-repeat 100% -2px; padding: .5em 1em 1em; }
 
-* html .panel h2 span span { height: 2em;  }
-* html .panel h2 span span span { padding-bottom: 1px;  }
-
 .instructionPanel h2 {  color: #fff; background: url(/images/tile-red.gif) top left; }
 .instructionPanel h2 span { color: #fff; background: url(/images/noise-bottom-red-light.gif) repeat-x bottom left; }
 .instructionPanel h2 span span, .instructionPanel h2 span span span { color: #fff; }
@@ -362,7 +339,6 @@ a.promo { margin: 15px 0; display: block; }
 /* "You can" options panel on the right of pages */
 .supportingPanel ul { background-image: url(/images/panel-ball.gif); background-repeat: no-repeat; background-position: top right; padding-top: 60px; margin-top: -50px; }
 .with-tabs { margin-top: 6.4em;}
-* html .instructionPanel ul, .ie67 .supportingPanel ul { margin-top: -56px; }
 
 /* Add matches/results */
 .matchResults { margin-top: 1em; }
@@ -389,14 +365,12 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 .checkBoxList label.checkBox { margin-left: 0; } /* seasons */
 
 /* adding matches */
-.ie678 fieldset.formPart .formControl { margin-top: 0; }
+.ie8 fieldset.formPart .formControl { margin-top: 0; }
 
 /* editing matches - IE can't size controls correctly */
-.ie678 table.batting td { padding-left: 0; padding-right: 0; }
-.ie678 table.batting input.player { width: 130px; }
-.ie678 table.bowling input.player { width: 200px; }
-.ie67 table.bowling th.numeric { width: 5.7em; }
-.ie67 table.bowling th.balls { width: 7em; }
+.ie8 table.batting td { padding-left: 0; padding-right: 0; }
+.ie8 table.batting input.player { width: 130px; }
+.ie8 table.bowling input.player { width: 200px; }
 
 /* Scorecards */
 table.scorecardEditor { width: 40em; margin-bottom: 0; }
@@ -481,14 +455,13 @@ dl.decision dd { margin-left: 22px; }
 #forumMessageForm .forumIcon { white-space: nowrap; display: inline; }
 #forumMessageForm .forumIcon img { vertical-align: middle; display: inline; }
 
-* html body .forumNavbar, html body .forumTopic { width: 97%; }
+html body .forumTopic { width: 97%; }
 
 /* Paging */
 .paging { border-top: 2px solid #008044; border-bottom: 2px solid #008044; padding: .5em 0; margin: 1em 0; clear: both; overflow: hidden; width: 100%; }
 .paging .pages { width: 50%; }
 .paging .pageContext { float: right; width: 38%; text-align: right; }
 .paging .numbers { display: inline; }
-* html .paging { width: 97%; }
 
 .pagedTable .paging { margin-bottom: 0; }
 
@@ -519,7 +492,6 @@ li.articleListItem .more-link { margin-top: 0; }
 
 .articleList .post { margin-bottom: 0; }
 .articleList .post img { max-width: 200px; max-height: 200px; height: auto; margin: 0 0 1em 1em; }
-* html .articleList .post img { width: 200px; height: auto; }
 .articleList .post .wp-caption { border: none; width: auto; background: none; margin: 0; }
 
 .News-Thumbnail { float: right; margin: 0 0 1em 1em; }
@@ -566,7 +538,6 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/sprite-1.jpg) no-repeat -655px bottom; }
 .statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
 .statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.2.png) no-repeat right -782px; }
-.ie67 .statsAd span { background-position: right -762px; padding-right: 20px; }
 
 /* Stats - accomodate not out* in scores */
 td.out { padding-right: .9em; }
@@ -602,7 +573,6 @@ tr.unavailable { opacity: .5; }
 .wp-caption { border: 1px solid #008044; border-bottom: 0; width: 600px; max-width: 100%; text-align: center; padding: 0; background: #eee url(/images/wicket-light-tile.jpg); margin: 1em 0; display: block; }
 .wp-caption img { border: 1px solid #008044; display: block; margin: auto; max-width: 97%; margin: 9px auto 5px; }
 #content .wp-caption .photoCaption { margin: 0; width: 100%; max-width: 100%; position: relative; top: 5px; }
-* html #content .wp-caption .photoCaption { width: 102%; }
 
 .printable { width: 250px; float: right; margin: 10px 0 10px 10px; }
 .printable h2 { margin-top: 0; }
@@ -629,6 +599,4 @@ tr.unavailable { opacity: .5; }
 {
 	#bat2, #navbar, #sidebar, #post, .printable { display: none; }
 	#content { width: 100%; float: none; margin-top: 20px; }
-	
-	* html body * { position: static; } /* Prevent IE6 crash */
 }

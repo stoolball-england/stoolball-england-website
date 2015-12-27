@@ -144,9 +144,6 @@ input.year { width: 3em; }
 .outline ul li { list-style: disc; padding-left: 15px; }
 .outline li p { padding-left: 0; }
 .outline span { position: absolute; left: 0; top: 0; }
-* html .outline span { left: -30px; }
-* html .outline li span { left: -45px; }
-* html .outline li li span { left: -60px; }
 #positions, #bowler { margin: 24px 0; }
 
 /* WordPress pages */
