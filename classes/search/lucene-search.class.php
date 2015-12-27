@@ -225,28 +225,6 @@ class LuceneSearch
     }
 
     /**
-     * Add a forum topic to the index without committing the changes
-     * @param $topic ForumTopic
-     * @param $topic_manager TopicManager
-     */
-    public function IndexTopic(ForumTopic $topic, TopicManager $topic_manager)
-    {
-        # Get the whole topic to index the message content
-        $topic_manager->ReadById(array($topic->GetId()));
-        $topic = $topic_manager->GetFirst();
-        $first = $topic->GetFirst();
-        $content = "";
-        foreach ($topic->GetItems() as $message)
-        {
-            /* @var $message ForumMessage */
-            $content .= $message->GetTitle() . " " . $message->GetBody() . " ";
-        }
-
-        $doc = $this->CreateStandardDocument("topic", "topic" . $topic->GetId(), $topic->GetNavigateUrl(), $topic->GetTitle(), $first->GetExcerpt(), "", $content);
-        # $this->GetIndex()->addDocument($doc);
-    }
-
-    /**
      * Add a WordPress post to search results
      * @param $post_id int
      * @param $url string

@@ -7,13 +7,10 @@ require_once('authentication/authentication-control.class.php');
 require_once('markup/xhtml-markup.class.php');
 require_once('stoolball/match-manager.class.php');
 require_once('stoolball/match-list-control.class.php');
-require_once('forums/topic-manager.class.php');
-require_once('forums/topic-list-control.class.php');
 
 class StoolballPage extends Page
 {
 	var $a_next_matches;
-	private $a_latest_topics;
 	private $i_constraint_type;
 	private $b_col1_open = false;
 	private $b_col2_open = false;
@@ -43,11 +40,6 @@ class StoolballPage extends Page
 		$o_match_manager->ReadNext();
 		$this->a_next_matches = $o_match_manager->GetItems();
 		unset($o_match_manager);
-
-		$o_topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
-		$o_topic_manager->ReadRecent(3);
-		$this->a_latest_topics = $o_topic_manager->GetItems();
-		unset($o_topic_manager);
 	}
 
 	/**
@@ -171,7 +163,6 @@ class StoolballPage extends Page
 		$o_news = new XhtmlElement('a', '<span></span>News', '#news');
 		$o_rules = new XhtmlElement('a', '<span></span>Rules', '#rules');
 		$o_play = new XhtmlElement('a', '<span></span>Play!', '#play');
-		$o_forums = new XhtmlElement('a', '<span></span>Forum', '#forums');
 		$o_about = new XhtmlElement('a', '<span></span>About us', '#about');
 
 		if ($b_got_category and ($o_current->GetUrl() == 'news') or (SiteContext::IsWordPress() and  (is_single() or (is_archive() and !is_category()))))
@@ -206,17 +197,6 @@ class StoolballPage extends Page
 			else $o_play->SetElementName('em');
 		}
 		else $o_play->AddAttribute('href', '/play');
-
-		if ($b_got_category and $o_current->GetUrl() == 'forum')
-		{
-			if (!$b_section_home)
-			{
-				$o_forums->AddAttribute('href', '/forum');
-				$o_forums->SetCssClass('current');
-			}
-			else $o_forums->SetElementName('em');
-		}
-		else $o_forums->AddAttribute('href', '/forum');
 
 		if ($b_got_category and $o_current->GetUrl() == 'about')
 		{
@@ -261,7 +241,6 @@ class StoolballPage extends Page
 		echo '<li>' . $o_news->__toString() . '</li>';
 		echo '<li>' . $o_rules->__toString() . '</li>';
 		echo '<li>' . $o_play->__toString() . '</li>';
-		echo '<li>' . $o_forums->__toString() . '</li>';
 		echo '<li>' . $o_about->__toString() . '</li>';
 		echo '</ul>';
 		?>
@@ -465,18 +444,6 @@ class StoolballPage extends Page
 	
 	}
 	$this->Render();
-
-	# Add latest topics
-	if (count($this->a_latest_topics))
-	{
-		echo '<h2 id="topics" class="large"><span></span>In the forum</h2>';
-		$o_topic_list = new TopicListControl($this->a_latest_topics);
-		$o_topic_list->SetShowForum(false);
-        $o_topic_list->AddCssClass("large");
-		echo $o_topic_list;
-	}
-	$this->Render();
-
 	?>
 	</div>
 	<div id="boardBottom">

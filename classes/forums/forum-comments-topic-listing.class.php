@@ -11,7 +11,7 @@ class ForumCommentsTopicListing extends ForumTopicListing
 	{
 		parent::ForumTopicListing($o_settings, $o_context, $o_user, $o_topic);
 
-		$this->SetNavbar(new ForumCommentsTopicNavbar($o_settings, $o_context, $o_topic, null));
+		$this->SetNavbar(new ForumCommentsTopicNavbar($o_context, $o_topic, null));
 	}
 
 	function SetIntro($s_text)

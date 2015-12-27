@@ -134,7 +134,7 @@ class ForumMessageForm extends XhtmlForm
 	function GetForm()
 	{
 		# if a new topic, check a category has been specified
-		if (($this->GetFormat() == ForumMessageFormat::NewTopic()) or ($this->GetFormat() == ForumMessageFormat::Review()))
+		if ($this->GetFormat() == ForumMessageFormat::Review())
 		{
 			if ($this->o_topic->GetCategory() == null)
 			{
@@ -143,7 +143,7 @@ class ForumMessageForm extends XhtmlForm
 			}
 		}
 		# if a new reply, check a topic has been specified
-		else if (($this->GetFormat() == ForumMessageFormat::Reply()) or ($this->GetFormat() == ForumMessageFormat::ReviewReply()))
+		else if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
 		{
 			if ($this->o_topic->GetId() == null)
 			{
@@ -154,34 +154,16 @@ class ForumMessageForm extends XhtmlForm
 
 		$o_review_item = $this->o_topic->GetReviewItem();
 
-		switch($this->GetFormat())
+		$s_topic_name = 'comments';
+		switch ($o_review_item->GetType())
 		{
-			case ForumMessageFormat::NewTopic():
-				$s_topic_name = 'topic';
-				$s_post_pod_text = 'replies to this topic';
+			case ContentType::PAGE_COMMENTS:
+				$s_post_pod_text = 'comments on this feature';
 				break;
-
-			case ForumMessageFormat::Reply():
-				$s_topic_name = 'reply';
-				$this->SetMessageText('reply');
-				$s_post_pod_text = 'replies to this topic';
-				break;
-
-			case ForumMessageFormat::Review():
-			case ForumMessageFormat::ReviewReply():
-
-				$s_topic_name = 'comments';
-				switch ($o_review_item->GetType())
-				{
-					case ContentType::PAGE_COMMENTS:
-						$s_post_pod_text = 'comments on this feature';
-						break;
-					case ContentType::STOOLBALL_MATCH:
-						$s_post_pod_text = 'comments on this match';
-				}
-				$this->SetMessageText('comments');
-				break;
+			case ContentType::STOOLBALL_MATCH:
+				$s_post_pod_text = 'comments on this match';
 		}
+		$this->SetMessageText('comments');
 
 		if ($this->o_topic->GetCount())
 		{
@@ -222,10 +204,7 @@ class ForumMessageForm extends XhtmlForm
 
 		$s_text .= '<p><label for="title">Title of your ' . $s_topic_name;
 
-		if(
-		($this->GetFormat() == ForumMessageFormat::Reply()) or
-		($this->GetFormat() == ForumMessageFormat::ReviewReply())
-		)
+		if($this->GetFormat() == ForumMessageFormat::ReviewReply())
 		{
 			$s_text .= ' <small>(optional)</small>';
 		}

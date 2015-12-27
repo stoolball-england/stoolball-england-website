@@ -145,33 +145,6 @@ class AuthenticationManager extends DataManager
     }
 
 	/**
-	 * Read details of the latest user registered on the site
-	 * @return User
-	 */
-	public function ReadNewestUser()
-	{
-		$users = $this->GetSettings()->GetTable('User');
-
-		$s_sql = 'SELECT ' . $users . '.user_id, ' . $users . '.known_as ' .
-		'FROM ' . $users . ' ' .
-		'WHERE ' . $users . '.activated = 1 AND ' . $users . '.disabled = 0 ' .
-		'AND ' . $users . '.sign_in_count > 0 ' .
-		'ORDER BY ' . $users . '.date_added DESC ' .
-		'LIMIT 0,1';
-
-		$result = $this->GetDataConnection()->query($s_sql);
-		$row =$result->fetch();
-		$result->closeCursor();
-
-		# convert result into User and return
-		$o_newest_user = new User();
-		$o_newest_user->SetId($row->user_id);
-		$o_newest_user->SetName($row->known_as);
-
-		return $o_newest_user;
-	}
-
-	/**
 	 * Registers, but doesn't activate, a user account
 	 * @param User $user
 	 * @return User

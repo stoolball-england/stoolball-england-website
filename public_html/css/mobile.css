@@ -265,15 +265,8 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 
 .chart-legend.horizontal li { display: inline-block; margin: 0 4px; }
 
-/* Forum - home */
-.forumSummary h2 { font-size: 1.5em; font-weight: bold; }
-.forumAction a { margin-right: 2em; white-space: nowrap; }
-
 /* Forum - list topics, and view a topic */
 .forumNavbar a { display: block; }
-
-/* Forum - list topics */
-.forumTopicList img { display: inline; }
 
 /* Forum - write message */
 #forumMessageForm textarea { height: 10em; }

@@ -1,9 +1,35 @@
 <?php 
-require_once('forum-topic-navbar.class.php');
+require_once('xhtml/xhtml-element.class.php');
+require_once('context/site-settings.class.php');
+require_once('forums/forum-topic.class.php');
 require_once('text/string-formatter.class.php');
 
-class ForumCommentsTopicNavbar extends ForumTopicNavbar
+class ForumCommentsTopicNavbar extends XhtmlElement
 {
+    /**
+     * The situation of the current request
+     *
+     * @var SiteContext
+     */
+    var $o_context;
+    /**
+     * Forum topic being viewed
+     *
+     * @var ForumTopic
+     */
+    var $o_topic;
+    var $o_review_item;
+
+    public function __construct(SiteContext $o_context, ForumTopic $o_topic, $o_review_item)
+    {
+        $this->o_context = $o_context;
+        $this->o_topic = $o_topic;
+        $this->o_review_item = $o_review_item;
+
+        parent::XhtmlElement('div');
+        $this->SetCssClass('forumNavbar');
+    }
+
 	function OnPreRender()
 	{
 		/* @var $o_top_level Category */

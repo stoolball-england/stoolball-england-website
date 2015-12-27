@@ -143,7 +143,7 @@ class CommentPage extends StoolballPage
 		# create form
 		require_once ('forums/forum-message-form.class.php');
 		$o_form = new ForumMessageForm($this->GetSettings(), AuthenticationManager::GetUser());
-		$o_form->SetFormat($this->GetSettings()->GetCommentsMessageFormat($this->o_review_item->GetType()));
+		$o_form->SetFormat(ForumMessageFormat::Review());
 		$o_form->SetTopic($this->o_topic);
 		echo $o_form->GetForm();
 		$this->Render();

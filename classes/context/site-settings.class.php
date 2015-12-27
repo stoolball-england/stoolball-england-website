@@ -352,18 +352,6 @@ abstract class SiteSettings
 	 */
 	public abstract function GetCommentsCategory(CategoryCollection $o_categories, $i_type);
 
-    /**
-     * Gets the format to use for comments on the specified content type
-     *
-     * @param ContentType $i_type
-     * @return ForumMessageFormat
-     */
-    public function GetCommentsMessageFormat($i_type)
-    {
-        return ForumMessageFormat::Review();
-    }
-
-
 	/**
 	 * Gets the hostname to connect to the site database
 	 *

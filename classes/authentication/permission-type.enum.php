@@ -20,7 +20,6 @@ class PermissionType
         switch ($type)
         {
             case PermissionType::ViewPage(): return 'view a page';
-            case PermissionType::ForumAddTopic(): return "create a forum topic";
             case PermissionType::ForumAddMessage(): return "post a forum message";
             case PermissionType::ForumSubscribe(): return "subscribe to forum alerts";
             case PermissionType::MANAGE_FORUMS: return "manage the forum";
@@ -50,7 +49,6 @@ class PermissionType
 	* @desc Permission to view an ordinary page
 	*/
 	public static function ViewPage() { return 1; }
-	public static function ForumAddTopic() { return 2; }
 	public static function ForumAddMessage() { return 3; }
 	public static function ForumSubscribe() { return 4; }
     

@@ -27,8 +27,6 @@ class ForumTopicListing extends Placeholder
 		$this->o_context = $o_context;
 		$this->o_user = $o_user;
 		$this->topic = $topic;
-
-		$this->SetFormat(ForumMessageFormat::Standard());
 	}
 
 	function SetNavbar($o_input)
@@ -78,9 +76,6 @@ class ForumTopicListing extends Placeholder
 				case ForumMessageFormat::ReviewReply():
 					$s_messages_desc = 'comments so far';
 					break;
-				case ForumMessageFormat::Reply():
-					$s_messages_desc = 'messages in topic';
-					break;
 				default:
 					$s_messages_desc = '';
 					break;
@@ -96,16 +91,6 @@ class ForumTopicListing extends Placeholder
 		/* @var $o_message ForumMessage */
 
 		$s_text = '';
-
-		switch($this->GetFormat())
-		{
-			case ForumMessageFormat::Standard() or ForumMessageFormat::Reply():
-				$s_message_header = 'Message';
-				break;
-			case ForumMessageFormat::ReviewReply():
-				$s_message_header = 'Comments';
-				break;
-		}
 
 		$a_messages = $this->topic->GetItems();
 

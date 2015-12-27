@@ -299,7 +299,6 @@ class ForumMessage
 			$text = XhtmlMarkup::ApplyParagraphs($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplyLinks($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplyLists($text, $b_strip_tags);
-			$text = XhtmlMarkup::ApplyImages($text, $o_site_settings->GetFolder('Images'), $o_site_settings->GetFolder('ImagesServer'), $b_strip_tags);
 			$text = XhtmlMarkup::ApplySimpleTags($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplySimpleXhtmlTags($text, $b_strip_tags);
 			if (!$b_strip_tags) $text = $this->ApplySmilies($text);
@@ -352,7 +351,6 @@ class ForumMessage
 			$s_text = XhtmlMarkup::ApplyCharacterEntities($this->GetFilteredBody());
 			$s_text = XhtmlMarkup::ApplyLinks($s_text, true);
 			$s_text = XhtmlMarkup::ApplyLists($s_text, true);
-			$s_text = XhtmlMarkup::ApplyImages($s_text, '', '', true);
 			$s_text = XhtmlMarkup::ApplySimpleTags($s_text, true);
 			$s_text = XhtmlMarkup::ApplySimpleXhtmlTags($s_text, true);
 			$s_text = XhtmlMarkup::CloseUnmatchedTags($s_text, true);
@@ -397,17 +395,6 @@ class ForumMessage
 	{
 		return '<a href="' . $this->GetNavigateUrl($b_plain_text) . '">' . $this->GetFilteredTitle(true) . '</a>';
 	}
-
-	function GetImageLinkXhtml()
-	{
-		if ($this->o_person instanceof User)
-		{
-			$s_name = ' by ' . $this->o_person->GetName();
-		}
-
-		return '<a href="' . $this->GetNavigateUrl() . '" title="View \'' . $this->GetFilteredTitle(true) . "'" . $s_name . '" class="latestMessage"><img src="' . $this->o_settings->GetFolder('ForumImages') . 'message-arrow.gif" width="19" height="11" alt="Go to this message" /></a>';
-	}
-    
     
     /**
      * Gets the URI which uniquely identifies this message

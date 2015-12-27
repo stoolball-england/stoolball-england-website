@@ -93,7 +93,6 @@ class CurrentPage extends StoolballPage
 <li><a href="/competitions">Leagues and competitions</a></li>
 <li><a href="/tournaments">Tournaments</a></li>
 <li><a href="/play/statistics">Statistics</a></li>
-<li><a href="/forum">Forum</a></li>
 <li><a href="/play/equipment/">Equipment</a></li>
 <li><a href="/play/coaching/">Coaching</a></li>
 <li><a href="/play/manage">Manage your team</a></li>

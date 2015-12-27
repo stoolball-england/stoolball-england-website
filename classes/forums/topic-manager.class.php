@@ -59,45 +59,6 @@ class TopicManager extends DataManager
 	}
 
 	/**
-	 * @return void
-	 * @param int $i_how_many
-	 * @param int[] $a_category_ids
-	 * @desc Gets the most recent topics in specified forums or all forums
-	 */
-	function ReadRecent($i_how_many=10, $a_category_ids=null)
-	{
-		# Build query
-		$s_topic = $this->o_settings->GetTable('ForumTopic');
-		$s_message = $this->o_settings->GetTable('ForumMessage');
-		$s_cat = $this->o_settings->GetTable('Category');
-		$s_person = $this->o_settings->GetTable('User');
-
-		$s_sql = 'SELECT ' . $s_topic . '.id, s_first_messages.title AS first_message_title, ' .
-		"s_last_messages.id AS last_message_id, s_last_messages.title AS last_message_title, s_last_messages.date_added AS last_message_date, " .
-		$s_cat . '.name AS category, ' .
-		$s_person . '.known_as ' .
-		'FROM ((((' . $s_cat . ' INNER JOIN ' . $s_topic . ' ON ' . $s_cat . '.id = ' . $s_topic . '.category_id) ' .
-		'INNER JOIN ' . $s_message . ' AS s_first_messages ON ' . $s_topic . '.first_message_id = s_first_messages.id) ' .
-		'INNER JOIN ' . $s_message . ' AS s_last_messages ON ' . $s_topic . '.last_message_id = s_last_messages.id) ' .
-		'INNER JOIN ' . $s_person . ' ON s_last_messages.user_id = ' . $s_person . '.user_id) ';
-		
-		if (is_array($a_category_ids) and $this->ValidateNumericArray($a_category_ids)) $s_sql .= 'WHERE ' . $s_cat . '.id IN (' . join(', ', $a_category_ids) . ') ';
-
-
-		$s_sql .= 'ORDER BY s_last_messages.date_changed DESC LIMIT 0, ' . (int)$i_how_many;
-
-		# run query
-		$o_result = $this->GetDataConnection()->query($s_sql);
-
-		# build raw data into objects
-		$this->BuildItems($o_result);
-
-		# tidy up
-		$o_result->closeCursor();
-		unset($o_result);
-	}
-
-	/**
 	 * Gets whether to read messages in reverse date order
 	 *
 	 * @return bool
@@ -194,45 +155,6 @@ class TopicManager extends DataManager
 		}
 		$this->Add($o_topic);
 
-		$result->closeCursor();
-	}
-
-	/**
-	 * Reads topics in the provided category
-	 * @param $category_id
-	 * @return void
-	 */
-	public function ReadTopicsByCategory($category_id)
-	{
-		# prepare command
-		$topics = $this->GetSettings()->GetTable('ForumTopic');
-		$messages = $this->GetSettings()->GetTable('ForumMessage');
-		$categories = $this->GetSettings()->GetTable('Category');
-		$users = $this->GetSettings()->GetTable('User');
-		$comments = $this->GetSettings()->GetTable('ForumTopicLink');
-
-		$s_sql = 'SELECT ' . $topics . '.id, ' . $topics . '.total_messages, ' .
-		"s_first_messages.id AS first_message_id, s_first_messages.title AS first_message_title, s_first_messages.message, s_first_messages.views, s_first_messages.icon, s_first_messages.date_added AS first_message_date, " .
-		"s_last_messages.id AS last_message_id, s_last_messages.title AS last_message_title, s_last_messages.date_added AS last_message_date, " .
-		"s_first_people.user_id AS first_person_id, s_first_people.known_as AS first_person_name, " .
-		"s_last_people.user_id AS last_person_id, s_last_people.known_as AS last_person_name " .
-		'FROM (((((' . $categories . ' INNER JOIN ' . $topics . ' ON ' . $categories . '.id = ' . $topics . '.category_id) ' .
-		'INNER JOIN ' . $messages . ' AS s_first_messages ON ' . $topics . '.first_message_id = s_first_messages.id) ' .
-		'INNER JOIN ' . $messages . ' AS s_last_messages ON ' . $topics . '.last_message_id = s_last_messages.id) ' .
-		'INNER JOIN ' . $users . ' AS s_first_people ON s_first_messages.user_id = s_first_people.user_id) ' .
-		'INNER JOIN ' . $users . ' AS s_last_people ON s_last_messages.user_id = s_last_people.user_id) ' .
-		'WHERE ' . $categories . '.id = ' . Sql::ProtectNumeric($category_id, false) . ' ';
-
-		if (!$this->filter_include_comments)
-		{
-			$s_sql .= " AND (SELECT topic_id FROM $comments WHERE topic_id = $topics.id LIMIT 0,1) IS NULL ";
-		}
-
-		$s_sql .= "ORDER BY s_last_messages.date_changed DESC";
-
-		# get data
-		$result = $this->GetDataConnection()->query($s_sql);
-		$this->BuildItems($result);
 		$result->closeCursor();
 	}
 
@@ -366,38 +288,6 @@ class TopicManager extends DataManager
 
 		return $reviewed_item;
 	}
-
-	/**
-	 * Reads the number of topics and messages in each category, indexed by category id
-	 * @return ForumStats[]
-	 */
-	public function ReadTotalMessages()
-	{
-		require_once('forum-stats.class.php');
-
-		$topics = $this->GetSettings()->GetTable('ForumTopic');
-		$messages  = $this->GetSettings()->GetTable('ForumMessage');
-
-		$s_sql = 'SELECT category_id, COUNT(DISTINCT topic_id) AS topics, COUNT(' . $messages . '.id) AS messages ' .
-		'FROM ' . $topics . ' INNER JOIN ' . $messages . ' ON topic_id = ' . $topics . '.id ' .
-		'GROUP BY category_id';
-
-		$result = $this->GetDataConnection()->query($s_sql);
-
-		$a_stats = array();
-		while($o_row = $result->fetch())
-		{
-			$o_stat = new ForumStats();
-			$o_stat->SetTotalTopics($o_row->topics);
-			$o_stat->SetTotalMessages($o_row->messages);
-			$a_stats[$o_row->category_id] = $o_stat;
-		}
-
-		$result->closeCursor();
-
-		return $a_stats;
-	}
-
 
 	/**
 	 * Populates the collection of business objects from raw data

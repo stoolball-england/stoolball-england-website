@@ -18,7 +18,6 @@ class CurrentPage extends StoolballPage
 		if (isset($_POST["players"])) $this->IndexPlayers();
 		if (isset($_POST["competitions"])) $this->IndexCompetitions();
 		if (isset($_POST["matches"])) $this->IndexMatches();
-		if (isset($_POST["topics"])) $this->IndexTopics();
 		if (isset($_POST["pages"])) $this->IndexPages();
 		if (isset($_POST["posts"])) $this->IndexPosts();
 		if (isset($_POST["other"])) $this->IndexOtherPages();
@@ -160,25 +159,6 @@ class CurrentPage extends StoolballPage
 			}
 			$index->commit();
 		}
-	}
-
-	private function IndexTopics()
-	{
-		$index = $this->search->GetIndex();
-		$this->search->DeleteDocumentsByType("topic");
-
-		require_once('forums/topic-manager.class.php');
-		$manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
-		$manager->FilterIncludeComments(false);
-		$manager->ReadTopicsByCategory(12);
-		$topics = $manager->GetItems();
-
-		foreach ($topics as $topic)
-		{
-            $this->search->IndexTopic($topic, $manager);
-		}
-		$index->commit();
-        unset($manager);
 	}
 
 	private function IndexPosts()
@@ -331,8 +311,6 @@ class CurrentPage extends StoolballPage
 		type="submit" name="competitions" value="Index competitions" />
 		<br />
 		<input type="submit" name="matches" value="Index matches" />
-		<br />
-		<input type="submit" name="topics" value="Index topics" />
 		<br />
 		<input
 		type="submit" name="posts" value="Index WordPress posts" />

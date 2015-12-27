@@ -83,7 +83,6 @@ div.nav p { display: block; }
 a#play:hover, em#play, #play.current { background: url(/images/sprite.2.png) no-repeat -33px 63px; }
 a#news:hover, em#news, #news.current { background: url(/images/sprite.2.png) no-repeat -32px 63px; }
 a#rules:hover, #rules.current, em#rules { background: url(/images/sprite.2.png) no-repeat -118px 63px; }
-a#forums:hover, em#forums, #forums.current { background: url(/images/sprite.2.png) no-repeat -32px 63px; }
 a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) no-repeat 0 63px; }
 #news { width: 61px; }
 #news span { background: url(/images/sprite.2.png) no-repeat -85px -186px; }
@@ -91,8 +90,6 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) 
 #rules span { background: url(/images/sprite.2.png) no-repeat -105px -163px; }
 #play { width: 59px; }
 #play span { background: url(/images/sprite.2.png) no-repeat 0 -209px; }
-#forums { width: 72px; }
-#forums span { background: url(/images/sprite.2.png) no-repeat 0 -186px; }
 #about { width: 105px; }
 #about span { background: url(/images/sprite.2.png) no-repeat 0 -163px; }
 
@@ -125,9 +122,6 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) 
 .ie67 #next3 span { background-position-y: -65px; }
 .ie67 #next4 span { background-position-y: -49px; }
 .ie67 #next5 span { background-position-y: -33px; }
-#topics { width: 128px; }
-#topics span { background: url(/images/sprite.2.png) no-repeat 0 -116px; }
-.ie67 #topics span { background-position-y: -113px; }
 
 /* Authentication */
 .SignUpForm .buttonGroup { text-align: left; }
@@ -459,32 +453,9 @@ dl.decision dd { margin-left: 22px; }
 .forumNavbar .forumSubscribe { padding-top: 1em; }
 .forumNavbar .forumPost { float: right; }
 
-/* Forums home */
-.forumSummary { margin: 0; overflow: auto; width: 100%; clear: both; z-index: 19000;  position: relative; }
-.forumSummary h2 { font-size: 1.2em; }
-.forumSummary h3 { font-style: normal; font-size: 1.1em; border-bottom: 2px solid #503C03; margin: 0 0 1em; max-width: none;  }
-* html .forumSummary { margin-left: -25%; }
-.forumAction { z-index: 20000; position: relative; float: none; width: auto; border-top: 2px solid #503C03; border-bottom: 2px solid #503C03; padding: .5em 0; margin: 0 0 1em; }
-.forumAction a { margin-right: 2em; padding: 0 12px 0 0; background: url(/images/sprite.2.png) no-repeat right -786px; }
-* html .forumAction { width: 75%; }
-.forumStats { float: right; margin: -1.5em 0 .5em 2em; padding: 0; width: 40%; text-align: center; background: #008044 url(/images/corner-tl.gif) no-repeat top left; color: #fff; }
-.forumStats div { background-image: url(/images/corner-tr.gif); background-repeat: no-repeat; background-position: top right; }
-.forumStats p { margin: 0; background-image: url(/images/noise-bottom.gif); background-repeat: repeat-x; background-position: bottom left; padding: .2em 0 .8em; }
-.forumLatest { margin: 1em 0;  }
-.forumLatest ul { margin-left: 16px; }
-
-/* Table of topics in a forum */
-.forumTopicList { margin: .3em 0; clear: both; }
-.forumTopicList td { vertical-align: middle; padding: .3em; }
-.forumTopicList th, .forumTopic th { padding: .3em; }
-.forumTopicList .icon { width: 4%; }
-.forumTopicList .title { width: 45%; }
-.forumTopicList .detail { font-size: .85em; width: 20%; }
-.forumTopicList .status { text-align: center; width: 5%; }
-.forumTopicList .latestMessage { float: right; margin-left: .2em; }
-
 /* Table of messages in a topic */
 .forumTopic { margin: .5em 0; width: 100%; clear: both; }
+.forumTopic th { padding: .3em; }
 .forumMessage { overflow: hidden;  width: 99.7%; position: relative; top: 0; left: 0; border-top: #008044 solid 2px; background: url(/images/noise-bottom.gif) repeat-x top left ; }
 
 .forumTopic .profile { width: 20%; vertical-align: top; }
@@ -511,9 +482,6 @@ dl.decision dd { margin-left: 22px; }
 #forumMessageForm .forumIcon img { vertical-align: middle; display: inline; }
 
 * html body .forumNavbar, html body .forumTopic { width: 97%; }
-* html body .forumRelatedItem { width: 95%; }
-* html body .forumLatest { margin-left: 25%;  }
-* html body .forumLatest, body html .forumAction { margin-top: 0; }
 
 /* Paging */
 .paging { border-top: 2px solid #008044; border-bottom: 2px solid #008044; padding: .5em 0; margin: 1em 0; clear: both; overflow: hidden; width: 100%; }
