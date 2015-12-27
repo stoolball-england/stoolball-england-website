@@ -74,15 +74,11 @@ class PagedResults
 		return $this->i_total_results;
 	}
 
-	function SetPageSize($i_input, $i_default=null)
+	function SetPageSize($i_input)
 	{
 		if (is_numeric($i_input) and $i_input > 0)
 		{
 			$this->i_page_size = (int)$i_input;
-		}
-		else if (is_numeric($i_default))
-		{
-			$this->i_page_size = (int)$i_default;
 		}
 	}
 

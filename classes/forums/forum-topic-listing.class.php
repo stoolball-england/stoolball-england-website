@@ -100,7 +100,7 @@ class ForumTopicListing extends Placeholder
 			{
 				# set up paging based on user's preference
 				$o_paging = new PagedResults();
-				$o_paging->SetPageSize($this->o_user->GetPageSize('forummessages'), $this->GetPageSize());
+				$o_paging->SetPageSize($this->GetPageSize());
 				$o_paging->SetResultsTextSingular('message');
 				$o_paging->SetResultsTextPlural('messages');
 				$o_paging->SetTotalResults($this->topic->GetCount());

@@ -685,8 +685,7 @@ class AuthenticationManager extends DataManager
         $user = null;
             
         $sql = "SELECT user_id, known_as, name_first, name_last, email, 
-        disabled, activated, requested_email, 
-        search_page_size, topics_page_size, messages_page_size 
+        disabled, activated, requested_email
         FROM nsa_user WHERE user_id = " . Sql::ProtectNumeric($user_id);
         $result = $this->GetDataConnection()->query($sql);
         $row = $result->fetch();
@@ -700,9 +699,6 @@ class AuthenticationManager extends DataManager
             $user->SetLastName($row->name_last);
             $user->SetEmail($row->email);
             $user->SetRequestedEmail($row->requested_email);
-            $user->SetPageSize('search', $row->search_page_size);
-            $user->SetPageSize('forumtopics', $row->topics_page_size);
-            $user->SetPageSize('forummessages', $row->messages_page_size);
             $user->SetAccountActivated($row->activated);
             $user->SetAccountDisabled($row->disabled);
         }

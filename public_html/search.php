@@ -70,7 +70,7 @@ class CurrentPage extends StoolballPage
 			# set up paging based on user's preference
             require_once('data/paged-results.class.php');           
 			$paging = new PagedResults();
-			$paging->SetPageSize(AuthenticationManager::GetUser()->GetPageSize('forummessages'), 20);
+			$paging->SetPageSize(20);
 			$paging->SetResultsTextSingular('result');
 			$paging->SetResultsTextPlural('results');
 			$paging->SetTotalResults($total);

@@ -13,7 +13,6 @@ class User
 	var $s_location;
 	var $s_signature;
 	var $i_total_messages;
-	var $a_page_sizes;
 	var $s_gender;
 	var $s_occupation;
 	var $s_interests;
@@ -37,8 +36,6 @@ class User
 	 */
 	public function __construct($id = null, $s_name = '')
 	{
-		$this->a_page_sizes = array();
-
 		if ($id)
 			$this->SetId($id);
 		if ($s_name)
@@ -377,25 +374,6 @@ class User
 	function GetTotalMessages()
 	{
 		return $this->i_total_messages;
-	}
-
-	function SetPageSize($s_page, $i_size)
-	{
-		if (is_string($s_page) and is_numeric($i_size))
-			$this->a_page_sizes[$s_page] = (int)$i_size;
-	}
-
-	/**
-	 * @return int
-	 * @param string $s_page
-	 * @desc Gets the preferred number of items per page for the specified page type
-	 */
-	function GetPageSize($s_page)
-	{
-		if (array_key_exists($s_page, $this->a_page_sizes))
-			return $this->a_page_sizes[$s_page];
-		else
-			return -1;
 	}
 
 	function SetLastMessage($s_input)
