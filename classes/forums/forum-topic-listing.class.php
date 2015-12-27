@@ -1,6 +1,5 @@
 <?php
 require_once('forum-topic.class.php');
-require_once('data/paged-results.class.php');
 require_once('forum-message-format.enum.php');
 require_once('search/search-term.class.php');
 require_once('search/search-highlighter.class.php');
@@ -18,7 +17,6 @@ class ForumTopicListing extends Placeholder
 	 */
 	var $topic;
 	var $o_navbar;
-	var $i_page_size;
 	var $i_format;
 
 	function ForumTopicListing(SiteSettings $o_settings, SiteContext $o_context, User $o_user, ForumTopic $topic)
@@ -45,16 +43,6 @@ class ForumTopicListing extends Placeholder
 		return $this->o_navbar->__toString();
 		else
 		return null;
-	}
-
-	function SetPageSize($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_page_size = (int)$i_input;
-	}
-
-	function GetPageSize()
-	{
-		return $this->i_page_size;
 	}
 
 	function GetFormat()
@@ -96,33 +84,16 @@ class ForumTopicListing extends Placeholder
 
 		if (is_array($a_messages))
 		{
-			if ($this->GetPageSize() != null)
-			{
-				# set up paging based on user's preference
-				$o_paging = new PagedResults();
-				$o_paging->SetPageSize($this->GetPageSize());
-				$o_paging->SetResultsTextSingular('message');
-				$o_paging->SetResultsTextPlural('messages');
-				$o_paging->SetTotalResults($this->topic->GetCount());
-				if (isset($_GET['message']) and $_GET['message'] and !(isset($_GET['page']) and $_GET['page'])) $o_paging->SetCurrentPage($o_paging->GetPageForId($_GET['message'], $a_messages));
-
-				# trim results not needed for this page
-			# 	$a_messages = $o_paging->TrimRows($a_messages);
-
-				# write the paging navbar
-				$s_text = $o_paging->GetNavigationBar();
-			}
-
 			$s_text .= '<div class="forumTopic" typeof="sioc:Thread" about="' . $this->topic->TopicLinkedDataUri() . '">' . "\n";
             
             $message_type = $this->topic->GetReviewItem() ? "Comment" : "BoardPost";
 
 			$b_alternate = true;
 
-			$position_in_topic = isset($o_paging) ? $o_paging->GetFirstResultOnPage() : 1;
+			$position_in_topic = 1;
             $total_messages = count($a_messages);
             $first_message = ($position_in_topic-1);
-            $last_message = isset($o_paging) ? $o_paging->GetFinalResultOnPage()-1 : $total_messages-1;
+            $last_message = $total_messages-1;
             
             for ($i = $first_message; $i<=$last_message; $i++)
 			{
@@ -210,12 +181,6 @@ class ForumTopicListing extends Placeholder
 			}
 
 			$s_text .= '<hr /></div>' . "\n\n";
-
-			if ($this->GetPageSize() != null)
-			{
-				# write the paging navbar
-				$s_text .= $o_paging->GetNavigationBar();
-			}
 
 			return $s_text;
 		}
