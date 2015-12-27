@@ -25,6 +25,7 @@ class ForumTopicListing extends Placeholder
 		$this->o_context = $o_context;
 		$this->o_user = $o_user;
 		$this->topic = $topic;
+        $this->SetFormat(ForumMessageFormat::Review());
 	}
 
 	function SetNavbar($o_input)
@@ -57,20 +58,18 @@ class ForumTopicListing extends Placeholder
 
 	function GetHeader()
 	{
-		if ($this->topic->GetCount()) # if no messages, write nothing
+		if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
 		{
-			switch($this->GetFormat())
+			if ($this->topic->GetCount()) # if no messages, write nothing)
 			{
-				case ForumMessageFormat::ReviewReply():
-					$s_messages_desc = 'comments so far';
-					break;
-				default:
-					$s_messages_desc = '';
-					break;
+				return '<h2 class="forumTopicReview">Review comments so far <span class="sort-order">(newest first)</span></h2>';
 			}
-
-			if ($s_messages_desc) return '<h2 class="forumTopicReview">Review ' . $s_messages_desc . ' <span class="sort-order">(Newest first)</span></h2>';
+            return '';
 		}
+        else if ($this->GetFormat() == ForumMessageFormat::Review()) {
+            return '<div id="comments-topic">' . "\n" .
+            '<h2>Add your comments</h2>';
+        }
 	}
 
 	function GetFormattedMessages()
@@ -188,7 +187,10 @@ class ForumTopicListing extends Placeholder
 
 	function GetFooter()
 	{
-		return'';  # method to be overriden
+	    if ($this->GetFormat() == ForumMessageFormat::Review()) {
+	        return '</div>';
+	    }
+		return'';
 	}
 
 	function OnPreRender()
