@@ -99,10 +99,6 @@ class SubscriptionManager extends DataManager
 					$o_sub->SetTitle($o_row->forum_name);
 					break;
 
-				case ContentType::PAGE_COMMENTS:
-					$o_sub->SetTitle($o_row->page_name);
-					break;
-
 				case ContentType::STOOLBALL_MATCH:
 					$o_sub->SetTitle($o_row->match_title);
 					$o_sub->SetContentDate(Date::BritishDate($o_row->start_time));
@@ -181,13 +177,6 @@ class SubscriptionManager extends DataManager
 
 			switch ($review_item->GetType())
 			{
-				case ContentType::PAGE_COMMENTS:
-					$s_cat = $this->GetSettings()->GetTable('Category');
-					$s_sql = 'SELECT ' . $s_cat . '.name AS title, ' . $s_person . '.email ' .
-					'FROM (' . $s_person . ' INNER JOIN ' . $s_sub . ' ON ' . $s_person . '.user_id = ' . $s_sub . '.user_id AND ' . $s_sub . ".item_type = " . ContentType::PAGE_COMMENTS . ") " .
-					'INNER JOIN ' . $s_cat . ' ON ' . $s_sub . '.item_id = ' . $s_cat. '.id AND ' . $s_sub . ".item_type = " . ContentType::PAGE_COMMENTS . " " .
-					'WHERE ' . $s_sub . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId()) . ' AND ' . $s_person . '.user_id <> ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
-					break;
 				case ContentType::STOOLBALL_MATCH:
 					$matches = $this->GetSettings()->GetTable('Match');
 					$s_sql = "SELECT $matches.match_title AS title, $s_person.email
@@ -255,10 +244,6 @@ class SubscriptionManager extends DataManager
 		{
 			$s_sql .= ', s_forums.name AS forum_name';
 		}
-		if ($this->GetSettings()->HasContent(ContentType::PAGE_COMMENTS))
-		{
-			$s_sql .= ', s_pages.name AS page_name';
-		}
 		if ($this->GetSettings()->HasContent(ContentType::STOOLBALL_MATCH))
 		{
 			$s_sql .= ', ' . $s_match . '.match_title, ' . $s_match . '.start_time, ' . $s_match . ".short_url";
@@ -270,13 +255,7 @@ class SubscriptionManager extends DataManager
 		?	    '))) LEFT JOIN ' . $s_cat . ' AS s_forums ON ' . $s_sub . '.item_id = s_forums.id AND ' . $s_sub . ".item_type = " . ContentType::FORUM . ") "
 				:	')))) ';
 
-				$s_sql .= ') ';
-
-				$s_sql .= ($this->GetSettings()->HasContent(ContentType::PAGE_COMMENTS))
-				?	' LEFT JOIN ' . $s_cat . ' AS s_pages ON ' . $s_sub . '.item_id = s_pages.id AND ' . $s_sub . ".item_type = " . ContentType::PAGE_COMMENTS . ") "
-				:	') ';
-
-				$s_sql .= ') ';
+				$s_sql .= '))) ';
 
 				if ($this->GetSettings()->HasContent(ContentType::STOOLBALL_MATCH))
 				{

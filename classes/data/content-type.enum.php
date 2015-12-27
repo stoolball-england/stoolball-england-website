@@ -15,7 +15,6 @@ class ContentType
 		switch($type)
 		{
 			case ContentType::UNKNOWN: return 'l';
-			case ContentType::PAGE_COMMENTS: return 'page';
 			case ContentType::FORUM: return 'category';
 			case ContentType::STOOLBALL_MATCH: return 'match';
 		}
@@ -26,12 +25,6 @@ class ContentType
 	 * @desc Unknown content type
 	 */
 	const UNKNOWN = 0;
-
-	/**
-	 * @return int
-	 * @desc Comments on a page of content
-	 */
-	const PAGE_COMMENTS = 3;
 
 	/**
 	 * @return int

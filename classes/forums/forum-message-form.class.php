@@ -157,9 +157,6 @@ class ForumMessageForm extends XhtmlForm
 		$s_topic_name = 'comments';
 		switch ($o_review_item->GetType())
 		{
-			case ContentType::PAGE_COMMENTS:
-				$s_post_pod_text = 'comments on this feature';
-				break;
 			case ContentType::STOOLBALL_MATCH:
 				$s_post_pod_text = 'comments on this match';
 		}

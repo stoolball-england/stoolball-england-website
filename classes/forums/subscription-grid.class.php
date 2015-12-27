@@ -44,22 +44,13 @@ class SubscriptionGrid extends XhtmlElement
 				/* @var $o_item Category */
 
 				$o_item = null;
-				$o_cite = null;
 
 				# build table row for each subscription
-				$s_cite_title_method = 'GetName';
-
 				if ($o_sub->GetType() == ContentType::FORUM)
 				{
 					# category link and date
 					$o_item = $this->o_categories->GetById($o_sub->GetSubscribedItemId());
                     $s_title_method = 'GetName';
-				}
-				else if ($o_sub->GetType() == ContentType::PAGE_COMMENTS)
-				{
-					# category link and date
-					$o_item = &$this->o_categories->GetById($o_sub->GetSubscribedItemId());
-					$o_cite = &$this->o_categories->GetById($o_item->GetParentId());
 				}
 				else if ($o_sub->GetType() == ContentType::STOOLBALL_MATCH)
 				{
@@ -83,14 +74,6 @@ class SubscriptionGrid extends XhtmlElement
 					{
 						$o_qualifier = new XhtmlElement('span', ' on ' . Html::Encode($o_sub->GetContentDate()));
 						$o_qualifier->SetCssClass('subscriptionQualifier');
-						$o_td_item->AddControl($o_qualifier);
-					}
-					else if (is_object($o_cite))
-					{
-						$o_qualifier = new XhtmlElement('span');
-						$o_qualifier->SetCssClass('subscriptionQualifier');
-						$o_qualifier->AddControl(' in ');
-						$o_qualifier->AddControl(new XhtmlElement('cite', Html::Encode($o_cite->$s_cite_title_method())));
 						$o_td_item->AddControl($o_qualifier);
 					}
 
