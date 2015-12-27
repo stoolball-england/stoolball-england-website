@@ -55,18 +55,6 @@ class SubscriptionGrid extends XhtmlElement
 					$o_item = $this->o_categories->GetById($o_sub->GetSubscribedItemId());
                     $s_title_method = 'GetName';
 				}
-				else if ($o_sub->GetType() == ContentType::TOPIC)
-				{
-					# Prepare swear filter
-					$o_filter = new BadLanguageFilter();
-
-					# topic link
-					$o_item = new ForumTopic($this->o_settings);
-					$o_item->SetId($o_sub->GetSubscribedItemId());
-					$o_sub->SetTitle($o_filter->Filter($o_sub->GetTitle()));
-					$o_cite = $o_sub->GetCategory();
-
-				}
 				else if ($o_sub->GetType() == ContentType::PAGE_COMMENTS)
 				{
 					# category link and date
@@ -76,15 +64,19 @@ class SubscriptionGrid extends XhtmlElement
 				else if ($o_sub->GetType() == ContentType::STOOLBALL_MATCH)
 				{
 					$o_item = new Match($this->o_settings);
-					$o_item->SetId($o_sub->GetSubscribedItemId());
+					$o_item->SetShortUrl($o_sub->GetSubscribedItemUrl());
 				}
 
 				if (is_object($o_item))
 				{
 					$o_row = new XhtmlElement('tr');
 
-					$o_link = new XhtmlElement('a', Html::Encode($o_sub->GetTitle()));
-					$o_link->AddAttribute('href', $o_item->GetNavigateUrl());
+                    if ($o_item instanceof Category) {
+                        $o_link = $o_sub->GetTitle();
+                    } else {
+    					$o_link = new XhtmlElement('a', Html::Encode($o_sub->GetTitle()));
+    					$o_link->AddAttribute('href', $o_item->GetNavigateUrl());
+                    }
 
 					$o_td_item = new XhtmlElement('td', $o_link);
 					if ($o_sub->GetContentDate())

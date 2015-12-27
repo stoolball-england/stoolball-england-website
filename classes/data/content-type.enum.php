@@ -16,7 +16,6 @@ class ContentType
 		{
 			case ContentType::UNKNOWN: return 'l';
 			case ContentType::PAGE_COMMENTS: return 'page';
-			case ContentType::TOPIC: return 'topic';
 			case ContentType::FORUM: return 'category';
 			case ContentType::STOOLBALL_MATCH: return 'match';
 		}
@@ -39,12 +38,6 @@ class ContentType
 	 * @desc A forum allowing visitors to post comments
 	 */
 	const FORUM = 4;
-
-	/**
-	 * @return int
-	 * @desc A topic in a forum
-	 */
-	const TOPIC = 5;
 
 	/**
 	 * @return int

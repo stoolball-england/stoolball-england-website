@@ -35,7 +35,7 @@ class SubscriptionManagerPage extends StoolballPage
 	function OnPageLoad()
 	{
 		echo new XhtmlElement('h1', Html::Encode($this->GetPageTitle()));
-		echo '<p>You can subscribe to emails for ' . Html::Encode($this->GetSettings()->GetSiteName()) . '\'s forum, topics and matches. ' .
+		echo '<p>You can subscribe to emails for ' . Html::Encode($this->GetSettings()->GetSiteName()) . '\'s match comments. ' .
                 'Once you have subscribed, as soon as anyone else adds their comments,  you\'ll get an email.</p>';
        
 

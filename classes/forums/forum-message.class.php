@@ -28,6 +28,7 @@ class ForumMessage
 	private $s_body;
 	private $s_body_filtered;
 	private $s_body_formatted;
+    private $review_item;
 
 	/**
 	 * Creates a new instance of ForumMessage
@@ -384,17 +385,26 @@ class ForumMessage
 		return $s_text;
 	}
 
-	function GetLinkXhtml($b_plain_text=false)
-	{
-		return '<a href="' . $this->GetNavigateUrl($b_plain_text) . '">' . $this->GetFilteredTitle(true) . '</a>';
-	}
-    
     /**
      * Gets the URI which uniquely identifies this message
      */
     public function MessageLinkedDataUri()
     {
         return "https://" . $this->o_settings->GetDomain() . "/id/forum/topic/" . $this->GetTopicId() . "/message/" . $this->GetId();
+    }
+    
+    /**
+     * Sets the item this message is commenting on
+     */
+    public function SetReviewItem(ReviewItem $review_item) {
+        $this->review_item = $review_item;
+    }
+    
+    /**
+     * Gets the item this message is commenting on
+     */
+    public function GetReviewItem() {
+        return $this->review_item;
     }
 }
 ?>

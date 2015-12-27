@@ -8,6 +8,7 @@ class Subscription
 	var $s_title;
 	var $s_content_date;
 	var $i_subscribe_date;
+    private $subscribed_item_url;
 
 	function Subscription(SiteSettings $o_settings)
 	{
@@ -43,6 +44,14 @@ class Subscription
 	{
 		return $this->i_subscribed_item_id;
 	}
+    
+    public function SetSubscribedItemUrl($url) {
+        $this->subscribed_item_url = $url;
+    }
+    
+    public function GetSubscribedItemUrl() {
+        return $this->subscribed_item_url;
+    }
 
 	function SetTitle($s_input)
 	{

@@ -11,7 +11,6 @@ abstract class SiteSettings
 	{
         $this->a_content_types = array();
         $this->a_content_types[] = ContentType::FORUM;
-        $this->a_content_types[] = ContentType::TOPIC;
         $this->a_content_types[] = ContentType::PAGE_COMMENTS;
         $this->a_content_types[] = ContentType::STOOLBALL_MATCH;
 	}

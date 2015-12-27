@@ -95,15 +95,6 @@ class SubscriptionManager extends DataManager
 
 			switch($o_sub->GetType())
 			{
-				case ContentType::TOPIC:
-					$o_sub->SetTitle($o_row->title);
-                    $category = $this->categories->GetById($o_row->topic_forum_id);
-					if ($category)
-					{
-					    $o_sub->SetCategory($category);
-                    }
-					break;
-
 				case ContentType::FORUM:
 					$o_sub->SetTitle($o_row->forum_name);
 					break;
@@ -115,6 +106,7 @@ class SubscriptionManager extends DataManager
 				case ContentType::STOOLBALL_MATCH:
 					$o_sub->SetTitle($o_row->match_title);
 					$o_sub->SetContentDate(Date::BritishDate($o_row->start_time));
+                    $o_sub->SetSubscribedItemUrl($o_row->short_url);
 					break;
 
 			}
@@ -172,48 +164,6 @@ class SubscriptionManager extends DataManager
 				{
 					# Do nothing - email not that important so, if it fails, fail silently rather than raising a fatal error
 				}
-			}
-		}
-	}
-
-	function SendTopicSubscriptions()
-	{
-		if(is_object($this->o_topic) and AuthenticationManager::GetUser()->IsSignedIn())
-		{
-			$s_person = $this->GetSettings()->GetTable('User');
-			$s_sub = $this->GetSettings()->GetTable('EmailSubscription');
-
-			$s_sql = 'SELECT ' . $s_person . '.user_id, email ' .
-			'FROM ' . $s_person . ' INNER JOIN ' . $s_sub . ' ON ' . $s_person . '.user_id = ' . $s_sub . '.user_id AND ' . $s_sub . ".item_type = " . ContentType::TOPIC . " " .
-			'WHERE ' . $s_sub . '.item_id = ' . Sql::ProtectNumeric($this->o_topic->GetId()) . ' AND ' . $s_person . '.user_id <> ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
-
-			# if there's at least one person, build email
-			require_once 'Zend/Mail.php';
-			$email = new Zend_Mail('UTF-8');
-			if ($this->GetEmailAddresses($s_sql, $email))
-			{
-				$o_message = $this->o_topic->GetFinal();
-
-				# send the email
-				$s_title = StringFormatter::PlainText($this->o_topic->GetFilteredTitle());
-				$email->addTo($this->GetSettings()->GetSubscriptionEmailTo());
-				$email->setFrom($this->GetSettings()->GetSubscriptionEmailFrom(), $this->GetSettings()->GetSubscriptionEmailFrom());
-				$email->setSubject("Email alert: '" . $s_title . "'");
-
-				$email->setBodyText($this->GetHeader() .
-				trim(AuthenticationManager::GetUser()->GetName()) . ' has just replied to a topic in the ' . $this->GetSettings()->GetSiteName() . ' forum for which you subscribed to an email alert.' . "\n\n" .
-				"The topic is called '" . $s_title . "' - here's an excerpt of the new reply:\n\n" . $o_message->GetExcerpt() . "\n\n" .
-				"The topic is located at\n" . $o_message->GetNavigateUrl(true, false) . $this->GetFooter());
-
-				try
-				{
-					$email->send();
-				}
-				catch (Zend_Mail_Transport_Exception $e)
-				{
-					# Do nothing - email not that important so, if it fails, fail silently rather than raising a fatal error
-				}
-
 			}
 		}
 	}
@@ -303,8 +253,7 @@ class SubscriptionManager extends DataManager
 
 		if ($this->GetSettings()->HasContent(ContentType::FORUM))
 		{
-			$s_sql .= ', ' . $s_message . '.title, ' . $s_cat . '.id AS topic_forum_id, ' .
-				's_forums.name AS forum_name';
+			$s_sql .= ', s_forums.name AS forum_name';
 		}
 		if ($this->GetSettings()->HasContent(ContentType::PAGE_COMMENTS))
 		{
@@ -312,16 +261,13 @@ class SubscriptionManager extends DataManager
 		}
 		if ($this->GetSettings()->HasContent(ContentType::STOOLBALL_MATCH))
 		{
-			$s_sql .= ', ' . $s_match . '.match_title, ' . $s_match . '.start_time';
+			$s_sql .= ', ' . $s_match . '.match_title, ' . $s_match . '.start_time, ' . $s_match . ".short_url";
 		}
 
 		$s_sql .= ' FROM (((((((' . $s_sub;
 
 		$s_sql .= ($this->GetSettings()->HasContent(ContentType::FORUM))
-		?	' LEFT JOIN ' . $s_topic . ' ON ' . $s_sub . '.item_id = ' . $s_topic . '.id AND ' . $s_sub . ".item_type = " . ContentType::TOPIC . ") " .
-				' LEFT JOIN ' . $s_message . ' ON ' . $s_topic . '.first_message_id = ' . $s_message . '.id) ' .
-				' LEFT JOIN ' . $s_cat . ' ON ' . $s_topic . '.category_id = ' . $s_cat . '.id) ' .
-				' LEFT JOIN ' . $s_cat . ' AS s_forums ON ' . $s_sub . '.item_id = s_forums.id AND ' . $s_sub . ".item_type = " . ContentType::FORUM . ") "
+		?	    '))) LEFT JOIN ' . $s_cat . ' AS s_forums ON ' . $s_sub . '.item_id = s_forums.id AND ' . $s_sub . ".item_type = " . ContentType::FORUM . ") "
 				:	')))) ';
 
 				$s_sql .= ') ';

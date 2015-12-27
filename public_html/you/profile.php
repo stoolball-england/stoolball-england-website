@@ -117,15 +117,19 @@ class CurrentPage extends StoolballPage
 			{
 				$s_count = (count($this->a_messages) > 10) ? '10 newest of ' . $this->user->GetTotalMessages() . ' ' : '';
 
-				echo new XhtmlElement('h2', Html::Encode($this->user->GetName() . "'s " . $s_count . 'forum messages'));
+				echo new XhtmlElement('h2', Html::Encode($this->user->GetName() . "'s " . $s_count . 'comments'));
 
 				$o_list = new XhtmlElement('ul');
 				
 				foreach($this->a_messages as $o_message)
 				{
-					$o_category = $o_message->GetCategory();
-					$o_item = new XhtmlElement('li', '<a typeof="sioc:Post" about="' . Html::Encode($o_message->MessageLinkedDataUri()) . '" href="' . Html::Encode($o_message->GetNavigateUrl(false)) . '">' . $o_message->GetFilteredTitle(true) . '</a> in <strong>' . Html::Encode($o_category->GetName()) . '</strong>' .
-					'<div class="detail">Posted ' . Date::BritishDateAndTime($o_message->GetDate()) . '</div>');
+					$o_item = new XhtmlElement('li');
+					$subscribed_to = $o_message->GetFilteredTitle(true); 
+					if ($o_message->GetReviewItem() instanceof ReviewItem and $o_message->GetReviewItem()->GetNavigateUrl(true)) {
+					   $subscribed_to = '<a typeof="sioc:Post" about="' . Html::Encode($o_message->MessageLinkedDataUri()) . '" href="' . Html::Encode($o_message->GetReviewItem()->GetNavigateUrl(true)) . '#message' . $o_message->GetId() . '">' . $subscribed_to . '</a>';
+                    }
+                    $o_item->AddControl($subscribed_to);
+					$o_item->AddControl('<div class="detail">Posted ' . Date::BritishDateAndTime($o_message->GetDate()) . '</div>');
                     $o_item->AddAttribute("rel", "sioc:creator_of");
 					$o_list->AddControl($o_item);
 				}

@@ -165,15 +165,15 @@ class TopicManager extends DataManager
 	 */
 	public function ReadMessagesByUser($user_id)
 	{
-		$categories = $this->GetSettings()->GetTable('Category');
-		$topics = $this->GetSettings()->GetTable('ForumTopic');
 		$messages = $this->GetSettings()->GetTable('ForumMessage');
 
 		$s_sql = 'SELECT this_person_messages.topic_id, this_person_messages.id AS message_id, this_person_messages.title, topic_first_message.title AS first_message_title, ' .
-		"this_person_messages.date_added AS message_date, " . $categories . '.name AS category ' .
-		'FROM (((' . $messages . ' AS this_person_messages INNER JOIN ' . $topics . ' ON this_person_messages.topic_id = ' . $topics . '.id) ' .
-		'INNER JOIN ' . $messages . ' AS topic_first_message ON ' . $topics . '.first_message_id = topic_first_message.id) ' .
-		'INNER JOIN ' . $categories . ' ON ' . $topics . '.category_id = ' . $categories . '.id) ' .
+		"this_person_messages.date_added AS message_date, " .
+		"nsa_match.short_url " .
+		'FROM (((' . $messages . ' AS this_person_messages INNER JOIN nsa_forum_topic ON this_person_messages.topic_id = nsa_forum_topic.id) ' .
+		'INNER JOIN ' . $messages . ' AS topic_first_message ON nsa_forum_topic.first_message_id = topic_first_message.id) ' .
+		'INNER JOIN nsa_forum_topic_link ON nsa_forum_topic.id = nsa_forum_topic_link.topic_id) ' .
+		'LEFT JOIN nsa_match ON nsa_forum_topic_link.item_id = nsa_match.match_id AND nsa_forum_topic_link.item_type = ' . ContentType::STOOLBALL_MATCH . ' ' .
 		'WHERE this_person_messages.user_id = ' . Sql::ProtectNumeric($user_id, false) . ' ' .
 		'ORDER BY this_person_messages.date_added DESC ' .
 		'LIMIT 0,11';
@@ -189,10 +189,10 @@ class TopicManager extends DataManager
 			$o_message->SetTitle($o_row->title ? $o_row->title : $o_row->first_message_title);
 			$o_message->SetDate($o_row->message_date);
 
-			$o_category = new Category();
-			$o_category->SetName($o_row->category);
-			$o_message->SetCategory($o_category);
-
+			$review_item = new ReviewItem($this->GetSettings());
+            $review_item->SetNavigateUrl($this->o_settings->GetClientRoot() . $o_row->short_url);
+			$o_message->SetReviewItem($review_item);
+			
 			$messages[] = $o_message;
 		}
 		$result->closeCursor();
@@ -601,9 +601,6 @@ class TopicManager extends DataManager
         $this->ValidateNumericArray($ids);
         $ids = implode(',', $ids);
         
-        $sql = "DELETE FROM nsa_email_subscription WHERE item_id IN ($ids) AND item_type = " . ContentType::TOPIC;
-        $this->GetDataConnection()->query($sql);
-    
         $sql = "DELETE FROM nsa_forum_topic_link WHERE topic_id IN ($ids)";
         $this->GetDataConnection()->query($sql);
 
