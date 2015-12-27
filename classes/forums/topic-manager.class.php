@@ -302,7 +302,6 @@ class TopicManager extends DataManager
 		{
 			$o_topic = new ForumTopic($this->GetSettings());
 			$o_topic->SetId($o_row->id);
-			if (isset($o_row->views)) $o_topic->SetViews($o_row->views);
 
 			if (isset($o_row->first_message_title))
 			{
@@ -422,7 +421,6 @@ class TopicManager extends DataManager
 			"title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
 			"message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
 			'ip = ' . $s_ip . ', ' .
-			'views = 0, ' .
 			'sort_override = 0';
 
 			$o_result = $this->GetDataConnection()->query($s_sql);
@@ -506,7 +504,6 @@ class TopicManager extends DataManager
 			"title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
 			"message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
 			'ip = ' . $s_ip . ', ' .
-			'views = 0, ' .
 			'sort_override = 0';
 
 			$this->Lock(array($s_topic, $s_message, $s_reg));
@@ -587,59 +584,6 @@ class TopicManager extends DataManager
 
 		return $topic;
 	}
-
-	function IncrementViews(ForumTopic $o_topic)
-	{
-		/* @var $o_result MySqlRawData */
-
-		# don't count administrator views (ie: mine)
-		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_FORUMS)) return false;
-
-		# don't count view when you've just been redirected from posting
-		if (!isset($_GET['countview']) or (isset($_GET['countview']) and $_GET['countview'] != 'no'))
-		{
-
-			# check that this is a new view by comparing page and querystring
-			$s_referer = (isset($_SERVER['HTTP_REFERER'])) ? $_SERVER['HTTP_REFERER'] : '';
-			$s_prev_page = $s_referer;
-			$s_server = 'http://' . $_SERVER['SERVER_NAME'];
-			$s_prev_page = substr($s_prev_page, strlen($s_server));
-			if (strpos($s_prev_page, '?')) $s_prev_page = substr($s_prev_page, 0, strpos($s_prev_page, '?'));
-
-			$s_prev_qs = substr($s_referer, strpos($s_referer, '?')+1);
-			$s_prev_qs = QueryStringBuilder::RemoveParameter('page', $s_prev_qs);
-			$s_qs = QueryStringBuilder::RemoveParameter('page', $_SERVER['QUERY_STRING']);
-
-
-			if (($s_prev_page != $_SERVER['PHP_SELF']) or ($s_prev_qs != $s_qs))
-			{
-
-				# check we've got a topic
-				if ($o_topic->GetId())
-				{
-					$s_message = $this->o_settings->GetTable('ForumMessage');
-					$s_sql = 'UPDATE ' . $s_message . ' ' .
-					'SET views = views+1 ' .
-					'WHERE topic_id = ' . Sql::ProtectNumeric($o_topic->GetId());
-
-					$this->Lock(array($s_message));
-					$o_result = $this->GetDataConnection()->query($s_sql);
-					if ($this->GetDataConnection()->isError()) die('Failed to update views.');
-					$this->Unlock();
-
-					return true;
-				}
-				else
-				{
-					die('No topic specified when trying to update views');
-
-					return false;
-				}
-			}
-			else return false; # not a new view
-		}
-	}
-
 
 	/**
 	 * @access public

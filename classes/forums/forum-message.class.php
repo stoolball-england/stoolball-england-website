@@ -370,18 +370,11 @@ class ForumMessage
 	}
 
 	# get url of message
-	function GetNavigateUrl($b_plain_text = false, $b_relative=true, $b_count_view=true)
+	function GetNavigateUrl($b_plain_text = false, $b_relative=true)
 	{
 		$s_text = '';
 		if (!$b_relative) $s_text = 'https://' . $this->o_settings->GetDomain();
 		$s_text .= $this->o_settings->GetFolder('Forums') . 'topic.php?';
-
-		# don't count views if just posted
-		if (!$b_count_view)
-		{
-			$s_text .= 'countview=no&';
-			if (!$b_plain_text) $s_text .= 'amp;';
-		}
 
 		# specify topic and message
 		$s_text .= 'topic=' . $this->GetTopicId() . '&';

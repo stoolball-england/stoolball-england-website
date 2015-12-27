@@ -79,7 +79,7 @@ class CommentPage extends StoolballPage
 				$o_subs->SaveSubscription($this->o_review_item->GetId(), $this->o_review_item->GetType(), AuthenticationManager::GetUser()->GetId());
 
 			# redirect user back to the item
-			$s_redirect_location = ($_POST['page']) ? str_replace('&amp;', '&', $_POST['page']) : $o_new_message->GetNavigateUrl(true, false, false);
+			$s_redirect_location = ($_POST['page']) ? str_replace('&amp;', '&', $_POST['page']) : $o_new_message->GetNavigateUrl(true, false);
 			# override defaults if path has been remembered intact
 
 			$this->Redirect($s_redirect_location);

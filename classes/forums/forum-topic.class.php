@@ -7,7 +7,6 @@ class ForumTopic extends Collection
 {
 	var $o_settings;
 	var $i_topic_id;
-	var $i_views;
 	var $o_review_item;
 	var $o_category;
 	
@@ -84,16 +83,6 @@ class ForumTopic extends Collection
 	{
 		$o_message = $this->GetFirst();
 		return is_object($o_message) ? $o_message->GetFilteredTitle() : null;
-	}
-
-	function SetViews($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_views = (int)$i_input;
-	}
-	
-	function GetViews()
-	{
-		return $this->i_views;
 	}
 
 	/**

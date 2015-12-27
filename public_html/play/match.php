@@ -90,9 +90,6 @@ class CurrentPage extends StoolballPage
 			$this->topic = $topic_manager->GetFirst();
 		}
 
-		# update forum stats
-		if (isset($this->topic) and $this->topic->GetCount()) $topic_manager->IncrementViews($this->topic);
-
 		unset($topic_manager);
 		
         if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
