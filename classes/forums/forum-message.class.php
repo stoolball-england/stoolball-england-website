@@ -13,12 +13,6 @@ class ForumMessage
 	private $o_user;
 	private $o_filter;
 	private $i_message_id;
-	private $s_topic_title;
-	private $s_topic_title_filtered;
-	private $o_category;
-	private $s_title;
-	private $s_title_filtered;
-	private $s_title_formatted;
 	private $i_date;
 	private $o_person;
 	private $s_body;
@@ -46,119 +40,6 @@ class ForumMessage
 	function GetId()
 	{
 		return $this->i_message_id;
-	}
-
-	/**
-	 * @return void
-	 * @param string $s_input
-	 * @desc Sets the title of the forum topic
-	 */
-	function SetTopicTitle($s_input)
-	{
-		$this->s_topic_title = (string)$s_input;
-
-		# Reset to force re-filtering
-		$this->s_topic_title_filtered;
-	}
-
-	/**
-	 * @return string
-	 * @desc Gets the title of the forum topic
-	 */
-	function GetTopicTitle()
-	{
-		return $this->s_topic_title;
-	}
-
-	/**
-	 * @return string
-	 * @desc Gets the title of the forum topic with swear filtering applied
-	 */
-	function GetFilteredTopicTitle()
-	{
-		if (!$this->s_topic_title_filtered)
-		{
-			if (!is_object($this->o_filter)) $this->o_filter = new BadLanguageFilter();
-			$this->s_topic_title_filtered = $this->o_filter->Filter($this->GetTopicTitle());
-		}
-		return $this->s_topic_title_filtered;
-	}
-
-	function SetCategory(Category $o_input)
-	{
-		$this->o_category = $o_input;
-	}
-
-	function GetCategory()
-	{
-		return $this->o_category;
-	}
-
-	/**
-	 * @return void
-	 * @param string $s_input
-	 * @desc Sets the title of the forum message
-	 */
-	function SetTitle($s_input)
-	{
-		if (is_string($s_input))
-		{
-			$this->s_title = $s_input;
-
-			# Reset to force re-filtering/formatting
-			$this->s_title_filtered = '';
-			$this->s_title_formatted = '';
-		}
-	}
-
-	/**
-	 * @return string
-	 * @param bool $b_force
-	 * @desc Gets the title of the forum message
-	 */
-	function GetTitle($b_force=false)
-	{
-		# default to using this message's title
-		$s_text = $this->s_title;
-
-		# can force every message to have a title by using topic title
-		if (!$s_text and $b_force) $s_text = $this->GetTopicTitle();
-
-		return $s_text;
-	}
-
-	/**
-	 * @return string
-	 * @param bool $b_force
-	 * @desc Gets the title of the forum message with swear filtering applied
-	 */
-	function GetFilteredTitle($b_force=false)
-	{
-		if (!$this->s_title_filtered)
-		{
-			if (!is_object($this->o_filter)) $this->o_filter = new BadLanguageFilter();
-			$this->s_title_filtered = $this->o_filter->Filter($this->GetTitle());
-
-			# can force every message to have a title by using topic title
-			if (!$this->s_title_filtered and $b_force)
-			{
-				return $this->GetFilteredTopicTitle();
-			}
-		}
-		return $this->s_title_filtered;
-	}
-
-	/**
-	 * @return string
-	 * @desc Gets the title of the forum message with swear filtering and HTML encoding applied
-	 */
-	function GetFormattedTitle()
-	{
-		if (!$this->s_title_formatted)
-		{
-			$this->s_title_formatted = htmlentities($this->GetFilteredTitle(), ENT_QUOTES, "UTF-8", false);
-		}
-		return $this->s_title_formatted;
 	}
 
 	/**

@@ -104,7 +104,6 @@ class ForumTopicListing extends Placeholder
 				if (isset($_GET['hi']) and $_GET['hi'])
 				{
 					$o_term = new SearchTerm($_GET['hi']);
-					$message->SetTitle(SearchHighlighter::Highlight($o_term->GetTerms(), $message->GetTitle()));
 					$message->SetBody(SearchHighlighter::Highlight($o_term->GetTerms(), $message->GetBody()));
 				}
 
@@ -119,11 +118,6 @@ class ForumTopicListing extends Placeholder
 				            ' rel="sioc:has_container" rev="sioc:container_of" resource="' . $this->topic->TopicLinkedDataUri() . '">' . 
 				            '<h2 class="aural" about="' . $message->MessageLinkedDataUri() . '"' . $reply_of . '><span about="' . $message->MessageLinkedDataUri() . '"' . $has_reply . '>Message ' . $position_in_topic . '</span></h2>';
 				$position_in_topic++;
-
-                # message title
-                if($message->GetTitle()) {
-                  $s_text .= '<h3 class="small">' . $message->GetFormattedTitle() . '</h3>' . "\n";  
-                } 
 
                 # add profile
                 $s_text .= '<div class="profile';
@@ -144,11 +138,6 @@ class ForumTopicListing extends Placeholder
                 $s_text .= '<div about="' . $message->MessageLinkedDataUri() . '" rel="awol:content" class="message';
                 if ($b_alternate) $s_text .= " altMessage";
                 $s_text .= '"><div typeof="awol:Content"><meta property="awol:type" content="text/html" /><div property="awol:body">';
-                if($message->GetTitle())
-                {
-                    $title = $message->GetTitle() ? '<span about="' . $message->MessageLinkedDataUri() . '" property="dcterms:title">' . $message->GetFormattedTitle() . '</span>' : "";
-                  $s_text .= '<h3 class="large">' . $title . '</h3>' . "\n";  
-                } 
                 $s_text .= $message->GetFormattedBody($this->o_settings);
                 $s_text .= "</div></div>";
                 

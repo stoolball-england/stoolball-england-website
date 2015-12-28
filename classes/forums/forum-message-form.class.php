@@ -55,7 +55,6 @@ class ForumMessageForm extends XhtmlForm
 	{
 		$o_review_item = $this->o_topic->GetReviewItem();
 
-		$s_topic_name = 'comments';
 		switch ($o_review_item->GetType())
 		{
 			case ContentType::STOOLBALL_MATCH:
@@ -88,18 +87,6 @@ class ForumMessageForm extends XhtmlForm
 			$s_text .= '" />' . "\n";
 		}
 
-		$s_text .= '<p><label for="title">Title of your ' . $s_topic_name;
-
-		if($this->GetFormat() == ForumMessageFormat::ReviewReply())
-		{
-			$s_text .= ' <small>(optional)</small>';
-		}
-
-		$s_text .= '</label><input type="text" id="title" name="title" maxlength="200" value="';
-		if (isset($_POST['title']) and $_POST['title']) $s_text .= stripslashes($_POST['title']);
-		else if (isset($_GET['title']) and $_GET['title']) $s_text .= stripslashes($_GET['title']);
-		$s_text .= '" /></p>' . "\n";
-
 		$s_text .= '<label for="message" class="aural">Your ' . $this->GetMessageText() . '</label>' . "\n" .
 		'<textarea name="message" id="message">';
 		if (isset($_POST['message']))	$s_text .= stripslashes($_POST['message']);
@@ -107,7 +94,7 @@ class ForumMessageForm extends XhtmlForm
 		'<label for="subscribe"><input type="checkbox"  name="subscribe" id="subscribe" value="1"';
 		if (($_SERVER['REQUEST_METHOD'] != 'POST') or (isset($_POST['subscribe']) and $_POST['subscribe'])) $s_text .= ' checked="checked"';
 		$s_text .= ' /> Send an email alert whenever anyone ' . $s_post_pod_text . '</label></p>' . "\n" .
-		'<input type="submit" class="submit" value="Post ' . $this->GetMessageText() . '" name="action" title="Click here to post your ' . $this->GetMessageText() . '" />' . "\n" .
+		'<input type="submit" class="submit" value="Post ' . $this->GetMessageText() . '" name="action" />' . "\n" .
 		'</form>' . "\n\n" .
 		'<script type="text/javascript">' . "\n" .
 		"document.getElementById('title').focus();\n" .

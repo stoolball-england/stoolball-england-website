@@ -50,15 +50,14 @@ class CommentPage extends StoolballPage
 		$this->o_error_list->AddAttribute('class', 'validationSummary');
 
 		# check required fields have some content
-		if (!trim($_POST['title']))
-			$this->o_error_list->AddControl(new XhtmlElement('li', 'Please give your comments a title'));
-		if (!trim($_POST['message']))
+		if (!trim($_POST['message'])) {
 			$this->o_error_list->AddControl(new XhtmlElement('li', 'Please complete your comments before clicking the "Post comments" button'));
+        }
 
 		#if no errors found, create message
 		if (!$this->o_error_list->CountControls())
 		{
-			$message = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message']);
+			$message = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['message']);
 
 			# send subscription emails
 			require_once ('forums/subscription-manager.class.php');

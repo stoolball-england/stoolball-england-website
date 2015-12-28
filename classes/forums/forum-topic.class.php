@@ -7,7 +7,6 @@ class ForumTopic extends Collection
 {
 	var $o_settings;
 	var $o_review_item;
-	var $o_category;
 	
 	function ForumTopic(SiteSettings $o_settings, $a_items=null)
 	{
@@ -31,68 +30,10 @@ class ForumTopic extends Collection
 	{
 		if ($o_input instanceof $this->s_item_class)
 		{
-			if ($this->GetTitle()) $o_input->SetTopicTitle($this->GetTitle());
-			else $o_input->SetTopicTitle($o_input->GetTitle());
-
 			# add to array, optionally allowing index to be specified
 			if ($i_pos != null and is_numeric($i_pos)) $this->a_items[$i_pos] = $o_input;
 			else $this->a_items[] = $o_input;
 		}
-	}
-	
-	# TODO: this method has a bug if you assign specific index numbers using Add()
-	function UpdateFinalMessage(ForumMessage $o_input)
-	{
-		$this->a_items[count($this->a_items)-1] = $o_input;
-	}
-
-	/**
-	* @return string
-	* @desc Gets the title of the forum message
-	*/
-	function GetTitle()
-	{
-		$o_message = $this->GetFirst();
-		return is_object($o_message) ? $o_message->GetTitle() : null;
-	}
-	
-	/**
-	* @return string
-	* @desc Gets the title of the forum topic with swear filtering applied
-	*/
-	function GetFilteredTitle()
-	{
-		$o_message = $this->GetFirst();
-		return is_object($o_message) ? $o_message->GetFilteredTitle() : null;
-	}
-
-	/**
-	 * Sets the category (forum) the topic is in
-	 * @param Category $o_input
-	 * @return void
-	 */
-	public function SetCategory(Category $o_input)
-	{
-		$this->o_category = $o_input;
-	}
-	
-	/**
-	 * Gets the category (forum) the topic is in
-	 * @return Category
-	 */
-	public function GetCategory()
-	{
-		# internal property may be set if it's a new topic which doesn't yet have any messages
-		if ($this->o_category instanceof Category) 
-		{
-			return $this->o_category;
-		}
-		else if (count($this->a_items) > 0 and $this->a_items[0] instanceof ForumMessage) 
-		{
-			#otherwise we can get the category from any of the message objects
-			return $this->a_items[0]->GetCategory();
-		}
-		else return null;
 	}
 
 	/**

@@ -3,7 +3,6 @@ class Subscription
 {
 	var $o_settings;
 	var $i_type;
-	var $o_category;
 	var $i_subscribed_item_id;
 	var $s_title;
 	var $s_content_date;
@@ -23,16 +22,6 @@ class Subscription
 	function GetType()
 	{
 		return $this->i_type;
-	}
-
-	function SetCategory(Category $o_input)
-	{
-		$this->o_category = $o_input;
-	}
-
-	function GetCategory()
-	{
-		return $this->o_category;
 	}
 
 	function SetSubscribedItemId($i_input)

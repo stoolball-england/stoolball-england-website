@@ -59,7 +59,7 @@ class TopicManager extends DataManager
 		# prepare command
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
 		'location, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
-		$s_message . '.id, ' . $s_message . '.title, message, ' . $s_message . ".date_added AS message_date " .
+		$s_message . '.id, ' . $s_message . '.message, ' . $s_message . ".date_added AS message_date " .
 		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ' .
         'WHERE ' . $s_message . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
 
@@ -88,7 +88,6 @@ class TopicManager extends DataManager
 			
 			$o_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
 			$o_message->SetId($o_row->id);
-			$o_message->SetTitle($o_row->title);
 			$o_message->SetDate($o_row->message_date);
 			$o_message->SetBody($o_row->message);
 			$o_message->SetUser($o_person);
@@ -107,7 +106,7 @@ class TopicManager extends DataManager
 	 */
 	public function ReadMessagesByUser($user_id)
 	{
-		$s_sql = 'SELECT nsa_forum_message.id AS message_id, nsa_forum_message.title, nsa_forum_message.date_added AS message_date, ' .
+		$s_sql = 'SELECT nsa_forum_message.id AS message_id, nsa_forum_message.date_added AS message_date, ' .
 		"nsa_match.short_url, nsa_match.match_title " .
 		'FROM nsa_forum_message INNER JOIN nsa_match ON nsa_forum_message.item_id = nsa_match.match_id AND nsa_forum_message.item_type = ' . ContentType::STOOLBALL_MATCH . ' ' .
 		'WHERE nsa_forum_message.user_id = ' . Sql::ProtectNumeric($user_id, false) . ' ' .
@@ -121,10 +120,10 @@ class TopicManager extends DataManager
 		{
 			$o_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
 			$o_message->SetId($o_row->message_id);
-			$o_message->SetTitle($o_row->title ? $o_row->title : $o_row->match_title);
 			$o_message->SetDate($o_row->message_date);
 
 			$review_item = new ReviewItem($this->GetSettings());
+            $review_item->SetTitle($o_row->match_title);
             $review_item->SetNavigateUrl($this->o_settings->GetClientRoot() . $o_row->short_url);
 			$o_message->SetReviewItem($review_item);
 			
@@ -139,17 +138,15 @@ class TopicManager extends DataManager
 	 * Saves a comment on an item
 	 *
 	 * @param ReviewItem $item_to_comment_on
-	 * @param string $s_title
 	 * @param string $s_body
 	 * @return ForumMessage
 	 */
-	public function SaveComment(ReviewItem $item_to_comment_on, $s_title, $s_body)
+	public function SaveComment(ReviewItem $item_to_comment_on, $s_body)
 	{
 		$user = AuthenticationManager::GetUser();
 
 		# create new message
 		$o_message = new ForumMessage($this->GetSettings(), $user);
-		$o_message->SetTitle($s_title);
 		$o_message->SetBody($s_body);
 		$o_message->SetReviewItem($item_to_comment_on);
 
@@ -166,7 +163,6 @@ class TopicManager extends DataManager
         'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
         'date_added = ' . gmdate('U') . ', ' .
         'date_changed = ' . gmdate('U') . ', ' .
-        "title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
         "message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
         'ip = ' . $s_ip . ', ' .
         'sort_override = 0, ' .

@@ -124,7 +124,7 @@ class CurrentPage extends StoolballPage
 				foreach($this->a_messages as $o_message)
 				{
 					$o_item = new XhtmlElement('li');
-					$subscribed_to = $o_message->GetFilteredTitle(true); 
+					$subscribed_to = $o_message->GetReviewItem()->GetTitle(); 
 					if ($o_message->GetReviewItem() instanceof ReviewItem and $o_message->GetReviewItem()->GetNavigateUrl(true)) {
 					   $subscribed_to = '<a typeof="sioc:Post" about="' . Html::Encode($o_message->MessageLinkedDataUri()) . '" href="' . Html::Encode($o_message->GetReviewItem()->GetNavigateUrl(true)) . '#message' . $o_message->GetId() . '">' . $subscribed_to . '</a>';
                     }

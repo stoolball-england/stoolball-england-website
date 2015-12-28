@@ -167,16 +167,18 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nsa_forum_message` (
   `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `topic_id` INT(8) UNSIGNED NOT NULL DEFAULT '0',
   `user_id` INT(6) UNSIGNED NOT NULL DEFAULT '0',
   `date_added` INT(10) UNSIGNED NULL DEFAULT NULL,
   `date_changed` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `title` VARCHAR(255) NULL DEFAULT NULL,
   `message` TEXT NOT NULL,
   `sort_override` INT(3) UNSIGNED NOT NULL DEFAULT '0',
   `ip` VARCHAR(15) NULL DEFAULT NULL,
+  `item_id` int(5) DEFAULT NULL,
+  `item_type` smallint(5) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  INDEX `topic_id` (`topic_id` ASC, `user_id` ASC),
+  INDEX `user_id` (`user_id` ASC),
+  INDEX `item_id` (`item_id` ASC),
+  INDEX `item_type` (`item_type` ASC),
   INDEX `sort_override` (`sort_override` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8

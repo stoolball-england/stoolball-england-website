@@ -88,7 +88,7 @@ class CurrentPage extends StoolballPage
 					$item_to_comment_on = new ReviewItem($this->GetSettings());
 					$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
 					$item_to_comment_on->SetId($o_current_match->GetId());
-					$message = $topic_manager->SaveComment($item_to_comment_on, $o_current_match->GetTitle(), $o_current_match->GetNewComment());
+					$message = $topic_manager->SaveComment($item_to_comment_on, $o_current_match->GetNewComment());
 
 					# send subscription emails - new object each time to reset list of who's already recieved an email
 					$subs_manager = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
