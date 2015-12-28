@@ -9,7 +9,6 @@ require_once ('forums/topic-manager.class.php');
 class CommentPage extends StoolballPage
 {
 	private $o_review_item;
-	private $o_category;
 	private $o_topic;
 	private $o_error_list;
 	/**
@@ -59,7 +58,7 @@ class CommentPage extends StoolballPage
 		#if no errors found, create message
 		if (!$this->o_error_list->CountControls())
 		{
-			$this->o_topic = $this->o_topic_manager->SaveComment($this->o_review_item, $this->GetCategories()->GetById($_POST['category_id']), $_POST['title'], $_POST['message'], $_POST['icon']);
+			$this->o_topic = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message'], $_POST['icon']);
 
 			# update new message for later use
 			$o_new_message = $this->o_topic->GetFinal();
@@ -110,18 +109,6 @@ class CommentPage extends StoolballPage
 	function OnPrePageLoad()
 	{
 		/* @var $o_review_item ReviewItem */
-
-		# store category id
-		if (isset($_POST['category_id']) and is_numeric($_POST['category_id']))
-		{
-			$this->o_category = $this->GetCategories()->GetById($_POST['category_id']);
-		}
-		else
-		{
-			# for new review topic, use correct category
-			$this->o_category = $this->GetSettings()->GetCommentsCategory($this->GetCategories(), $this->o_review_item->GetType());
-		}
-
 		$this->SetPageTitle('Add your comments');
 		$this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
 		$this->LoadClientScript("/scripts/tinymce.js");
@@ -138,7 +125,6 @@ class CommentPage extends StoolballPage
 		$this->Render();
 
 		# create topic
-		$this->o_topic->SetCategory($this->o_category);
 		$this->o_topic->SetReviewItem($this->o_review_item);
 
 		# create form
@@ -150,7 +136,7 @@ class CommentPage extends StoolballPage
 		$this->Render();
 
 		require_once ('forums/forum-topic-listing.class.php');
-		$o_listing = new ForumTopicListing($this->GetSettings(), $this->GetContext(), AuthenticationManager::GetUser(), $this->o_topic);
+		$o_listing = new ForumTopicListing($this->GetSettings(), AuthenticationManager::GetUser(), $this->o_topic);
 		$o_listing->SetFormat(ForumMessageFormat::ReviewReply());
 		echo $o_listing->__toString();
 	}

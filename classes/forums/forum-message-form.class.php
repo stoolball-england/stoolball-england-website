@@ -133,17 +133,8 @@ class ForumMessageForm extends XhtmlForm
 
 	function GetForm()
 	{
-		# if a new topic, check a category has been specified
-		if ($this->GetFormat() == ForumMessageFormat::Review())
-		{
-			if ($this->o_topic->GetCategory() == null)
-			{
-				die('No category specified for form');
-				return false;
-			}
-		}
 		# if a new reply, check a topic has been specified
-		else if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
+		if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
 		{
 			if ($this->o_topic->GetId() == null)
 			{
@@ -169,7 +160,6 @@ class ForumMessageForm extends XhtmlForm
 		}
 		else $s_topic_title = '';
 
-		$o_category = $this->o_topic->GetCategory();
 		$s_text = '<form action="' . $_SERVER['PHP_SELF'] . '" method="post" id="forumMessageForm">' . "\n" .
 		'<input type="hidden" name="format" id="format" value="' . $this->GetFormat() . '" />' . "\n" .
 		'<input type="hidden" name="page" id="page" value="';
@@ -186,7 +176,6 @@ class ForumMessageForm extends XhtmlForm
 			$s_text .= htmlentities($_SERVER['HTTP_REFERER']);
 		}
 		$s_text .= '" />' . "\n";
-		if ($o_category instanceof Category) $s_text .= '<input type="hidden" name="category_id" id="category_id" value="' . $o_category->GetId() . '" />' . "\n";
 
 		$s_text .= '<input type="hidden" name="topic_id" id="topic_id" value="' . $this->o_topic->GetId() . '" />' . "\n" .
 		'<input type="hidden" name="topic_title" id="topic_title" value="' . stripslashes($s_topic_title) . '" />' . "\n";

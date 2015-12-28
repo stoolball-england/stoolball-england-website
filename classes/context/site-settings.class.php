@@ -322,14 +322,6 @@ abstract class SiteSettings
     }
 
 	/**
-	 * Gets the forum category in which new comments should be posted, based on their item type
-	 *
-	 * @param CategoryCollection $o_categories
-	 * @param int $i_type
-	 */
-	public abstract function GetCommentsCategory(CategoryCollection $o_categories, $i_type);
-
-	/**
 	 * Gets the hostname to connect to the site database
 	 *
 	 * @return string

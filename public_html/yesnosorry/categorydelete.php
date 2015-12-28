@@ -25,6 +25,7 @@ class CurrentPage extends StoolballPage
 	function OnPageInit()
 	{
 		$this->manager = new CategoryManager($this->GetSettings(), $this->GetDataConnection());
+        $this->has_permission = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_CATEGORIES);
 		parent::OnPageInit();
 	}
 
@@ -94,7 +95,6 @@ class CurrentPage extends StoolballPage
 				?>
 				<p>Deleting a category cannot be undone.</p>
 				<ul>
-					<li>All forum messages will be put in the category with the lowest ID</li>
 					<li>Its competitions will not be listed in a category</li>
 				</ul> 
 					

@@ -73,7 +73,6 @@ class CurrentPage extends StoolballPage
 			require_once('forums/review-item.class.php');
 			require_once('forums/subscription-manager.class.php');
 			$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
-			$comments_category = $this->GetSettings()->GetCommentsCategory($this->GetCategories(), ContentType::STOOLBALL_MATCH);
 
 		    require_once ("search/lucene-search.class.php");
             $search = new LuceneSearch();
@@ -89,7 +88,7 @@ class CurrentPage extends StoolballPage
 					$item_to_comment_on = new ReviewItem($this->GetSettings());
 					$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
 					$item_to_comment_on->SetId($o_current_match->GetId());
-					$topic = $topic_manager->SaveComment($item_to_comment_on, $comments_category, $o_current_match->GetTitle(), $o_current_match->GetNewComment(), null);
+					$topic = $topic_manager->SaveComment($item_to_comment_on, $o_current_match->GetTitle(), $o_current_match->GetNewComment(), null);
 
 					# send subscription emails - new object each time to reset list of who's already recieved an email
 					$subs_manager = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());

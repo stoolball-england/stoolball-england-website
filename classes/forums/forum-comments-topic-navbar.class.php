@@ -7,12 +7,6 @@ require_once('text/string-formatter.class.php');
 class ForumCommentsTopicNavbar extends XhtmlElement
 {
     /**
-     * The situation of the current request
-     *
-     * @var SiteContext
-     */
-    var $o_context;
-    /**
      * Forum topic being viewed
      *
      * @var ForumTopic
@@ -20,9 +14,8 @@ class ForumCommentsTopicNavbar extends XhtmlElement
     var $o_topic;
     var $o_review_item;
 
-    public function __construct(SiteContext $o_context, ForumTopic $o_topic, $o_review_item)
+    public function __construct(ForumTopic $o_topic, $o_review_item)
     {
-        $this->o_context = $o_context;
         $this->o_topic = $o_topic;
         $this->o_review_item = $o_review_item;
 
@@ -39,11 +32,10 @@ class ForumCommentsTopicNavbar extends XhtmlElement
 		$i_item_id = $this->o_review_item->GetId();
 		$i_item_type = $this->o_review_item->GetType();
 		
-		$o_top_level = $this->o_context->GetByHierarchyLevel(2);
 		$s_page = urlencode($_SERVER['REQUEST_URI']);
-		$s_subscribe_link = $o_top_level->GetNavigateUrl() . 'subscribe.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
+		$s_subscribe_link = '/play/subscribe.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
 		$s_subscribe_title = 'Get an email alert every time there are new comments on this page';
-		$s_review_link = $o_top_level->GetNavigateUrl() . 'comment.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
+		$s_review_link = '/play/comment.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
 		if (isset($_GET['cid'])) 
 		{
 			$s_subscribe_link .= '&amp;cid=' . $_GET['cid'];

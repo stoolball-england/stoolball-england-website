@@ -11,11 +11,6 @@ require_once('http/query-string.class.php');
 class TopicManager extends DataManager
 {
 	private $b_reverse_order = false;
-	/**
-	 * Categories for the forum
-	 * @var CategoryCollection
-	 */
-	private $categories;
 
 	/**
 	 * @return TopicManager
@@ -27,25 +22,6 @@ class TopicManager extends DataManager
 	{
 		parent::DataManager($o_settings, $o_db);
 		$this->s_item_class = 'ForumTopic';
-	}
-
-	/**
-	 * Sets the forum categories which may contain topics
-	 * @param CategoryCollection $categories
-	 * @return void
-	 */
-	public function SetCategories(CategoryCollection $categories)
-	{
-		$this->categories = $categories;
-	}
-
-	/**
-	 * Gets the forum categories which may contain topics
-	 * @return CategoryCollection
-	 */
-	public function GetCategories()
-	{
-		return $this->categories;
 	}
 
 	/**
@@ -95,7 +71,7 @@ class TopicManager extends DataManager
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
 		'location, signature, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
 		$s_message . '.id, ' . $s_message . '.title, message, icon, ' . $s_message . '.topic_id, ' .
-		$s_message . ".date_added AS message_date, category_id " .
+		$s_message . ".date_added AS message_date " .
 		'FROM ((' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id) ' .
 		'INNER JOIN ' . $s_topic . ' ON ' . $s_message . '.topic_id = ' . $s_topic . '.id) ';
 
@@ -136,10 +112,6 @@ class TopicManager extends DataManager
 			$o_message->SetBody($o_row->message);
 			$o_message->SetIcon($o_row->icon);
 			$o_message->SetUser($o_person);
-
-			$o_category = new Category();
-			$o_category->SetId($o_row->category_id);
-			$o_message->SetCategory($o_category);
 
 			$o_topic->Add($o_message);
 		}
@@ -351,13 +323,6 @@ class TopicManager extends DataManager
 				unset($o_last_message);
 			}
 
-			if (isset($o_row->category))
-			{
-				$o_category = new Category();
-				$o_category->SetName($o_row->category);
-				$o_topic->SetCategory($o_category);
-			}
-
 			$this->Add($o_topic);
 		}
 	}
@@ -371,7 +336,6 @@ class TopicManager extends DataManager
 	 */
 	public function SaveNewTopic(ForumTopic $o_topic)
 	{
-		/* @var $o_category Category */
 		/* @var $o_result MySQLRawData */
 
 		# Create table aliases
@@ -381,9 +345,7 @@ class TopicManager extends DataManager
 		$s_reg = $this->o_settings->GetTable('User');
 
 		# create new topic in db
-		$o_category = $o_topic->GetCategory();
 		$s_sql = 'INSERT INTO ' . $s_topic . ' SET ' .
-		'category_id = ' . Sql::ProtectNumeric($o_category->GetId()) . ', ' .
 		'first_message_id = null, ' .
 		'last_message_id = null, ' .
 		'total_messages = 0, ' .
@@ -537,13 +499,12 @@ class TopicManager extends DataManager
 	 * Saves a comment on an item
 	 *
 	 * @param ReviewItem $item_to_comment_on
-	 * @param Category $category
 	 * @param string $s_title
 	 * @param string $s_body
 	 * @param string $s_icon
 	 * @return ForumTopic
 	 */
-	public function SaveComment($item_to_comment_on, $category, $s_title, $s_body, $s_icon)
+	public function SaveComment($item_to_comment_on, $s_title, $s_body, $s_icon)
 	{
 		$user = AuthenticationManager::GetUser();
 
@@ -557,7 +518,6 @@ class TopicManager extends DataManager
 		$this->ReadReviewTopicId($item_to_comment_on);
 		$topic = $this->GetFirst();
 		if (!is_object($topic)) $topic = new ForumTopic($this->GetSettings());
-		$topic->SetCategory($category);
 		$topic->SetReviewItem($item_to_comment_on);
 		$topic->Add($o_new_message);
 

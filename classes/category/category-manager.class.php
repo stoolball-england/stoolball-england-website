@@ -245,11 +245,6 @@ class CategoryManager extends DataManager
 		# get category IDs
 		$category = $this->GetSettings()->GetTable('Category');
 		$s_ids = join(', ', $a_ids);
-
-		# Re-assign forum topics to another category
-		$topics = $this->GetSettings()->GetTable('ForumTopic');
-		$sql = "UPDATE $topics SET category_id = (SELECT MIN(id) FROM $category WHERE id NOT IN ($s_ids)) WHERE category_id IN ($s_ids)";
-		$this->GetDataConnection()->query($sql);
 		
 		# Remove competitions from category
 		$competitions = $this->GetSettings()->GetTable('Competition');

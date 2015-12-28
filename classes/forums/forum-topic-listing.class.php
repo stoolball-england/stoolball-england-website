@@ -8,7 +8,6 @@ require_once('xhtml/placeholder.class.php');
 class ForumTopicListing extends Placeholder
 {
 	var $o_settings;
-	var $o_context;
 	var $o_user;
 	/**
 	 * The topic being displayed
@@ -19,10 +18,9 @@ class ForumTopicListing extends Placeholder
 	var $o_navbar;
 	var $i_format;
 
-	function ForumTopicListing(SiteSettings $o_settings, SiteContext $o_context, User $o_user, ForumTopic $topic)
+	function ForumTopicListing(SiteSettings $o_settings, User $o_user, ForumTopic $topic)
 	{
 		$this->o_settings = $o_settings;
-		$this->o_context = $o_context;
 		$this->o_user = $o_user;
 		$this->topic = $topic;
         $this->SetFormat(ForumMessageFormat::Review());

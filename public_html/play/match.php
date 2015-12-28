@@ -160,8 +160,8 @@ class CurrentPage extends StoolballPage
 		require_once('forums/forum-comments-topic-navbar.class.php');
 		if (!isset($this->topic)) $this->topic = new ForumTopic($this->GetSettings());
 		$this->topic->SetReviewItem($this->review_item);
-		$o_review_topic = new ForumTopicListing($this->GetSettings(), $this->GetContext(), AuthenticationManager::GetUser(), $this->topic);
-        $o_review_topic->SetNavbar(new ForumCommentsTopicNavbar($this->GetContext(), $this->topic, null));
+		$o_review_topic = new ForumTopicListing($this->GetSettings(), AuthenticationManager::GetUser(), $this->topic);
+        $o_review_topic->SetNavbar(new ForumCommentsTopicNavbar($this->topic, null));
         echo $o_review_topic;
 
 	    $this->ShowSocial();

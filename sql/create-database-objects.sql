@@ -190,13 +190,12 @@ COMMENT = 'Messages in stoolball forums';
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nsa_forum_topic` (
   `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `category_id` INT(3) UNSIGNED NOT NULL DEFAULT '0',
   `first_message_id` INT(8) UNSIGNED NULL DEFAULT '0',
   `last_message_id` INT(8) UNSIGNED NULL DEFAULT '0',
   `total_messages` INT(4) UNSIGNED NOT NULL DEFAULT '0',
   `status` ENUM('open', 'closed', 'moved') NOT NULL DEFAULT 'open',
   PRIMARY KEY (`id`),
-  INDEX `category_id` (`category_id` ASC, `first_message_id` ASC, `last_message_id` ASC))
+  INDEX `category_id` (`first_message_id` ASC, `last_message_id` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'Topics in Stoolball forums';
