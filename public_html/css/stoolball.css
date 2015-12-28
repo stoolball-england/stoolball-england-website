@@ -437,7 +437,6 @@ dl.decision dd { margin-left: 22px; }
 .forumTopic .profile a { margin: 0; }
 .forumTopic .profile ul { margin: 1em .5em 0 0; padding: 0; list-style-type: none; font-size: .75em; }
 .forumTopic .profile ul li { margin: .5em 0; }
-.forumTopic .forumRole { display: block; margin: .5em 0; }
 
 .forumTopic .message { width: 78%; float: left; padding: 1em 0 1em 2%; margin-left: -2px; z-index: 10; position: relative; top: 0; left: 0; }
 .forumTopic h3 { margin: 0 0 .3em; font-style: normal; text-indent: -.1em; } 

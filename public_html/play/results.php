@@ -94,7 +94,6 @@ class CurrentPage extends StoolballPage
 					# send subscription emails - new object each time to reset list of who's already recieved an email
 					$subs_manager = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
 					$subs_manager->SetTopic($topic);
-					$subs_manager->SendCategorySubscriptions($comments_category);
 					$subs_manager->SendCommentsSubscriptions($item_to_comment_on);
 					unset($subs_manager);
 				}

@@ -33,8 +33,6 @@ class PermissionsEditor extends RelatedItemEditor
 		$this->permissions = array(
             new IdValue(PermissionType::ViewPage(), ucfirst(PermissionType::Text(PermissionType::ViewPage()))),
             new IdValue(PermissionType::ForumAddMessage(), ucfirst(PermissionType::Text(PermissionType::ForumAddMessage()))),
-            new IdValue(PermissionType::ForumSubscribe(), ucfirst(PermissionType::Text(PermissionType::ForumSubscribe()))),
-            new IdValue(PermissionType::MANAGE_FORUMS, ucfirst(PermissionType::Text(PermissionType::MANAGE_FORUMS))),
             new IdValue(PermissionType::EditPersonalInfo(), ucfirst(PermissionType::Text(PermissionType::EditPersonalInfo()))),
             new IdValue(PermissionType::MANAGE_CATEGORIES, ucfirst(PermissionType::Text(PermissionType::MANAGE_CATEGORIES))),
             new IdValue(PermissionType::MANAGE_USERS_AND_PERMISSIONS, ucfirst(PermissionType::Text(PermissionType::MANAGE_USERS_AND_PERMISSIONS))),

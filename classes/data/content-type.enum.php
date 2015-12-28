@@ -14,23 +14,9 @@ class ContentType
 	{
 		switch($type)
 		{
-			case ContentType::UNKNOWN: return 'l';
-			case ContentType::FORUM: return 'category';
 			case ContentType::STOOLBALL_MATCH: return 'match';
 		}
 	}
-
-	/**
-	 * @return int
-	 * @desc Unknown content type
-	 */
-	const UNKNOWN = 0;
-
-	/**
-	 * @return int
-	 * @desc A forum allowing visitors to post comments
-	 */
-	const FORUM = 4;
 
 	/**
 	 * @return int

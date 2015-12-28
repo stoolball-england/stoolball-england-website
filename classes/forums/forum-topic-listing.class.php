@@ -131,7 +131,6 @@ class ForumTopicListing extends Placeholder
                 $s_text .= '"><p about="' . $message->MessageLinkedDataUri() . '"><span class="small">Posted by </span>' . 
                 '<span rel="sioc:has_creator" rev="sioc:creator_of"><a typeof="sioc:UserAccount" about="' . $o_person->GetLinkedDataUri() . '" href="' . $o_person->GetUserProfileUrl() . '">' . $o_person->GetName() . '</a></span>';
                 if ($o_person->GetLocation()) $s_text .= '<span class="small">, ' . $o_person->GetLocation() . "</span>";
-                if ($o_person->Permissions()->HasPermission(PermissionType::MANAGE_FORUMS)) $s_text .= ' <strong class="forumRole">(Moderator)</strong>';
                 $s_text .= '<span class="small" property="dcterms:created" content="' . Date::Microformat($message->GetDate()) . '"> at ' . Date::BritishDateAndTime($message->GetDate(), false, true, true) . "</span>";
                 $s_text .= '</p>';
                 $s_text .= '<ul class="large"><li>Posted: ' . Date::BritishDateAndTime($message->GetDate(), false, true, true) . '</li>' .

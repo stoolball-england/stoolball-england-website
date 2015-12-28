@@ -370,21 +370,6 @@ class ForumMessage
 		return $s_text;
 	}
 
-	# get url of message
-	function GetNavigateUrl($b_plain_text = false, $b_relative=true)
-	{
-		$s_text = '';
-		if (!$b_relative) $s_text = 'https://' . $this->o_settings->GetDomain();
-		$s_text .= $this->o_settings->GetFolder('Forums') . 'topic.php?';
-
-		# specify topic and message
-		$s_text .= 'topic=' . $this->GetTopicId() . '&';
-		if (!$b_plain_text) $s_text .= 'amp;';
-		$s_text .= 'message=' . $this->GetId() . '#message' . $this->GetId();
-
-		return $s_text;
-	}
-
     /**
      * Gets the URI which uniquely identifies this message
      */

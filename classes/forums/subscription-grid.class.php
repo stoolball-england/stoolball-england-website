@@ -6,14 +6,12 @@ class SubscriptionGrid extends XhtmlElement
 {
 	var $o_settings;
 	var $a_subs;
-	var $o_categories;
 
-	function SubscriptionGrid(SiteSettings $o_settings, $a_subs, CategoryCollection $o_categories)
+	public function __construct(SiteSettings $o_settings, $a_subs)
 	{
 		parent::XhtmlElement('div');
 		$this->o_settings = $o_settings;
 		$this->a_subs = $a_subs;
-		$this->o_categories = $o_categories;
 	}
 
 	function OnPreRender()
@@ -41,18 +39,10 @@ class SubscriptionGrid extends XhtmlElement
 
 			foreach($this->a_subs as $o_sub)
 			{
-				/* @var $o_item Category */
-
 				$o_item = null;
 
 				# build table row for each subscription
-				if ($o_sub->GetType() == ContentType::FORUM)
-				{
-					# category link and date
-					$o_item = $this->o_categories->GetById($o_sub->GetSubscribedItemId());
-                    $s_title_method = 'GetName';
-				}
-				else if ($o_sub->GetType() == ContentType::STOOLBALL_MATCH)
+                if ($o_sub->GetType() == ContentType::STOOLBALL_MATCH)
 				{
 					$o_item = new Match($this->o_settings);
 					$o_item->SetShortUrl($o_sub->GetSubscribedItemUrl());
@@ -62,12 +52,8 @@ class SubscriptionGrid extends XhtmlElement
 				{
 					$o_row = new XhtmlElement('tr');
 
-                    if ($o_item instanceof Category) {
-                        $o_link = $o_sub->GetTitle();
-                    } else {
-    					$o_link = new XhtmlElement('a', Html::Encode($o_sub->GetTitle()));
-    					$o_link->AddAttribute('href', $o_item->GetNavigateUrl());
-                    }
+					$o_link = new XhtmlElement('a', Html::Encode($o_sub->GetTitle()));
+					$o_link->AddAttribute('href', $o_item->GetNavigateUrl());
 
 					$o_td_item = new XhtmlElement('td', $o_link);
 					if ($o_sub->GetContentDate())

@@ -142,30 +142,7 @@ class ForumTopic extends Collection
 		if (is_array($this->a_items) and count($this->a_items)) return max(array_keys($this->a_items))+1;
 		else return false;
 	}
-	
-	function GetReplyCount()
-	{
-		$i_messages = $this->GetCount();
-		if ($i_messages) return $i_messages-1;
-	}
-	
-    /**
-     * Gets the URL of the page to view the topic
-     */
-	public function GetNavigateUrl()
-	{
-		return $this->o_settings->GetFolder('Forums') . 'topic.php?topic=' . $this->GetId();
-	}
-    
-    /**
-     * Gets the URL of the page to delete the topic
-     */
-    public function GetDeleteTopicUrl()
-    {
-        return $this->o_settings->GetFolder('Forums') . 'topicdelete.php?item=' . $this->GetId();
-    }
-    
-    
+
     /**
      * Gets the URI which uniquely identifies this topic
      */

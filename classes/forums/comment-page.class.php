@@ -69,9 +69,9 @@ class CommentPage extends StoolballPage
 			$o_subs = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
 			$o_subs->SetTopic($this->o_topic);
 
-			$o_subs->SendCategorySubscriptions($this->GetCategories()->GetById($_POST['category_id']));
-			if ($this->o_review_item->GetId())
+			if ($this->o_review_item->GetId()) {
 				$o_subs->SendCommentsSubscriptions($this->o_review_item);
+            }
 
 			# add subscription if appropriate
 			if (isset($_POST['subscribe']) and $this->o_review_item->GetId())

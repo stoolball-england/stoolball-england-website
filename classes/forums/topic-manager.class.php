@@ -11,21 +11,11 @@ require_once('http/query-string.class.php');
 class TopicManager extends DataManager
 {
 	private $b_reverse_order = false;
-	private $filter_include_comments = true;
 	/**
 	 * Categories for the forum
 	 * @var CategoryCollection
 	 */
 	private $categories;
-
-	/**
-	 * Sets whether to include comments topics in supporting queries
-	 * @param bool $include
-	 */
-	public function FilterIncludeComments($include)
-	{
-		$this->filter_include_comments = (bool)$include;
-	}
 
 	/**
 	 * @return TopicManager
@@ -583,32 +573,6 @@ class TopicManager extends DataManager
 		$topic = $this->GetFirst();
 
 		return $topic;
-	}
-
-	/**
-	 * @access public
-	 * @return void
-	 * @param int[] $a_ids
-	 * @desc Delete from the db the topic matching the supplied ids
-	 */
-	public function DeleteTopic($ids)
-	{
-        if (!AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_FORUMS)) 
-        {
-            throw new Exception("Access denied");
-        }
-        
-        $this->ValidateNumericArray($ids);
-        $ids = implode(',', $ids);
-        
-        $sql = "DELETE FROM nsa_forum_topic_link WHERE topic_id IN ($ids)";
-        $this->GetDataConnection()->query($sql);
-
-        $sql = "DELETE FROM nsa_forum_message WHERE topic_id IN ($ids)";
-        $this->GetDataConnection()->query($sql);
-
-        $sql = "DELETE FROM nsa_forum_topic WHERE id IN ($ids)";
-        $this->GetDataConnection()->query($sql);
 	}
 }
 ?>

@@ -22,7 +22,6 @@ class SubscribePage extends StoolballPage
 
 		if (!isset($_GET['item']) or !is_numeric($_GET['item'])) $this->InvalidRequest();
 		if (!isset($_GET['type']) or !is_numeric($_GET['type'])) $this->InvalidRequest();
-		if (!$this->GetSettings()->HasContent((int)$_GET['type'])) $this->InvalidRequest();
 	}
 
 	function OnPageInit()

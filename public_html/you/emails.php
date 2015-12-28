@@ -22,7 +22,6 @@ class SubscriptionManagerPage extends StoolballPage
 		}
 
 		# get subscription data
-		$sub_manager->SetCategories($this->GetCategories());
 		$sub_manager->ReadSubscriptionsForUser(AuthenticationManager::GetUser()->GetId());
 		$this->a_subs = $sub_manager->GetItems();
 	}
@@ -40,12 +39,12 @@ class SubscriptionManagerPage extends StoolballPage
        
 
 		# display tables of subscriptions
-		echo new SubscriptionGrid($this->GetSettings(), $this->a_subs, $this->GetCategories());
+		echo new SubscriptionGrid($this->GetSettings(), $this->a_subs);
 
 		echo '<form method="get" action="' . Html::Encode($this->GetSettings()->GetUrl('AccountEdit')) . '"><div>' .
 		'<input type="submit" class="submit" value="Done" title="Return to your edit profile options page" />' .
 		'</div></form>';
 	}
 }
-new SubscriptionManagerPage(new StoolballSettings(), PermissionType::ForumSubscribe(), false);
+new SubscriptionManagerPage(new StoolballSettings(), PermissionType::PageSubscribe(), false);
 ?>

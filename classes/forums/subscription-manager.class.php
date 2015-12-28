@@ -9,11 +9,6 @@ class SubscriptionManager extends DataManager
 	var $o_topic;
 	var $a_emails; # array of emails already sent to - prevent multiple emails per person for one new message
 	var $s_review_item_title;
-	/**
-	 * Categories for the forum
-	 * @var CategoryCollection
-	 */
-	private $categories;
 
 	public function SetTopic(ForumTopic $o_input)
 	{
@@ -23,25 +18,6 @@ class SubscriptionManager extends DataManager
 	public function GetTopic()
 	{
 		return $this->o_topic;
-	}
-
-	/**
-	 * Sets the forum categories which may have been subscribed to
-	 * @param CategoryCollection $categories
-	 * @return void
-	 */
-	public function SetCategories(CategoryCollection $categories)
-	{
-		$this->categories = $categories;
-	}
-
-	/**
-	 * Gets the forum categories which may have been subscribed to
-	 * @return CategoryCollection
-	 */
-	public function GetCategories()
-	{
-		return $this->categories;
 	}
 
 	private function GetEmailAddresses($s_sql, Zend_Mail $email)
@@ -95,10 +71,6 @@ class SubscriptionManager extends DataManager
 
 			switch($o_sub->GetType())
 			{
-				case ContentType::FORUM:
-					$o_sub->SetTitle($o_row->forum_name);
-					break;
-
 				case ContentType::STOOLBALL_MATCH:
 					$o_sub->SetTitle($o_row->match_title);
 					$o_sub->SetContentDate(Date::BritishDate($o_row->start_time));
@@ -122,46 +94,6 @@ class SubscriptionManager extends DataManager
 		$s_footer = $this->GetSettings()->GetEmailSignature();
 		$s_footer .= "\n\nIf you don't want to get an email like this again, you can unsubscribe\non the email alerts page at http://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetUrl('AccountEdit');
 		return $s_footer;
-	}
-
-	function SendCategorySubscriptions(Category $o_category)
-	{
-		if (is_object($this->o_topic) and AuthenticationManager::GetUser()->IsSignedIn())
-		{
-			$s_person = $this->GetSettings()->GetTable('User');
-			$s_sub = $this->GetSettings()->GetTable('EmailSubscription');
-
-			# query db for all of this person's category subscriptions
-			$s_sql = 'SELECT ' . $s_person . '.email ' .
-			'FROM ' . $s_person . ' INNER JOIN ' . $s_sub . ' ON ' . $s_person . '.user_id = ' . $s_sub . '.user_id AND ' . $s_sub . ".item_type = " . ContentType::FORUM . " " .
-			'WHERE ' . $s_sub . '.item_id = ' . Sql::ProtectNumeric($o_category->GetId()) . ' AND ' . $s_person . '.user_id <> ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
-
-			# if there's at least one person, build email
-			require_once 'Zend/Mail.php';
-			$email = new Zend_Mail('UTF-8');
-			if ($this->GetEmailAddresses($s_sql, $email))
-			{
-				$o_message = $this->o_topic->GetFinal();
-
-				# send the email
-				$email->addTo($this->GetSettings()->GetSubscriptionEmailTo());
-				$email->setFrom($this->GetSettings()->GetSubscriptionEmailFrom(), $this->GetSettings()->GetSubscriptionEmailFrom());
-				$email->setSubject("Email alert: " . $o_category->GetName());
-				$email->setBodyText($this->GetHeader() .
-				trim(AuthenticationManager::GetUser()->GetName()) . " has just posted a message in '" . $this->GetSettings()->GetSiteName() . ' ' . $o_category->GetName() . "', for which you subscribed to an email alert.\n\n" .
-				"The topic is called '" . StringFormatter::PlainText($this->o_topic->GetFilteredTitle()) . "' - here's an excerpt of the new message:\n\n" . $o_message->GetExcerpt() . "\n\n" .
-				"The topic is located at\n" . $o_message->GetNavigateUrl(true, false) . $this->GetFooter());
-
-				try
-				{
-					$email->send();
-				}
-				catch (Zend_Mail_Transport_Exception $e)
-				{
-					# Do nothing - email not that important so, if it fails, fail silently rather than raising a fatal error
-				}
-			}
-		}
 	}
 
 	function SendCommentsSubscriptions(ReviewItem $review_item)
@@ -233,42 +165,18 @@ class SubscriptionManager extends DataManager
 	public function ReadSubscriptionsForUser($user_id)
 	{
 		$s_sub = $this->GetSettings()->GetTable('EmailSubscription');
-		$s_topic = $this->GetSettings()->GetTable('ForumTopic');
-		$s_message = $this->GetSettings()->GetTable('ForumMessage');
-		$s_cat = $this->GetSettings()->GetTable('Category');
 		$s_match = $this->GetSettings()->GetTable('Match');
 
-		$s_sql = 'SELECT ' . $s_sub . '.item_id, ' . $s_sub . '.item_type, ' . $s_sub . ".date_changed";
+		$s_sql = 'SELECT ' . $s_sub . '.item_id, ' . $s_sub . '.item_type, ' . $s_sub . ".date_changed, " . 
+		          $s_match . '.match_title, ' . $s_match . '.start_time, ' . $s_match . ".short_url" .
+                ' FROM ' . $s_sub . ' ' .
+                ' LEFT JOIN ' . $s_match . ' ON ' . $s_sub . '.item_id = ' . $s_match . '.match_id AND ' . $s_sub . ".item_type = " . ContentType::STOOLBALL_MATCH .
+		        ' WHERE ' . $s_sub . '.user_id = ' .  Sql::ProtectNumeric($user_id, false) .
+			    ' ORDER BY ' . $s_sub . '.item_type';
 
-		if ($this->GetSettings()->HasContent(ContentType::FORUM))
-		{
-			$s_sql .= ', s_forums.name AS forum_name';
-		}
-		if ($this->GetSettings()->HasContent(ContentType::STOOLBALL_MATCH))
-		{
-			$s_sql .= ', ' . $s_match . '.match_title, ' . $s_match . '.start_time, ' . $s_match . ".short_url";
-		}
-
-		$s_sql .= ' FROM (((((((' . $s_sub;
-
-		$s_sql .= ($this->GetSettings()->HasContent(ContentType::FORUM))
-		?	    '))) LEFT JOIN ' . $s_cat . ' AS s_forums ON ' . $s_sub . '.item_id = s_forums.id AND ' . $s_sub . ".item_type = " . ContentType::FORUM . ") "
-				:	')))) ';
-
-				$s_sql .= '))) ';
-
-				if ($this->GetSettings()->HasContent(ContentType::STOOLBALL_MATCH))
-				{
-					$s_sql .= ' LEFT JOIN ' . $s_match . ' ON ' . $s_sub . '.item_id = ' . $s_match . '.match_id AND ' . $s_sub . ".item_type = " . ContentType::STOOLBALL_MATCH . " " ;
-				}
-				else $s_sql .= ' ';
-
-				$s_sql .= ' WHERE ' . $s_sub . '.user_id = ' .  Sql::ProtectNumeric($user_id, false) .
-			' ORDER BY ' . $s_sub . '.item_type';
-
-				$result = $this->GetDataConnection()->query($s_sql);
-				$this->BuildItems($result);
-				$result->closeCursor();
+		$result = $this->GetDataConnection()->query($s_sql);
+		$this->BuildItems($result);
+		$result->closeCursor();
 	}
 
 	/**

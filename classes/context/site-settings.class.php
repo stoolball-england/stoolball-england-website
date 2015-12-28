@@ -5,25 +5,6 @@ require_once('context/site-context.class.php');
 abstract class SiteSettings
 {
 	var $a_tables;
-	var $a_content_types;
-
-	function SiteSettings()
-	{
-        $this->a_content_types = array();
-        $this->a_content_types[] = ContentType::FORUM;
-        $this->a_content_types[] = ContentType::STOOLBALL_MATCH;
-	}
-
-	/**
-	 * Gets whether the current site offers the specified content type
-	 *
-	 * @param ContentType $i_content_type
-	 * @return bool
-	 */
-	function HasContent($i_content_type)
-	{
-		return in_array($i_content_type, $this->a_content_types);
-	}
 
 	/**
 	* @return string
@@ -155,8 +136,6 @@ abstract class SiteSettings
                 return $this->GetClientRoot() . 'contact/';
             case 'Css':
                 return $this->GetClientRoot() . 'css/';
-            case 'Forums':
-                return $this->GetClientRoot() . 'forum/';
             case 'ForumIcons':
                 return $this->GetFolder('Images') . 'icons/forums/';
             case 'ForumIconsServer':

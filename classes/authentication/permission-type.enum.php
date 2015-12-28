@@ -21,8 +21,6 @@ class PermissionType
         {
             case PermissionType::ViewPage(): return 'view a page';
             case PermissionType::ForumAddMessage(): return "post a forum message";
-            case PermissionType::ForumSubscribe(): return "subscribe to forum alerts";
-            case PermissionType::MANAGE_FORUMS: return "manage the forum";
             case PermissionType::EditPersonalInfo(): return "edit own profile";
             case PermissionType::MANAGE_CATEGORIES: return "manage categories";
             case PermissionType::MANAGE_USERS_AND_PERMISSIONS: return "manage users and permissions";
@@ -50,12 +48,6 @@ class PermissionType
 	*/
 	public static function ViewPage() { return 1; }
 	public static function ForumAddMessage() { return 3; }
-	public static function ForumSubscribe() { return 4; }
-    
-    /**
-     * Permission to manage topics and messages in the forums 
-     */
-    const MANAGE_FORUMS = 16;
     
 	/**
 	* @return int
