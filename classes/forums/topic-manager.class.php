@@ -288,8 +288,7 @@ class TopicManager extends DataManager
 		# create new topic in db
 		$s_sql = 'INSERT INTO ' . $s_topic . ' SET ' .
 		'first_message_id = null, ' .
-		'last_message_id = null, ' .
-		"status = 'open'";
+		'last_message_id = null ';
 
 		$this->Lock(array($s_topic, $s_message, $s_topic_link, $s_reg)); # BEGIN TRAN
 		$o_result = $this->GetDataConnection()->query($s_sql);
