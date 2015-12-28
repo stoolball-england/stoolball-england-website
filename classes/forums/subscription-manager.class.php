@@ -1,24 +1,13 @@
 <?php
-require_once('forum-topic.class.php');
+require_once('forum-message.class.php');
 require_once('text/bad-language-filter.class.php');
 require_once('text/string-formatter.class.php');
 require_once('data/data-manager.class.php');
 
 class SubscriptionManager extends DataManager
 {
-	var $o_topic;
 	var $a_emails; # array of emails already sent to - prevent multiple emails per person for one new message
 	var $s_review_item_title;
-
-	public function SetTopic(ForumTopic $o_input)
-	{
-		$this->o_topic = $o_input;
-	}
-
-	public function GetTopic()
-	{
-		return $this->o_topic;
-	}
 
 	private function GetEmailAddresses($s_sql, Zend_Mail $email)
 	{
@@ -96,10 +85,10 @@ class SubscriptionManager extends DataManager
 		return $s_footer;
 	}
 
-	function SendCommentsSubscriptions(ReviewItem $review_item)
+	function SendCommentsSubscriptions(ReviewItem $review_item, ForumMessage $message)
 	{
 		# get all subscriptions for this item
-		if(is_object($this->o_topic) and AuthenticationManager::GetUser()->IsSignedIn() and $review_item->GetId())
+		if(AuthenticationManager::GetUser()->IsSignedIn() and $review_item->GetId())
 		{
 			$s_person = $this->GetSettings()->GetTable('User');
 			$s_sub = $this->GetSettings()->GetTable('EmailSubscription');
@@ -130,8 +119,6 @@ class SubscriptionManager extends DataManager
 
 					$s_title = StringFormatter::PlainText($s_title);
 
-					$o_message = $this->o_topic->GetFinal();
-
 					# send the email
 					$email->addTo($this->GetSettings()->GetSubscriptionEmailTo());
 					$email->setFrom($this->GetSettings()->GetSubscriptionEmailFrom(), $this->GetSettings()->GetSubscriptionEmailFrom());
@@ -139,8 +126,8 @@ class SubscriptionManager extends DataManager
 
 					$email->setBodyText($this->GetHeader() .
 					trim(AuthenticationManager::GetUser()->GetName()) . ' has just commented on a page at ' . $this->GetSettings()->GetSiteName() . ' for which you subscribed to an email alert.' . "\n\n" .
-					"The page is called '" . $s_title . "' - here's an excerpt of the new comments:\n\n" . $o_message->GetExcerpt() . "\n\n" .
-					'View the new comments at' . "\n" .$review_item->GetNavigateUrl(false) . '#message' . $o_message->GetId() .
+					"The page is called '" . $s_title . "' - here's an excerpt of the new comments:\n\n" . $message->GetExcerpt() . "\n\n" .
+					'View the new comments at' . "\n" .$review_item->GetNavigateUrl(false) . '#message' . $message->GetId() .
 					$this->GetFooter());
 
 					try

@@ -58,18 +58,14 @@ class CommentPage extends StoolballPage
 		#if no errors found, create message
 		if (!$this->o_error_list->CountControls())
 		{
-			$this->o_topic = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message'], $_POST['icon']);
-
-			# update new message for later use
-			$o_new_message = $this->o_topic->GetFinal();
+			$message = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message'], $_POST['icon']);
 
 			# send subscription emails
 			require_once ('forums/subscription-manager.class.php');
 			$o_subs = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
-			$o_subs->SetTopic($this->o_topic);
 
 			if ($this->o_review_item->GetId()) {
-				$o_subs->SendCommentsSubscriptions($this->o_review_item);
+				$o_subs->SendCommentsSubscriptions($this->o_review_item, $message);
             }
 
 			# add subscription if appropriate
@@ -90,17 +86,14 @@ class CommentPage extends StoolballPage
 	{
 		/* @var $o_topic ForumTopic */
 
-		$this->o_topic_manager->ReadReviewTopicId($this->o_review_item);
-		$this->o_topic = $this->o_topic_manager->GetFirst();
-		if (is_object($this->o_topic) and $this->o_topic->GetId())
+        # get topic info
+        $this->o_topic_manager->SetReverseOrder(true);
+        $this->o_topic_manager->ReadCommentsForReviewItem($this->o_review_item);
+        $this->o_topic = $this->o_topic_manager->GetFirst();
+		if (!is_object($this->o_topic))
 		{
-			# get topic info
-			$this->o_topic_manager->SetReverseOrder(true);
-			$this->o_topic_manager->ReadById(array($this->o_topic->GetId()));
-			$this->o_topic = $this->o_topic_manager->GetFirst();
-		}
-		else
 			$this->o_topic = new ForumTopic($this->GetSettings());
+        }
 
 		# Finished reading/writing topic
 		unset($this->o_topic_manager);

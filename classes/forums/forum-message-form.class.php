@@ -133,16 +133,6 @@ class ForumMessageForm extends XhtmlForm
 
 	function GetForm()
 	{
-		# if a new reply, check a topic has been specified
-		if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
-		{
-			if ($this->o_topic->GetId() == null)
-			{
-				die('No topic specified for form');
-				return false;
-			}
-		}
-
 		$o_review_item = $this->o_topic->GetReviewItem();
 
 		$s_topic_name = 'comments';
@@ -152,13 +142,6 @@ class ForumMessageForm extends XhtmlForm
 				$s_post_pod_text = 'comments on this match';
 		}
 		$this->SetMessageText('comments');
-
-		if ($this->o_topic->GetCount())
-		{
-			$o_message = $this->o_topic->GetFinal();
-			$s_topic_title = $o_message->GetTitle();
-		}
-		else $s_topic_title = '';
 
 		$s_text = '<form action="' . $_SERVER['PHP_SELF'] . '" method="post" id="forumMessageForm">' . "\n" .
 		'<input type="hidden" name="format" id="format" value="' . $this->GetFormat() . '" />' . "\n" .
@@ -176,9 +159,6 @@ class ForumMessageForm extends XhtmlForm
 			$s_text .= htmlentities($_SERVER['HTTP_REFERER']);
 		}
 		$s_text .= '" />' . "\n";
-
-		$s_text .= '<input type="hidden" name="topic_id" id="topic_id" value="' . $this->o_topic->GetId() . '" />' . "\n" .
-		'<input type="hidden" name="topic_title" id="topic_title" value="' . stripslashes($s_topic_title) . '" />' . "\n";
 
 		if ($o_review_item instanceof ReviewItem)
 		{

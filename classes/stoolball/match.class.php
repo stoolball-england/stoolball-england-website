@@ -1003,13 +1003,17 @@ class Match implements IHasShortUrl
 	 */
 	public function GetLinkedDataUri()
 	{
+	    $short_url = $this->GetShortUrl(); 
+        if (substr($short_url,0,6) === 'match/') {
+            $short_url = substr($short_url,6);
+        }
 		if ($this->GetMatchType() == MatchType::TOURNAMENT)
 		{
-			return "https://www.stoolball.org.uk/id/tournament/" . $this->GetShortUrl();
+			return "https://www.stoolball.org.uk/id/tournament/" . $short_url;
 		}
 		else
 		{
-			return "https://www.stoolball.org.uk/id/match/" . $this->GetShortUrl();
+			return "https://www.stoolball.org.uk/id/match/" . $short_url;
 		}
 	}
 }

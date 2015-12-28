@@ -77,18 +77,11 @@ class CurrentPage extends StoolballPage
 		$this->review_item->SetId($this->match->GetId());
 		$this->review_item->SetType(ContentType::STOOLBALL_MATCH);
 		$this->review_item->SetTitle($this->match->GetTitle());
+        $this->review_item->SetLinkedDataUri($this->match->GetLinkedDataUri());
 
 		$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
-
-		$topic_manager->ReadReviewTopicId($this->review_item);
+		$topic_manager->ReadCommentsForReviewItem($this->review_item);
 		$this->topic = $topic_manager->GetFirst();
-
-		if (is_object($this->topic))
-		{
-			$topic_manager->ReadById(array($this->topic->GetId()));
-			$this->topic = $topic_manager->GetFirst();
-		}
-
 		unset($topic_manager);
 		
         if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 

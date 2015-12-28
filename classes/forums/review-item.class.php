@@ -14,6 +14,7 @@ class ReviewItem
 	var $s_title;
 	private $s_date;
 	private $s_navigate_url;
+    private $linked_data_uri;
 
 	function __construct(SiteSettings $o_settings)
 	{
@@ -108,5 +109,19 @@ class ReviewItem
 	{
 		return $this->s_navigate_url;
 	}
+    
+    /**
+     * Sets the linked data URI of the item being reviewed
+     */
+    public function SetLinkedDataUri($uri) {
+        $this->linked_data_uri = (string)$uri;
+    }
+    
+    /**
+     * Gets the linked data URI of the item being reviewed
+     */
+    public function GetLinkedDataUri() {
+        return $this->linked_data_uri;
+    }
 }
 ?>

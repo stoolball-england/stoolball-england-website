@@ -26,7 +26,7 @@ class ForumCommentsTopicNavbar extends XhtmlElement
 	function OnPreRender()
 	{
 		/* @var $o_top_level Category */
-		$i_topic_id = $this->o_topic->GetId();
+		$i_message_count = $this->o_topic->GetCount();
 		$this->o_review_item = $this->o_topic->GetReviewItem();
 		$s_suggested_title = urlencode(StringFormatter::PlainText(trim($this->o_review_item->GetTitle())));
 		$i_item_id = $this->o_review_item->GetId();
@@ -44,7 +44,7 @@ class ForumCommentsTopicNavbar extends XhtmlElement
 		
 		if ($i_item_id and is_integer(intval($i_item_id)))
 		{
-			if ($i_topic_id and is_integer(intval($i_topic_id))) # if there are already some messages
+			if ($i_message_count) # if there are already some messages
 			{
 				$this->AddControl('<a href="' . $s_review_link . '" class="forumPost">Add your comments</a>' .
 					'<a href="' . $s_subscribe_link . '" title="' . $s_subscribe_title . '" class="forumSubscribe">Subscribe to this page</a>');

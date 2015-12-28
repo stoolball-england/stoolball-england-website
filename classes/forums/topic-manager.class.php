@@ -3,6 +3,7 @@ require_once('data/data-manager.class.php');
 require_once('forums/forum-message.class.php');
 require_once('forums/forum-topic.class.php');
 require_once('http/query-string.class.php');
+require_once('forums/review-item.class.php');
 
 /**
  * Read and write forum topics
@@ -48,52 +49,36 @@ class TopicManager extends DataManager
 	 * @access public
 	 * @return void
 	 * @param int[] $a_ids
-	 * @desc Read from the db the forum topics matching the supplied ids
+	 * @desc Read from the db the comments for the supplied review item
 	 */
-	public function ReadById($a_ids=null)
+	public function ReadCommentsForReviewItem(ReviewItem $review_item)
 	{
-		if (is_array($a_ids))
-		{
-			$this->ValidateNumericArray($a_ids);
-			$i_how_many = count($a_ids);
-			if (!$i_how_many or is_null($a_ids[0]))
-			{
-				# Looks like a review item with no reviews, therefore no topic to read
-				return;
-			}
-		}
-
 		$s_person = $this->GetSettings()->GetTable('User');
         $s_message = $this->GetSettings()->GetTable('ForumMessage');
 
 		# prepare command
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
 		'location, signature, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
-		$s_message . '.id, ' . $s_message . '.title, message, icon, ' . $s_message . '.topic_id, ' .
-		$s_message . ".date_added AS message_date " .
-		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ';
-
-		if (is_array($a_ids)) $s_sql .= 'WHERE ' . $s_message . '.topic_id IN (' . join(', ', $a_ids) . ') ';
+		$s_message . '.id, ' . $s_message . '.title, message, icon, ' . $s_message . ".date_added AS message_date " .
+		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ' .
+        'WHERE ' . $s_message . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
 
 		if ($this->GetReverseOrder())
 		{
-			$s_sql .=	'ORDER BY sort_override DESC, ' . $s_message . '.date_added DESC';
+			$s_sql .=	' ORDER BY sort_override DESC, ' . $s_message . '.date_added DESC';
 		}
 		else
 		{
-			$s_sql .=	'ORDER BY sort_override, ' . $s_message . '.date_added ASC';
+			$s_sql .=	' ORDER BY sort_override, ' . $s_message . '.date_added ASC';
 		}
 
 		# get data
 		$result = $this->GetDataConnection()->query($s_sql);
 
-		# TODO: Only used for one topic, and code only handles that.
 		$this->Clear();
 		$o_topic = new ForumTopic($this->GetSettings());
 		while($o_row = $result->fetch())
 		{
-			$o_topic->SetId($o_row->topic_id);
-
 			$o_person = new User();
 			$o_person->SetId($o_row->user_id);
 			$o_person->SetName($o_row->known_as);
@@ -104,7 +89,6 @@ class TopicManager extends DataManager
 			
 			$o_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
 			$o_message->SetId($o_row->id);
-			$o_message->SetTopicId($o_row->topic_id);
 			$o_message->SetTitle($o_row->title);
 			$o_message->SetDate($o_row->message_date);
 			$o_message->SetBody($o_row->message);
@@ -153,176 +137,6 @@ class TopicManager extends DataManager
 		return $messages;
 	}
 
-
-	/**
-	 * Reads the topic associated with the supplied review item, if any
-	 *
-	 * @param ReviewItem $o_item
-	 */
-	function ReadReviewTopicId(ReviewItem $o_item)
-	{
-		if (!$o_item->GetId() or !$o_item->GetType()) die('No item specified for comments'); # check we've got an id and type
-
-		$s_sql = 'SELECT topic_id AS id ' .
-		'FROM nsa_forum_message ' .
-		"WHERE item_type = " . Sql::ProtectNumeric($o_item->GetType()) . " AND item_id = " . Sql::ProtectNumeric($o_item->GetId());
-
-
-		# run query
-		$o_result = $this->GetDataConnection()->query($s_sql);
-
-		# build raw data into objects
-		$this->BuildItems($o_result);
-
-		# tidy up
-		$o_result->closeCursor();
-		unset($o_result);
-	}
-
-	/**
-	 * Populates the collection of business objects from raw data
-	 *
-	 * @return bool
-	 * @param MySqlRawData $o_result
-	 */
-	protected function BuildItems(MySqlRawData $o_result)
-	{
-		$this->Clear();
-		while($o_row = $o_result->fetch())
-		{
-			$o_topic = new ForumTopic($this->GetSettings());
-			$o_topic->SetId($o_row->id);
-			$this->Add($o_topic);
-		}
-	}
-
-
-	/**
-	 * Saves a new forum topic
-	 *
-	 * @param ForumTopic $o_topic
-	 */
-	public function SaveNewTopic(ForumTopic $o_topic)
-	{
-		/* @var $o_result MySQLRawData */
-
-		# Create table aliases
-		$s_message = $this->o_settings->GetTable('ForumMessage');
-
-		# create new topic in db
-		$s_sql = 'SELECT MAX(topic_id)+1 AS topic_id FROM nsa_forum_message';
-
-		$this->Lock(array($s_message, 'nsa_user')); # BEGIN TRAN
-		$o_result = $this->GetDataConnection()->query($s_sql);
-		if ($this->GetDataConnection()->isError()) die('Error: failed to create topic id.');
-
-        $row = $o_result->fetch();
-		$o_topic->SetId($row->topic_id);
-
-		# create new message in topic
-		$o_message = $o_topic->GetFinal();
-		if (is_object($o_message) and $o_topic->GetReviewItem() instanceof ReviewItem)
-		{
-			$s_ip = (isset($_SERVER['REMOTE_ADDR'])) ? $this->SqlString($_SERVER['REMOTE_ADDR']) : 'NULL';
-
-			$s_sql = 'INSERT INTO ' . $s_message . ' SET ' .
-			'topic_id = ' . Sql::ProtectNumeric($o_topic->GetId()) . ', ' .
-			'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
-			'date_added = ' . gmdate('U') . ', ' .
-			'date_changed = ' . gmdate('U') . ', ' .
-			"icon = " . $this->SqlString($o_message->GetIcon()) . ", " .
-			"title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
-			"message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
-			'ip = ' . $s_ip . ', ' .
-			'sort_override = 0, ' .
-            'item_id = ' . Sql::ProtectNumeric($o_topic->GetReviewItem()->GetId()) . ', ' .
-            "item_type = " . Sql::ProtectNumeric($o_topic->GetReviewItem()->GetType());
-
-			$o_result = $this->GetDataConnection()->query($s_sql);
-			if ($this->GetDataConnection()->isError()) die('Failed to create message.');
-
-			$o_message->SetId($this->GetDataConnection()->insertID());
-		}
-
-		# increment personal message count
-		$user_id = Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
-		$s_sql = "UPDATE nsa_user SET total_messages = (SELECT COUNT(id) FROM nsa_forum_message WHERE user_id = $user_id) WHERE user_id = $user_id";
-		$o_result = $this->GetDataConnection()->query($s_sql);
-		if ($this->GetDataConnection()->isError()) die('Failed to update your message count.');
-
-		# COMMIT TRAN
-		$this->Unlock();
-
-		# return updated topic
-		$o_message->SetTopicId($o_topic->GetId());
-		$o_topic->UpdateFinalMessage($o_message);
-
-        $this->Clear();
-        $this->Add($o_topic);
-	}
-
-
-	/**
-	 * Saves a new message to an existing forum topic
-	 *
-	 * @param ForumTopic $o_topic
-	 * @return ForumTopic
-	 */
-	public function SaveReply(ForumTopic $o_topic)
-	{
-		/* @var $o_result MySQLRawData */
-
-		# Create table aliases
-		$s_message = $this->o_settings->GetTable('ForumMessage');
-		$s_reg = $this->o_settings->GetTable('User');
-
-		# get message to add
-		$o_message = $o_topic->GetFinal();
-
-		if (is_object($o_message))
-		{
-			# convert bool into integer
-			$s_ip = (isset($_SERVER['REMOTE_ADDR'])) ? $this->SqlString($_SERVER['REMOTE_ADDR']) : 'NULL';
-
-			$s_sql = 'INSERT INTO ' . $s_message . ' SET ' .
-			'topic_id = ' . Sql::ProtectNumeric($o_topic->GetId()) . ', ' .
-			'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
-			'date_added = ' . gmdate('U') . ', ' .
-			'date_changed = ' . gmdate('U') . ', ' .
-			"icon = " . $this->SqlString($o_message->GetIcon()) . ", " .
-			"title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
-			"message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
-			'ip = ' . $s_ip . ', ' .
-			'sort_override = 0';
-
-			$this->Lock(array($s_message, $s_reg));
-
-			$o_result = $this->GetDataConnection()->query($s_sql);
-			if ($this->GetDataConnection()->isError()) die('Failed to create message.');
-
-			$o_message->SetId($this->GetDataConnection()->insertID());
-
-			# increment personal message count
-			$s_sql = 'UPDATE ' . $s_reg . ' SET total_messages = total_messages+1 WHERE user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
-
-			$o_result = $this->GetDataConnection()->query($s_sql);
-			if ($this->GetDataConnection()->isError()) die('Failed to update your message count.');
-
-			# release db
-			$this->Unlock();
-
-			# return updated topic
-			if (!$o_message->GetTopicId()) $o_message->SetTopicId($o_topic->GetId());
-			$o_topic->UpdateFinalMessage($o_message);
-
-            $this->Clear();
-            $this->Add($o_topic);
-		}
-
-		return $o_topic;
-	}
-
-
 	/**
 	 * Saves a comment on an item
 	 *
@@ -330,37 +144,57 @@ class TopicManager extends DataManager
 	 * @param string $s_title
 	 * @param string $s_body
 	 * @param string $s_icon
-	 * @return ForumTopic
+	 * @return ForumMessage
 	 */
-	public function SaveComment($item_to_comment_on, $s_title, $s_body, $s_icon)
+	public function SaveComment(ReviewItem $item_to_comment_on, $s_title, $s_body, $s_icon)
 	{
 		$user = AuthenticationManager::GetUser();
 
 		# create new message
-		$o_new_message = new ForumMessage($this->GetSettings(), $user);
-		$o_new_message->SetTitle($s_title);
-		$o_new_message->SetBody($s_body);
-		$o_new_message->SetIcon($s_icon);
-
-		# create topic
-		$this->ReadReviewTopicId($item_to_comment_on);
-		$topic = $this->GetFirst();
-		if (!is_object($topic)) $topic = new ForumTopic($this->GetSettings());
-		$topic->SetReviewItem($item_to_comment_on);
-		$topic->Add($o_new_message);
+		$o_message = new ForumMessage($this->GetSettings(), $user);
+		$o_message->SetTitle($s_title);
+		$o_message->SetBody($s_body);
+		$o_message->SetIcon($s_icon);
+		$o_message->SetReviewItem($item_to_comment_on);
 
 		# add new message to db, either as reply or as new topic
-		if ($topic->GetId())
-        {
-            $this->SaveReply($topic);
-        }
-        else
-        {
-            $this->SaveNewTopic($topic);
-        }
-		$topic = $this->GetFirst();
+        /* @var $o_result MySQLRawData */
 
-		return $topic;
+        # Create table aliases
+        $s_message = $this->o_settings->GetTable('ForumMessage');
+        $s_reg = $this->o_settings->GetTable('User');
+
+        $s_ip = (isset($_SERVER['REMOTE_ADDR'])) ? $this->SqlString($_SERVER['REMOTE_ADDR']) : 'NULL';
+
+        $s_sql = 'INSERT INTO ' . $s_message . ' SET ' .
+        'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
+        'date_added = ' . gmdate('U') . ', ' .
+        'date_changed = ' . gmdate('U') . ', ' .
+        "icon = " . $this->SqlString($o_message->GetIcon()) . ", " .
+        "title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
+        "message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
+        'ip = ' . $s_ip . ', ' .
+        'sort_override = 0, ' .
+        'item_id = ' . Sql::ProtectNumeric($item_to_comment_on->GetId()) . ', ' .
+        "item_type = " . Sql::ProtectNumeric($item_to_comment_on->GetType());
+
+        $this->Lock(array($s_message, $s_reg));
+
+        $o_result = $this->GetDataConnection()->query($s_sql);
+        if ($this->GetDataConnection()->isError()) die('Failed to create message.');
+
+        $o_message->SetId($this->GetDataConnection()->insertID());
+
+        # increment personal message count
+        $user_id = Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
+        $s_sql = "UPDATE nsa_user SET total_messages = (SELECT COUNT(id) FROM nsa_forum_message WHERE user_id = $user_id) WHERE user_id = $user_id";
+        $o_result = $this->GetDataConnection()->query($s_sql);
+        if ($this->GetDataConnection()->isError()) die('Failed to update your message count.');
+
+        # release db
+        $this->Unlock();
+
+		return $o_message;
 	}
 }
 ?>

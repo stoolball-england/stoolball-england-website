@@ -6,7 +6,6 @@ require_once('review-item.class.php');
 class ForumTopic extends Collection
 {
 	var $o_settings;
-	var $i_topic_id;
 	var $o_review_item;
 	var $o_category;
 	
@@ -15,21 +14,6 @@ class ForumTopic extends Collection
 		parent::Collection($a_items);
 		$this->o_settings = $o_settings;
 		$this->s_item_class = 'ForumMessage';
-	}
-	
-	/**
-	* @return void
-	* @param int $i_input
-	* @desc Sets the unique database id of the topic
-	*/
-	function SetId($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_topic_id = (int)$i_input;
-	}
-	
-	function GetId()
-	{
-		return $this->i_topic_id;
 	}
 
 	# override base method to force use of Add() method
@@ -47,9 +31,6 @@ class ForumTopic extends Collection
 	{
 		if ($o_input instanceof $this->s_item_class)
 		{
-			 # assign details of this topic
-			if ($this->GetId()) $o_input->SetTopicId($this->GetId());
-
 			if ($this->GetTitle()) $o_input->SetTopicTitle($this->GetTitle());
 			else $o_input->SetTopicTitle($o_input->GetTitle());
 
@@ -122,6 +103,10 @@ class ForumTopic extends Collection
 	function SetReviewItem(ReviewItem $o_input)
 	{
 		$this->o_review_item = $o_input;
+        
+        foreach ($this->a_items as $message){
+            $message->SetReviewItem($o_input);
+        }
 	}
 	
 	/**
@@ -148,7 +133,10 @@ class ForumTopic extends Collection
      */
     public function TopicLinkedDataUri()
     {
-        return "http://" . $this->o_settings->GetDomain() . "/id/forum/topic/" . $this->GetId();
+        if (!$this->o_review_item instanceof ReviewItem) {
+            throw new Exception("You must set the review item to get the linked data ID");
+        }
+        return $this->o_review_item->GetLinkedDataUri() . '/comments';
     }
 }
 ?>

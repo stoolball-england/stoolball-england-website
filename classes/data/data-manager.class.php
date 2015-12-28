@@ -96,14 +96,6 @@ abstract class DataManager extends Collection
 	function ReadById($a_ids=null) { die('DataManager::ReadById() is an abstract method'); }
 
 	/**
-	 * Populates the collection of business objects from raw data
-	 *
-	 * @return bool
-	 * @param MySqlRawData $o_result
-	 */
-	protected abstract function BuildItems(MySqlRawData $o_result);
-
-	/**
 	 * Locks the specified database tables for writing
 	 *
 	 * @param string[] $a_tables

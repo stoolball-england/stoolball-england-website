@@ -14,7 +14,6 @@ class ForumMessage
 	private $o_user;
 	private $o_filter;
 	private $i_message_id;
-	private $i_topic_id;
 	private $s_topic_title;
 	private $s_topic_title_filtered;
 	private $o_category;
@@ -50,16 +49,6 @@ class ForumMessage
 	function GetId()
 	{
 		return $this->i_message_id;
-	}
-
-	function SetTopicId($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_topic_id = (int)$i_input;
-	}
-
-	function GetTopicId()
-	{
-		return $this->i_topic_id;
 	}
 
 	/**
@@ -375,7 +364,10 @@ class ForumMessage
      */
     public function MessageLinkedDataUri()
     {
-        return "https://" . $this->o_settings->GetDomain() . "/id/forum/topic/" . $this->GetTopicId() . "/message/" . $this->GetId();
+        if (!$this->review_item instanceof ReviewItem) {
+            throw new Exception("You must set the review item to get the linked data ID");
+        }
+        return $this->review_item->GetLinkedDataUri() . '/comments/' . $this->GetId();
     }
     
     /**
