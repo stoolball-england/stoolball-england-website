@@ -58,7 +58,7 @@ class CommentPage extends StoolballPage
 		#if no errors found, create message
 		if (!$this->o_error_list->CountControls())
 		{
-			$message = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message'], $_POST['icon']);
+			$message = $this->o_topic_manager->SaveComment($this->o_review_item, $_POST['title'], $_POST['message']);
 
 			# send subscription emails
 			require_once ('forums/subscription-manager.class.php');

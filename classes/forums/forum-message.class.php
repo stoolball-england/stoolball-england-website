@@ -1,6 +1,5 @@
 <?php
 require_once('markup/xhtml-markup.class.php');
-require_once('forum-icon.class.php');
 require_once('text/bad-language-filter.class.php');
 require_once('email/email-address-protector.class.php');
 
@@ -22,8 +21,6 @@ class ForumMessage
 	private $s_title_formatted;
 	private $i_date;
 	private $o_person;
-	private $s_icon;
-	private $o_icon;
 	private $s_body;
 	private $s_body_filtered;
 	private $s_body_formatted;
@@ -153,13 +150,13 @@ class ForumMessage
 
 	/**
 	 * @return string
-	 * @desc Gets the title of the forum message with swear filtering and smilies applied
+	 * @desc Gets the title of the forum message with swear filtering and HTML encoding applied
 	 */
 	function GetFormattedTitle()
 	{
 		if (!$this->s_title_formatted)
 		{
-			$this->s_title_formatted = $this->ApplySmilies(htmlentities($this->GetFilteredTitle(), ENT_QUOTES, "UTF-8", false));
+			$this->s_title_formatted = htmlentities($this->GetFilteredTitle(), ENT_QUOTES, "UTF-8", false);
 		}
 		return $this->s_title_formatted;
 	}
@@ -191,38 +188,6 @@ class ForumMessage
 	function GetUser()
 	{
 		return $this->o_person;
-	}
-
-	function SetIcon($v_input)
-	{
-		if (is_string($v_input))
-		{
-			$this->s_icon = $v_input;
-		}
-		elseif (is_object($v_input))
-		{
-			$this->o_icon = $v_input;
-		}
-	}
-
-	public function GetIconXhtml(SiteSettings $o_settings)
-	{
-		# delay creating object until this point as icon may never be used, so more efficient not to test existence etc earlier
-		if (is_object($this->o_icon))
-		{
-			return $this->o_icon->__toString();
-		}
-		elseif ($this->s_icon)
-		{
-			$this->o_icon = new ForumIcon($o_settings, 'forums/icons/' . $this->s_icon);
-			return $this->o_icon->__toString();
-		}
-		else return '';
-	}
-
-	function GetIcon()
-	{
-		return $this->s_icon;
 	}
 
 	function SetBody($s_input)
@@ -291,45 +256,10 @@ class ForumMessage
 			$text = XhtmlMarkup::ApplyLists($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplySimpleTags($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplySimpleXhtmlTags($text, $b_strip_tags);
-			if (!$b_strip_tags) $text = $this->ApplySmilies($text);
 			$text = XhtmlMarkup::CloseUnmatchedTags($text);
 		}
 
 		$this->s_body_formatted = $text;
-	}
-
-	function ApplySmilies($s_text)
-	{
-		$s_open_element = '<img src="' . $this->o_settings->GetFolder('ForumImages') . 'smilies/';
-		$s_end_element = ' width="15" height="15" class="emotIcon" />';
-
-		$a_smilies[] = "/;-?\)/i";
-		$a_icons[] = $s_open_element . 'wink.gif" alt="*wink*"' . $s_end_element;
-
-		$a_smilies[] = "/:-?\)/i";
-		$a_icons[] = $s_open_element . 'happy.gif" alt="Happy"' . $s_end_element;
-
-		$a_smilies[] = "/:-?\(/i";
-		$a_icons[] = $s_open_element . 'sad.gif" alt="Sad"' . $s_end_element;
-
-		$a_smilies[] = "/:-?P/i";
-		$a_icons[] = $s_open_element . 'sticking_tongue_out.gif" alt="Sticking tongue out"' . $s_end_element;
-
-		$a_smilies[] = "/;-P/i";
-		$a_icons[] = $s_open_element . 'sticking_tongue_out_and_winking.gif" alt="Sticking tongue out and winking"' . $s_end_element;
-
-		$a_smilies[] = "/:-?o/i";
-		$a_icons[] = $s_open_element . 'surprised.gif" alt="Surprised"' . $s_end_element;
-
-		$a_smilies[] = "/:-?D/i";
-		$a_icons[] = $s_open_element . 'laughing.gif" alt="Laughing"' . $s_end_element;
-
-		# replace, but protect quotes
-		$s_text = str_replace('&quot;', '[protectedquote]', $s_text);
-		$s_text = preg_replace($a_smilies, $a_icons, $s_text);
-		$s_text = str_replace('[protectedquote]', '&quot;', $s_text);
-
-		return $s_text;
 	}
 
 	function GetExcerpt()

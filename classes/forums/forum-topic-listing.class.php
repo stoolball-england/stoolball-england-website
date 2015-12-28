@@ -121,7 +121,9 @@ class ForumTopicListing extends Placeholder
 				$position_in_topic++;
 
                 # message title
-                if($message->GetTitle() or $message->GetIconXhtml($this->o_settings)) $s_text .= '<h3 class="small">' . $message->GetIconXhtml($this->o_settings) . $message->GetFormattedTitle() . '</h3>' . "\n";
+                if($message->GetTitle()) {
+                  $s_text .= '<h3 class="small">' . $message->GetFormattedTitle() . '</h3>' . "\n";  
+                } 
 
                 # add profile
                 $s_text .= '<div class="profile';
@@ -142,10 +144,10 @@ class ForumTopicListing extends Placeholder
                 $s_text .= '<div about="' . $message->MessageLinkedDataUri() . '" rel="awol:content" class="message';
                 if ($b_alternate) $s_text .= " altMessage";
                 $s_text .= '"><div typeof="awol:Content"><meta property="awol:type" content="text/html" /><div property="awol:body">';
-                if($message->GetTitle() or $message->GetIconXhtml($this->o_settings))
+                if($message->GetTitle())
                 {
                     $title = $message->GetTitle() ? '<span about="' . $message->MessageLinkedDataUri() . '" property="dcterms:title">' . $message->GetFormattedTitle() . '</span>' : "";
-                  $s_text .= '<h3 class="large">' . $message->GetIconXhtml($this->o_settings) . $title . '</h3>' . "\n";  
+                  $s_text .= '<h3 class="large">' . $title . '</h3>' . "\n";  
                 } 
                 $s_text .= $message->GetFormattedBody($this->o_settings);
                 $s_text .= "</div></div>";

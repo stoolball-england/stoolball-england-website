@@ -59,7 +59,7 @@ class TopicManager extends DataManager
 		# prepare command
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
 		'location, signature, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
-		$s_message . '.id, ' . $s_message . '.title, message, icon, ' . $s_message . ".date_added AS message_date " .
+		$s_message . '.id, ' . $s_message . '.title, message, ' . $s_message . ".date_added AS message_date " .
 		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ' .
         'WHERE ' . $s_message . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
 
@@ -92,7 +92,6 @@ class TopicManager extends DataManager
 			$o_message->SetTitle($o_row->title);
 			$o_message->SetDate($o_row->message_date);
 			$o_message->SetBody($o_row->message);
-			$o_message->SetIcon($o_row->icon);
 			$o_message->SetUser($o_person);
 
 			$o_topic->Add($o_message);
@@ -143,10 +142,9 @@ class TopicManager extends DataManager
 	 * @param ReviewItem $item_to_comment_on
 	 * @param string $s_title
 	 * @param string $s_body
-	 * @param string $s_icon
 	 * @return ForumMessage
 	 */
-	public function SaveComment(ReviewItem $item_to_comment_on, $s_title, $s_body, $s_icon)
+	public function SaveComment(ReviewItem $item_to_comment_on, $s_title, $s_body)
 	{
 		$user = AuthenticationManager::GetUser();
 
@@ -154,7 +152,6 @@ class TopicManager extends DataManager
 		$o_message = new ForumMessage($this->GetSettings(), $user);
 		$o_message->SetTitle($s_title);
 		$o_message->SetBody($s_body);
-		$o_message->SetIcon($s_icon);
 		$o_message->SetReviewItem($item_to_comment_on);
 
 		# add new message to db, either as reply or as new topic
@@ -170,7 +167,6 @@ class TopicManager extends DataManager
         'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
         'date_added = ' . gmdate('U') . ', ' .
         'date_changed = ' . gmdate('U') . ', ' .
-        "icon = " . $this->SqlString($o_message->GetIcon()) . ", " .
         "title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
         "message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
         'ip = ' . $s_ip . ', ' .

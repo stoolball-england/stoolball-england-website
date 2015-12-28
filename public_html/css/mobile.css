@@ -268,10 +268,6 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 /* Forum - write message */
 #forumMessageForm textarea { height: 10em; }
 
-/* Forum - view a topic */
-.forumTopic .forumIcon { display: inline; vertical-align: middle; margin-right: .5em; }
-.emotIcon { display: inline; }
-
 /* Paging - initially displayed just previous and next links */
 .paging .numbers { display: none; }
 

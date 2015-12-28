@@ -13,12 +13,10 @@ class ForumMessageForm extends XhtmlForm
 	 */
 	var $o_settings;
 	var $s_message_text = 'message';
-	var $s_icon;
-	var $a_icon_files;
 	var $i_format;
 	var $o_topic;
 
-	function ForumMessageForm(SiteSettings $o_settings)
+	function __construct(SiteSettings $o_settings)
 	{
 		$this->o_settings = $o_settings;
 	}
@@ -31,84 +29,6 @@ class ForumMessageForm extends XhtmlForm
 	function GetMessageText()
 	{
 		return $this->s_message_text;
-	}
-
-	function SetIcon($s_input)
-	{
-		if (is_string($s_input)) $this->s_icon = $s_input;
-	}
-
-	function GetIcon()
-	{
-		return $this->s_icon;
-	}
-
-	function ReadIcons()
-	{
-		if (is_dir($this->o_settings->GetFolder('ForumIconsServer')))
-		{
-			$t_folder = opendir($this->o_settings->GetFolder('ForumIconsServer')); # get a dir handle
-
-			if ($t_folder) # if we got the handle OK...
-			{
-				while($s_filename = readdir($t_folder)) # next file
-				{
-					if ($s_filename != '.' and $s_filename != '..') # if not a dir reference...
-					{
-						$s_fileext = substr($s_filename,strlen($s_filename)-4,4);
-						if ($s_fileext == '.jpg' or $s_fileext == '.gif') # only interested in GIF and JPEG files
-						{
-							$this->a_icon_files[] = $s_filename;
-						}
-					}
-				}
-			}
-
-			closedir($t_folder);
-
-			# alphabetise!
-			sort($this->a_icon_files);
-		}
-	}
-
-	function GetIconsXhtml()
-	{
-		if (is_array($this->a_icon_files))
-		{
-			$s_text = '<fieldset class="large"><legend>' . ucfirst($this->GetMessageText()) . ' icon</legend>' . "\n\n";
-
-			# find default icon
-			$b_use_default = true;
-			foreach($this->a_icon_files as $s_filename)
-			{
-				if ($this->GetIcon() == $s_filename) $b_use_default = false;
-			}
-
-			$s_text .= '<label for="icon_1" class="forumIcon"><input type="radio" name="icon" id="icon_1" value=""';
-			if ($b_use_default) $s_text .= ' checked="checked"';
-			$s_text .= ' /> None</label> ';
-
-			# counter used for ids
-			$i_count = 2;
-
-			foreach($this->a_icon_files as $s_filename)
-			{
-				# assume files exist since we just found them
-				$a_image_details = getimagesize($this->o_settings->GetFolder('ForumIconsServer') . $s_filename);
-				$s_alt_text = ucfirst(str_replace('_',' ',substr($s_filename,0,strlen($s_filename)-4)));
-
-				$s_text .= '<label class="forumIcon" for="icon_' . $i_count . '"><input type="radio" name="icon" id="icon_' . $i_count . '" value="' . $s_filename . '"';
-				if ($this->GetIcon() == $s_filename) $s_text .= ' checked="checked"';
-				$s_text .= ' /> <img src="' . $this->o_settings->GetFolder('ForumIcons') . $s_filename . '" ' . $a_image_details[3] . ' alt="' . $s_alt_text . '" />' .
-				'</label> ' . "\n";
-
-				$i_count++;
-			}
-
-			$s_text .= "</fieldset>";
-		}
-
-		return $s_text;
 	}
 
 	function GetFormat()
@@ -179,10 +99,6 @@ class ForumMessageForm extends XhtmlForm
 		if (isset($_POST['title']) and $_POST['title']) $s_text .= stripslashes($_POST['title']);
 		else if (isset($_GET['title']) and $_GET['title']) $s_text .= stripslashes($_GET['title']);
 		$s_text .= '" /></p>' . "\n";
-
-	    $this->ReadIcons();
-		if (isset($_POST['icon'])) $this->SetIcon($_POST['icon']);
-		$s_text .= $this->GetIconsXhtml();
 
 		$s_text .= '<label for="message" class="aural">Your ' . $this->GetMessageText() . '</label>' . "\n" .
 		'<textarea name="message" id="message">';

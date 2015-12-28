@@ -442,7 +442,6 @@ dl.decision dd { margin-left: 22px; }
 .forumTopic h3 { margin: 0 0 .3em; font-style: normal; text-indent: -.1em; } 
 .forumTopic .signature { border-top: #008044 solid 2px; font-size: .9em; }
 .forumTopic .signature p { font-size: .85em; margin: .5em 0 0; }
-.forumTopic .emotIcon { vertical-align: middle; border: 0; margin: 0 .5em; }
 
 .forumTopic hr  { position: absolute; top: -10000px; left: -10000px; }
 
@@ -451,9 +450,6 @@ dl.decision dd { margin-left: 22px; }
 
 /* New message form */
 #forumMessageForm textarea { height: 20em; }
-#forumMessageForm .forumIcon { white-space: nowrap; display: inline; }
-#forumMessageForm .forumIcon img { vertical-align: middle; display: inline; }
-
 html body .forumTopic { width: 97%; }
 
 /* Paging */

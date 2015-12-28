@@ -136,12 +136,6 @@ abstract class SiteSettings
                 return $this->GetClientRoot() . 'contact/';
             case 'Css':
                 return $this->GetClientRoot() . 'css/';
-            case 'ForumIcons':
-                return $this->GetFolder('Images') . 'icons/forums/';
-            case 'ForumIconsServer':
-                return $this->GetFolder('ImagesServer') . 'icons/forums/';
-            case 'ForumImages':
-                return $this->GetFolder('Images') . 'forums/';
             case 'History':
                 return '/history/';
             case 'Images':
