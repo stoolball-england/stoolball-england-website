@@ -184,17 +184,6 @@ DEFAULT CHARACTER SET = utf8
 COMMENT = 'Messages in stoolball forums';
 
 -- -----------------------------------------------------
--- Table `nsa_forum_topic_link`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_forum_topic_link` (
-  `item_id` INT(5) UNSIGNED NOT NULL DEFAULT '0',
-  `topic_id` INT(5) UNSIGNED NOT NULL DEFAULT '0',
-  `item_type` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0',
-  PRIMARY KEY (`item_id`, `topic_id`, `item_type`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8;
-
--- -----------------------------------------------------
 -- Table `nsa_ground`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nsa_ground` (

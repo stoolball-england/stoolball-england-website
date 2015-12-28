@@ -125,11 +125,9 @@ class TopicManager extends DataManager
 	 */
 	public function ReadMessagesByUser($user_id)
 	{
-		$s_sql = 'SELECT nsa_forum_message.id AS message_id, nsa_forum_message.title, ' .
-		"nsa_forum_message.date_added AS message_date, " .
+		$s_sql = 'SELECT nsa_forum_message.id AS message_id, nsa_forum_message.title, nsa_forum_message.date_added AS message_date, ' .
 		"nsa_match.short_url, nsa_match.match_title " .
-		'FROM nsa_forum_message INNER JOIN nsa_forum_topic_link ON nsa_forum_message.topic_id = nsa_forum_topic_link.topic_id ' .
-		'LEFT JOIN nsa_match ON nsa_forum_topic_link.item_id = nsa_match.match_id AND nsa_forum_topic_link.item_type = ' . ContentType::STOOLBALL_MATCH . ' ' .
+		'FROM nsa_forum_message INNER JOIN nsa_match ON nsa_forum_message.item_id = nsa_match.match_id AND nsa_forum_message.item_type = ' . ContentType::STOOLBALL_MATCH . ' ' .
 		'WHERE nsa_forum_message.user_id = ' . Sql::ProtectNumeric($user_id, false) . ' ' .
 		'ORDER BY nsa_forum_message.date_added DESC ' .
 		'LIMIT 0,11';
@@ -166,7 +164,7 @@ class TopicManager extends DataManager
 		if (!$o_item->GetId() or !$o_item->GetType()) die('No item specified for comments'); # check we've got an id and type
 
 		$s_sql = 'SELECT topic_id AS id ' .
-		'FROM ' . $this->GetSettings()->GetTable('ForumTopicLink') . ' ' .
+		'FROM nsa_forum_message ' .
 		"WHERE item_type = " . Sql::ProtectNumeric($o_item->GetType()) . " AND item_id = " . Sql::ProtectNumeric($o_item->GetId());
 
 
@@ -210,13 +208,11 @@ class TopicManager extends DataManager
 
 		# Create table aliases
 		$s_message = $this->o_settings->GetTable('ForumMessage');
-		$s_topic_link = $this->o_settings->GetTable('ForumTopicLink');
-		$s_reg = $this->o_settings->GetTable('User');
 
 		# create new topic in db
 		$s_sql = 'SELECT MAX(topic_id)+1 AS topic_id FROM nsa_forum_message';
 
-		$this->Lock(array($s_message, $s_topic_link, $s_reg)); # BEGIN TRAN
+		$this->Lock(array($s_message, 'nsa_user')); # BEGIN TRAN
 		$o_result = $this->GetDataConnection()->query($s_sql);
 		if ($this->GetDataConnection()->isError()) die('Error: failed to create topic id.');
 
@@ -225,7 +221,7 @@ class TopicManager extends DataManager
 
 		# create new message in topic
 		$o_message = $o_topic->GetFinal();
-		if (is_object($o_message))
+		if (is_object($o_message) and $o_topic->GetReviewItem() instanceof ReviewItem)
 		{
 			$s_ip = (isset($_SERVER['REMOTE_ADDR'])) ? $this->SqlString($_SERVER['REMOTE_ADDR']) : 'NULL';
 
@@ -238,7 +234,9 @@ class TopicManager extends DataManager
 			"title = " . $this->SqlHtmlString(ucfirst($o_message->GetTitle())) . ", " .
 			"message = " . $this->SqlHtmlString($o_message->GetBody()) . ", " .
 			'ip = ' . $s_ip . ', ' .
-			'sort_override = 0';
+			'sort_override = 0, ' .
+            'item_id = ' . Sql::ProtectNumeric($o_topic->GetReviewItem()->GetId()) . ', ' .
+            "item_type = " . Sql::ProtectNumeric($o_topic->GetReviewItem()->GetType());
 
 			$o_result = $this->GetDataConnection()->query($s_sql);
 			if ($this->GetDataConnection()->isError()) die('Failed to create message.');
@@ -246,22 +244,9 @@ class TopicManager extends DataManager
 			$o_message->SetId($this->GetDataConnection()->insertID());
 		}
 
-		# if we're dealing with a review topic, add a link record
-		$o_review_item = $o_topic->GetReviewItem();
-		if (is_object($o_review_item))
-		{
-			$s_sql = 'INSERT INTO ' . $s_topic_link . ' SET ' .
-			'item_id = ' . Sql::ProtectNumeric($o_review_item->GetId()) . ', ' .
-			'topic_id = ' . Sql::ProtectNumeric($o_topic->GetId()) . ', ' .
-			"item_type = " . Sql::ProtectNumeric($o_review_item->GetType());
-
-
-			$o_result = $this->GetDataConnection()->query($s_sql);
-			if ($this->GetDataConnection()->isError()) die('Failed to associate new topic with review item.');
-		}
-
 		# increment personal message count
-		$s_sql = 'UPDATE ' . $s_reg . ' SET total_messages = total_messages+1 WHERE user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
+		$user_id = Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId());
+		$s_sql = "UPDATE nsa_user SET total_messages = (SELECT COUNT(id) FROM nsa_forum_message WHERE user_id = $user_id) WHERE user_id = $user_id";
 		$o_result = $this->GetDataConnection()->query($s_sql);
 		if ($this->GetDataConnection()->isError()) die('Failed to update your message count.');
 

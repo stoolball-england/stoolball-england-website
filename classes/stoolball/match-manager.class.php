@@ -2750,9 +2750,8 @@ class MatchManager extends DataManager
 			$this->DeleteMatch($tournament_match_ids);
 	    }
 
-		# delete relationship to comments thread
-		$forum_link = $this->GetSettings()->GetTable('ForumTopicLink');
-		$delete_sql[] = "DELETE FROM $forum_link WHERE item_id IN ($s_ids) AND item_type = " . ContentType::STOOLBALL_MATCH;
+		# delete comments thread
+		$delete_sql[] = "DELETE FROM nsa_forum_message WHERE item_id IN ($s_ids) AND item_type = " . ContentType::STOOLBALL_MATCH;
 
 		# delete match(es)
 		$delete_sql[] = "DELETE FROM $s_match WHERE match_id IN ($s_ids);";
