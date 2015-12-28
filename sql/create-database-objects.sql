@@ -570,7 +570,6 @@ CREATE TABLE IF NOT EXISTS `nsa_user` (
   `location` VARCHAR(100) NULL DEFAULT NULL,
   `occupation` VARCHAR(255) NULL DEFAULT NULL,
   `interests` TEXT NULL DEFAULT NULL,
-  `signature` TEXT NULL DEFAULT NULL,
   `requested_email` VARCHAR(100) NULL DEFAULT NULL,
   `requested_email_hash` VARCHAR(255) NULL DEFAULT NULL,
   `password_reset_request_date` INT(10) UNSIGNED NULL DEFAULT NULL,

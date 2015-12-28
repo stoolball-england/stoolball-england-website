@@ -18,7 +18,6 @@ class PersonalInfoForm extends XhtmlForm
 		$s_occupation = (isset($_POST['occupation'])) ? stripslashes($_POST['occupation']) : stripslashes($this->o_person->GetOccupation());
 		$s_location = (isset($_POST['location'])) ? stripslashes($_POST['location']) : stripslashes($this->o_person->GetLocation());
 		$s_interests = (isset($_POST['interests'])) ? stripslashes($_POST['interests']) : stripslashes($this->o_person->GetInterests());
-		$s_sig = (isset($_POST['signature'])) ? stripslashes($_POST['signature']) : stripslashes($this->o_person->GetSignature());
 
 		$s_text = '<div class="formPart">' . "\n" .
 				'<div class="formLabel">Gender</div>' . "\n" .
@@ -48,11 +47,9 @@ class PersonalInfoForm extends XhtmlForm
 					'<textarea name="interests" id="interests" rows="7" cols="40">' . $s_interests . '</textarea></div>' . "\n" .
 			'</div>' . "\n" .
 
-			'<div class="formPart"><label for="signature" class="formLabel">Your signature</label><div class="formControl">' . "\n" .
+			'<div class="formPart"><div class="formControl">' . "\n" .
 
-			'<textarea id="signature" name="signature" rows="7" cols="40">' . $s_sig . '</textarea>' . "\n" .
-
-			'<div><input type="submit" class="submit" value="Save" /></div></div></div>' . "\n" .
+			'<input type="submit" class="submit" value="Save" /></div></div>' . "\n" .
 
 			'<script type="text/javascript">' . "\n" .
 	        "document.getElementById('gender-male').focus();\n" .

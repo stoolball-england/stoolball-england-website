@@ -152,27 +152,6 @@ class ForumTopicListing extends Placeholder
                 $s_text .= $message->GetFormattedBody($this->o_settings);
                 $s_text .= "</div></div>";
                 
-				# signature
-				if ($o_person->GetSignature())
-				{                    
-					$signature = htmlentities($o_person->GetSignature(), ENT_QUOTES, "UTF-8", false);
-
-					$signature = XhtmlMarkup::ApplyCharacterEntities($signature);
-
-                    require_once('email/email-address-protector.class.php');
-                    $protector = new EmailAddressProtector($this->o_settings);
-                	$signature = $protector->ApplyEmailProtection($signature, $this->o_user->IsSignedIn());
-
-					$signature = XhtmlMarkup::ApplyParagraphs($signature, false);
-					$signature = XhtmlMarkup::ApplyLists($signature, false);
-					$signature = XhtmlMarkup::ApplyLinks($signature, false);
-					$signature = XhtmlMarkup::ApplySimpleTags($signature, false);
-					$signature = XhtmlMarkup::ApplySimpleXhtmlTags($signature, false);
-					$signature = XhtmlMarkup::CloseUnmatchedTags($signature);
-
-					$s_text .= '<div class="signature">' . "\n" . $signature . '</div>' . "\n";
-				}
-
 				$s_text .= '</div></div>' . "\n";
 
 				$b_alternate = !$b_alternate;

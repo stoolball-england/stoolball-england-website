@@ -11,7 +11,6 @@ class User
 	var $s_email;
 	var $i_sign_up_date;
 	var $s_location;
-	var $s_signature;
 	var $i_total_messages;
 	var $s_gender;
 	var $s_occupation;
@@ -334,16 +333,6 @@ class User
 	function GetInterests()
 	{
 		return $this->s_interests;
-	}
-
-	function SetSignature($s_input)
-	{
-		$this->s_signature = (string)$s_input;
-	}
-
-	function GetSignature()
-	{
-		return $this->s_signature;
 	}
 
 	/**

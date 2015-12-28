@@ -72,7 +72,7 @@ class AuthenticationManager extends DataManager
         $role = $this->GetSettings()->GetTable("Role");
 
 		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, 
-		      gender, occupation, interests, location, signature, date_added AS sign_up_date, total_messages, disabled,  
+		      gender, occupation, interests, location, date_added AS sign_up_date, total_messages, disabled,  
 		      $role.role_id, $role.role
     		  FROM $user LEFT JOIN $user_role ON $user.user_id = $user_role.user_id 
 		      LEFT JOIN $role ON $user_role.role_id = $role.role_id ";
@@ -480,7 +480,6 @@ class AuthenticationManager extends DataManager
 				if (isset($row->occupation)) $user->SetOccupation($row->occupation);
 				if (isset($row->interests)) $user->SetInterests($row->interests);
 				if (isset($row->location)) $user->SetLocation($row->location);
-				if (isset($row->signature)) $user->SetSignature($row->signature);
 				if (isset($row->sign_up_date)) $user->SetSignUpDate($row->sign_up_date);
 				if (isset($row->total_messages)) $user->SetTotalMessages($row->total_messages);
                 
@@ -1247,8 +1246,7 @@ class AuthenticationManager extends DataManager
 					"gender = " . ($user->GetGender() ? $this->SqlString($user->GetGender()) : "NULL") . ", " .
 					"occupation = " . $this->SqlString($language->Filter($user->GetOccupation())) . ", " .
 					"interests = " . $this->SqlHtmlString($language->Filter($user->GetInterests())) . ", " .
-					"location = " . $this->SqlString($language->Filter($user->GetLocation())) . ", " .
-					"signature = " . $this->SqlHtmlString($language->Filter($user->GetSignature())) . " " .
+					"location = " . $this->SqlString($language->Filter($user->GetLocation())) . " " .
 					'WHERE user_id = ' . Sql::ProtectNumeric($user->GetId(), false);
 
 		$this->Lock(array($users));

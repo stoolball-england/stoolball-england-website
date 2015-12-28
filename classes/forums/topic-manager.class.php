@@ -58,7 +58,7 @@ class TopicManager extends DataManager
 
 		# prepare command
 		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
-		'location, signature, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
+		'location, ' . $s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
 		$s_message . '.id, ' . $s_message . '.title, message, ' . $s_message . ".date_added AS message_date " .
 		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ' .
         'WHERE ' . $s_message . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
@@ -84,7 +84,6 @@ class TopicManager extends DataManager
 			$o_person->SetName($o_row->known_as);
 			$o_person->SetSignUpdate($o_row->sign_up_date);
 			$o_person->SetLocation($o_row->location);
-			$o_person->SetSignature($o_row->signature);
 			$o_person->SetTotalMessages($o_row->total_messages);
 			
 			$o_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
