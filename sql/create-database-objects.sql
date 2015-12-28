@@ -87,7 +87,6 @@ COMMENT = 'Bowling performances in stoolball matches';
 CREATE TABLE IF NOT EXISTS `nsa_category` (
   `id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `name` VARCHAR(255) NOT NULL,
-  `short_intro` TINYTEXT NULL DEFAULT NULL,
   `parent` INT(5) UNSIGNED NULL DEFAULT NULL,
   `code` VARCHAR(20) NULL DEFAULT NULL,
   `sort_override` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',

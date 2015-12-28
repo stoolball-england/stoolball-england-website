@@ -26,7 +26,6 @@ class CategoryEditControl extends DataEditControl
 
 		if (isset($_POST['item'])) $o_category->SetId($_POST['item']);
 		$o_category->SetName($_POST['displayName']);
-		$o_category->SetDescription($_POST['description']);
 		$o_category->SetParentId($_POST['parent_id']);
 		$o_category->SetUrl($_POST['name']);
 		$o_category->SetSortOverride($_POST['sort']);
@@ -72,11 +71,6 @@ class CategoryEditControl extends DataEditControl
 		$o_name = new FormPart('Display name', $o_name_box);
 		$this->AddControl($o_name);
 
-		# add desc
-		$o_desc_box = new TextBox('description', $o_category->GetDescription());
-		$o_desc = new FormPart('Description', $o_desc_box);
-		$this->AddControl($o_desc);
-
         # add sort override
 		$o_sort_box = new TextBox('sort', $o_category->GetSortOverride());
 		$o_sort = new FormPart('Sort order', $o_sort_box);
@@ -100,7 +94,6 @@ class CategoryEditControl extends DataEditControl
 		$this->a_validators[] = new RequiredFieldValidator('displayName', 'Please add the display name of the category');
 		$this->a_validators[] = new PlainTextValidator('displayName', 'Please use only letters, numbers and simple punctuation in the display name');
 		$this->a_validators[] = new LengthValidator('displayName', 'Please make the category name shorter', 0, 255);
-		$this->a_validators[] = new RequiredFieldValidator('description', 'Please add a one-sentence description of the category');
 		$this->a_validators[] = new PlainTextValidator('name', 'Please use only letters, numbers and simple punctuation in the description');
 		$this->a_validators[] = new NumericValidator('sort', 'The sort order should be a number');
 	}

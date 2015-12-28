@@ -27,7 +27,7 @@ class CategoryManager extends DataManager
 		# build query
 		$s_category = $this->o_settings->GetTable('Category');
 
-		$s_sql = 'SELECT id, name, short_intro, parent, code, sort_override, navigate_url, hierarchy_level ' .
+		$s_sql = 'SELECT id, name, parent, code, sort_override, navigate_url, hierarchy_level ' .
 		'FROM ' . $s_category . ' ';
 
 		# limit to specific category, if specified
@@ -63,7 +63,6 @@ class CategoryManager extends DataManager
 			$o_category = new Category();
 			$o_category->SetId($o_row->id);
 			$o_category->SetName($o_row->name);
-			$o_category->SetDescription($o_row->short_intro);
 			$o_category->SetParentId((int)$o_row->parent);
 			$o_category->SetUrl($o_row->code);
 		    $o_category->SetSortOverride($o_row->sort_override);
@@ -92,7 +91,6 @@ class CategoryManager extends DataManager
 			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Category') . ' SET ' .
 			'parent = ' . Sql::ProtectNumeric($o_category->GetParentId(), true) . ', ' .
 			"name = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetName()) . ", " .
-			"short_intro = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetDescription()) . ", " .
 			"code = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetUrl()) . ", " .
 			'sort_override = ' . Sql::ProtectNumeric($o_category->GetSortOverride()) . ', ' .
 			'date_changed = ' . gmdate('U') . ' ' .
@@ -106,7 +104,6 @@ class CategoryManager extends DataManager
 			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Category') . ' SET ' .
 			'parent = ' . Sql::ProtectNumeric($o_category->GetParentId(), true) . ', ' .
 			"name = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetName()) . ", " .
-			"short_intro = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetDescription()) . ", " .
 			"code = " . Sql::ProtectString($this->GetDataConnection(), $o_category->GetUrl()) . ", " .
             'sort_override = ' . Sql::ProtectNumeric($o_category->GetSortOverride()) . ', ' .
 			'date_added = ' . gmdate('U') . ', ' .

@@ -6,7 +6,6 @@ class Category
 	var $i_parent_id;
 	var $s_url;
 	var $s_navigate_url;
-	var $s_description;
 	var $b_show_at_site_root;
 	var $s_site;
 	var $i_hierarchy_level;
@@ -122,20 +121,6 @@ class Category
 	public function GetDeleteCategoryUrl()
 	{
 		return "/yesnosorry/categorydelete.php?item=" . $this->GetId();
-	}
-
-	function SetDescription($s_input)
-	{
-		if (is_string($s_input)) $this->s_description = $s_input;
-	}
-
-	/**
-	* @return string
-	* @desc Get a short summary of the Category
-	*/
-	function GetDescription()
-	{
-		return $this->s_description;
 	}
 
 	function SetShowAtSiteRoot($b_input)
