@@ -183,21 +183,6 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'Messages in stoolball forums';
 
-
--- -----------------------------------------------------
--- Table `nsa_forum_topic`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_forum_topic` (
-  `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `first_message_id` INT(8) UNSIGNED NULL DEFAULT '0',
-  `last_message_id` INT(8) UNSIGNED NULL DEFAULT '0',
-  PRIMARY KEY (`id`),
-  INDEX `category_id` (`first_message_id` ASC, `last_message_id` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Topics in Stoolball forums';
-
-
 -- -----------------------------------------------------
 -- Table `nsa_forum_topic_link`
 -- -----------------------------------------------------

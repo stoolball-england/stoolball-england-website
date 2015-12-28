@@ -185,8 +185,6 @@ abstract class SiteSettings
                 return 'nsa_competition';
             case 'EmailSubscription':
                 return 'nsa_email_subscription';
-            case 'ForumTopic':
-                return 'nsa_forum_topic';
             case 'ForumTopicLink':
                 return 'nsa_forum_topic_link';
             case 'ForumMessage':
