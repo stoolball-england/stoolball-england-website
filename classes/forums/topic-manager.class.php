@@ -264,65 +264,6 @@ class TopicManager extends DataManager
 		{
 			$o_topic = new ForumTopic($this->GetSettings());
 			$o_topic->SetId($o_row->id);
-
-			if (isset($o_row->first_message_title))
-			{
-				$o_first_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
-				if (isset($o_row->first_message_id)) $o_first_message->SetId($o_row->first_message_id);
-				$o_first_message->SetTopicId($o_row->id);
-				$o_first_message->SetTitle($o_row->first_message_title);
-				if (isset($o_row->first_message_date)) $o_first_message->SetDate($o_row->first_message_date);
-				if (isset($o_row->icon)) $o_first_message->SetIcon($o_row->icon);
-				if (isset($o_row->message)) $o_first_message->SetBody($o_row->message);
-
-				if (isset($o_row->first_person_id))
-				{
-					$o_first_message_person = new User();
-					$o_first_message_person->SetId($o_row->first_person_id);
-					$o_first_message_person->SetName($o_row->first_person_name);
-					$o_first_message->SetUser($o_first_message_person);
-				}
-
-				$o_topic->Add($o_first_message);
-
-				unset($o_first_message);
-			}
-
-			if (isset($o_row->last_message_id) and (!isset($o_row->total_messages) or $o_row->total_messages > 1))
-			{
-				$o_last_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
-				$o_last_message->SetId($o_row->last_message_id);
-				$o_last_message->SetTopicId($o_row->id);
-				$o_last_message->SetTitle($o_row->last_message_title ? $o_row->last_message_title : $o_row->first_message_title);
-				$o_last_message->SetDate($o_row->last_message_date);
-
-				if (isset($o_row->last_person_id) or isset($o_row->known_as))
-				{
-					$o_last_message_person = new User();
-					if (isset($o_row->last_person_id))
-					{
-						$o_last_message_person->SetId($o_row->last_person_id);
-						$o_last_message_person->SetName($o_row->last_person_name);
-					}
-					else
-					{
-						$o_last_message_person->SetName($o_row->known_as);
-					}
-					$o_last_message->SetUser($o_last_message_person);
-				}
-
-				if (isset($o_row->total_messages))
-				{
-					$o_topic->Add($o_last_message, $o_row->total_messages-1);
-				}
-				else
-				{
-					$o_topic->Add($o_last_message);
-				}
-
-				unset($o_last_message);
-			}
-
 			$this->Add($o_topic);
 		}
 	}
@@ -348,7 +289,6 @@ class TopicManager extends DataManager
 		$s_sql = 'INSERT INTO ' . $s_topic . ' SET ' .
 		'first_message_id = null, ' .
 		'last_message_id = null, ' .
-		'total_messages = 0, ' .
 		"status = 'open'";
 
 		$this->Lock(array($s_topic, $s_message, $s_topic_link, $s_reg)); # BEGIN TRAN
@@ -383,8 +323,7 @@ class TopicManager extends DataManager
 			# update topic with details of new message
 			$s_sql = 'UPDATE ' . $s_topic . ' SET ' .
 			'first_message_id = ' . Sql::ProtectNumeric($o_message->GetId()) . ', ' .
-			'last_message_id = ' . Sql::ProtectNumeric($o_message->GetId()) . ', ' .
-			'total_messages = total_messages+1 ' .
+			'last_message_id = ' . Sql::ProtectNumeric($o_message->GetId()) . ' ' .
 			'WHERE id = ' . Sql::ProtectNumeric($o_topic->GetId());
 
 			$o_result = $this->GetDataConnection()->query($s_sql);
@@ -467,8 +406,7 @@ class TopicManager extends DataManager
 
 			# update topic with details of new message
 			$s_sql = 'UPDATE ' . $s_topic . ' SET ' .
-			'last_message_id = ' . Sql::ProtectNumeric($o_message->GetId()) . ', ' .
-			'total_messages = total_messages+1 ' .
+			'last_message_id = ' . Sql::ProtectNumeric($o_message->GetId()) . ' ' .
 			'WHERE id = ' . Sql::ProtectNumeric($o_topic->GetId());
 
 			$o_result = $this->GetDataConnection()->query($s_sql);
