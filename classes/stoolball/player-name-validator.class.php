@@ -29,17 +29,13 @@ class PlayerNameValidator extends DataValidator
 		/* Only way to be sure of testing name against what it will be matched against is to use the code that transforms it when saving */
 		$player = new Player($this->GetSiteSettings());
 		$player->SetName($a_data[$a_keys[0]]);
-		$player->SetPlayerRole($a_data[$a_keys[1]]);
-
 		$comparable_name = $player->GetComparableName();
 
-		if ($player->GetPlayerRole() == Player::PLAYER)
-		{
-			if ($comparable_name == "noballs") return false;
-			if ($comparable_name == "wides") return false;
-			if ($comparable_name == "byes") return false;
-			if ($comparable_name == "bonusruns") return false;
-		}
+		if ($comparable_name == "noballs") return false;
+		if ($comparable_name == "wides") return false;
+		if ($comparable_name == "byes") return false;
+		if ($comparable_name == "bonusruns") return false;
+
 		return true;
 	}
 }

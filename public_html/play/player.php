@@ -382,15 +382,18 @@ else
 
         $this->ShowSocial();
 
- $has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_PLAYERS));
- if ($has_permission)
- {
- 	$this->AddSeparator();
- 	$panel = new UserEditPanel($this->GetSettings());
- 	$panel->AddLink("edit this player", $this->player->GetEditUrl());
- 	$panel->AddLink("delete this player", $this->player->GetDeleteUrl());
- 	echo $panel;
- }
+        if ($this->player->GetPlayerRole() == Player::PLAYER)
+        {
+             $has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_PLAYERS));
+             if ($has_permission)
+             {
+             	$this->AddSeparator();
+             	$panel = new UserEditPanel($this->GetSettings());
+             	$panel->AddLink("rename this player", $this->player->GetEditUrl());
+             	$panel->AddLink("delete this player", $this->player->GetDeleteUrl());
+             	echo $panel;
+             }
+        }
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

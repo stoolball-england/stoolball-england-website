@@ -38,6 +38,11 @@ class CurrentPage extends StoolballPage
 			$this->b_deleted = true;
 			return;
 		}
+        
+        if ($this->player->GetPlayerRole() != Player::PLAYER) {
+            http_response_code(401);
+            return;
+        }
 
 		# Check whether cancel was clicked
 		if (isset($_POST['cancel']))
@@ -108,8 +113,14 @@ class CurrentPage extends StoolballPage
 			echo new XhtmlElement('p', "The player you're trying to delete does not exist or has already been deleted.");
 			return ;
 		}
+        
+        echo new XhtmlElement('h1', 'Delete player: <cite>' . Html::Encode($this->player->GetName()) . '</cite>');
 
-		echo new XhtmlElement('h1', 'Delete player: <cite>' . Html::Encode($this->player->GetName()) . '</cite>');
+        if ($this->player->GetPlayerRole() != Player::PLAYER) {
+          ?>Sorry, an extras player can't be deleted.<?php
+          return;
+        }
+        
 
 		if ($this->b_deleted)
 		{
@@ -154,7 +165,7 @@ will be removed from all match scorecards and statistics.</p>
 				$panel = new UserEditPanel($this->GetSettings(), $this->player->GetName());
 
 				$panel->AddLink("view this player", $this->player->GetPlayerUrl());
-				$panel->AddLink("edit this player", $this->player->GetEditUrl());
+				$panel->AddLink("rename this player", $this->player->GetEditUrl());
 
 				echo $panel;
 			}

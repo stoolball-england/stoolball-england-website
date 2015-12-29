@@ -384,9 +384,10 @@ class PlayerManager extends DataManager
 	/**
 	 * @return int
 	 * @param Player $player
+     * @param bool $rename_only
 	 * @desc Save the supplied player to the database, and return the id
 	 */
-	public function Save($player)
+	public function SavePlayer($player, $rename_only=false)
 	{
 		/* @var $player Player */
 		if (!$player instanceof Player) throw new Exception("Unable to save player");
@@ -422,12 +423,14 @@ class PlayerManager extends DataManager
 			$sql = "UPDATE $players SET
 			player_name = " . Sql::ProtectString($this->GetDataConnection(), $corrected_player_name, false) . ",
 			comparable_name = " . Sql::ProtectString($this->GetDataConnection(), $player->GetComparableName(), false) . ",
-			team_id = " . Sql::ProtectNumeric($player->Team()->GetId(), false) . ",
-			player_role = " . Sql::ProtectNumeric($player->GetPlayerRole(), false) . ",
 			short_url = " . Sql::ProtectString($this->GetDataConnection(), $player->GetShortUrl(), false) . ",
             update_search = 1,  
-			date_changed = " . gmdate('U') . "
-			WHERE player_id = " . Sql::ProtectNumeric($player->GetId());
+			date_changed = " . gmdate('U');
+            if (!$rename_only) {
+                $sql .= ", team_id = " . Sql::ProtectNumeric($player->Team()->GetId(), false) . ",
+                           player_role = " . Sql::ProtectNumeric($player->GetPlayerRole(), false);
+            }
+			$sql .= " WHERE player_id = " . Sql::ProtectNumeric($player->GetId());
 
 			$this->LoggedQuery($sql);
 		}
@@ -506,7 +509,7 @@ class PlayerManager extends DataManager
 
 		if (!$player->GetId())
 		{
-			$this->Save($player);
+			$this->SavePlayer($player);
 		}
 
 		return $player->GetId();
@@ -521,22 +524,22 @@ class PlayerManager extends DataManager
         $player = new Player($this->GetSettings());
         $player->Team()->SetId($team_id);
         $player->SetPlayerRole(Player::NO_BALLS);
-        $this->Save($player);
+        $this->SavePlayer($player);
 
         $player = new Player($this->GetSettings());
         $player->Team()->SetId($team_id);
         $player->SetPlayerRole(Player::WIDES);
-        $this->Save($player);
+        $this->SavePlayer($player);
 
         $player = new Player($this->GetSettings());
         $player->Team()->SetId($team_id);
         $player->SetPlayerRole(Player::BYES);
-        $this->Save($player);
+        $this->SavePlayer($player);
 
         $player = new Player($this->GetSettings());
         $player->Team()->SetId($team_id);
         $player->SetPlayerRole(Player::BONUS_RUNS);
-        $this->Save($player);
+        $this->SavePlayer($player);
     }
     
     /**

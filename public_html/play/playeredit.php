@@ -26,8 +26,6 @@ class CurrentPage extends StoolballPage
 	 */
 	private $player_manager;
 
-	private $teams;
-
 	public function OnPageInit()
 	{
 		# Create the editor and manager
@@ -58,27 +56,33 @@ class CurrentPage extends StoolballPage
 
 		if ($this->IsValid())
 		{
-			# See if the player already exists and is different from the one being added/edited
-			$duplicate_player = new Player($this->GetSettings());
-			$duplicate_player->SetName($this->player->GetName());
-			$duplicate_player->Team()->SetId($this->player->Team()->GetId());
-			$duplicate_player->SetPlayerRole(Player::PLAYER);
-			$this->player_manager->MatchExistingPlayer($duplicate_player);
+            # First check in the database that this is not an extras player that can't be renamed
+            $this->player_manager->ReadPlayerById($this->player->GetId());
+            $player_to_edit = $this->player_manager->GetFirst();
+            if ($player_to_edit->GetPlayerRole() != Player::PLAYER) {
+                http_response_code(401);
+                return;
+            }
+            
+			# Get the existing player for their team, change the name and see if the renamed player 
+			# already exists and is different from the one being edited
+			$player_to_edit->SetName($this->player->GetName());
+			$this->player_manager->MatchExistingPlayer($player_to_edit);
 
-			if ($duplicate_player->GetId() and $duplicate_player->GetId() != $this->player->GetId())
+			if ($player_to_edit->GetId() and $player_to_edit->GetId() != $this->player->GetId())
 			{
 				if ($this->editor->IsMergeRequested())
 				{
-					$this->player_manager->MergePlayers($this->player, $duplicate_player);
+					$this->player_manager->MergePlayers($this->player, $player_to_edit);
 
                     # Remove details of both players from the search engine.
                     require_once("search/lucene-search.class.php");
                     $search = new LuceneSearch();
                     $search->DeleteDocumentById("player" . $this->player->GetId());
-                    $search->DeleteDocumentById("player" . $duplicate_player->GetId());
+                    $search->DeleteDocumentById("player" . $player_to_edit->GetId());
 
                     # Re-request player to get details for search engine, and player URL to redirect to
-                    $this->player_manager->ReadPlayerById($duplicate_player->GetId());
+                    $this->player_manager->ReadPlayerById($player_to_edit->GetId());
                     $this->player = $this->player_manager->GetFirst();
                     $search->IndexPlayer($this->player);
                     $search->CommitChanges();
@@ -93,7 +97,7 @@ class CurrentPage extends StoolballPage
 			}
 			else
 			{
-				$this->player_manager->Save($this->player);
+				$this->player_manager->SavePlayer($this->player, true);
                 unset($player_manager);
 
 				$this->Redirect($this->player->GetPlayerUrl());
@@ -113,38 +117,11 @@ class CurrentPage extends StoolballPage
 
 		# ensure we have a player
 		if (!$this->player instanceof Player) $this->Redirect();
-
-		# get possible teams
-		require_once("stoolball/team-manager.class.php");
-		$team_manager = new TeamManager($this->GetSettings(), $this->GetDataConnection());
-		$team_manager->ReadAll();
-		$this->teams = $team_manager->GetItems();
-		$this->editor->SetAvailableTeams($this->teams);
-		unset($team_manager);
 	}
 
 	public function OnPrePageLoad()
 	{
-		# Different page title for add and edit
-		if ($this->player->GetId())
-		{
-			$this->SetPageTitle("Edit " . $this->player->GetName());
-		}
-		else
-		{
-			# find the team name
-			$this->SetPageTitle("Add new player");
-
-			$player_team = $this->player->Team()->GetId();
-			foreach ($this->teams as $team)
-			{
-				if ($team->GetId() == $player_team)
-				{
-					$this->SetPageTitle("Add player for " . $team->GetName());
-					break;
-				}
-			}
-		}
+		$this->SetPageTitle("Rename " . $this->player->GetName());
 		$this->SetContentConstraint(StoolballPage::ConstrainText());
 		$this->LoadClientScript("playeredit.js", true);
 	}
@@ -153,9 +130,12 @@ class CurrentPage extends StoolballPage
 	{
 		echo "<h1>" . htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false) . "</h1>";
 
-		# set up the editor
-		$this->editor->SetDataObject($this->player);
-		echo $this->editor;
+        if ($this->player->GetPlayerRole() == Player::PLAYER) {
+		  $this->editor->SetDataObject($this->player);
+		  echo $this->editor;
+        } else {
+          ?>Sorry, an extras player can't be renamed.<?php
+        }
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::MANAGE_PLAYERS, false);
