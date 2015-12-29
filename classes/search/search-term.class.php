@@ -1,83 +1,98 @@
 <?php 
+/**
+ * A search term provided from user input
+ */
 class SearchTerm
 {
-	var $s_original_term;
-	var $a_terms;
-	var $a_ignored_words;
+	private $original_term;
+	private $terms;
+	private $ignored_words;
 	
-	function SearchTerm($s_input='')
+	public function __construct($search_term='')
 	{
-		$this->SetTerm($s_input);
+		$this->SetTerm($search_term);
 	}
 	
-	function SetTerm($s_input)
+    /**
+     * Sets the search term
+     * @param string $search_term
+     */
+	public function SetTerm($search_term)
 	{
-		if ($s_input)
+		if ($search_term)
 		{
 			# store original term
-			$this->s_original_term = $s_input;
+			$this->original_term = $search_term;
 
 			# strip non-alphanumeric
-			$s_input = preg_replace('/[^\w\s]/', '', $s_input);
+			$search_term = preg_replace('/[^\w\s]/', '', $search_term);
 
 			# remove (and store) ignored words
-			$a_input = $this->StripIgnoredWords($s_input);
+			$search_term = $this->StripIgnoredWords($search_term);
 
 			# store tidied term
-			$this->a_terms = $a_input;
+			$this->terms = $search_term;
 		}
 	}
 	
-	function GetTerm()
+    /**
+     * Gets the sanitised search term
+     */
+	public function GetSanitisedTerm()
 	{
-		return is_array($this->a_terms) ? join($this->a_terms, ' ') : false;
+		return is_array($this->terms) ? join($this->terms, ' ') : false;
 	}
 	
-	function GetTerms()
+    /**
+     * Gets the sanitised search term as an array of words
+     * @return string[]
+     */
+	public function GetSanitisedTerms()
 	{
-		return $this->a_terms;
+		return $this->terms;
 	}
 	
-	function GetOriginalTerm()
+    /**
+     * Gets the original, unaltered search term
+     */
+	public function GetOriginalTerm()
 	{
-		return $this->s_original_term;
+		return $this->original_term;
 	}
 	
-	function StripIgnoredWords($s_text)
+	private function StripIgnoredWords($text)
 	{
-		$a_ignored_words = array();
-		$a_keep_words = array();
+		$ignored_words = array();
+		$keep_words = array();
 		
 		# split input into words
-		$a_words = explode(' ', $s_text);
+		$words = explode(' ', $text);
 		
 		# check each word - is it more than 3 chars?
-		foreach ($a_words as $s_word)
+		foreach ($words as $word)
 		{
-			if (strlen($s_word) <= 3)
+			if (strlen($word) <= 3)
 			{
-				if (!in_array($s_word, $a_ignored_words)) $a_ignored_words[] = $s_word;
+				if (!in_array($word, $ignored_words)) $ignored_words[] = $word;
 			}
 			else 
 			{
-				if (!in_array($s_word, $a_keep_words)) $a_keep_words[] = $s_word;
+				if (!in_array($word, $keep_words)) $keep_words[] = $word;
 			}
 		}
 
 		# save and return 2 sets of words
-		$this->a_ignored_words = $a_ignored_words;
+		$this->ignored_words = $ignored_words;
 
-		return $a_keep_words;
+		return $keep_words;
 	}
 	
-	function GetIgnoredWords()
+    /**
+     * Gets the words from the original search term which were ignored
+     */
+	public function GetIgnoredWords()
 	{
-		return $this->a_ignored_words;
-	}
-	
-	function GetIgnoredWordsCount()
-	{
-		return count($this->a_ignored_words);
+		return $this->ignored_words;
 	}
 }
 ?>

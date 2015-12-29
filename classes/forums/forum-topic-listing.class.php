@@ -104,7 +104,7 @@ class ForumTopicListing extends Placeholder
 				if (isset($_GET['hi']) and $_GET['hi'])
 				{
 					$o_term = new SearchTerm($_GET['hi']);
-					$message->SetBody(SearchHighlighter::Highlight($o_term->GetTerms(), $message->GetBody()));
+					$message->SetBody(SearchHighlighter::Highlight($o_term->GetSanitisedTerms(), $message->GetBody()));
 				}
 
                 # Declare relationship between messages.
