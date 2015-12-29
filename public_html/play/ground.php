@@ -14,7 +14,6 @@ class CurrentPage extends StoolballPage
 	 * @var Ground
 	 */
 	private $ground;
-	private $teams;
 	private $best_batting;
 	private $best_bowling;
 	private $most_runs;
@@ -49,16 +48,16 @@ class CurrentPage extends StoolballPage
 		$team_manager->FilterByActive(true) ;
 		$team_manager->FilterByGround(array($this->ground->GetId()));
 		$team_manager->ReadTeamSummaries();
-		$this->teams = $team_manager->GetItems();
+		$this->ground->Teams()->SetItems($team_manager->GetItems());
 
         # Update search engine
         if ($this->ground->GetSearchUpdateRequired())
         { 
-            require_once ("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("ground" . $this->ground->GetId());
-            $search->IndexGround($this->ground, $team_manager);
-            $search->CommitChanges();
+            require_once ("search/ground-search-adapter.class.php");
+            $this->SearchIndexer()->DeleteFromIndexById("ground" . $this->ground->GetId());
+            $adapter = new GroundSearchAdapter($this->ground);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
             
             $ground_manager->SearchUpdated($this->ground->GetId());
         }
@@ -100,13 +99,14 @@ class CurrentPage extends StoolballPage
 		$this->LoadClientScript('ground-4.js', true);
 		
 		$description = $this->ground->GetNameAndTown();
-		$teams_count = count($this->teams);
+		$teams = $this->ground->Teams()->GetItems();
+		$teams_count = count($teams);
 		if ($teams_count)
 		{
 			$description .= " is home to ";
 			for ($i = 0; $i < $teams_count; $i++) 
 			{
-				$description .= $this->teams[$i]->GetName();
+				$description .= $teams[$i]->GetName();
 				if ($i < ($teams_count-2)) $description .= ", ";
 				if ($i == ($teams_count-2)) $description .= " and ";
 			}
@@ -137,10 +137,10 @@ class CurrentPage extends StoolballPage
 		echo $address;
 
 		# Show teams based at this ground
-		if (count($this->teams))
+		if ($this->ground->Teams()->GetCount())
 		{
 			require_once("stoolball/team-list-control.class.php");
-			echo "<h2>Teams based at this ground</h2>" . new TeamListControl($this->teams);
+			echo "<h2>Teams based at this ground</h2>" . new TeamListControl($this->ground->Teams()->GetItems());
 		} 
 
 		if (!is_null($this->ground->GetAddress()->GetLatitude()) and !is_null($this->ground->GetAddress()->GetLongitude()))

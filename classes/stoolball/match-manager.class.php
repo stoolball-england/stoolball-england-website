@@ -2201,7 +2201,7 @@ class MatchManager extends DataManager
 	 * @param bool $is_first_innings
 	 * @desc Saves the batting and bowling scorecards for one innings
 	 */
-	public function SaveScorecard(Match $match, $is_first_innings)
+	public function SaveScorecard(Match $match, $is_first_innings, ISearchIndexProvider $search)
 	{
 		# To add a scorecard there must always already be a match to update
 		if (!$match->GetId()) return;
@@ -2290,18 +2290,19 @@ class MatchManager extends DataManager
 			unset($statistics_manager);
 
 
-            # Include code needed to update search engine
-            require_once("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-    
+            # update search engine
             require_once "stoolball/player-manager.class.php";
+            require_once "search/player-search-adapter.class.php";
             $player_manager = new PlayerManager($this->GetSettings(), $this->GetDataConnection());
             foreach ($affected_players as $player_id) 
             {
                 $player_manager->ReadPlayerById($player_id);
                 $player = $player_manager->GetFirst();
-                $search->DeleteDocumentById("player" . $player_id);
-                if ($player instanceof Player) $search->IndexPlayer($player);
+                $search->DeleteFromIndexById("player" . $player_id);
+                if ($player instanceof Player) {
+                    $adapter = new PlayerSearchAdapter($player);
+                    $search->Index($adapter->GetSearchableItem());
+                }
             }
             $search->CommitChanges();
             unset($player_manager);

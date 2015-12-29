@@ -133,7 +133,7 @@ class StoolballPage extends Page
 		echo '</div>';
 		
 			?>
-<form id="handle" action="/search" method="get" class="large"><div><input id="search" type="search" name="q" value="<?php if (isset($_GET['q'])) echo htmlentities($_GET['q'], ENT_QUOTES, "UTF-8", false); ?>" />
+<form id="handle" action="/search/index.php" method="get" class="large"><div><input id="search" type="search" name="q" value="<?php if (isset($_GET['q'])) echo htmlentities($_GET['q'], ENT_QUOTES, "UTF-8", false); ?>" />
 	<input type="submit" value="Search" id="go" /></div>
 </form>
 <div id="bat1"></div>
@@ -508,5 +508,19 @@ s.parentNode.insertBefore(g,s)}(document,'script'));
 			echo '<a class="promo large" href="/shop"><img alt="Bats &pound;39, Balls &pound;7, Wickets &pound;150, Scorebooks &pound;4. Buy yours now." width="185" height="214" src="' . $this->resource_root . '/images/equipment/bat-ad-' . rand(1,2) . '.jpg" /></a>';
 		}
 	}
+
+    private $indexer;
+
+    /**
+     * Gets the search indexer for the site 
+     * @return ISearchIndexProvider
+     */
+    protected function SearchIndexer() {
+        if (is_null($this->indexer)) {
+            require_once("search/fake-search-indexer.class.php");
+            $this->indexer = new FakeSearchIndexer();
+        }
+        return $this->indexer;
+    }
 }
 ?>

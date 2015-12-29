@@ -95,11 +95,11 @@ class CurrentPage extends StoolballPage
 			$this->season->SetId($id);
 
             # Add the competition to the search  engine. Re-request so we have team names as well as IDs.
-            require_once ("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("competition" . $this->season->GetCompetition()->GetId());
-            $search->IndexCompetition($this->season->GetCompetition());
-            $search->CommitChanges();
+            require_once ("search/competition-search-adapter.class.php");
+            $this->SearchIndexer()->DeleteFromIndexById("competition" . $this->season->GetCompetition()->GetId());
+            $adapter = new CompetitionSearchAdapter($this->season->GetCompetition());
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
 
 			# If just saved a new season, redirect to load this page from scratch
 			# (When just loading data on this page, didn't load correctly into aggregated editors)

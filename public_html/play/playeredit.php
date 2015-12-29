@@ -76,16 +76,16 @@ class CurrentPage extends StoolballPage
 					$this->player_manager->MergePlayers($this->player, $player_to_edit);
 
                     # Remove details of both players from the search engine.
-                    require_once("search/lucene-search.class.php");
-                    $search = new LuceneSearch();
-                    $search->DeleteDocumentById("player" . $this->player->GetId());
-                    $search->DeleteDocumentById("player" . $player_to_edit->GetId());
+                    $this->SearchIndexer()->DeleteFromIndexById("player" . $this->player->GetId());
+                    $this->SearchIndexer()->DeleteFromIndexById("player" . $player_to_edit->GetId());
 
                     # Re-request player to get details for search engine, and player URL to redirect to
+                    require_once("search/player-search-adapter.class.php");
                     $this->player_manager->ReadPlayerById($player_to_edit->GetId());
                     $this->player = $this->player_manager->GetFirst();
-                    $search->IndexPlayer($this->player);
-                    $search->CommitChanges();
+                    $adapter = new PlayerSearchAdapter($this->player);
+                    $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+                    $this->SearchIndexer()->CommitChanges();
                     unset($player_manager);
 
 					$this->Redirect($this->player->GetPlayerUrl());

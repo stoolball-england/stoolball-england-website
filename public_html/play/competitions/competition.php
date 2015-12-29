@@ -68,11 +68,11 @@ class CurrentPage extends StoolballPage
         # Update search engine. Only do this for the latest season as then we have the right teams already.
         if ($this->competition->GetSearchUpdateRequired() and $latest)
         { 
-            require_once ("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("competition" . $this->competition->GetId());
-            $search->IndexCompetition($this->competition);
-            $search->CommitChanges();
+            $this->SearchIndexer()->DeleteFromIndexById("competition" . $this->competition->GetId());
+            require_once("search/competition-search-adapter.class.php");
+            $adapter = new CompetitionSearchAdapter($this->competition);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
             
             $o_comp_manager->SearchUpdated($this->competition->GetId());
         }

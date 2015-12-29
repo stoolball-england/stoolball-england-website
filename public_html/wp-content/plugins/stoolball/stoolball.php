@@ -544,10 +544,11 @@ class StoolballWordPressPlugin
     {
         $page = get_page($page_id);
         
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
-        $search->DeleteDocumentById("page" . $page_id);
-        $search->IndexWordPressPage($page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true), $page->post_content);
+        require_once("search/fake-search-indexer.class.php");
+        require_once("search/search-item.class.php");
+        $search = new FakeSearchIndexer();
+        $search->DeleteFromIndexById("page" . $page_id);
+        $search->Index(new SearchItem("page", $page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true), $page->post_content));
         $search->CommitChanges();
     }
     
@@ -559,10 +560,11 @@ class StoolballWordPressPlugin
     {
         $post = get_post($post_id);
 
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
-        $search->DeleteDocumentById("post" . $post_id);
-        $search->IndexWordPressPost($post_id, get_permalink($post_id), $post->post_title, $post->post_content);
+        require_once("search/fake-search-indexer.class.php");
+        require_once("search/search-item.class.php");
+        $search = new FakeSearchIndexer();
+        $search->DeleteFromIndexById("post" . $post_id);
+        $search->Index(new SearchItem("post", $post_id, get_permalink($post_id), $post->post_title, null, $post->post_content));
         $search->CommitChanges();        
     }
 
@@ -572,17 +574,17 @@ class StoolballWordPressPlugin
      */
     public function TrashPost($post_id)
     {
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
+        require_once("search/fake-search-indexer.class.php");
+        $search = new FakeSearchIndexer();
         
         $post = get_post($post_id);
         if ($post and $post->post_type == 'post')
         {
-            $search->DeleteDocumentById("post" . $post_id);
+            $search->DeleteFromIndexById("post" . $post_id);
         }        
         else if ($post and $post->post_type == 'page')
         {
-            $search->DeleteDocumentById("page" . $post_id);
+            $search->DeleteFromIndexById("page" . $post_id);
         }
     }
     

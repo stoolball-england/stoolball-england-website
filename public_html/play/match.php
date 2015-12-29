@@ -60,11 +60,11 @@ class CurrentPage extends StoolballPage
         # Update search engine
         if ($this->match->GetSearchUpdateRequired())
         { 
-            require_once ("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("match" . $this->match->GetId());
-            $search->IndexMatch($this->match);
-            $search->CommitChanges();
+            require_once ("search/match-search-adapter.class.php");
+            $this->SearchIndexer()->DeleteFromIndexById("match" . $this->match->GetId());
+            $adapter = new MatchSearchAdapter($this->match);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
     
             $match_manager->SearchUpdated($this->match->GetId());
         }

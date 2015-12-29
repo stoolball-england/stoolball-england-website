@@ -146,14 +146,14 @@ class CurrentPage extends StoolballPage
 
 				case MatchEditControl::FIRST_INNINGS:
 
-					$this->match_manager->SaveScorecard($this->match, true);
+					$this->match_manager->SaveScorecard($this->match, true, $this->SearchIndexer());
 					$this->editor->SetCurrentPage(MatchEditControl::SECOND_INNINGS);
 
 					break;
 
 				case MatchEditControl::SECOND_INNINGS:
 
-					$this->match_manager->SaveScorecard($this->match, false);
+					$this->match_manager->SaveScorecard($this->match, false, $this->SearchIndexer());
 					$this->editor->SetCurrentPage(MatchEditControl::HIGHLIGHTS);
 
 					break;

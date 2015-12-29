@@ -74,9 +74,6 @@ class CurrentPage extends StoolballPage
 			require_once('forums/subscription-manager.class.php');
 			$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
 
-		    require_once ("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-        
             foreach ($this->repeater->GetDataObjects() as $o_current_match)
 			{
 				/* @var $o_current_match Match */
@@ -98,8 +95,6 @@ class CurrentPage extends StoolballPage
 					unset($subs_manager);
 				}
             }
-
-		    $search->CommitChanges();
         
         	$this->b_saved = true;
 		}

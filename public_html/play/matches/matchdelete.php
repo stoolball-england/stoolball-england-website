@@ -62,14 +62,12 @@ class CurrentPage extends StoolballPage
 				$this->manager->DeleteMatch(array($i_id));
 
                 # Remove match, and all dependent tournament matches, from search results
-                require_once ("search/lucene-search.class.php");
-                $search = new LuceneSearch();
                 foreach ($this->match->GetMatchesInTournament() as $tournament_match) 
                 {
-                    $search->DeleteDocumentById("match" . $tournament_match->GetId());    
+                    $this->SearchIndexer()->DeleteFromIndexById("match" . $tournament_match->GetId());    
                 }
-                $search->DeleteDocumentById("match" . $this->match->GetId());
-                $search->CommitChanges();
+                $this->SearchIndexer()->DeleteFromIndexById("match" . $this->match->GetId());
+                $this->SearchIndexer()->CommitChanges();
 
 				require_once('stoolball/data-change-notifier.class.php');
 				$notifier = new DataChangeNotifier($this->GetSettings());

@@ -62,11 +62,8 @@ class CurrentPage extends StoolballPage
 				$this->player_manager->Delete(array($id));
 
                 # Delete player's entry in the search engine
-                require_once("search/lucene-search.class.php");
-                $search = new LuceneSearch();
-                $search->DeleteDocumentById("player" . $id);    
-                $search->CommitChanges();
-
+                $this->SearchIndexer()->DeleteFromIndexById("player" . $id);    
+                $this->SearchIndexer()->CommitChanges();
 
 				# Note success
 				$this->b_deleted = true;

@@ -4,7 +4,6 @@ stoolball-settings.class.php
 #Cachesandlogs
 php-errors.log
 thumbs.db
-lucene/index/*
 htmlpurifier/HTMLPurifier/DefinitionCache/*
 
 #Uploadeddatafiles

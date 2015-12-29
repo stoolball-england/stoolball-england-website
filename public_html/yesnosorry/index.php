@@ -26,7 +26,7 @@ class CurrentPage extends StoolballPage
                 '<li><a href="/yesnosorry/roles.php">Roles</a></li>';
         }
         if ($user->Permissions()->HasPermission(PermissionType::MANAGE_URLS)) $list  .= '<li><a href="regenerate-short-urls.php">Regenerate short URL cache</a></li>';
-        if ($user->Permissions()->HasPermission(PermissionType::MANAGE_SEARCH)) $list  .= '<li><a href="lucene.php">Reindex search</a></li>';
+        if ($user->Permissions()->HasPermission(PermissionType::MANAGE_SEARCH)) $list  .= '<li><a href="/search/reindex.php">Reindex search</a></li>';
         if ($user->Permissions()->HasPermission(PermissionType::MANAGE_STATISTICS)) $list  .= '<li><form action="recalculate-player-statistics.php" method="post"><div><input type="submit" value="Recalculate player statistics" /></div></form></li>';
         
 		if ($list) echo '<ul>' . $list . '</ul>';
