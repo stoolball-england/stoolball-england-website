@@ -162,6 +162,7 @@ class CurrentPage extends StoolballPage
 
 					# Save player of match
 					$this->match_manager->SaveHighlights($this->match);
+                    $this->match_manager->ExpandMatchUrl($this->match);
 
 					# Add comment if provided
 					if (trim($this->match->GetNewComment()))
@@ -174,6 +175,7 @@ class CurrentPage extends StoolballPage
 						$item_to_comment_on = new ReviewItem($this->GetSettings());
 						$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
 						$item_to_comment_on->SetId($this->match->GetId());
+                        $item_to_comment_on->SetNavigateUrl("https://" . $this->GetSettings()->GetDomain() . $this->match->GetNavigateUrl());
 						$message = $topic_manager->SaveComment($item_to_comment_on, $this->match->GetNewComment());
 
 						# send subscription emails - new object each time to reset list of who's already recieved an email

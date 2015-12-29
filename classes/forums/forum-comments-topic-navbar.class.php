@@ -36,11 +36,6 @@ class ForumCommentsTopicNavbar extends XhtmlElement
 		$s_subscribe_link = '/play/subscribe.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
 		$s_subscribe_title = 'Get an email alert every time there are new comments on this page';
 		$s_review_link = '/play/comment.php?type=' . $i_item_type . '&amp;item=' . $i_item_id . '&amp;title=' . $s_suggested_title .'&amp;page=' . $s_page;
-		if (isset($_GET['cid'])) 
-		{
-			$s_subscribe_link .= '&amp;cid=' . $_GET['cid'];
-			$s_review_link .= '&amp;cid=' . $_GET['cid'];
-		}
 		
 		if ($i_item_id and is_integer(intval($i_item_id)))
 		{
@@ -59,7 +54,6 @@ class ForumCommentsTopicNavbar extends XhtmlElement
 		else
 		{
 			throw new Exception('No item specified for review navbar.');
-			return false;
 		}
 	}
 }

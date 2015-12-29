@@ -26,8 +26,14 @@ class CommentPage extends StoolballPage
         if (isset($_POST['type'])) $this->o_review_item->SetType($_POST['type']);
 		if (isset($_GET['item'])) $this->o_review_item->SetId($_GET['item']); 
 		if (isset($_POST['item'])) $this->o_review_item->SetId($_POST['item']);
+        if (isset($_GET['page']) and strlen($_GET['page']) > 0 and substr($_GET['page'],0,1)=="/") {
+            $this->o_review_item->SetNavigateUrl($_GET['page']);
+        }
+        if (isset($_POST['page']) and strlen($_POST['page']) > 0 and substr($_POST['page'],0,1)=="/") {
+            $this->o_review_item->SetNavigateUrl($_POST['page']);
+        }
 
-        if (!$this->o_review_item->GetType() && !$this->o_review_item->GetId()) 
+        if (!$this->o_review_item->GetType() or !$this->o_review_item->GetId() or !$this->o_review_item->GetNavigateUrl()) 
         {
             header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
             exit();
@@ -64,20 +70,18 @@ class CommentPage extends StoolballPage
 			$o_subs = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
 
 			if ($this->o_review_item->GetId()) {
+				$this->o_review_item->SetNavigateUrl("https://" . $this->GetSettings()->GetDomain() . $this->o_review_item->GetNavigateUrl());
 				$o_subs->SendCommentsSubscriptions($this->o_review_item, $message);
             }
 
 			# add subscription if appropriate
-			if (isset($_POST['subscribe']) and $this->o_review_item->GetId())
+			if (isset($_POST['subscribe']) and $this->o_review_item->GetId()) {
 				$o_subs->SaveSubscription($this->o_review_item->GetId(), $this->o_review_item->GetType(), AuthenticationManager::GetUser()->GetId());
+            }
 
 			# redirect user back to the item
-			if (isset($_POST['page']) and $_POST['page']) {
-    			$s_redirect_location = str_replace('&amp;', '&', $_POST['page']);
-    			$this->Redirect($s_redirect_location);
-            } else {
-                http_response_code(400);
-            }
+			$s_redirect_location = str_replace('&amp;', '&', $this->o_review_item->GetNavigateUrl());
+			$this->Redirect($s_redirect_location);
 		}
 	}
 

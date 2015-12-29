@@ -81,7 +81,7 @@ class SubscriptionManager extends DataManager
 	function GetFooter()
 	{
 		$s_footer = $this->GetSettings()->GetEmailSignature();
-		$s_footer .= "\n\nIf you don't want to get an email like this again, you can unsubscribe\non the email alerts page at http://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetUrl('AccountEdit');
+		$s_footer .= "\n\nIf you don't want to get an email like this again, you can unsubscribe\non the email alerts page at https://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetUrl('AccountEdit');
 		return $s_footer;
 	}
 
@@ -127,7 +127,7 @@ class SubscriptionManager extends DataManager
 					$email->setBodyText($this->GetHeader() .
 					trim(AuthenticationManager::GetUser()->GetName()) . ' has just commented on a page at ' . $this->GetSettings()->GetSiteName() . ' for which you subscribed to an email alert.' . "\n\n" .
 					"The page is called '" . $s_title . "' - here's an excerpt of the new comments:\n\n" . $message->GetExcerpt() . "\n\n" .
-					'View the new comments at' . "\n" .$review_item->GetNavigateUrl(false) . '#message' . $message->GetId() .
+					'View the new comments at' . "\n" .$review_item->GetNavigateUrl() . '#message' . $message->GetId() .
 					$this->GetFooter());
 
 					try

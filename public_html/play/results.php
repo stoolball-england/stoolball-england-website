@@ -81,6 +81,7 @@ class CurrentPage extends StoolballPage
 			{
 				/* @var $o_current_match Match */
 				$match_manager->SaveResult($o_current_match);
+                $match_manager->ExpandMatchUrl($o_current_match);
 				$match_manager->NotifyMatchModerator($o_current_match->GetId());
 
 				if (trim($o_current_match->GetNewComment()))
@@ -88,6 +89,7 @@ class CurrentPage extends StoolballPage
 					$item_to_comment_on = new ReviewItem($this->GetSettings());
 					$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
 					$item_to_comment_on->SetId($o_current_match->GetId());
+                    $item_to_comment_on->SetNavigateUrl("https://" . $this->GetSettings()->GetDomain() . $o_current_match->GetNavigateUrl());
 					$message = $topic_manager->SaveComment($item_to_comment_on, $o_current_match->GetNewComment());
 
 					# send subscription emails - new object each time to reset list of who's already recieved an email

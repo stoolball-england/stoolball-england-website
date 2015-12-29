@@ -95,10 +95,7 @@ class ForumMessageForm extends XhtmlForm
 		if (($_SERVER['REQUEST_METHOD'] != 'POST') or (isset($_POST['subscribe']) and $_POST['subscribe'])) $s_text .= ' checked="checked"';
 		$s_text .= ' /> Send an email alert whenever anyone ' . $s_post_pod_text . '</label></p>' . "\n" .
 		'<input type="submit" class="submit" value="Post ' . $this->GetMessageText() . '" name="action" />' . "\n" .
-		'</form>' . "\n\n" .
-		'<script type="text/javascript">' . "\n" .
-		"document.getElementById('title').focus();\n" .
-		'</script>' . "\n\n";
+		'</form>';
 
 		return $s_text;
 	}

@@ -91,6 +91,7 @@ class TopicManager extends DataManager
 			$o_message->SetDate($o_row->message_date);
 			$o_message->SetBody($o_row->message);
 			$o_message->SetUser($o_person);
+            $o_message->SetReviewItem($review_item);
 
 			$o_topic->Add($o_message);
 		}
