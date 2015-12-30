@@ -114,9 +114,13 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		$this->SetOpenGraphType("sports_team");
-		$this->SetPageTitle($this->team->GetName() . ' stoolball team');
-		$this->SetPageDescription($this->team->GetSearchDescription());
+        $this->SetOpenGraphType("sports_team");
+        $this->SetPageTitle($this->team->GetName() . ' stoolball team');
+
+	    require_once("search/team-search-adapter.class.php");
+        $adapter = new TeamSearchAdapter($this->team);
+		$this->SetPageDescription($adapter->GetSearchDescription());
+
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
         if (!$this->is_one_time_team) {
             $this->LoadClientScript("/scripts/lib/chart.min.js");

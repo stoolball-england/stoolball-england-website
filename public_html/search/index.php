@@ -105,40 +105,7 @@ class CurrentPage extends StoolballPage
  				echo "</dt>";
 				echo '<dd>';
                 echo "<p>" . $protector->ApplyEmailProtection(htmlentities($result->Description(), ENT_QUOTES, "UTF-8", false), AuthenticationManager::GetUser()->IsSignedIn()) . "</p>";
-				switch ($result->SearchItemType())
-                {
-                    case "team":
-                        $team = new Team($this->GetSettings());
-                        $team->SetShortUrl(trim($result->Url(), "/"));
-                        echo '<ul>';
-                        echo '<li><a href="' . $team->GetStatsNavigateUrl() . '">Statistics</a></li>';
-                        echo '<li><a href="' . $team->GetPlayersNavigateUrl() . '">Players</a></li>';
-                        echo '<li><a href="' . $team->GetCalendarNavigateUrl() . '">Match calendar</a></li>';
-                        echo '</ul>';
-                        break;
-                    case "ground":
-                        $ground = new Ground($this->GetSettings());
-                        $ground->SetShortUrl(trim($result->Url(), "/"));
-                        echo '<ul>';
-                        echo '<li><a href="' . $ground->GetStatsNavigateUrl() . '">Statistics</a></li>';
-                        echo '</ul>';
-                        break;
-                    case "competition":
-                        $competition = new Competition($this->GetSettings());
-                        $competition->SetShortUrl(trim($result->Url(), "/"));
-                        echo '<ul>';
-                        echo '<li><a href="' . $competition->GetStatisticsUrl() . '">Statistics</a></li>';
-                        echo '</ul>';
-                        break;
-                    case "match":
-                        $match = new Match($this->GetSettings());
-                        $match->SetShortUrl(trim($result->Url(), "/"));
-                        echo '<ul>';
-                        echo '<li><a href="' . $match->GetCalendarNavigateUrl() . '">Add to calendar</a></li>';
-                        echo '</ul>';
-                        break;
-                    
-                }
+                echo $result->RelatedLinksHtml();
                 echo '<p class="url">' . htmlentities($this->DisplayUrl($result->Url()), ENT_QUOTES, "UTF-8", false) . "</p>";
                 echo "</dd>";
 			}
@@ -162,10 +129,10 @@ class CurrentPage extends StoolballPage
     
     private function DisplayUrl($url) 
     {
-        $url = str_replace("http://" . $this->GetSettings()->GetDomain(), "", $url);
-        if (strpos($url, "http://") === 0)
+        $url = str_replace("https://" . $this->GetSettings()->GetDomain(), "", $url);
+        if (strpos($url, "https://") === 0)
         {
-            return substr($url, 7);
+            return substr($url, 8);
         } 
         else 
         {

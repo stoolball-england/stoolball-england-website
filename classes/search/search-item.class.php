@@ -9,16 +9,20 @@ class SearchItem
     private $url;
     private $title;
     private $description;
+    private $keywords;
     private $text;
+    private $related_links_html; 
     
-    public function __construct($type=null, $id=null, $url=null, $title=null, $description=null, $text=null) {
+    public function __construct($type=null, $id=null, $url=null, $title=null, $description=null, $keywords=null, $text=null, $related_links_html = null) {
             
         $this->SearchItemType($type);
         $this->SearchItemId($id);
         $this->Url($url);
         $this->Title($title);
         $this->Description($description);
+        $this->Keywords($keywords);
         $this->FullText($text);
+        $this->RelatedLinksHtml($related_links_html);
     }
     
     /**
@@ -82,6 +86,18 @@ class SearchItem
 	}
 
     /**
+     * Gets or sets the keywords to be prioritise this item in search results
+     */
+    public function Keywords($keywords = null)
+    {
+        if (is_null($keywords)) {
+            return $this->keywords;
+        } else {
+            $this->keywords = (string)$keywords;
+        }
+    }
+
+    /**
      * Gets or sets the full text to be indexed
      */
 	public function FullText($text=null)
@@ -93,5 +109,16 @@ class SearchItem
         }
 	}
 
+    /**
+     * Gets or sets the HTML for any related links to display in the search result
+     */
+    public function RelatedLinksHtml($html=null)
+    {
+        if (is_null($html)) {
+            return $this->related_links_html;
+        } else {
+            $this->related_links_html = (string)$html;
+        }
+    }
 }
 ?>

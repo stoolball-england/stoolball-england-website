@@ -133,45 +133,6 @@ class Competition extends Collection implements IHasShortUrl
 	*/
 	function GetIntro() { return $this->s_intro; }
 
-	/**
-	 * Gets text to use as the description of this competition in search results
-	 */
-	public function GetSearchDescription() 
-	{
-		$description = "A stoolball competition";
-		$season = $this->GetLatestSeason();
-		$teams = $season->GetTeams();
-		$teams_count = count($teams);
-		if ($teams_count)
-		{
-			$description .= " played by ";
-			if ($teams_count > 10)
-			{
-				$description .= "teams including ";
-				$teams_count = 10;
-			} 
-			for ($i = 0; $i < $teams_count; $i++) 
-			{
-				$description .= $teams[$i]->GetName();
-				if ($i < ($teams_count-2)) $description .= ", ";
-				if ($i == ($teams_count-2)) $description .= " and ";
-			}
-		}
-		else if ($this->s_intro)
-		{
-			$description = trim($this->s_intro);
-			$description = XhtmlMarkup::ApplyLinks($description, true);
-			$description = XhtmlMarkup::ApplyLists($description, true);
-			$description = XhtmlMarkup::ApplySimpleTags($description, true);
-			
-			$break = strpos($description, "\n");
-			if ($break !== false and $break > 0) $description = substr($description, 0, $break-1);
-		} 
-		$description .= ".";	
-
-		return $description;
-	}
-
     /**
      * Notes that the object may have changed since the last time it was indexed for search
      */

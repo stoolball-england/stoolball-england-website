@@ -138,10 +138,13 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		# set up page
 		$this->SetOpenGraphType("sports_league");
 		$this->SetPageTitle($this->season->GetCompetitionName());
-		$this->SetPageDescription($this->competition->GetSearchDescription());
+        
+        require_once("search/competition-search-adapter.class.php");
+        $adapter = new CompetitionSearchAdapter($this->competition);
+		$this->SetPageDescription($adapter->GetSearchDescription());
+        
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 	}
 

@@ -10,7 +10,17 @@ class PlayerSearchAdapter implements ISearchAdapter {
     private $searchable;
     
     public function __construct(Player $player) {
-        $this->searchable = new SearchItem();
+
+       if ($player->GetPlayerRole() == Player::PLAYER)
+        {
+            $name = $player->GetName() . ", " . $player->Team()->GetName();
+        }
+        else
+        {
+            $name = $player->GetName() . " conceded by " . $player->Team()->GetName();
+        }
+        
+        $this->searchable = new SearchItem("player", "player" . $player->GetId(), $player->GetPlayerUrl(), $name, $player->GetPlayerDescription());
     }
     
     /**

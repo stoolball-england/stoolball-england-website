@@ -174,7 +174,7 @@ class CurrentPage extends StoolballPage
 
 	private function IndexPosts()
 	{
-        require_once("search/search-item.class.php");
+        require_once("search/html-search-adapter.class.php");
         
 		$this->SearchIndexer()->DeleteFromIndexByType("post");
 
@@ -182,8 +182,9 @@ class CurrentPage extends StoolballPage
 
 		while($row = $results->fetch())
 		{
-		    $item = new SearchItem("post", $row->id, $row->url, $row->post_title, null, $row->post_content);
-            $this->SearchIndexer()->Index($item);
+		    $item = new SearchItem("post", $row->id, $row->url, $row->post_title, null, null, $row->post_content);
+            $adapter = new HtmlSearchAdapter($item);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
 		}
 		$this->SearchIndexer()->CommitChanges();
 	}
@@ -213,7 +214,7 @@ class CurrentPage extends StoolballPage
 				$parent = $url_row->post_parent;
 			}
 
-            $item = new SearchItem("page", $row->id, $url, $row->post_title, $row->description, $row->post_content);
+            $item = new SearchItem("page", $row->id, $url, $row->post_title, $row->description, null, $row->post_content);
             $this->SearchIndexer()->Index($item);
 		}
 		$this->SearchIndexer()->CommitChanges();
@@ -293,7 +294,7 @@ class CurrentPage extends StoolballPage
         "facebook, follow, tweet");
 
 		$docs[] = new SearchItem("other", "youtube", "https://youtube.com/stoolballengland", "Stoolball England on YouTube",
-		"Subscribe to our YouTube channel to see the best stoolball videos.", "video");
+		"Subscribe to our YouTube channel to see the best stoolball videos.", "video youtube");
 
 		foreach ($docs as $doc) {
 		    $this->SearchIndexer()->Index($doc);
