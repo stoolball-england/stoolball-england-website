@@ -277,6 +277,7 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 .search p, .search ul { margin: 0; padding: 0;}
 .search .url { font-size: .8em; color: #503C03;}
 .search li { display: inline; margin: 0 1em 0 0; font-size: .9em;}
+mark { background-color: rgba(255,255,153,.4); padding: 2px; }
 
 /* Subscribe to RSS feeds using blogTrottr */
 .rss-form { clear: both; margin: 15px 0 0; padding: 15px; background: #999 url(/images/wicket-extra-dark.jpg) repeat; border-radius: 5px; }

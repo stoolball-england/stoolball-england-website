@@ -1,13 +1,16 @@
 <?php
+/**
+ * Highlight terms in HTML text
+ */
 class SearchHighlighter
 {
 	/**
-	 * Highlight terms in text
+	 * Highlight terms in HTML text
 	 * @param string/string[] $a_terms
 	 * @param string $s_text
 	 * @return string
 	 */
-	public static function Highlight($a_terms, $s_text)
+	public function Highlight($a_terms, $s_text)
 	{
 		if (is_string($a_terms)) $a_terms[] = $a_terms; # if string supplied, convert to string array
 		$s_final_text = ' ' . $s_text; # space added because term not highlighted at start of string
@@ -46,7 +49,7 @@ class SearchHighlighter
 					else
 					{
 						# surround instance with span tags (note: this way preserves case, unlike search and replace)
-						$s_formatted_text .= substr($s_final_text, 0, $i_pos) . '<em class="search-term">' . substr($s_final_text, $i_pos, strlen($s_term)) . '</em>';
+						$s_formatted_text .= substr($s_final_text, 0, $i_pos) . '<mark>' . substr($s_final_text, $i_pos, strlen($s_term)) . '</mark>';
 
 						# trim string so that we don't find the same instance again
 						$s_final_text = substr($s_final_text, $i_pos + strlen($s_term));

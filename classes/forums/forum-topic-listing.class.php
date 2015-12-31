@@ -90,12 +90,6 @@ class ForumTopicListing extends Placeholder
             $first_message = ($position_in_topic-1);
             $last_message = $total_messages-1;
             
-            if (isset($_GET['hi']) and $_GET['hi'])
-            {
-                require_once('search/search-query.class.php');
-                require_once('search/search-highlighter.class.php');
-            }
-
             for ($i = $first_message; $i<=$last_message; $i++)
 			{
 				/* @var $message ForumMessage */
@@ -103,13 +97,6 @@ class ForumTopicListing extends Placeholder
                 
 				# get person
 				$o_person = $message->GetUser();
-
-				# highlight search terms
-				if (isset($_GET['hi']) and $_GET['hi'])
-				{
-					$o_term = new SearchQuery($_GET['hi']);
-					$message->SetBody(SearchHighlighter::Highlight($o_term->GetSanitisedTerms(), $message->GetBody()));
-				}
 
                 # Declare relationship between messages.
                 $reply_of = ($i > 0) ? ' rel="sioc:reply_of" resource="' . $a_messages[$i-1]->MessageLinkedDataUri() . '"' : "";

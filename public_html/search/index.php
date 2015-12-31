@@ -6,8 +6,7 @@ require_once("search/mysql-search-provider.class.php");
 
 class CurrentPage extends StoolballPage
 {
-	private $term;
-	private $term_sanitised;
+	private $query;
 	private $results = array();
     
     /**
@@ -19,37 +18,34 @@ class CurrentPage extends StoolballPage
     {
         if (isset($_GET['q']))
         {
-            $this->term = $_GET['q'];
-            $this->term_sanitised = preg_replace('/[^A-Z0-9- :"?*~.\[\]{}()\^+-|!&]/i', "", $this->term);
-            $this->term_sanitised = trim($this->term_sanitised, '\\'); # Backslash causes error if at end of string
-        }
+            require_once("search/search-query.class.php");
+            $this->query = new SearchQuery($_GET['q']);
             
-        require_once('data/paged-results.class.php');           
-        $this->paging = new PagedResults();
-        $this->paging->SetPageSize(20);    
-        $this->paging->SetResultsTextSingular('result');
-        $this->paging->SetResultsTextPlural('results');
+            require_once('data/paged-results.class.php');           
+            $this->paging = new PagedResults();
+            $this->paging->SetPageSize(20);    
+            $this->paging->SetResultsTextSingular('result');
+            $this->paging->SetResultsTextPlural('results');
+            $this->query->SetFirstResult($this->paging->GetFirstResultOnPage());
+            $this->query->SetPageSize($this->paging->GetPageSize());
+        }
     }
 	
 	public function OnLoadPageData() {
 	        
-        if ($this->term_sanitised)
+        if ($this->query instanceof SearchQuery)
         {
-            require_once("search/search-query.class.php");
             $index = new MySqlSearchProvider($this->GetDataConnection());
-            $query = new SearchQuery($this->term_sanitised);
-            $query->SetFirstResult($this->paging->GetFirstResultOnPage());
-            $query->SetPageSize($this->paging->GetPageSize());
-            $this->results = $index->Search($query);
+            $this->results = $index->Search($this->query);
             $this->paging->SetTotalResults($index->TotalResults());
         }
 	}
 
 	function OnPrePageLoad()
 	{
-		if ($this->term)
+		if ($this->query instanceof SearchQuery)
 		{
-			$this->SetPageTitle("Search for '" . htmlentities($this->term, ENT_QUOTES, "UTF-8", false) . "'");
+			$this->SetPageTitle("Search for '" . htmlentities($this->query->GetOriginalTerm(), ENT_QUOTES, "UTF-8", false) . "'");
 		}
 		else
 		{
@@ -63,7 +59,7 @@ class CurrentPage extends StoolballPage
 		echo new XhtmlElement('h1', $this->GetPageTitle());
 
         # If no search term, show a search form (intended for mobile)
-        if (!$this->term)
+        if (!$this->query instanceof SearchQuery)
         {
             ?>
             <form action="/search" method="get"><div>
@@ -82,18 +78,28 @@ class CurrentPage extends StoolballPage
 
             # Load files used for custom formats
             require_once('email/email-address-protector.class.php');
+            require_once('search/search-highlighter.class.php');
 
             $protector = new EmailAddressProtector($this->GetSettings());
+            $highlighter = new SearchHighlighter();
 
 			echo '<dl class="search">';
 			foreach ($this->results as $result)
 			{
                 /* @var $result SearchItem */
 				echo '<dt>';
-	 			echo '<a href="' . htmlentities($result->Url(), ENT_QUOTES, "UTF-8", false) . '">' . htmlentities($result->Title(), ENT_QUOTES, "UTF-8", false) . "</a> ";
+	 			
+	 			$title = htmlentities($result->Title(), ENT_QUOTES, "UTF-8", false);
+                $title = $highlighter->Highlight($this->query->GetSanitisedTerms(), $title);
+	 			echo '<a href="' . htmlentities($result->Url(), ENT_QUOTES, "UTF-8", false) . '">' . $title . "</a> ";
  				echo "</dt>";
 				echo '<dd>';
-                echo "<p>" . $protector->ApplyEmailProtection(htmlentities($result->Description(), ENT_QUOTES, "UTF-8", false), AuthenticationManager::GetUser()->IsSignedIn()) . "</p>";
+				
+                $description = htmlentities($result->Description(), ENT_QUOTES, "UTF-8", false);
+                $description = $protector->ApplyEmailProtection($description, AuthenticationManager::GetUser()->IsSignedIn());
+                $description = $highlighter->Highlight($this->query->GetSanitisedTerms(), $description);                
+                echo "<p>" . $description . "</p>";
+                
                 echo $result->RelatedLinksHtml();
                 echo '<p class="url">' . htmlentities($this->DisplayUrl($result->Url()), ENT_QUOTES, "UTF-8", false) . "</p>";
                 if (isset($_GET['debug'])) {
