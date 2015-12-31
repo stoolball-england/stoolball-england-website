@@ -51,7 +51,7 @@ class MatchSearchAdapter implements ISearchAdapter {
         }
         else
         {
-            $description = ucfirst(MatchType::Text($this->match->GetMatchType()));
+            $description = "Stoolball " . MatchType::Text($this->match->GetMatchType());
             if (is_object($this->match->GetGround())) $description .= " at " . $this->match->GetGround()->GetNameAndTown();
             
             if ($this->match->GetMatchType() != MatchType::TOURNAMENT)

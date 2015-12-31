@@ -2,11 +2,13 @@
 /**
  * A search term provided from user input
  */
-class SearchTerm
+class SearchQuery
 {
 	private $original_term;
 	private $terms;
 	private $ignored_words;
+    private $first_result;
+    private $page_size;
 	
 	public function __construct($search_term='')
 	{
@@ -94,5 +96,33 @@ class SearchTerm
 	{
 		return $this->ignored_words;
 	}
+    
+    /**
+     * Sets the first result to request in a paged result set
+     */
+    public function SetFirstResult($first_result) {
+        $this->first_result = (int)$first_result;
+    }
+    
+    /**
+     * Gets the first result to request in a paged result set
+     */
+    public function GetFirstResult() {
+        return $this->first_result;
+    }
+    
+    /**
+     * Sets the number of results to request per page
+     */
+    public function SetPageSize($page_size) {
+        $this->page_size = (int)$page_size;
+    }
+    
+    /**
+     * Gets the number of results to request per page
+     */
+    public function GetPageSize() {
+        return $this->page_size;
+    }
 }
 ?>

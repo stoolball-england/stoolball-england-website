@@ -5,8 +5,13 @@
 interface ISearchProvider {
     /**
      * Searches the index for the given search term
-     * @return SearchableItem[]
+     * @return SearchItem[]
      */
-    public function Search(SearchTerm $search_term);
+    public function Search(SearchQuery $query);
+    
+    /**
+     * Gets the total number of results in the set retrieved by the last search
+     */
+    public function TotalResults();
 }
 ?>

@@ -1,8 +1,6 @@
 <?php
 require_once('forum-topic.class.php');
 require_once('forum-message-format.enum.php');
-require_once('search/search-term.class.php');
-require_once('search/search-highlighter.class.php');
 require_once('xhtml/placeholder.class.php');
 
 class ForumTopicListing extends Placeholder
@@ -92,6 +90,12 @@ class ForumTopicListing extends Placeholder
             $first_message = ($position_in_topic-1);
             $last_message = $total_messages-1;
             
+            if (isset($_GET['hi']) and $_GET['hi'])
+            {
+                require_once('search/search-query.class.php');
+                require_once('search/search-highlighter.class.php');
+            }
+
             for ($i = $first_message; $i<=$last_message; $i++)
 			{
 				/* @var $message ForumMessage */
@@ -103,7 +107,7 @@ class ForumTopicListing extends Placeholder
 				# highlight search terms
 				if (isset($_GET['hi']) and $_GET['hi'])
 				{
-					$o_term = new SearchTerm($_GET['hi']);
+					$o_term = new SearchQuery($_GET['hi']);
 					$message->SetBody(SearchHighlighter::Highlight($o_term->GetSanitisedTerms(), $message->GetBody()));
 				}
 

@@ -16,7 +16,7 @@ class GroundSearchAdapter implements ISearchAdapter
         
 		$this->searchable = new SearchItem("ground", "ground" . $ground->GetId(), $ground->GetNavigateUrl(false), $ground->GetNameAndTown());
 		$this->searchable->Description($this->GetSearchDescription());
-        $this->searchable->WeightOfType(500);
+        $this->searchable->WeightOfType(800);
         
 		$keywords = array($ground->GetAddress()->GetLocality(), $ground->GetAddress()->GetTown());
 		$this->searchable->Keywords(implode(" ", $keywords));

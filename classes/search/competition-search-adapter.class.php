@@ -29,7 +29,7 @@ class CompetitionSearchAdapter implements ISearchAdapter {
         $content[] = $competition->GetContact();
         
         $this->searchable = new SearchItem("competition", "competition" . $competition->GetId(), $competition->GetNavigateUrl(), $competition->GetName());
-        $this->searchable->WeightOfType(20);
+        $this->searchable->WeightOfType(700);
         $this->searchable->Description($this->GetSearchDescription());
         $this->searchable->Keywords(implode(" ", $keywords));
         $this->searchable->FullText(implode(" ", $content));
