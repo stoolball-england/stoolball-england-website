@@ -12,8 +12,10 @@ class SearchItem
     private $keywords;
     private $text;
     private $related_links_html; 
+    private $weight_of_matched_field = 1;
     private $weight_within_type = 1;
     private $weight_of_type = 1;
+    private $weight = 1;
     private $content_date;
     
     public function __construct($type=null, $id=null, $url=null, $title=null, $description=null, $keywords=null) {
@@ -123,6 +125,18 @@ class SearchItem
     }
     
     /**
+     * Gets or sets the weighting earned by the fields that matched a search term, where 1 is normal
+     */
+    public function WeightOfMatchedField($weight=null)
+    {
+        if (is_null($weight)) {
+            return $this->weight_of_matched_field;
+        } else {
+            $this->weight_of_matched_field = (string)$weight;
+        }
+    }
+    
+    /**
      * Gets or sets the weighting of all results of this type, where 1 is normal
      */
     public function WeightOfType($weight=null)
@@ -145,6 +159,18 @@ class SearchItem
             $this->weight_within_type = (string)$weight;
         }
     }    
+    
+    /**
+     * Gets or sets the overall weighting after all scores are combined, where 1 is normal
+     */
+    public function Weight($weight=null)
+    {
+        if (is_null($weight)) {
+            return $this->weight;
+        } else {
+            $this->weight = (string)$weight;
+        }
+    }
         
     /**
      * Gets or sets the date of the content if applicable

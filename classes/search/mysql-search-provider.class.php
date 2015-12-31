@@ -28,10 +28,11 @@ class MySqlSearchProvider implements ISearchProvider {
             $terms[$i] = "LIKE '%" . trim($terms[$i], "'") . "%'";
         }
 
-        $sql = "SELECT url, title, description, related_links_html 
+        $sql = "SELECT field_weight, weight_of_type, weight_within_type, weight, url, title, description, related_links_html 
                 FROM
                 (
-                    SELECT SUM(field_weight) + weight_of_type + weight_within_type AS weight,
+                    SELECT SUM(field_weight) AS field_weight, weight_of_type, weight_within_type AS weight_within_type,
+                           SUM(field_weight) + weight_of_type + weight_within_type AS weight,
                            url, title, description, related_links_html 
                     FROM
                     (
@@ -84,6 +85,10 @@ class MySqlSearchProvider implements ISearchProvider {
             $result->Title($row->title);
             $result->Description($row->description);
             $result->RelatedLinksHtml($row->related_links_html);
+            $result->WeightOfMatchedField($row->field_weight);
+            $result->WeightOfType($row->weight_of_type);
+            $result->WeightWithinType($row->weight_within_type);
+            $result->Weight($row->weight);
             $search_results[] = $result;
         }
     

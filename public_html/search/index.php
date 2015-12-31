@@ -96,6 +96,14 @@ class CurrentPage extends StoolballPage
                 echo "<p>" . $protector->ApplyEmailProtection(htmlentities($result->Description(), ENT_QUOTES, "UTF-8", false), AuthenticationManager::GetUser()->IsSignedIn()) . "</p>";
                 echo $result->RelatedLinksHtml();
                 echo '<p class="url">' . htmlentities($this->DisplayUrl($result->Url()), ENT_QUOTES, "UTF-8", false) . "</p>";
+                if (isset($_GET['debug'])) {
+                    echo '<ul class="weight">' .
+                         '<li>Matched field weight: <strong>' . $result->WeightOfMatchedField() . '</strong></li>' .
+                         '<li>Weight of result type: <strong>' . $result->WeightOfType() . '</strong></li>' .
+                         '<li>Weight within type: <strong>' . $result->WeightWithinType() . '</strong></li>' .
+                         '<li>Weight: <strong>' . $result->Weight() . '</strong></li>' .
+                         '</ul>';
+                }
                 echo "</dd>";
 			}
 			echo '</dl>';
