@@ -76,7 +76,6 @@ RewriteRule ^(.*)$ index.php [F,L]
 
 # Extensionless URLs
 RewriteRule ^contact/email/?$ /contact/email.php [L,NC,QSA]
-RewriteRule ^search/?$ /search.php [L,NC,QSA]
 RewriteRule ^you/(request-password-reset|reset-password|sign-out)$ /you/$1.php [L,NC,QSA]
 
 # advertised on club registration form
