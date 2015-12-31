@@ -21,6 +21,11 @@ class MatchSearchAdapter implements ISearchAdapter {
         $this->searchable->RelatedLinksHtml('<ul>' .
                                             '<li><a href="' . $match->GetCalendarNavigateUrl() . '">Add to calendar</a></li>' .
                                             '</ul>');
+        
+        # Assign more weight to newer matches
+        $weight = ($match->GetStartTime()/60/60/24/365);
+        $this->searchable->WeightWithinType($weight); 
+                                            
    }
     
     /**

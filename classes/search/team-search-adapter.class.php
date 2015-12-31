@@ -20,6 +20,7 @@ class TeamSearchAdapter implements ISearchAdapter {
         $this->searchable->Url($team->GetNavigateUrl());
         $this->searchable->Title($team->GetNameAndType());
         $this->searchable->Description($this->GetSearchDescription());
+        $this->searchable->WeightOfType(1000);
         
         $keywords = array($team->GetName(), $team->GetGround()->GetAddress()->GetLocality(), $team->GetGround()->GetAddress()->GetTown());
         $this->searchable->Keywords(implode(" ", $keywords));
@@ -41,9 +42,25 @@ class TeamSearchAdapter implements ISearchAdapter {
     {
         $description = "A stoolball team";
         
-        if ($this->team->GetGround() instanceof Ground and $this->team->GetGround()->GetAddress()->GetAdministrativeArea()) 
+        if ($this->team->GetGround() instanceof Ground and $this->team->GetGround()->GetAddress() instanceof PostalAddress) 
         {
-            $description .= " in " . $this->team->GetGround()->GetAddress()->GetAdministrativeArea();
+            $address = $this->team->GetGround()->GetAddress();
+            $in = $address->GetLocality();
+            if ($address->GetTown()) {
+                if ($in) {
+                    $in .= ", ";
+                }
+                $in .= $address->GetTown();
+            }
+            if ($address->GetAdministrativeArea()) {
+                if ($in) {
+                    $in .= ", ";
+                }
+                $in .= $address->GetAdministrativeArea();
+            }
+            if ($in) {
+                $description .= " in " . $in;
+            }
         }
         
         $seasons = $this->team->Seasons()->GetItems();
@@ -56,7 +73,7 @@ class TeamSearchAdapter implements ISearchAdapter {
                 $competitions[$team_in_season->GetSeason()->GetCompetition()->GetId()] = $team_in_season->GetSeason()->GetCompetition();
             }
             
-            $description .= " playing in ";
+            $description .= " playing in the ";
             $keys = array_keys($competitions);
             $competitions_count = count($keys);
             for ($i = 0; $i < $competitions_count; $i++) 

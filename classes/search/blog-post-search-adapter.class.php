@@ -3,9 +3,9 @@ require_once("search-adapter.interface.php");
 require_once("search-item.class.php");
 
 /**
- * Builds details from HTML content into an entry for the search index
+ * Builds details from a blog post into an entry for the search index
  */
-class HtmlSearchAdapter implements ISearchAdapter {
+class BlogPostSearchAdapter implements ISearchAdapter {
         
     private $searchable;
     
@@ -23,11 +23,15 @@ class HtmlSearchAdapter implements ISearchAdapter {
         }
         $item->Description($description);
         
+        # Assign more weight to newer articles
+        $weight = (intval($item->ContentDate()->format('U'))/60/60/24/365);
+        $item->WeightWithinType($weight); 
+        
         $this->searchable = $item;
    }
     
     /**
-     * Gets a searchable item representing the content in the search index
+     * Gets a searchable item representing the blog post in the search index
      * @return SearchableItem
      */
     public function GetSearchableItem() {

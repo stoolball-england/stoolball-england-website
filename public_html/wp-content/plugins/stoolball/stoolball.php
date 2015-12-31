@@ -544,11 +544,14 @@ class StoolballWordPressPlugin
     {
         $page = get_page($page_id);
         
-        require_once("search/fake-search-indexer.class.php");
+        require_once("search/mysql-search-indexer.class.php");
         require_once("search/search-item.class.php");
-        $search = new FakeSearchIndexer();
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
         $search->DeleteFromIndexById("page" . $page_id);
-        $search->Index(new SearchItem("page", $page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true), null, $page->post_content));
+        $item = new SearchItem("page", $page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true));
+        $item->FullText($page->post_content);
+        $search->Index();
         $search->CommitChanges();
     }
     
@@ -560,14 +563,17 @@ class StoolballWordPressPlugin
     {
         $post = get_post($post_id);
 
-        require_once("search/fake-search-indexer.class.php");
-        require_once("search/html-search-adapter.class.php");
+        require_once("search/mysql-search-indexer.class.php");
+        require_once("search/blog-post-search-adapter.class.php");
         require_once("search/search-item.class.php");
-        $search = new FakeSearchIndexer();
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
         $search->DeleteFromIndexById("post" . $post_id);
 
-        $item = new SearchItem("post", $post_id, get_permalink($post_id), $post->post_title, null, null, $post->post_content);
-        $adapter = new HtmlSearchAdapter($item);
+        $item = new SearchItem("post", $post_id, get_permalink($post_id), $post->post_title);
+        $item->ContentDate($post->post_date);
+        $item->FullText($post->post_content);
+        $adapter = new BlogPostSearchAdapter($item);
         $search->Index($adapter->GetSearchableItem());
 
         $search->CommitChanges();        
@@ -579,8 +585,9 @@ class StoolballWordPressPlugin
      */
     public function TrashPost($post_id)
     {
-        require_once("search/fake-search-indexer.class.php");
-        $search = new FakeSearchIndexer();
+        require_once("search/mysql-search-indexer.class.php");
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
         
         $post = get_post($post_id);
         if ($post and $post->post_type == 'post')

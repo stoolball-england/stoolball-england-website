@@ -517,8 +517,8 @@ s.parentNode.insertBefore(g,s)}(document,'script'));
      */
     protected function SearchIndexer() {
         if (is_null($this->indexer)) {
-            require_once("search/fake-search-indexer.class.php");
-            $this->indexer = new FakeSearchIndexer();
+            require_once("search/mysql-search-indexer.class.php");
+            $this->indexer = new MySqlSearchIndexer($this->GetDataConnection());
         }
         return $this->indexer;
     }

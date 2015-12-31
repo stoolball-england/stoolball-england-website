@@ -78,7 +78,7 @@ class CurrentPage extends StoolballPage
 	private function IndexPlayers()
 	{
         require_once("data/process-manager.class.php");
-        $this->process = new ProcessManager("players");
+        $this->process = new ProcessManager("players", 500);
 
         if ($this->process->ReadyToDeleteAll())
         {
@@ -139,7 +139,7 @@ class CurrentPage extends StoolballPage
 	private function IndexMatches()
 	{
 		require_once("data/process-manager.class.php");
-		$this->process = new ProcessManager("matches");
+		$this->process = new ProcessManager("matches", 200);
 
 		if ($this->process->ReadyToDeleteAll())
 		{
@@ -174,16 +174,18 @@ class CurrentPage extends StoolballPage
 
 	private function IndexPosts()
 	{
-        require_once("search/html-search-adapter.class.php");
+        require_once("search/blog-post-search-adapter.class.php");
         
 		$this->SearchIndexer()->DeleteFromIndexByType("post");
 
-		$results = $this->GetDataConnection()->query("SELECT id, CONCAT(DATE_FORMAT(post_date, '/%Y/%m/'), post_name, '/') AS url, post_title, post_content FROM nsa_wp_posts WHERE post_type = 'post' AND post_status = 'publish'");
+		$results = $this->GetDataConnection()->query("SELECT id, post_date, CONCAT(DATE_FORMAT(post_date, '/%Y/%m/'), post_name, '/') AS url, post_title, post_content FROM nsa_wp_posts WHERE post_type = 'post' AND post_status = 'publish'");
 
 		while($row = $results->fetch())
 		{
-		    $item = new SearchItem("post", $row->id, $row->url, $row->post_title, null, null, $row->post_content);
-            $adapter = new HtmlSearchAdapter($item);
+		    $item = new SearchItem("post", "post" . $row->id, $row->url, $row->post_title);
+            $item->FullText($row->post_content);
+            $item->ContentDate(new DateTime($row->post_date));
+            $adapter = new BlogPostSearchAdapter($item);
             $this->SearchIndexer()->Index($adapter->GetSearchableItem());
 		}
 		$this->SearchIndexer()->CommitChanges();
@@ -214,7 +216,8 @@ class CurrentPage extends StoolballPage
 				$parent = $url_row->post_parent;
 			}
 
-            $item = new SearchItem("page", $row->id, $url, $row->post_title, $row->description, null, $row->post_content);
+            $item = new SearchItem("page", $row->id, $url, $row->post_title, $row->description);
+            $item->FullText($row->post_content);
             $this->SearchIndexer()->Index($item);
 		}
 		$this->SearchIndexer()->CommitChanges();
@@ -297,6 +300,8 @@ class CurrentPage extends StoolballPage
 		"Subscribe to our YouTube channel to see the best stoolball videos.", "video youtube");
 
 		foreach ($docs as $doc) {
+		    /* @var $doc SearchItem */
+		    $doc->WeightOfType(500);
 		    $this->SearchIndexer()->Index($doc);
         }
 		$this->SearchIndexer()->CommitChanges();
@@ -315,6 +320,9 @@ class CurrentPage extends StoolballPage
 		{
 			$this->process->ShowProgress();
 		}
+        else if ($this->IsPostback()) {
+            echo "<p>Done.</p>";
+        }
 
 
 ?>

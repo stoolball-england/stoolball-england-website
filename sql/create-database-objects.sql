@@ -595,3 +595,24 @@ CREATE TABLE IF NOT EXISTS `nsa_user_role` (
   PRIMARY KEY (`role_id`, `user_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+
+-- -----------------------------------------------------
+-- Table `nsa_search_index`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `nsa_search_index` (
+  `search_index_id` varchar(250) NOT NULL,
+  `indexed_item_type` varchar(15) NOT NULL,
+  `url` varchar(250) NOT NULL,
+  `title` varchar(250) NOT NULL,
+  `keywords` varchar(500) DEFAULT NULL,
+  `description` varchar(1000) NOT NULL,
+  `related_links_html` varchar(1000) DEFAULT NULL,
+  `full_text` text,
+  `weight_within_type` int(5) NOT NULL DEFAULT '1',
+  `weight_of_type` int(5) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`search_index_id`),
+  UNIQUE KEY `search_index_id_UNIQUE` (`search_index_id`),
+  KEY `search` (`keywords`(255),`title`,`description`(255),`full_text`(255)),
+  KEY `weight` (`weight_within_type`,`weight_of_type`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Derived data used to provide search results';

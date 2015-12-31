@@ -11,16 +11,20 @@ class PlayerSearchAdapter implements ISearchAdapter {
     
     public function __construct(Player $player) {
 
-       if ($player->GetPlayerRole() == Player::PLAYER)
+        $this->searchable = new SearchItem("player", "player" . $player->GetId(), $player->GetPlayerUrl());
+        $this->searchable->Description($player->GetPlayerDescription());
+        $this->searchable->WeightOfType(20);
+
+        if ($player->GetPlayerRole() == Player::PLAYER)
         {
-            $name = $player->GetName() . ", " . $player->Team()->GetName();
+            $this->searchable->Title($player->GetName() . ", " . $player->Team()->GetName());
+            $this->searchable->WeightWithinType($player->GetTotalMatches());
         }
         else
         {
-            $name = $player->GetName() . " conceded by " . $player->Team()->GetName();
+            $this->searchable->Title($player->GetName() . " conceded by " . $player->Team()->GetName());
         }
-        
-        $this->searchable = new SearchItem("player", "player" . $player->GetId(), $player->GetPlayerUrl(), $name, $player->GetPlayerDescription());
+        $this->searchable->Keywords($this->searchable->Title());
     }
     
     /**

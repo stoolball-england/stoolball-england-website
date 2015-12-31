@@ -7,18 +7,20 @@
 class ProcessManager
 {
 	private $offset;
-	private $page_size = 100;
+	private $batch_size;
 	private $total = 0;
 	private $process_id;
 
 	/**
 	 * Creates a ProcessManager
-	 * @param $process_id string
+	 * @param string $process_id
+     * @param int $batch_size
 	 */
-	public function __construct($process_id='')
+	public function __construct($process_id='', $batch_size=100)
 	{
 		$this->offset = (isset($_POST['offset']) and is_numeric($_POST['offset'])) ? $_POST['offset'] : "0";
 		$this->process_id = $process_id;
+        $this->batch_size = (int)$batch_size;
 	}
 
 	/**
@@ -34,7 +36,7 @@ class ProcessManager
 	 */
 	public function GetQueryLimit()
 	{
-		return " LIMIT " . $this->offset . ", " . $this->page_size;
+		return " LIMIT " . $this->offset . ", " . $this->batch_size;
 	}
 
 	/**
@@ -50,10 +52,10 @@ class ProcessManager
 	 */
 	public function ShowProgress()
 	{
-		if ($this->total == $this->page_size)
+		if ($this->total == $this->batch_size)
 		{
 			echo "<form action=\"" . $_SERVER['PHP_SELF'] . "\" method=\"post\" id=\"process\"><div>
-			<input type=\"hidden\" name=\"offset\" value=\"" . ($this->offset + $this->page_size) . "\"  />
+			<input type=\"hidden\" name=\"offset\" value=\"" . ($this->offset + $this->batch_size) . "\"  />
 			<input type=\"hidden\" name=\"" . $this->process_id . "\" value=\"1\" />
 			<script>setTimeout('document.getElementById(\'process\').submit()', 1000) </script>
 			<p>Done " . ($this->offset + $this->total) . ". Working &#8230;</p>

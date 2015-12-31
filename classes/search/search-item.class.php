@@ -12,8 +12,11 @@ class SearchItem
     private $keywords;
     private $text;
     private $related_links_html; 
+    private $weight_within_type = 1;
+    private $weight_of_type = 1;
+    private $content_date;
     
-    public function __construct($type=null, $id=null, $url=null, $title=null, $description=null, $keywords=null, $text=null, $related_links_html = null) {
+    public function __construct($type=null, $id=null, $url=null, $title=null, $description=null, $keywords=null) {
             
         $this->SearchItemType($type);
         $this->SearchItemId($id);
@@ -21,8 +24,6 @@ class SearchItem
         $this->Title($title);
         $this->Description($description);
         $this->Keywords($keywords);
-        $this->FullText($text);
-        $this->RelatedLinksHtml($related_links_html);
     }
     
     /**
@@ -118,6 +119,42 @@ class SearchItem
             return $this->related_links_html;
         } else {
             $this->related_links_html = (string)$html;
+        }
+    }
+    
+    /**
+     * Gets or sets the weighting of all results of this type, where 1 is normal
+     */
+    public function WeightOfType($weight=null)
+    {
+        if (is_null($weight)) {
+            return $this->weight_of_type;
+        } else {
+            $this->weight_of_type = (string)$weight;
+        }
+    }
+    
+    /**
+     * Gets or sets the weighting within all results of this type, where 1 is normal
+     */
+    public function WeightWithinType($weight=null)
+    {
+        if (is_null($weight)) {
+            return $this->weight_within_type;
+        } else {
+            $this->weight_within_type = (string)$weight;
+        }
+    }    
+        
+    /**
+     * Gets or sets the date of the content if applicable
+     */
+    public function ContentDate(DateTime $content_date=null)
+    {
+        if (is_null($content_date)) {
+            return $this->content_date;
+        } else {
+            $this->content_date = $content_date;
         }
     }
 }
