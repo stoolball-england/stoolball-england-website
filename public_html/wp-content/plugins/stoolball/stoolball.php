@@ -551,7 +551,7 @@ class StoolballWordPressPlugin
         $search->DeleteFromIndexById("page" . $page_id);
         $item = new SearchItem("page", $page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true));
         $item->FullText($page->post_content);
-        $search->Index();
+        $search->Index($item);
         $search->CommitChanges();
     }
     
