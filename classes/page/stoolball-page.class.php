@@ -17,7 +17,7 @@ class StoolballPage extends Page
 	private $open_graph_type = "article";
     private $css_root = "";
     private $resource_root = "";
-    private $css_version = 37;
+    private $css_version = 38;
 	
 	# override constructor to accept settings for this site
 	function StoolballPage(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
@@ -115,6 +115,7 @@ class StoolballPage extends Page
 <meta name="twitter:site" content="@stoolball" />
 <script src="<?php echo $this->resource_root ?>/scripts/lib/modernizr.js"></script>
 <link rel="search" href="/search/" title="Go to Stoolball England\'s search page" />
+<link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css' />
 		<?php
 
 		parent::OnCloseHead();
@@ -160,10 +161,11 @@ class StoolballPage extends Page
 		$b_got_category = is_object($o_current);
 		$b_section_home = ($this->GetContext()->GetDepth() == 2 and str_replace("/", "", $_SERVER['REQUEST_URI']) == $o_current->GetUrl());
 
-		$o_news = new XhtmlElement('a', '<span></span>News', '#news');
-		$o_rules = new XhtmlElement('a', '<span></span>Rules', '#rules');
-		$o_play = new XhtmlElement('a', '<span></span>Play!', '#play');
-		$o_about = new XhtmlElement('a', '<span></span>About us', '#about');
+		$o_news = new XhtmlElement('a', 'News', '#news');
+		$o_rules = new XhtmlElement('a', 'Rules', '#rules');
+		$o_play = new XhtmlElement('a', 'Play!', '#play');
+        $schools = new XhtmlElement('a', 'Schools', '#schools');
+		$o_about = new XhtmlElement('a', 'About us', '#about');
 
 		if ($b_got_category and ($o_current->GetUrl() == 'news') or (SiteContext::IsWordPress() and  (is_single() or (is_archive() and !is_category()))))
 		{
@@ -198,7 +200,18 @@ class StoolballPage extends Page
 		}
 		else $o_play->AddAttribute('href', '/play');
 
-		if ($b_got_category and $o_current->GetUrl() == 'about')
+        if ($b_got_category and $o_current->GetUrl() == 'schools')
+        {
+            if (!$b_section_home)
+            {
+                $schools->AddAttribute('href', '/schools');
+                $schools->SetCssClass('current');
+            }
+            else $schools->SetElementName('em');
+        }
+        else $schools->AddAttribute('href', '/schools');
+        
+        if ($b_got_category and $o_current->GetUrl() == 'about')
 		{
 			if (!$b_section_home)
 			{
@@ -241,6 +254,7 @@ class StoolballPage extends Page
 		echo '<li>' . $o_news->__toString() . '</li>';
 		echo '<li>' . $o_rules->__toString() . '</li>';
 		echo '<li>' . $o_play->__toString() . '</li>';
+        echo '<li>' . $schools->__toString() . '</li>';
 		echo '<li>' . $o_about->__toString() . '</li>';
 		echo '</ul>';
 		?>
@@ -421,7 +435,7 @@ class StoolballPage extends Page
 			echo '</ul>';
 		}
 
-	echo '<h2 id="your" class="large"><span></span>Your stoolball.org.uk</h2>';
+	echo '<h2 id="your" class="large">Your stoolball.org.uk</h2>';
 	$authentication = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
     $authentication->SetCssClass("large");
     $authentication->SetXhtmlId('authControl');

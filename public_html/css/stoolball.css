@@ -37,7 +37,7 @@ div.nav h2 { padding: 0; margin: .75em 0 .375em; border: none; background: none;
 div.nav p { display: block; }
 
 #logo-large { position: absolute; top: 18px; left: 12px; z-index: 1000; display: block; width: 210px; } /* IE8 needs width */
-#involved { width: 140px; height: 31px; background: url(/images/sprite.2.png) no-repeat 0 -132px; margin: 12px 12px 0; }
+#involved { width: 140px; height: 31px; background: url(/images/sprite.3.png) no-repeat 0 -132px; margin: 12px 12px 0; }
 
 #handle { height: 30px; padding: 12px 3% 18px; width: 94%; color: #fff; background: url(/images/wicket-top-tiles.jpg) repeat-x #000; text-align: right; z-index: 0; }
 
@@ -71,39 +71,21 @@ div.nav p { display: block; }
 
 #navbar { padding: 0; margin: 0; z-index: 100; position: absolute; width: 64%; height: 45px; right: 2%; top: 15px; min-width: 250px; white-space: nowrap; }
 #navbar li { float: left; padding: 0; margin: 0 22px 0 0; list-style: none; }
-#navbar a, #navbar em { padding: 30px 0; position: relative; overflow: hidden; height: 23px; float: left; font: bold 1.1em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #900; }
-#navbar span { position: absolute; width: 100%; height: 23px; }
+#navbar a, #navbar em { padding: 30px 0; position: relative; overflow: hidden; height: 23px; float: left; font: normal 1.95em 'Passion One', sans-serif; color: #900; text-decoration: none; opacity: .8; }
+.ie8 #navbar a, .ie8 #navbar em { font: bold 1.5em 'Trebuchet MS', Arial, 'Helvetica Neue', Helvetica, sans-serif; } 
 
-a#play:hover, em#play, #play.current { background: url(/images/sprite.2.png) no-repeat -33px 63px; }
-a#news:hover, em#news, #news.current { background: url(/images/sprite.2.png) no-repeat -32px 63px; }
-a#rules:hover, #rules.current, em#rules { background: url(/images/sprite.2.png) no-repeat -118px 63px; }
-a#about:hover, em#about, #about.current { background: url(/images/sprite.2.png) no-repeat 0 63px; }
-#news { width: 61px; }
-#news span { background: url(/images/sprite.2.png) no-repeat -85px -186px; }
-#rules { width: 68px; }
-#rules span { background: url(/images/sprite.2.png) no-repeat -105px -163px; }
-#play { width: 59px; }
-#play span { background: url(/images/sprite.2.png) no-repeat 0 -209px; }
-#about { width: 105px; }
-#about span { background: url(/images/sprite.2.png) no-repeat 0 -163px; }
+a#play:hover, em#play, #play.current { background: url(/images/sprite.3.png) no-repeat -33px 63px; }
+a#news:hover, em#news, #news.current { background: url(/images/sprite.3.png) no-repeat -32px 63px; }
+a#rules:hover, #rules.current, em#rules { background: url(/images/sprite.3.png) no-repeat -118px 63px; }
+a#schools:hover, em#schools, #schools.current, 
+a#about:hover, em#about, #about.current { background: url(/images/sprite.3.png) no-repeat 0 63px; }
 
 #sidebar { margin-top: 180px; padding: 10px 5px 0 20px; width: 210px; z-index: 1000; min-height: 500px; }
 #sidebar ul li, #sidebar p, #authControl { font: normal .8em Arial, Helvetica, sans-serif; }
 #sidebar ul { margin: 0 0 .5em 0; padding: 0; }
-#sidebar ul li { list-style: none; background: url(/images/sprite.2.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
-#sidebar p { padding-left: 12px; background: url(/images/sprite.2.png) no-repeat -181px -167px; }
-#sidebar h2 { margin-top: 1.5em; font-size: 1em; font-weight:bold; letter-spacing:-0.05em; line-height:1em; text-transform:uppercase; position: relative; overflow: hidden; height: 16px; }
-#sidebar h2 span { position: absolute; width: 100%; height: 100%; }
-
-#your { width: 186px; }
-#your span { background: url(/images/sprite.2.png) no-repeat 0 -20px; }
-#next1 { width: 109px; }
-#next2, #next3, #next4, #next5 { width: 143px; }
-#next1 span { background: url(/images/sprite.2.png) no-repeat 0 -100px; }
-#next2 span { background: url(/images/sprite.2.png) no-repeat 0 -84px; }
-#next3 span { background: url(/images/sprite.2.png) no-repeat 0 -68px; }
-#next4 span { background: url(/images/sprite.2.png) no-repeat 0 -52px; }
-#next5 span { background: url(/images/sprite.2.png) no-repeat 0 -36px; }
+#sidebar ul li { list-style: none; background: url(/images/sprite.3.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
+#sidebar p { padding-left: 12px; background: url(/images/sprite.3.png) no-repeat -181px -167px; }
+#sidebar h2 { margin-top: 1.5em; font-size: 1.5em; line-height:1em; font-family: 'Passion One', sans-serif; }
 
 /* Authentication */
 .SignUpForm .buttonGroup { text-align: left; }
@@ -209,14 +191,14 @@ fieldset.formPart .formControl { margin-top: 0; }
 .audienceColumn ul { margin: 0; padding: 0; min-height: 120px; } 
 .audienceColumn li { margin: 0 0 2px; font-size: .9em; list-style-type: none; padding: 0; }
 .audience a { padding-right:3px; background-image: url(/images/wicket-light-tile.jpg); white-space: nowrap; }
-.home .players ul { background: url(/images/sprite.2.png) no-repeat right -254px; }
-.home .schools ul { background: url(/images/sprite.2.png) no-repeat right -395px; }
-.home .manage ul { background: url(/images/sprite.2.png) no-repeat right -524px; }
-.home .history ul { background: url(/images/sprite.2.png) no-repeat right -654px; }
+.home .players ul { background: url(/images/sprite.3.png) no-repeat right -254px; }
+.home .schools ul { background: url(/images/sprite.3.png) no-repeat right -395px; }
+.home .manage ul { background: url(/images/sprite.3.png) no-repeat right -524px; }
+.home .history ul { background: url(/images/sprite.3.png) no-repeat right -654px; }
 .audience .more { margin-top: -20px; border-top: 1px solid #aaa; padding: 5px 0 0; margin-right: 55px; overflow: visible; }
 .home .manage .more { margin-right: 70px; }
 .home .history .more { margin-right: 40px; }
-.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.2.png) no-repeat right -786px; }
+.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.3.png) no-repeat right -786px; }
 
 .volunteer { clear: left; } /* for older webkit, used on ipad */
 .volunteer h2, .volunteer p { display: inline; padding-right: 5px; }
@@ -242,7 +224,6 @@ ul.tiles .matches-tile { background: url(/images/play/winterfold.jpg) no-repeat 
 ul.tiles .tournaments-tile { background: url(/images/play/angmering.jpg) no-repeat center bottom; }
 ul.tiles .host-tile { background: url(/images/play/scorers.jpg) no-repeat center bottom; }
 ul.tiles .teams-tile { background: url(/images/play/england.jpg) no-repeat center bottom; }
-ul.tiles .schools-tile { background: url(/images/play/child.jpg) no-repeat center bottom; }
 ul.tiles .statistics-tile { background: url(/images/play/chart.png) no-repeat center bottom; }
 ul.tiles .manage-tile { background: url(/images/play/diary.jpg) no-repeat center bottom; }
 ul.tiles .equipment-tile { background: url(/images/play/bat.jpg) no-repeat center bottom; }
@@ -303,7 +284,7 @@ a.promo { margin: 15px 0; display: block; }
 .spreadshirt .price { font-weight: bold; font-size: .85em; }
 .spreadshirt a:link .buy, .spreadshirt a:hover .buy, .spreadshirt a:focus .buy, .spreadshirt a:active .buy { color: #005920; text-decoration: underline; }
 .spreadshirt a:visited .buy { color: #008044; text-decoration: underline; }
-.spreadshirt .buy span { background: url(/images/sprite.2.png) no-repeat right -786px; padding-right: 12px; }
+.spreadshirt .buy span { background: url(/images/sprite.3.png) no-repeat right -786px; padding-right: 12px; }
 .spreadshirt-box { border: 3px solid #008044; border-top: 0; margin: 0 0 15px; border-radius: 0 0 5px 5px; padding: 10px; overflow: hidden;}
 
 /* Teams, seasons and competitions */
@@ -530,7 +511,7 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsAd div div div div { padding: 10px 7px 10px 13px; } 
 .statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/sprite-1.jpg) no-repeat -655px bottom; }
 .statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
-.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.2.png) no-repeat right -782px; }
+.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.3.png) no-repeat right -782px; }
 
 /* Stats - accomodate not out* in scores */
 td.out { padding-right: .9em; }

@@ -90,7 +90,7 @@ CREATE TABLE IF NOT EXISTS `nsa_category` (
   `parent` INT(5) UNSIGNED NULL DEFAULT NULL,
   `code` VARCHAR(20) NULL DEFAULT NULL,
   `sort_override` TINYINT(2) UNSIGNED NOT NULL DEFAULT '0',
-  `navigate_url` VARCHAR(250) NOT NULL,
+  `navigate_url` VARCHAR(250) DEFAULT NULL,
   `hierarchy_level` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
   `hierarchy_sort` INT(4) UNSIGNED NOT NULL DEFAULT '0',
   `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',

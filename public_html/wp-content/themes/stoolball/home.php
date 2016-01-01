@@ -96,7 +96,7 @@ class CurrentPage extends StoolballPage
 <li><a href="/play/equipment/">Equipment</a></li>
 <li><a href="/play/coaching/">Coaching</a></li>
 <li><a href="/play/manage">Manage your team</a></li>
-<li><a href="/play/schools">Schools</a></li>
+<li><a href="/schools">Schools</a></li>
 <li><a href="/history">History</a></li>
 <li><a href="/about">About Stoolball England</a></li>
 </ul>
@@ -181,13 +181,13 @@ class CurrentPage extends StoolballPage
         <div class="box-content schools">
 			<h2>Schools &amp; juniors</h2>
 			<ul>
-				<li><a href="/play/schools/key-stage-3-lesson-plans/">Lesson plans</a></li>
-				<li><a href="/play/schools/coaching-in-schools/">Coaching in schools</a></li>
-				<li><a href="/play/schools/free-stoolball-equipment/">Free equipment</a></li>
+				<li><a href="/schools/key-stage-3-lesson-plans/">Lesson plans</a></li>
+				<li><a href="/schools/coaching-in-schools/">Coaching in schools</a></li>
+				<li><a href="/schools/free-stoolball-equipment/">Free equipment</a></li>
 				<li><a href="/teams/junior">Junior teams</a></li>
 			</ul>
 			<div class="more">
-				<a href="/play/schools">More for schools</a>
+				<a href="/schools">More for schools</a>
 			</div>
         </div>
 	</div>

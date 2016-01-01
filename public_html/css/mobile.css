@@ -66,7 +66,7 @@ abbr.dtstart { border-bottom: 0; }
 .geo { font-size: .75em; }
 
 /* Subscription options */
-.rss { background: url(/images/sprite.2.png) no-repeat -172px -48px; padding: 0 20px; }
+.rss { background: url(/images/sprite.3.png) no-repeat -172px -48px; padding: 0 20px; }
 .twitter-follow-button { vertical-align: bottom; }
 
 /* A heading which is a link should just display at normal size. Typically applies on a landing page where the HTML can't be altered for mobile. */
@@ -294,7 +294,7 @@ mark { background-color: rgba(255,255,153,.4); padding: 2px; }
 .rss-form p { margin: 10px 0 0;}
 
 /* Link to an iCalendar */
-a.icalendar { padding-left: 20px; background: url(/images/sprite.2.png) no-repeat -171px -110px; }
+a.icalendar { padding-left: 20px; background: url(/images/sprite.3.png) no-repeat -171px -110px; }
 
 /* Print styles */
 @media print {
