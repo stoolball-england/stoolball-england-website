@@ -202,7 +202,9 @@ class CurrentPage extends StoolballPage
         }
 
 		$this->LoadClientScript('/scripts/match-results-3.js');
-	}
+        $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
+        $this->LoadClientScript("/scripts/tinymce.js");
+    }
 
 	function OnPageLoad()
 	{

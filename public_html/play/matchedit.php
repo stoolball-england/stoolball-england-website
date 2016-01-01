@@ -326,6 +326,8 @@ class CurrentPage extends StoolballPage
 				break;
 
 			case MatchEditControl::HIGHLIGHTS:
+                $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
+                $this->LoadClientScript("/scripts/tinymce.js");
 				break;
 		}
 

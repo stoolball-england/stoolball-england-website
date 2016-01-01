@@ -213,6 +213,9 @@ table.scorecardEditor .add-one-container { text-align: left; padding-left: 0;}
 /* Edit scorecard - results control and full scorecard */
 input.numeric { width: 3.5em; }
 
+/* Edit match, add match report */
+.matchResultEdit textarea { height: 15em;}
+
 /* Edit tournaments */
 .TournamentEdit .max-teams { width: 3em; }
 .TournamentEdit.panel { margin-bottom: .5em; }
