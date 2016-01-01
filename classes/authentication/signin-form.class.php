@@ -38,9 +38,6 @@ class SignInForm extends XhtmlForm
 		}
 		else $s_page_to_return_to = $this->settings->GetClientRoot(); # home page is last resort
 
-		# make sure not signed straight back out again!
-		$s_page_to_return_to = str_replace('action=signout','signedin=yes',$s_page_to_return_to); # signedin=yes a dummy value
-
 		# build up form xhtml
 		$this->AddControl('<div class="formPart"><label for="email2" class="formLabel">Your email address</label> <div class="formControl"><input type="email" size="30" maxlength="100" autocorrect="off" autocapitalize="off" id="email2" name="email" value="' . Html::Encode($s_email) . '" /></div></div>' . "\n" .
 			'<div class="formPart"><label for="password2" class="formLabel">Your password</label> <div class="formControl"><input type="password" size="30" autocorrect="off" autocapitalize="off" id="password2" name="password" value="' . Html::Encode($s_pass) . '" /></div></div>' . "\n" .

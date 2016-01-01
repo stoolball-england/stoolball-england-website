@@ -597,7 +597,7 @@ class AuthenticationManager extends DataManager
 			$s_return_page = $_SERVER['REQUEST_URI'];
 		}
 
-		header('Location: ' . $this->o_settings->GetFolder('Account') . '?action=required&page=' . urlencode(str_replace('action=signout','',$s_return_page)));
+		header('Location: ' . $this->o_settings->GetFolder('Account') . '?action=required&page=' . urlencode($s_return_page));
 		exit(); # shouldn't get here
 	}
 

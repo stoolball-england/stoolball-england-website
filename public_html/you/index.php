@@ -112,15 +112,8 @@ class CurrentPage extends StoolballPage
 		else if (AuthenticationManager::GetUser()->IsSignedIn())
 		{
 			$s_signed_in_as = AuthenticationManager::GetUser()->GetName();
-
-			# Add signout parameter to current URL
-			$s_out_url = Html::Encode($_SERVER['REQUEST_URI']);
-			$s_out_url .= (strpos($s_out_url, '?') === false) ? '?' : '&amp;';
-			$s_out_url .= 'action=signout';
 			?>
-<p>You're already signed in as <?php echo Html::Encode($s_signed_in_as) ?>. If you're 
-not <?php echo Html::Encode($s_signed_in_as) ?> please <a
-	href="<?php echo Html::Encode($s_out_url); ?>">sign out</a>.</p>
+<p><strong>You're already signed in as <?php echo Html::Encode($s_signed_in_as) ?>.</strong></p>
 			<?php
 		}
 		else
