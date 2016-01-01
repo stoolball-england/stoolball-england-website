@@ -417,20 +417,25 @@ dl.decision dd { margin-left: 22px; }
 .contact { width: 49%; display: inline-block; vertical-align: top; }
 .contact h3 { color: #000; margin: 0; font-style: normal; font: bold 1em Arial, Helvetica, sans-serif; }
 
+/* Comments below a match */
+#comments-topic { position: relative; margin: 2em 0 1em; padding: 1em; background: #eee url(/images/wicket-light-tile.jpg); overflow: hidden; }
+#comments-topic h2 { margin-top: 0; }
+#comments-topic label { font-family: inherit; }
+
 /* Isolated forum elements */
-.forumSubscribe { font-size: .85em; margin: 1em 0; }
+.forumSubscribe { font-size: .85em; float: right; }
+.signed-in .forumSubscribe { position: absolute; top: 16px; right: 16px; }
 .subscriptionNone { font-weight: bold; }
 
 /* Navbar */
-.forumNavbar { width: 100%; margin: 1em 0; overflow: hidden; clear: left; }
-.forumNavbar a { display: inline; }
-.forumNavbar .forumSubscribe { padding-top: 1em; }
-.forumNavbar .forumPost { float: right; }
+.forumNavbar { width: 100%; margin: 1em 0 0; overflow: hidden; clear: left; }
+.signed-in .forumNavbar { display: inline; }
+.forumPost { display: inline; }
 
 /* Table of messages in a topic */
 .forumTopic { margin: .5em 0; width: 100%; clear: both; }
 .forumTopic th { padding: .3em; }
-.forumMessage { overflow: hidden;  width: 99.7%; position: relative; top: 0; left: 0; border-top: #008044 solid 2px; background: url(/images/noise-bottom.gif) repeat-x top left ; }
+.forumMessage { overflow: hidden;  width: 100%; position: relative; top: 0; left: 0; border-top: #008044 solid 2px; }
 
 .forumTopic .profile { width: 20%; vertical-align: top; }
 .forumTopic .profile { overflow: hidden; float: left; width: 20%; padding: 1em 0; z-index: 10; position: relative; top: 0; left: 0; }
@@ -440,13 +445,10 @@ dl.decision dd { margin-left: 22px; }
 
 .forumTopic .message { width: 78%; float: left; padding: 1em 0 1em 2%; margin-left: -2px; z-index: 10; position: relative; top: 0; left: 0; }
 .forumTopic hr  { position: absolute; top: -10000px; left: -10000px; }
-
-#comments-topic { margin-top: 2em; padding: 1em; background: #eee url(/images/wicket-light-tile.jpg); overflow: hidden; }
-#comments-topic h2 { margin-top: 0; }
+.forumTopic { border-bottom: #008044 solid 2px; margin-bottom: 1.5em; }
 
 /* New message form */
 #forumMessageForm textarea { height: 20em; }
-html body .forumTopic { width: 97%; }
 
 /* Paging */
 .paging { border-top: 2px solid #008044; border-bottom: 2px solid #008044; padding: .5em 0; margin: 1em 0; clear: both; overflow: hidden; width: 100%; }

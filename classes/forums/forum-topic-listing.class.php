@@ -1,6 +1,5 @@
 <?php
 require_once('forum-topic.class.php');
-require_once('forum-message-format.enum.php');
 require_once('xhtml/placeholder.class.php');
 
 class ForumTopicListing extends Placeholder
@@ -13,59 +12,12 @@ class ForumTopicListing extends Placeholder
 	 * @var ForumTopic
 	 */
 	var $topic;
-	var $o_navbar;
-	var $i_format;
 
 	function ForumTopicListing(SiteSettings $o_settings, User $o_user, ForumTopic $topic)
 	{
 		$this->o_settings = $o_settings;
 		$this->o_user = $o_user;
 		$this->topic = $topic;
-        $this->SetFormat(ForumMessageFormat::Review());
-	}
-
-	function SetNavbar($o_input)
-	{
-		if (is_object($o_input)) $this->o_navbar = $o_input;
-	}
-
-	function GetNavbar()
-	{
-		return $this->o_navbar;
-	}
-
-	function GetFormattedNavbar()
-	{
-		if (is_object($this->o_navbar) and is_object($this->topic) and is_object($this->topic->o_review_item))
-		return $this->o_navbar->__toString();
-		else
-		return null;
-	}
-
-	function GetFormat()
-	{
-		return $this->i_format;
-	}
-
-	function SetFormat($i_input)
-	{
-		if (is_numeric($i_input)) $this->i_format = (int)$i_input;
-	}
-
-	function GetHeader()
-	{
-		if ($this->GetFormat() == ForumMessageFormat::ReviewReply())
-		{
-			if ($this->topic->GetCount()) # if no messages, write nothing)
-			{
-				return '<h2 class="forumTopicReview">Review comments so far <span class="sort-order">(newest first)</span></h2>';
-			}
-            return '';
-		}
-        else if ($this->GetFormat() == ForumMessageFormat::Review()) {
-            return '<div id="comments-topic">' . "\n" .
-            '<h2>Add your comments</h2>';
-        }
 	}
 
 	function GetFormattedMessages()
@@ -128,6 +80,7 @@ class ForumTopicListing extends Placeholder
                 # add the message
                 $s_text .= '<div about="' . $message->MessageLinkedDataUri() . '" rel="awol:content" class="message';
                 if ($b_alternate) $s_text .= " altMessage";
+                if ($i == $last_message) $s_text .= '" id="last-message';
                 $s_text .= '"><div typeof="awol:Content"><meta property="awol:type" content="text/html" /><div property="awol:body">';
                 $s_text .= $message->GetFormattedBody($this->o_settings);
                 $s_text .= "</div></div>";
@@ -143,30 +96,12 @@ class ForumTopicListing extends Placeholder
 		}
 	}
 
-	function GetFooter()
-	{
-	    if ($this->GetFormat() == ForumMessageFormat::Review()) {
-	        return '</div>';
-	    }
-		return'';
-	}
-
 	function OnPreRender()
 	{
-		$this->AddControl($this->GetHeader());
-
-		# write one navbar, whether there are comments yet or not
-		$this->AddControl($this->GetFormattedNavbar());
-
-		# if there are comments, carry on writing
 		if ($this->topic->GetCount())
 		{
 			$this->AddControl($this->GetFormattedMessages());
-			$this->AddControl($this->GetFormattedNavbar());
 		}
-
-		$this->AddControl($this->GetFooter());
-
 	}
 }
 ?>

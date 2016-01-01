@@ -583,21 +583,32 @@ class AuthenticationManager extends DataManager
 		else return $o_user->Permissions()->HasPermission($this->i_permission_required_for_page);
 	}
 
+    /**
+     * If authentication is required, get the URL which will allow the user to sign in
+     *
+     * @param string $return_url
+     * @return string
+     **/
+    public function GetPermissionUrl($return_url='')
+    {
+        # allow page other than current to come back to
+        if (!$return_url)
+        {
+            $return_url = $_SERVER['REQUEST_URI'];
+        }
+
+        return $this->o_settings->GetFolder('Account') . '?action=required&page=' . urlencode($return_url);
+    }
+
 	/**
 	 * If authentication is required, get the user to sign in
 	 *
-	 * @param string $s_return_page
+	 * @param string $return_url
 	 * @return void
 	 **/
-	function GetPermission($s_return_page='')
+	public function GetPermission($return_url='')
 	{
-		# allow page other than current to come back to
-		if (!$s_return_page)
-		{
-			$s_return_page = $_SERVER['REQUEST_URI'];
-		}
-
-		header('Location: ' . $this->o_settings->GetFolder('Account') . '?action=required&page=' . urlencode($s_return_page));
+		header('Location: ' . $this->GetPermissionUrl($return_url));
 		exit(); # shouldn't get here
 	}
 

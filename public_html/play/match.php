@@ -30,17 +30,20 @@ class CurrentPage extends StoolballPage
     private $most_catches;
     private $has_player_stats;
 
-	function OnLoadPageData()
+    public function OnPageInit() {
+        
+        # check parameter
+        if (!isset($_GET['item']) or !is_numeric($_GET['item']))
+        {
+            header('Location: /matches/');
+            exit();
+        }       
+    }
+
+	public function OnLoadPageData()
 	{
 		/* @var $topic ForumTopic */
 		/* @var $match Match */
-
-		# check parameter
-		if (!isset($_GET['item']) or !is_numeric($_GET['item']))
-		{
-			header('Location: /matches/');
-			exit();
-		}
 
 		# new data manager
 		$match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
@@ -77,9 +80,15 @@ class CurrentPage extends StoolballPage
 		$this->review_item->SetId($this->match->GetId());
 		$this->review_item->SetType(ContentType::STOOLBALL_MATCH);
 		$this->review_item->SetTitle($this->match->GetTitle());
+        $this->review_item->SetNavigateUrl("https://" . $this->GetSettings()->GetDomain() . $this->review_item->GetNavigateUrl());
         $this->review_item->SetLinkedDataUri($this->match->GetLinkedDataUri());
 
 		$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
+        
+        if ($this->IsPostback()) {
+            $this->SavePostedComments($topic_manager);
+        }
+        
 		$topic_manager->ReadCommentsForReviewItem($this->review_item);
 		$this->topic = $topic_manager->GetFirst();
 		unset($topic_manager);
@@ -124,6 +133,27 @@ class CurrentPage extends StoolballPage
 
 	}
 
+
+    function SavePostedComments(TopicManager $topic_manager)
+    {
+        /* @var $message ForumMessage */
+
+        if (trim($_POST['message']) and !$this->IsRefresh()) {
+
+            $message = $topic_manager->SaveComment($this->review_item, $_POST['message']);
+
+            # send subscription emails
+            require_once ('forums/subscription-manager.class.php');
+            $o_subs = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
+            $o_subs->SendCommentsSubscriptions($this->review_item, $message);
+            
+            # add subscription if appropriate
+            if (isset($_POST['subscribe'])) {
+                $o_subs->SaveSubscription($this->review_item->GetId(), $this->review_item->GetType(), AuthenticationManager::GetUser()->GetId());
+            }
+        }
+    }
+
 	function OnPrePageLoad()
 	{
 		$this->SetOpenGraphType("sport");
@@ -151,15 +181,7 @@ class CurrentPage extends StoolballPage
 			echo new MatchControl($this->GetSettings(), $this->match);
 		}
 
-		# Display review topic listing
-        require_once('forums/forum-topic-listing.class.php');
-		require_once('forums/forum-comments-topic-navbar.class.php');
-		if (!isset($this->topic)) $this->topic = new ForumTopic($this->GetSettings());
-		$this->topic->SetReviewItem($this->review_item);
-		$o_review_topic = new ForumTopicListing($this->GetSettings(), AuthenticationManager::GetUser(), $this->topic);
-        $o_review_topic->SetNavbar(new ForumCommentsTopicNavbar($this->topic, null));
-        echo $o_review_topic;
-
+        $this->DisplayComments();
 	    $this->ShowSocial();
     	$this->AddSeparator();
 
@@ -258,6 +280,51 @@ class CurrentPage extends StoolballPage
             <?php
         }
 	}
+
+    private function DisplayComments() {
+        
+        # Display review topic listing
+        require_once('forums/forum-topic-listing.class.php');
+        require_once('forums/forum-comments-topic-navbar.class.php');
+        if (!isset($this->topic)) $this->topic = new ForumTopic($this->GetSettings());
+        $this->topic->SetReviewItem($this->review_item);
+
+        $signed_in = AuthenticationManager::GetUser()->IsSignedIn();
+        
+        echo '<div id="comments-topic"';
+        if ($signed_in) {
+            echo ' class="signed-in"';
+        }
+        echo '>';
+        if ($this->topic->GetCount() or !$signed_in) {
+            echo '<h2>Comments</h2>';
+        }
+        
+        $navbar = new ForumCommentsTopicNavbar($this->topic, $this->GetAuthenticationManager());
+        echo $navbar;
+
+        $o_review_topic = new ForumTopicListing($this->GetSettings(), AuthenticationManager::GetUser(), $this->topic);
+        echo $o_review_topic;
+        
+        if ($this->topic->GetCount() and !$signed_in) {
+            echo $navbar;
+        }
+        
+        # Add comment
+        if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::ForumAddMessage()))
+        {
+            # create form
+            $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
+            $this->LoadClientScript("/scripts/tinymce.js");
+        
+            require_once ('forums/forum-message-form.class.php');
+            $o_form = new ForumMessageForm();
+            echo $o_form->GetForm();
+        }
+        
+        echo '</div>';
+        
+    }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
 ?>
