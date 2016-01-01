@@ -47,11 +47,11 @@ class CurrentPage extends StoolballPage
         # Update search engine
         if ($this->player_unfiltered->GetSearchUpdateRequired())
         {
-            require_once("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("player" . $this->player->GetId());
-            $search->IndexPlayer($this->player_unfiltered);
-            $search->CommitChanges();
+            require_once("search/player-search-adapter.class.php");
+            $this->SearchIndexer()->DeleteFromIndexById("player" . $this->player->GetId());
+            $adapter = new PlayerSearchAdapter($this->player_unfiltered);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
 
             $player_manager->SearchUpdated($this->player->GetId());
         }

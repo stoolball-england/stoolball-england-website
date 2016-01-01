@@ -128,46 +128,6 @@ class Team implements IHasShortUrl
 	 */
 	function GetIntro() { return $this->s_intro; }
 
-	/**
-	 * Gets text to use as the description of this team in search results
-	 */
-	public function GetSearchDescription() 
-	{
-		$description = "A stoolball team";
-		
-		if ($this->o_ground instanceof Ground and $this->o_ground->GetAddress()->GetAdministrativeArea()) 
-		{
-			$description .= " in " . $this->o_ground->GetAddress()->GetAdministrativeArea();
-		}
-		
-        $seasons = $this->Seasons()->GetItems();
-		$seasons_count = $this->Seasons()->GetCount();
-		if ($seasons_count)
-		{
-		    $competitions = array();
-			foreach ($seasons as $team_in_season) 
-			{
-                $competitions[$team_in_season->GetSeason()->GetCompetition()->GetId()] = $team_in_season->GetSeason()->GetCompetition();
-            }
-            
-            $description .= " playing in ";
-            $keys = array_keys($competitions);
-            $competitions_count = count($keys);
-            for ($i = 0; $i < $competitions_count; $i++) 
-            {
-                $description .= $competitions[$keys[$i]]->GetName();
-				if ($i < ($competitions_count-2)) $description .= ", ";
-				if ($i == ($competitions_count-2)) $description .= " and ";
-			}
-		}
-		else 
-		{
-			$description .= " playing friendlies or tournaments";
-		} 
-		$description .= ".";	
-		return $description;
-	}
-
     /**
      * Notes that the object may have changed since the last time it was indexed for search
      */

@@ -92,7 +92,11 @@ class CurrentPage extends StoolballPage
 		# set up page
 		$this->SetOpenGraphType("sports_league");
 		$this->SetPageTitle("League table for the " . $this->season->GetCompetitionName());
-		$this->SetPageDescription($this->competition->GetSearchDescription());
+
+        require_once("search/competition-search-adapter.class.php");
+        $adapter = new CompetitionSearchAdapter($this->competition);
+        $this->SetPageDescription($adapter->GetSearchDescription());
+
 		$this->SetContentConstraint(StoolballPage::ConstrainBox());
         $this->SetContentCssClass("season-table");
 	}

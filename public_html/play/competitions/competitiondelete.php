@@ -57,10 +57,8 @@ class CurrentPage extends StoolballPage
 				$this->manager->Delete(array($id));
 
                 # Remove the competition from the search engine
-                require_once ("search/lucene-search.class.php");
-                $search = new LuceneSearch();
-                $search->DeleteDocumentById("competition" . $id);
-                $search->CommitChanges();
+                $this->SearchIndexer()->DeleteFromIndexById("competition" . $id);
+                $this->SearchIndexer()->CommitChanges();
 
 				# Note success
 				$this->deleted = true;

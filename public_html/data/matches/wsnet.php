@@ -21,13 +21,15 @@ class CurrentPage extends Page
 		$data[] = array("Match id","Title","Start time","Match type","Overs","Player type","Players per team","Latitude","Longitude","SAON","PAON","Town","Website","Description");
 
 		require_once('stoolball/match-manager.class.php');
-		$match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
+        require_once("search/match-search-adapter.class.php");    
+    	$match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 		$match_manager->FilterByDateStart(gmdate("U"));
 		$match_manager->ReadByMatchId();
 		while($match_manager->MoveNext())
 		{
 			$match = $match_manager->GetItem();
-
+            $adapter = new MatchSearchAdapter($match);
+			
             /* @var $match Match */
             
             # Add this match to the data array
@@ -45,7 +47,7 @@ class CurrentPage extends Page
                 ($match->GetGround() instanceof Ground) ? $match->GetGround()->GetAddress()->GetPaon() : "",
                 ($match->GetGround() instanceof Ground) ? $match->GetGround()->GetAddress()->GetTown() : "",
     			"https://" . $this->GetSettings()->GetDomain() . $match->GetNavigateUrl(),
-                $match->GetSearchDescription()
+                $adapter->GetSearchDescription()
 			);
 		}
 		unset($match_manager);

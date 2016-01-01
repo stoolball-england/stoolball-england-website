@@ -1,8 +1,6 @@
 <?php
 require_once('forum-topic.class.php');
 require_once('forum-message-format.enum.php');
-require_once('search/search-term.class.php');
-require_once('search/search-highlighter.class.php');
 require_once('xhtml/placeholder.class.php');
 
 class ForumTopicListing extends Placeholder
@@ -99,13 +97,6 @@ class ForumTopicListing extends Placeholder
                 
 				# get person
 				$o_person = $message->GetUser();
-
-				# highlight search terms
-				if (isset($_GET['hi']) and $_GET['hi'])
-				{
-					$o_term = new SearchTerm($_GET['hi']);
-					$message->SetBody(SearchHighlighter::Highlight($o_term->GetTerms(), $message->GetBody()));
-				}
 
                 # Declare relationship between messages.
                 $reply_of = ($i > 0) ? ' rel="sioc:reply_of" resource="' . $a_messages[$i-1]->MessageLinkedDataUri() . '"' : "";

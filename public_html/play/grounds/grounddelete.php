@@ -57,10 +57,8 @@ class CurrentPage extends StoolballPage
 				$this->manager->Delete(array($id));
 
                 # Remove the ground from search results
-                require_once ("search/lucene-search.class.php");
-                $search = new LuceneSearch();
-                $search->DeleteDocumentById("ground" . $id);
-                $search->CommitChanges();
+                $this->SearchIndexer()->DeleteFromIndexById("ground" . $id);
+                $this->SearchIndexer()->CommitChanges();
 
 				# Note success
 				$this->deleted = true;

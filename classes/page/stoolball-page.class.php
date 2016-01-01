@@ -17,7 +17,7 @@ class StoolballPage extends Page
 	private $open_graph_type = "article";
     private $css_root = "";
     private $resource_root = "";
-    private $css_version = 36;
+    private $css_version = 37;
 	
 	# override constructor to accept settings for this site
 	function StoolballPage(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
@@ -114,8 +114,8 @@ class StoolballPage extends Page
 <meta property="fb:app_id" content="259918514021950" />
 <meta name="twitter:site" content="@stoolball" />
 <script src="<?php echo $this->resource_root ?>/scripts/lib/modernizr.js"></script>
+<link rel="search" href="/search/" title="Go to Stoolball England\'s search page" />
 		<?php
-		#	'<link rel="search" href="' . $this->GetSettings()->GetUrl('Search') . '" title="Go to ' . $this->GetSettings()->GetSiteName() . '\'s search page" />' . "\n";
 
 		parent::OnCloseHead();
 	}
@@ -133,7 +133,7 @@ class StoolballPage extends Page
 		echo '</div>';
 		
 			?>
-<form id="handle" action="/search" method="get" class="large"><div><input id="search" type="search" name="q" value="<?php if (isset($_GET['q'])) echo htmlentities($_GET['q'], ENT_QUOTES, "UTF-8", false); ?>" />
+<form id="handle" action="/search/" method="get" class="large"><div><input id="search" type="search" name="q" value="<?php if (isset($_GET['q'])) echo htmlentities($_GET['q'], ENT_QUOTES, "UTF-8", false); ?>" />
 	<input type="submit" value="Search" id="go" /></div>
 </form>
 <div id="bat1"></div>
@@ -508,5 +508,19 @@ s.parentNode.insertBefore(g,s)}(document,'script'));
 			echo '<a class="promo large" href="/shop"><img alt="Bats &pound;39, Balls &pound;7, Wickets &pound;150, Scorebooks &pound;4. Buy yours now." width="185" height="214" src="' . $this->resource_root . '/images/equipment/bat-ad-' . rand(1,2) . '.jpg" /></a>';
 		}
 	}
+
+    private $indexer;
+
+    /**
+     * Gets the search indexer for the site 
+     * @return ISearchIndexProvider
+     */
+    protected function SearchIndexer() {
+        if (is_null($this->indexer)) {
+            require_once("search/mysql-search-indexer.class.php");
+            $this->indexer = new MySqlSearchIndexer($this->GetDataConnection());
+        }
+        return $this->indexer;
+    }
 }
 ?>

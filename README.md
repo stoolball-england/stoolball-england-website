@@ -8,8 +8,6 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * [Zend Framework 1.11.11](http://framework.zend.com/), available from the [Zend Framework releases page](http://framework.zend.com/downloads/archives), should be installed in a `Zend` folder which is a sibling of `public_html`.
 
-* The [StandardAnalyzer for Zend Lucene](http://codefury.net/projects/standardanalyzer/) is a beta version from a blog post, and is included in this repository because it is not actively maintained, and because the [StandardAnalyzer License](https://github.com/stoolball-england/stoolball-england-website/blob/master/StandardAnalyzer/Readme.txt) allows it.
-
 * [HTMLPurifier 4.3.0](http://htmlpurifier.org/),  available from the [HTMLPurifier releases page](http://htmlpurifier.org/releases/), should be installed in an `htmlpurifier` folder which is a sibling of `public_html`.
 
 * [TinyMCE 3.5.8](https://www.tinymce.com/), available from the [TinyMCE older releases page](http://archive.tinymce.com/download/older.php), should be installed in a `tiny_mce` folder inside `public_html\scripts`.

@@ -193,10 +193,11 @@ class CurrentPage extends Page
     }
 
     private function AddActivitiesToFeed(SimpleXMLElement $feed, array $matches, array $teams_indexed_by_id, $valid_api_key) {
-            
+        
+        require_once("search/match-search-adapter.class.php");    
         $dont_just_turn_up = "\n\nIf you'd like to play, contact one of the clubs playing and ask how you can get involved. If you simply turn up on the day you'll be able to watch but " .
             "may not get to play.";
-            
+        
         $activities = $feed->addChild("activities");
         foreach ($matches as $match)
         {
@@ -213,7 +214,8 @@ class CurrentPage extends Page
             
             $activity->addChild("title", Html::Encode($match->GetTitle()));
             
-            $description = $match->GetSearchDescription();
+            $adapter = new MatchSearchAdapter($match);
+            $description = $adapter->GetSearchDescription();
             $description = "Stoolball " . strtolower(substr($description, 0, 1)) . substr($description, 1);
             
             $cancelled = (in_array($match->Result()->GetResultType(), array(MatchResult::ABANDONED, MatchResult::CANCELLED, MatchResult::POSTPONED, MatchResult::AWAY_WIN_BY_FORFEIT, MatchResult::HOME_WIN_BY_FORFEIT)));

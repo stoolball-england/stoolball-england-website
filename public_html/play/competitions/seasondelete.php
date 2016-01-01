@@ -71,15 +71,15 @@ class CurrentPage extends StoolballPage
 					$this->manager->Delete(array($id));
 
                     # Update the competition in the search engine, because the latest season may have changed.
-                    require_once ("search/lucene-search.class.php");
                     require_once('stoolball/competition-manager.class.php');
-                    $search = new LuceneSearch();
-                    $search->DeleteDocumentById("competition" . $this->data_object->GetCompetition()->GetId());
+                    require_once("search/competition-search-adapter.class.php");
+                    $this->SearchIndexer()->DeleteFromIndexById("competition" . $this->data_object->GetCompetition()->GetId());
                     $competition_manager = new CompetitionManager($this->GetSettings(), $this->GetDataConnection());
                     $competition_manager->ReadById(array($this->data_object->GetCompetition()->GetId()));
                     $competition = $competition_manager->GetFirst();
-                    $search->IndexCompetition($competition);
-                    $search->CommitChanges();
+                    $adapter = new CompetitionSearchAdapter($competition);
+                    $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+                    $this->SearchIndexer()->CommitChanges();
 	
 					# Note success
 					$this->deleted = true;

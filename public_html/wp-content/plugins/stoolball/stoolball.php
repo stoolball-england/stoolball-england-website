@@ -544,10 +544,14 @@ class StoolballWordPressPlugin
     {
         $page = get_page($page_id);
         
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
-        $search->DeleteDocumentById("page" . $page_id);
-        $search->IndexWordPressPage($page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true), $page->post_content);
+        require_once("search/mysql-search-indexer.class.php");
+        require_once("search/search-item.class.php");
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
+        $search->DeleteFromIndexById("page" . $page_id);
+        $item = new SearchItem("page", $page_id, get_permalink($page_id), $page->post_title, get_post_meta($page_id, "Description", true));
+        $item->FullText($page->post_content);
+        $search->Index();
         $search->CommitChanges();
     }
     
@@ -559,10 +563,19 @@ class StoolballWordPressPlugin
     {
         $post = get_post($post_id);
 
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
-        $search->DeleteDocumentById("post" . $post_id);
-        $search->IndexWordPressPost($post_id, get_permalink($post_id), $post->post_title, $post->post_content);
+        require_once("search/mysql-search-indexer.class.php");
+        require_once("search/blog-post-search-adapter.class.php");
+        require_once("search/search-item.class.php");
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
+        $search->DeleteFromIndexById("post" . $post_id);
+
+        $item = new SearchItem("post", $post_id, get_permalink($post_id), $post->post_title);
+        $item->ContentDate($post->post_date);
+        $item->FullText($post->post_content);
+        $adapter = new BlogPostSearchAdapter($item);
+        $search->Index($adapter->GetSearchableItem());
+
         $search->CommitChanges();        
     }
 
@@ -572,17 +585,18 @@ class StoolballWordPressPlugin
      */
     public function TrashPost($post_id)
     {
-        require_once("search/lucene-search.class.php");
-        $search = new LuceneSearch();
+        require_once("search/mysql-search-indexer.class.php");
+        require_once("data/mysql-connection.class.php");
+        $search = new MySqlSearchIndexer(new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName()));
         
         $post = get_post($post_id);
         if ($post and $post->post_type == 'post')
         {
-            $search->DeleteDocumentById("post" . $post_id);
+            $search->DeleteFromIndexById("post" . $post_id);
         }        
         else if ($post and $post->post_type == 'page')
         {
-            $search->DeleteDocumentById("page" . $post_id);
+            $search->DeleteFromIndexById("page" . $post_id);
         }
     }
     

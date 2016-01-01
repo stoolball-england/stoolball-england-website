@@ -53,11 +53,11 @@ class CurrentPage extends StoolballPage
         # Update search engine
         if ($this->team->GetSearchUpdateRequired())
         { 
-            require_once("search/lucene-search.class.php");
-            $search = new LuceneSearch();
-            $search->DeleteDocumentById("team" . $this->team->GetId());
-            $search->IndexTeam($this->team);
-            $search->CommitChanges();
+            require_once("search/team-search-adapter.class.php");
+            $this->SearchIndexer()->DeleteFromIndexById("team" . $this->team->GetId());
+            $adapter = new TeamSearchAdapter($this->team);
+            $this->SearchIndexer()->Index($adapter->GetSearchableItem());
+            $this->SearchIndexer()->CommitChanges();
             
             $team_manager->SearchUpdated($this->team->GetId());
         }
@@ -114,9 +114,13 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		$this->SetOpenGraphType("sports_team");
-		$this->SetPageTitle($this->team->GetName() . ' stoolball team');
-		$this->SetPageDescription($this->team->GetSearchDescription());
+        $this->SetOpenGraphType("sports_team");
+        $this->SetPageTitle($this->team->GetName() . ' stoolball team');
+
+	    require_once("search/team-search-adapter.class.php");
+        $adapter = new TeamSearchAdapter($this->team);
+		$this->SetPageDescription($adapter->GetSearchDescription());
+
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
         if (!$this->is_one_time_team) {
             $this->LoadClientScript("/scripts/lib/chart.min.js");
