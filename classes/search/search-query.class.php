@@ -64,16 +64,16 @@ class SearchQuery
 	
 	private function StripIgnoredWords($text)
 	{
-		$ignored_words = array();
+		$ignored_words = array('the','and');
 		$keep_words = array();
 		
 		# split input into words
 		$words = explode(' ', $text);
 		
-		# check each word - is it more than 3 chars?
+		# check each word - is it more than 2 chars?
 		foreach ($words as $word)
 		{
-			if (strlen($word) <= 3)
+			if (strlen($word) <= 2)
 			{
 				if (!in_array($word, $ignored_words)) $ignored_words[] = $word;
 			}

@@ -230,7 +230,9 @@ class CurrentPage extends StoolballPage
 		$this->SearchIndexer()->DeleteFromIndexByType("other");
 
 		$docs = array();
-		$docs[] = new SearchItem("other", "/contact/", "/contact/", "Contact us", "Phone or email us about anything to do with stoolball, or contact us on Facebook or Twitter.", "phone email twitter facebook contact address");
+		$contact = new SearchItem("other", "/contact/", "/contact/", "Contact us", "Phone or email us about anything to do with stoolball, or contact us on Facebook or Twitter.", "phone email twitter facebook contact address");
+        $contact->RelatedLinksHtml('<ul><li><a href="https://facebook.com/stoolball">Stoolball England on Facebook</a></li><li><a href="https://twitter.com/stoolball">Stoolball England on Twitter</a></li></ul>');
+        $docs[] = $contact;
 
 		$docs[] = new SearchItem("other", "/teams/map", "/teams/map", "Map of stoolball teams", "See a map of all the stoolball teams currently playing.", "where clubs teams map");
 
@@ -288,20 +290,26 @@ class CurrentPage extends StoolballPage
 		"Buy hoodies, t-shirts, hats, bags, umbrellas, teddy bears and a lot more in our stoolball gift shop. Like us on Facebook or follow us on Twitter to find out about special offers.", 
         "gifts presents clothing buy bags t-shirts polo hats merchandise wear clothes shopping shop");
 
-		$docs[] = new SearchItem("other", "facebook", "https://facebook.com/stoolball", "Stoolball England on Facebook",
+		$facebook = new SearchItem("other", "facebook", "https://facebook.com/stoolball", "Stoolball England on Facebook",
 		"Find us on Facebook to keep up with stoolball news, and get extra updates and special offers from our gift shop.", 
-        "twitter news like");
+        "twitter news like photo picture contact");
+        $facebook->RelatedLinksHtml('<ul><li><a href="https://twitter.com/stoolball">Stoolball England on Twitter</a></li><li><a href="https://youtube.com/stoolballengland">Stoolball England on YouTube</a></li></ul>');
+        $docs[] = $facebook;
 
-		$docs[] = new SearchItem("other", "twitter", "https://twitter.com/stoolball", "Stoolball England on Twitter",
+		$twitter = new SearchItem("other", "twitter", "https://twitter.com/stoolball", "Stoolball England on Twitter",
 		"Follow us on Twitter to keep up with stoolball news, and get extra updates and special offers from our gift shop.", 
-        "facebook, follow, tweet");
+        "facebook follow tweet contact");
+        $twitter->RelatedLinksHtml('<ul><li><a href="https://facebook.com/stoolball">Stoolball England on Facebook</a></li><li><a href="https://youtube.com/stoolballengland">Stoolball England on YouTube</a></li></ul>');
+        $docs[] = $twitter;
 
-		$docs[] = new SearchItem("other", "youtube", "https://youtube.com/stoolballengland", "Stoolball England on YouTube",
+		$youtube = new SearchItem("other", "youtube", "https://youtube.com/stoolballengland", "Stoolball England on YouTube",
 		"Subscribe to our YouTube channel to see the best stoolball videos.", "video youtube");
+        $youtube->RelatedLinksHtml('<ul><li><a href="https://facebook.com/stoolball">Stoolball England on Facebook</a></li><li><a href="https://twitter.com/stoolball">Stoolball England on Twitter</a></li></ul>');
+        $docs[] = $youtube;
 
 		foreach ($docs as $doc) {
 		    /* @var $doc SearchItem */
-		    $doc->WeightOfType(500);
+		    $doc->WeightOfType(1200);
 		    $this->SearchIndexer()->Index($doc);
         }
 		$this->SearchIndexer()->CommitChanges();

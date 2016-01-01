@@ -33,9 +33,15 @@ class CompetitionSearchAdapter implements ISearchAdapter {
         $this->searchable->Description($this->GetSearchDescription());
         $this->searchable->Keywords(implode(" ", $keywords));
         $this->searchable->FullText(implode(" ", $content));
-        $this->searchable->RelatedLinksHtml('<ul>' .
-                                            '<li><a href="' . $competition->GetStatisticsUrl() . '">Statistics</a></li>' .
-                                            '</ul>');
+        
+        $related = '<ul>';
+        if ($season->GetShowTable()) {
+            $related .= '<li><a href="' . $season->GetTableUrl() . '">Table</a></li>';
+        }
+        $related .= '<li><a href="' . $competition->GetCompetitionMapUrl() . '">Map</a></li>' .
+                    '<li><a href="' . $competition->GetStatisticsUrl() . '">Statistics</a></li>' .
+                    '</ul>';
+        $this->searchable->RelatedLinksHtml($related);
     }
     
     /**

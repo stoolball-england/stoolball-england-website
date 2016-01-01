@@ -20,6 +20,7 @@ class MatchSearchAdapter implements ISearchAdapter {
         $this->searchable->FullText($match->GetNotes());
         $this->searchable->RelatedLinksHtml('<ul>' .
                                             '<li><a href="' . $match->GetCalendarNavigateUrl() . '">Add to calendar</a></li>' .
+                                            '<li><a href="' . $match->GetEditNavigateUrl() . '">Update result</a></li>' .
                                             '</ul>');
         
         # Assign more weight to newer matches
