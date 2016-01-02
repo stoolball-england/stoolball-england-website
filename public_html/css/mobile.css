@@ -1,19 +1,46 @@
 /* Setup the main content area */
-html { background: url(/images/wicket-tile.jpg) repeat #D0CCCA; }
-body { padding: 8px; margin: 0; background: url(/images/mobile/bat.jpg) no-repeat; font: 80%/150% Arial, Helvetica, sans-serif; min-height: 522px; max-width: 1000px; }
+html { background: url(/images/design/wood.jpg) repeat #D0CCCA; }
+body { padding: 8px; margin: 0; background: url(/images/design/ball.png) no-repeat; font: 80%/150% Arial, Helvetica, sans-serif; }
+img { border: 0; }
 
 /* Show and hide elements depending on which design is active */
 .large { display: none; }
 
+/* Move the sign-in/out links to a black bar across the top */
+#authControl { position: absolute; top: 0; left: 0; height: 20px; background: #000; width: 100%; text-align: right; }
+#authControl a:link, #authControl a:visited { color: #fff; margin-right: 15px; font-size: .9em;text-decoration: none; }
+#authControl form, #authControl div { display: inline;}
+
+/* Create a medium breakpoint and use it to increase the size of the logo at 500px */
+.logo-small { margin: 20px 0 10px;}
+.logo { display: none; }
+@media only screen and (min-width: 500px) {
+	.logo-small { display: none; }
+	.logo { display: block; margin: 20px 0 0; }
+}
+
+/* At the very smallest sizes show the menu below the logo, using overflow to contain the floated links.
+ * 
+ * As soon as there's enough room, position the menu to the right of the logo. It will appear as two columns of 
+ * three links, flattening out to three columns as the screen gets wider. Adjust the top position when that happens.
+ * Setting max-width ensures there are only ever two or three columns.
+ * 
+ * The breakpoints here vary with browsers so pick a conservative set that works in all the major ones. 
+ */
+.menu { overflow: hidden; max-width: 180px; position: relative; z-index: 2; padding: 0; }
+@media only screen and (min-width: 320px) {    .menu { margin: 0; position: absolute; left: 160px; top: 26px; max-width: 120px;} }
+@media only screen and (min-width: 375px) {    .menu { max-width: 180px;} }
+
+.menu > li { list-style-type: none; display: inline; }
+.menu > li > em, .menu > li > a:link, .menu > li > a:visited { float: left; padding: 0 0 2px; margin: 0 2px 2px 0; width: 56px; font-style: normal; background: none repeat scroll 0 0 #009000; border-radius: 5px; color: #FFF; text-align: center; text-decoration: none; }
+
+/* Move the menu to accommodate a larger logo. */
+@media only screen and (min-width: 500px) {
+	.menu { left: 270px; top: 38px; }
+}
+
 /* Setup the header. Container div needs to be in-line to avoid an unexplained space at the top */
 #board { display: inline; }
-#logo-small { vertical-align: middle; margin: 0; }
-#logo-small img { border: none; }
-#blog, #menu { position: absolute; top: 8px; padding: 8px; font-size: 1.33em; font-weight: bold; color: #503C03; font-style: normal; }
-#menu { left: 166px; }
-#blog { left: 230px; }
-.editProfile { position: absolute; top: 40px; left: 160px; }
-.sign-out { position: absolute; top: 40px; left: 238px; background: none!important;-webkit-appearance: none!important; border: none; display: inline;}
 
 /* Set up the content area, clearing after the header. Maintain the baseline grid within this area. */
 #content { clear: left; }
@@ -54,7 +81,7 @@ caption { text-align: left; font-weight: bold; padding: 6px 4px 16px; border-rad
  * <nav><ul class="nav"><li><a href=""><h2>...</h2></a></li></ul></nav> 
  */
 ul.nav, div.nav { list-style: none; margin: 0 0 10px; padding: 0; font-size: 1.4em; line-height: 1.3em; }
-.nav li, div.nav h2 { padding: 10px 0; margin: 0; border-bottom: 1px solid #333; background: rgba(255, 255, 255, .2) }
+.nav li, div.nav h2 { padding: 10px 0; margin: 0; border-bottom: 1px solid #333; }
 ul.nav h2 { font: 1em Arial, Helvetica, sans-serif; margin: 0; }
 ul.nav a:link h2, ul.nav a:hover h2, ul.nav a:focus h2, ul.nav a:active h2 { color: #005920; }
 ul.nav a:visited h2 { color: #008044; }
@@ -66,7 +93,7 @@ abbr.dtstart { border-bottom: 0; }
 .geo { font-size: .75em; }
 
 /* Subscription options */
-.rss { background: url(/images/sprite.3.png) no-repeat -172px -48px; padding: 0 20px; }
+.rss { background: url(/images/sprite.4.png) no-repeat -172px -48px; padding: 0 20px; }
 .twitter-follow-button { vertical-align: bottom; }
 
 /* A heading which is a link should just display at normal size. Typically applies on a landing page where the HTML can't be altered for mobile. */
@@ -300,9 +327,12 @@ mark { background-color: rgba(255,255,153,.4); padding: 2px; }
 .rss-form p { margin: 10px 0 0;}
 
 /* Link to an iCalendar */
-a.icalendar { padding-left: 20px; background: url(/images/sprite.3.png) no-repeat -171px -110px; }
+a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repeat -171px -110px; }
 
 /* Print styles */
 @media print {
-	.screen { display: none!important;}
+  
+  /* Responsive design: hide any elements which should not be seen in this medium */
+  .screen { display: none!important;}
+  .print { display: block!important;}
 }

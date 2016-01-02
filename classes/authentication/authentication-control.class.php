@@ -52,11 +52,6 @@ class AuthenticationControl extends XhtmlElement
 			# Build register link
 			$register = new XhtmlAnchor('Register', $o_settings->GetUrl('AccountCreate'));
 			$this->AddControl($register);
-
-			# Add reason to register
-			$reasons = array(" to chat about stoolball", " to add your matches", " to add your scores", " to get forum alerts");
-			$reason = $reasons[array_rand($reasons, 1)];
-			$this->AddControl($reason);
 		}
 	}
 

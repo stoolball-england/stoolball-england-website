@@ -16,7 +16,6 @@ caption { padding: 10px .4em 20px; }
 legend { color: #000; }
 h2 + table { margin-top: 0; }
 h2 a { font: inherit; line-height: inherit; } /* Undo customisation from mobile stylesheet */
-img { border: 0; }
 input[disabled] { text-decoration: line-through; }
 
 /* Show and hide elements depending on which design is active */
@@ -36,8 +35,9 @@ div.nav { margin: 0; padding: 0; font-size: 1em; line-height: 1.5em; }
 div.nav h2 { padding: 0; margin: .75em 0 .375em; border: none; background: none; }
 div.nav p { display: block; }
 
-#logo-large { position: absolute; top: 18px; left: 12px; z-index: 1000; display: block; width: 210px; } /* IE8 needs width */
-#involved { width: 140px; height: 31px; background: url(/images/sprite.3.png) no-repeat 0 -132px; margin: 12px 12px 0; }
+/* Position logo in front of the bat face */
+.logo { display: block; position: absolute; top: 18px; left: 12px; z-index: 1000; }
+#involved { width: 140px; height: 31px; background: url(/images/sprite.4.png) no-repeat 0 -132px; margin: 12px 12px 0; }
 
 #handle { height: 30px; padding: 12px 3% 18px; width: 94%; color: #fff; background: url(/images/bat-handle-tile.jpg) repeat-x #000; text-align: right; z-index: 0; }
 
@@ -72,22 +72,25 @@ div.nav p { display: block; }
 #constraint .supportedContent { margin-right: 220px;}
 #constraint .supportingContent { width: 185px; float: right; margin-left: 20px; }
 
-#navbar { padding: 0; margin: 0; z-index: 100; position: absolute; width: 64%; height: 45px; right: 2%; top: 15px; min-width: 250px; white-space: nowrap; }
-#navbar li { float: left; padding: 0; margin: 0 22px 0 0; list-style: none; }
-#navbar a, #navbar em { padding: 30px 0; position: relative; overflow: hidden; height: 23px; float: left; font: normal 1.95em 'Passion One', sans-serif; color: #900; text-decoration: none; opacity: .8; }
-.ie8 #navbar a, .ie8 #navbar em { font: bold 1.5em 'Trebuchet MS', Arial, 'Helvetica Neue', Helvetica, sans-serif; } 
+.menu { position: absolute; overflow: visible; padding: 0; z-index: 100; width: 64%; height: 45px; right: 2%; top: 15px; left: auto; min-width: 250px; max-width: none; white-space: nowrap; }
+.menu li { float: left; padding: 0; margin: 0 22px 0 0; list-style: none; }
+.menu > li > a:link, .menu > li > a:visited, .menu > li > em { margin: 0; padding: 30px 0; position: relative; overflow: hidden; height: 23px; width: auto; float: left; font: normal 1.95em 'Passion One', sans-serif; color: #900; text-decoration: none; opacity: .8; background: none; }
+.menu span { display: inline; }
+.ie8 .menu a:link, .ie8 .menu em { font: bold 1.5em 'Trebuchet MS', Arial, 'Helvetica Neue', Helvetica, sans-serif; } 
 
-a#play:hover, em#play, #play.current { background: url(/images/sprite.3.png) no-repeat -33px 63px; }
-a#news:hover, em#news, #news.current { background: url(/images/sprite.3.png) no-repeat -32px 63px; }
-a#rules:hover, #rules.current, em#rules { background: url(/images/sprite.3.png) no-repeat -118px 63px; }
-a#schools:hover, em#schools, #schools.current, 
-a#about:hover, em#about, #about.current { background: url(/images/sprite.3.png) no-repeat 0 63px; }
+#news a:hover, #news em, #news .current,
+#rules a:hover, #rules em, #rules .current,
+#play a:hover, #play em, #play .current { background: url(/images/sprite.4.png) no-repeat -127px 63px; }
+#schools a:hover, #schools em, #schools .current, 
+#about a:hover, #about em, #about .current { background: url(/images/sprite.4.png) no-repeat 0 63px; }
+#about { margin-right: 0; }
+.menu .search { display: none; }
 
 #sidebar { margin-top: 180px; padding: 10px 5px 0 20px; width: 210px; z-index: 1000; min-height: 500px; }
 #sidebar ul li, #sidebar p, #authControl { font: normal .8em Arial, Helvetica, sans-serif; }
 #sidebar ul { margin: 0 0 .5em 0; padding: 0; }
-#sidebar ul li { list-style: none; background: url(/images/sprite.3.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
-#sidebar p { padding-left: 12px; background: url(/images/sprite.3.png) no-repeat -181px -167px; }
+#sidebar ul li { list-style: none; background: url(/images/sprite.4.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
+#sidebar p { padding-left: 12px; background: url(/images/sprite.4.png) no-repeat -181px -167px; }
 #sidebar h2 { margin-top: 1.5em; font-size: 1.5em; line-height:1em; font-family: 'Passion One', sans-serif; }
 
 /* Authentication */
@@ -96,12 +99,13 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.3.png) 
 
 #authGetPassword { margin: 18px 0; } /* Link on sign in form */
 
-#authControl { padding: .8em; background: #eee url(/images/wicket-tile.jpg); font-size: .8em; }
+#authControl { position: relative; height: auto; width: auto; padding: .8em; background: #eee url(/images/wicket-tile.jpg); font-size: .8em; text-align: left; }
 #authControl p { background: transparent; padding: 0; font-size: 1em; margin-bottom: .5em; color: #594D03; font-weight: bold; }
 #authControl:hover { background-image: url(/images/wicket-light-tile.jpg); }
 #authControl .signIn { display: block; margin-bottom: .5em; }
-#authControl .sign-out { position: static; display: block; margin-bottom: .5em; }
-#authControl .editProfile { position: static; display: block; }
+#authControl .sign-out { display: block; margin-bottom: .5em; }
+#authControl a:link { color: #005920; text-decoration: underline; font-size: 1em; }
+#authControl a:visited { color: #008044;}
 
 .EssentialInfoForm fieldset p { margin: 0; padding-top: 10px; clear: both; }
 .inlineButton { margin: 0 1em; } /* when signing in with unactivated account */
@@ -199,14 +203,14 @@ fieldset.formPart .formControl { margin-top: 0; }
 .audienceColumn ul { margin: 0; padding: 0; min-height: 120px; } 
 .audienceColumn li { margin: 0 0 2px; font-size: .9em; list-style-type: none; padding: 0; }
 .audience a { padding-right:3px; background-image: url(/images/wicket-light-tile.jpg); white-space: nowrap; }
-.home .players ul { background: url(/images/sprite.3.png) no-repeat right -254px; }
-.home .schools ul { background: url(/images/sprite.3.png) no-repeat right -395px; }
-.home .manage ul { background: url(/images/sprite.3.png) no-repeat right -524px; }
-.home .history ul { background: url(/images/sprite.3.png) no-repeat right -654px; }
+.home .players ul { background: url(/images/sprite.4.png) no-repeat right -254px; }
+.home .schools ul { background: url(/images/sprite.4.png) no-repeat right -395px; }
+.home .manage ul { background: url(/images/sprite.4.png) no-repeat right -524px; }
+.home .history ul { background: url(/images/sprite.4.png) no-repeat right -654px; }
 .audience .more { margin-top: -20px; border-top: 1px solid #aaa; padding: 5px 0 0; margin-right: 55px; overflow: visible; }
 .home .manage .more { margin-right: 70px; }
 .home .history .more { margin-right: 40px; }
-.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.3.png) no-repeat right -786px; }
+.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.4.png) no-repeat right -786px; }
 
 .volunteer { clear: left; } /* for older webkit, used on ipad */
 .volunteer h2, .volunteer p { display: inline; padding-right: 5px; }
@@ -292,7 +296,7 @@ a.promo { margin: 15px 0; display: block; }
 .spreadshirt .price { font-weight: bold; font-size: .85em; }
 .spreadshirt a:link .buy, .spreadshirt a:hover .buy, .spreadshirt a:focus .buy, .spreadshirt a:active .buy { color: #005920; text-decoration: underline; }
 .spreadshirt a:visited .buy { color: #008044; text-decoration: underline; }
-.spreadshirt .buy span { background: url(/images/sprite.3.png) no-repeat right -786px; padding-right: 12px; }
+.spreadshirt .buy span { background: url(/images/sprite.4.png) no-repeat right -786px; padding-right: 12px; }
 .spreadshirt-box { border: 3px solid #008044; border-top: 0; margin: 0 0 15px; border-radius: 0 0 5px 5px; padding: 10px; overflow: hidden;}
 
 /* Teams, seasons and competitions */
@@ -519,7 +523,7 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsAd div div div div { padding: 10px 7px 10px 13px; } 
 .statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/statistics/sprite.jpg) no-repeat -185px bottom; }
 .statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
-.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.3.png) no-repeat right -782px; }
+.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.4.png) no-repeat right -782px; }
 
 /* Stats - accomodate not out* in scores */
 td.out { padding-right: .9em; }
