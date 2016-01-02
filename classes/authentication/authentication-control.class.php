@@ -43,10 +43,7 @@ class AuthenticationControl extends XhtmlElement
 		}
 		else
 		{
-		    # These bits are unnecessary on mobile
-		    $this->AddCssClass("large");
-            
-			# Build sign in link
+		    # Build sign in link
 			$o_sign_in = new XhtmlAnchor('Sign in', $o_settings->GetFolder('Account'));
 			$o_sign_in->AddAttribute('accesskey', '0');
 			$o_sign_in->SetCssClass('signIn');

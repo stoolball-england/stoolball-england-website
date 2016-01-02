@@ -39,22 +39,25 @@ div.nav p { display: block; }
 #logo-large { position: absolute; top: 18px; left: 12px; z-index: 1000; display: block; width: 210px; } /* IE8 needs width */
 #involved { width: 140px; height: 31px; background: url(/images/sprite.3.png) no-repeat 0 -132px; margin: 12px 12px 0; }
 
-#handle { height: 30px; padding: 12px 3% 18px; width: 94%; color: #fff; background: url(/images/wicket-top-tiles.jpg) repeat-x #000; text-align: right; z-index: 0; }
+#handle { height: 30px; padding: 12px 3% 18px; width: 94%; color: #fff; background: url(/images/bat-handle-tile.jpg) repeat-x #000; text-align: right; z-index: 0; }
 
 #search { border-radius: 5px; -webkit-appearance: none; font-size: 1.1em; padding: 3px 5px; width: 30%; }
 #go { font-size: 1.1em; padding: 2px 10px; }
 
-#board { color: #000; background: url(/images/wicket-tile.jpg) repeat #D0CCCA; margin: 30px 25px 0; width: 95%; z-index: 200; float: left; min-width: 720px; }
-#boardTop { background: transparent url(/images/wicket-top-tiles.jpg) repeat-x 0 -59px; width: 100%; height: 88px; position: absolute; }
-#boardTop div { background: transparent url(/images/wicket-top-right.jpg) no-repeat 100% 0; width: 100%; height: 138px; position: absolute;  }
-#boardBottom { background: transparent url(/images/wicket-bottom-right.jpg) no-repeat 100% 100%; width: 100%; height: 43px; clear: both;  }
-#boardBottom div { background: transparent url(/images/wicket-bottom-tile.jpg) repeat-x 0 100%; width: 100%; height: 43px; clear: both;  }
-#boardBottom div div { background: transparent url(/images/wicket-bottom-left.jpg) no-repeat 0 100%; width: 100%; height: 43px; clear: both;  }
-#boardLeft { background: transparent url(/images/wicket-post-left-tiles.jpg) repeat-y -200px 0; float: left; width: 100%;  }
-#boardRight { background: transparent url(/images/wicket-right-tile.jpg) repeat-y 100% 0; float: left; width: 100%; }
+#board { color: #000; background: url(/images/design/wood.jpg) repeat #fff; margin: 30px 25px 0; width: 95%; z-index: 200; float: left; min-width: 720px; 
+          box-shadow: -1px -1px 2px 1px #ccc, 
+                      -1px -2px #eee,
+                      -2px -3px #ddd, 
+                      -3px -4px #bbb, 
+                      -4px -5px #aaa, 
+                      -5px -6px 1px #999;
+}
+#boardBottom { width: 100%; height: 43px; clear: both;  }
+#boardLeft { float: left; width: 100%;  }
+#boardRight { float: left; width: 100%; }
 
-#bat1 { background: url(/images/sprite-1.jpg) no-repeat; z-index: 10; width: 470px; height: 321px; margin-top: -60px; margin-bottom: -261px; }
-#bat2 { height: 321px; width: 470px; color: #000; background: url(/images/sprite-1.jpg) no-repeat; position: absolute; top: -89px; left: -25px; z-index: 20; padding: 88px 0 0; }
+#bat1 { height: 321px; margin-top: -60px; margin-bottom: -261px; }
+#bat2 { height: 321px; width: 470px; color: #000; background: url(/images/design/bat-face.png) no-repeat; position: absolute; top: -89px; left: -25px; z-index: 20; padding: 88px 0 0; }
 #bat2 ul, #bat2 li { margin: 12px 22px 0; padding: 0; list-style-type: none; }
 #bat2 li { margin: 0 0 .2em; font: normal .8em Arial, Helvetica, sans-serif; }
 
@@ -105,8 +108,13 @@ a#about:hover, em#about, #about.current { background: url(/images/sprite.3.png) 
 
 #facebook { margin-top: 10px; clear: both; }
 
-#post { margin: auto; width: 200px; text-align: center; height: 300px; background: url(/images/wicket-post-left-tiles.jpg) repeat-y 0 0; clear: both; }
-#post div { background: url(/images/wicket-post-top.jpg) no-repeat 0 0 #D0CCCA; height: 16px; }
+#post { margin: auto; width: 200px; text-align: center; height: 200px; background: url(/images/design/wood.jpg) repeat-y 0 0; clear: both; box-shadow: -1px 0 2px 1px #ccc, 
+                           -1px 0 #eee, 
+                           -2px 0 #ddd, 
+                           -3px 0 #bbb, 
+                           -8px 0 3px #aaa, 
+                           -15px 0 3px #999,
+                            0 10px 20px #ccc inset;}
 
 /* Re-usable box style
  * 
@@ -383,7 +391,7 @@ div.match table.overs td.numeric { width: 18%; }
 dl.decision dd { margin-left: 22px; }
 
 /* Stats highlight table */
-.playerSummary { background: url(/images/sprite-1.jpg) no-repeat -470px 0; margin-top: 0; }
+.playerSummary { background: url(/images/statistics/sprite.jpg) no-repeat; margin-top: 0; }
 .playerSummary tr {background: none; }
 .playerSummary th { padding-top: 14px; }
 .playerSummary th.scope { color: #CCC; font-style: italic; letter-spacing: 1.5px; padding-right: 7px; padding-top: 61px; text-align: right; text-transform: uppercase; }
@@ -509,7 +517,7 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsGroup .chart { margin-top: 16px; }
 
 .statsAd div div div div { padding: 10px 7px 10px 13px; } 
-.statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/sprite-1.jpg) no-repeat -655px bottom; }
+.statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/statistics/sprite.jpg) no-repeat -185px bottom; }
 .statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
 .statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.3.png) no-repeat right -782px; }
 

@@ -150,9 +150,6 @@ class StoolballPage extends Page
 			?>
 <div id="boardLeft">
 	<div id="boardRight">
-		<div id="boardTop">
-			<div></div>
-		</div>
 		<?php
 
 		# build navbar and add to control tree
@@ -246,9 +243,11 @@ class StoolballPage extends Page
                  $news_link;
         }
 
-        $authentication  = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
-        $authentication->SetCssClass("small screen");
-        echo $authentication;
+        if (AuthenticationManager::GetUser()->IsSignedIn()) {
+            $authentication  = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
+            $authentication->SetCssClass("small screen");
+            echo $authentication;
+        }
 
 		echo '<ul id="navbar" class="large">';
 		echo '<li>' . $o_news->__toString() . '</li>';
@@ -466,9 +465,7 @@ class StoolballPage extends Page
 		</div>
 	</div>
 </div></div></div>
-<div id="post">
-	<div></div>
-</div>
+<div id="post"></div>
 	<?php
 
 	if (!SiteContext::IsDevelopment() and !AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::EXCLUDE_FROM_ANALYTICS))
