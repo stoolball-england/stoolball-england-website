@@ -384,7 +384,9 @@ abstract class DataEditControl extends XhtmlForm
 			if ($this->GetAllowCancel())
 			{
 				if (!$this->show_buttons_at_top) require_once('xhtml/forms/button.class.php');
-				$o_buttons2->AddControl(new Button($this->GetNamingPrefix() . 'DataEditCancel2', 'Cancel'));
+				$cancel = new Button($this->GetNamingPrefix() . 'DataEditCancel2', 'Cancel');
+                $cancel->SetCssClass('cancel');
+				$o_buttons2->AddControl($cancel);
 			}
 
 			$this->AddControl($o_buttons2);

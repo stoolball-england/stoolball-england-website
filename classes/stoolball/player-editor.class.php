@@ -48,7 +48,10 @@ class PlayerEditor extends DataEditControl
 
 	public function CreateControls()
 	{
-		# get player to edit
+	    $this->AddCssClass('form');
+        $this->SetButtonText("Save player");
+        
+    	# get player to edit
 		$player = $this->GetDataObject();
 		if (!$player instanceof Player) $player = new Player($this->GetSettings());
 
@@ -72,10 +75,14 @@ class PlayerEditor extends DataEditControl
 		$this->AddControl($container);
 
 		# add name
+		$name = new XhtmlElement("label", "Name");
+        $name->AddAttribute("for", $this->GetNamingPrefix() . 'Name');
+        $container->AddControl($name);
+        
 		$name_box = new TextBox($this->GetNamingPrefix() . 'Name', $player->GetName(), $this->IsValid());
 		$name_box->AddAttribute('maxlength', 100);
-		$name = new FormPart('Name', $name_box);
-		$container->AddControl($name);
+		#$name = new FormPart('Name', $name_box);
+		$container->AddControl($name_box);
 	}
 
 	/**

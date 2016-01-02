@@ -102,8 +102,8 @@ input.year { width: 3em; }
 /* Last modified by... */
 .audit { margin: 0; font-size: .7em; max-width: none; color: #555; padding-top: 1em; }
 
-/* primary action after a form */
-.form .buttonGroup { margin: 1em 0 0 ; }
+/* primary and cancel actions after a form */
+.form .buttonGroup { position: relative; margin: 1em 0 0 ; padding: .5em 0 0; }
 
 .form .primary {
   border: 1px solid #aaa;
@@ -125,6 +125,12 @@ input.year { width: 3em; }
 .form .primary:active {
 	position:relative;
 	top:1px;
+}
+
+.form .cancel {
+	position: absolute;
+	right: 0;
+	bottom: 0;
 }
 
 /*  Button to add one more item in a list */
