@@ -552,7 +552,7 @@ class PlayerManager extends DataManager
     {
         if (!is_integer($player_id)) throw new Exception("player_id must be an integer");
         $sql = "UPDATE nsa_player SET update_search = 0 WHERE player_id = " . SQL::ProtectNumeric($player_id, false);
-        $this->LoggedQuery($sql);
+        $this->GetDataConnection()->query($sql);
     }
 	
 	/**
