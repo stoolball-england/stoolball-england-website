@@ -43,7 +43,7 @@ class CurrentPage extends StoolballPage
 		$player_manager = new PlayerManager($this->GetSettings(), $this->GetDataConnection());
 		$player_manager->ReadPlayerById($this->player->GetId());
 		$this->player_unfiltered = $player_manager->GetFirst();
-
+        
         # Update search engine
         if ($this->player_unfiltered->GetSearchUpdateRequired())
         {
@@ -58,80 +58,89 @@ class CurrentPage extends StoolballPage
 		     
 		unset($player_manager);
 
-		# Now get statistics for the player
-		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
-		$statistics_manager->FilterByPlayer(array($this->player->GetId()));
-
-		# Apply filters common to all statistics
-		$this->filter_control = new StatisticsFilterControl();
-
-		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
-		$this->filter_control->SupportOppositionFilter($filter_opposition);
-		$this->filter .= $filter_opposition[2];
-
-		$filter_competition = StatisticsFilter::SupportCompetitionFilter($statistics_manager);
-		$this->filter_control->SupportCompetitionFilter($filter_competition);
-		$this->filter .= $filter_competition[2];
-
-		$this->filter .= StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-		$filter_ground = StatisticsFilter::SupportGroundFilter($statistics_manager);
-		$this->filter_control->SupportGroundFilter($filter_ground);
-		$this->filter .= $filter_ground[2];
-
-		$filter_date = StatisticsFilter::SupportDateFilter($statistics_manager);
-		if (!is_null($filter_date[0])) $this->filter_control->SupportAfterDateFilter($filter_date[0]);
-		if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
-		$this->filter .= $filter_date[2];
-
-		$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-		$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-		$this->filter .= $filter_batting_position[2];
-
-		# Now get the statistics for the player
-		$data = $statistics_manager->ReadPlayerSummary();
-		if (count($data))
-		{
-			$this->player = $data[0];
+        # Check first for a player created using 'add player', who hasn't played yet
+        if ($this->player_unfiltered->GetTotalMatches() == 0) {
+            
+            $this->player = $this->player_unfiltered;
+        } 
+        else {
+        
+    		# Now get statistics for the player
+    		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
+    		$statistics_manager->FilterByPlayer(array($this->player->GetId()));
+    
+    		# Apply filters common to all statistics
+    		$this->filter_control = new StatisticsFilterControl();
+    
+    		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
+    		$this->filter_control->SupportOppositionFilter($filter_opposition);
+    		$this->filter .= $filter_opposition[2];
+    
+    		$filter_competition = StatisticsFilter::SupportCompetitionFilter($statistics_manager);
+    		$this->filter_control->SupportCompetitionFilter($filter_competition);
+    		$this->filter .= $filter_competition[2];
+    
+    		$this->filter .= StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+    
+    		$filter_ground = StatisticsFilter::SupportGroundFilter($statistics_manager);
+    		$this->filter_control->SupportGroundFilter($filter_ground);
+    		$this->filter .= $filter_ground[2];
+    
+    		$filter_date = StatisticsFilter::SupportDateFilter($statistics_manager);
+    		if (!is_null($filter_date[0])) $this->filter_control->SupportAfterDateFilter($filter_date[0]);
+    		if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
+    		$this->filter .= $filter_date[2];
+    
+    		$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+    		$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+    		$this->filter .= $filter_batting_position[2];
+    
+    		# Now get the statistics for the player
+    		$data = $statistics_manager->ReadPlayerSummary();
+    		if (count($data))
+    		{
+    			$this->player = $data[0];
+    		}
+    		else if ($this->filter)
+    		{
+    			# If no matches matched the filter, ensure we have the player's name and team
+    			$this->player = $this->player_unfiltered;
+    		}
+    		else
+    		{
+    			$this->player = new Player($this->GetSettings()); # empty object just avoids errors during stats regeneration
+    		}
+    
+    		$data = $statistics_manager->ReadBestBattingPerformance(false);
+    		foreach ($data as $performance)
+    		{
+    			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"]);
+    			$this->player->Batting()->Add($batting);
+    		}
+    
+    		$data = $statistics_manager->ReadBestPlayerAggregate("catches");
+    		$this->player->SetCatches(count($data) ? $data[0]["statistic"] : 0);
+    
+    		$data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
+    		$this->player->SetRunOuts(count($data) ? $data[0]["statistic"] : 0);
+    
+    		$data = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
+    		$this->player->SetTotalPlayerOfTheMatchNominations(count($data) ? $data[0]["statistic"] : 0);
+    
+    		$data = $statistics_manager->ReadBestBowlingPerformance();
+    		foreach ($data as $performance)
+    		{
+    			$bowling = new Bowling($this->player);
+    			$bowling->SetOvers($performance["overs"]);
+    			$bowling->SetMaidens($performance["maidens"]);
+    			$bowling->SetRunsConceded($performance["runs_conceded"]);
+    			$bowling->SetWickets($performance["wickets"]);
+    
+    			$this->player->Bowling()->Add($bowling);
+    		}
+    		unset($statistics_manager);
 		}
-		else if ($this->filter)
-		{
-			# If no matches matched the filter, ensure we have the player's name and team
-			$this->player = $this->player_unfiltered;
-		}
-		else
-		{
-			$this->player = new Player($this->GetSettings()); # empty object just avoids errors during stats regeneration
-		}
-
-		$data = $statistics_manager->ReadBestBattingPerformance(false);
-		foreach ($data as $performance)
-		{
-			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"]);
-			$this->player->Batting()->Add($batting);
-		}
-
-		$data = $statistics_manager->ReadBestPlayerAggregate("catches");
-		$this->player->SetCatches(count($data) ? $data[0]["statistic"] : 0);
-
-		$data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
-		$this->player->SetRunOuts(count($data) ? $data[0]["statistic"] : 0);
-
-		$data = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
-		$this->player->SetTotalPlayerOfTheMatchNominations(count($data) ? $data[0]["statistic"] : 0);
-
-		$data = $statistics_manager->ReadBestBowlingPerformance();
-		foreach ($data as $performance)
-		{
-			$bowling = new Bowling($this->player);
-			$bowling->SetOvers($performance["overs"]);
-			$bowling->SetMaidens($performance["maidens"]);
-			$bowling->SetRunsConceded($performance["runs_conceded"]);
-			$bowling->SetWickets($performance["wickets"]);
-
-			$this->player->Bowling()->Add($bowling);
-		}
-		unset($statistics_manager);
+		
 	}
 
 	public function OnPrePageLoad()
@@ -252,7 +261,8 @@ class CurrentPage extends StoolballPage
 
 		if ($this->player->GetPlayerRole() == Player::PLAYER)
 		{
-			echo "<p>" . htmlentities($this->player->GetName() . " played " . $this->player->GetTotalMatches() . $match_or_matches, ENT_QUOTES, "UTF-8", false) . "for ${team_name}${filtered}${years}.</p>";
+		    $played_total = $this->player->GetTotalMatches() == 0 ? " hasn't played any " : " played " . $this->player->GetTotalMatches();
+			echo "<p>" . htmlentities($this->player->GetName() . $played_total . $match_or_matches, ENT_QUOTES, "UTF-8", false) . "for ${team_name}${filtered}${years}.</p>";
 }
 else
 {

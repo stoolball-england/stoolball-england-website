@@ -61,7 +61,7 @@ class CurrentPage extends StoolballPage
 			foreach ($this->players as $player)
 			{
 				/* @var $player Player */
-				if ($player->GetPlayerRole() == Player::PLAYER and gmdate("Y", $player->GetLastPlayedDate()) >= $threshold)
+				if ($player->GetPlayerRole() == Player::PLAYER and (gmdate("Y", $player->GetLastPlayedDate()) >= $threshold or $player->GetLastPlayedDate() == 0))
 				{
 					if (!$list_open)
 					{
@@ -77,7 +77,7 @@ class CurrentPage extends StoolballPage
             foreach ($this->players as $player)
             {
                 /* @var $player Player */
-                if ($player->GetPlayerRole() == Player::PLAYER and gmdate("Y", $player->GetLastPlayedDate()) < $threshold)
+                if ($player->GetPlayerRole() == Player::PLAYER and gmdate("Y", $player->GetLastPlayedDate()) < $threshold and $player->GetLastPlayedDate() != 0)
                 {
                     if (!$list_open)
                     {

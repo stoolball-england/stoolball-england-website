@@ -80,7 +80,7 @@ class PlayerManager extends DataManager
 		$sql = "SELECT $players.player_id, $players.player_name, $players.short_url, $players.player_role, $players.last_played,
 		team.team_id, team.team_name, team.short_url AS team_short_url
 		FROM $players INNER JOIN nsa_team AS team ON $players.team_id = team.team_id
-		WHERE team.team_id IN (" . implode(",", $team_ids) . ") AND $players.total_matches IS NOT NULL AND $players.total_matches > 0
+		WHERE team.team_id IN (" . implode(",", $team_ids) . ")
 		ORDER BY team.team_id ASC, $players.player_role ASC, $players.player_name ASC";
 		$result = $this->GetDataConnection()->query($sql);
 
@@ -227,7 +227,7 @@ class PlayerManager extends DataManager
 	 */
 	public function MatchExistingPlayer(Player $player)
 	{
-		$sql = "SELECT player_id FROM " . $this->GetSettings()->GetTable("Player").
+		$sql = "SELECT player_id, short_url FROM " . $this->GetSettings()->GetTable("Player").
 		" WHERE comparable_name = " . Sql::ProtectString($this->GetDataConnection(), $player->GetComparableName()) . "
 		AND team_id " . Sql::ProtectNumeric($player->Team()->GetId(), true, true);
 
@@ -235,6 +235,7 @@ class PlayerManager extends DataManager
 		if ($row = $result->fetch())
 		{
             $player->SetId($row->player_id);
+            $player->SetShortUrl($row->short_url);
 		}
 		$result->closeCursor();
 
@@ -442,7 +443,8 @@ class PlayerManager extends DataManager
 			team_id = " . Sql::ProtectNumeric($player->Team()->GetId(), false) . ",
 			player_role = " . Sql::ProtectNumeric($player->GetPlayerRole(), false) . ",
 			short_url = " . Sql::ProtectString($this->GetDataConnection(), $player->GetShortUrl(), false) . ",
-			update_search = 1,  
+			update_search = 1,
+            total_matches = 0,
 			date_added = " . gmdate('U') . ",
 			date_changed = " . gmdate('U');
 
