@@ -25,6 +25,8 @@ class CurrentPage extends StoolballPage
 	 * @var PlayerManager
 	 */
 	private $player_manager;
+    
+    private $has_permission = null;
 
 	public function OnPageInit()
 	{
@@ -37,9 +39,6 @@ class CurrentPage extends StoolballPage
 		# Get player to edit
 		$this->player = new Player($this->GetSettings());
 		$this->player->SetId($this->player_manager->GetItemId());
-
-		# If the team parameter is passed, that's a request to create a new player in a team
-		if (isset($_GET['team']) and is_numeric($_GET['team'])) $this->player->Team()->SetId($_GET['team']);
 	}
 
 	public function OnPostback()
@@ -62,6 +61,12 @@ class CurrentPage extends StoolballPage
             if ($player_to_edit->GetPlayerRole() != Player::PLAYER) {
                 http_response_code(401);
                 return;
+            }
+            
+            # Now check again, because it's a new request, that the user has permission
+            $this->has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS, $player_to_edit->Team()->GetLinkedDataUri()));
+            if (!$this->has_permission) {
+                $this->GetAuthenticationManager()->GetPermission();
             }
             
 			# Get the existing player for their team, change the name and see if the renamed player 
@@ -97,6 +102,9 @@ class CurrentPage extends StoolballPage
 			}
 			else
 			{
+                # Set the team short URL so that it can be used to regenerate the player's short URL
+                $this->player->Team()->SetShortUrl($player_to_edit->Team()->GetShortUrl());			    
+
 				$this->player_manager->SavePlayer($this->player, true);
                 unset($player_manager);
 
@@ -117,6 +125,14 @@ class CurrentPage extends StoolballPage
 
 		# ensure we have a player
 		if (!$this->player instanceof Player) $this->Redirect();
+        
+        # ensure we have permission
+        if (is_null($this->has_permission)) {
+            $this->has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS, $this->player->Team()->GetLinkedDataUri()));
+            if (!$this->has_permission) {
+                $this->GetAuthenticationManager()->GetPermission();
+            }
+        }
 	}
 
 	public function OnPrePageLoad()
@@ -138,5 +154,5 @@ class CurrentPage extends StoolballPage
         }
 	}
 }
-new CurrentPage(new StoolballSettings(), PermissionType::MANAGE_PLAYERS, false);
+new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
 ?>

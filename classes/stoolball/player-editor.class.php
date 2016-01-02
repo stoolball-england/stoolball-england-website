@@ -59,7 +59,7 @@ class PlayerEditor extends DataEditControl
 			$this->AddControl("<p>There's another player named '" . htmlentities($player->GetName(), ENT_QUOTES, "UTF-8", false) . "' in this team. What would you like to do?</p>");
 			$this->AddControl("<dl class=\"decision\"><dt>");
 			$this->AddControl(new RadioButton($this->GetNamingPrefix() . "Merge", $this->GetNamingPrefix() . "MergeOptions", htmlentities("Merge with the other " . $player->GetName(), ENT_QUOTES, "UTF-8", false), 1, false, $this->IsValid()));
-			$this->AddControl("</dt><dd>If they're the same person you can merge the records so there's only one " . htmlentities($player->GetName(), ENT_QUOTES, "UTF-8", false) . ".</dd>");
+			$this->AddControl("</dt><dd>If they're the same person you can merge the records so there's only one " . htmlentities($player->GetName(), ENT_QUOTES, "UTF-8", false) . ". Don't choose this for a player who's got married and changed their name though.</dd>");
 			$this->AddControl("<dt>");
 			$this->AddControl(new RadioButton($this->GetNamingPrefix() . "Rename", $this->GetNamingPrefix() . "MergeOptions", "Choose a new name for this player", 2, false, $this->IsValid()));
 			$this->AddControl("</dt><dd>If they're different people you need to pick a different name. For example, if you have two players called 'Jane Smith',

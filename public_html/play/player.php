@@ -384,13 +384,16 @@ else
 
         if ($this->player->GetPlayerRole() == Player::PLAYER)
         {
-             $has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_PLAYERS));
+             $has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS, $this->player->Team()->GetLinkedDataUri()));
+             $has_admin_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_PLAYERS));
              if ($has_permission)
              {
              	$this->AddSeparator();
              	$panel = new UserEditPanel($this->GetSettings());
              	$panel->AddLink("rename this player", $this->player->GetEditUrl());
-             	$panel->AddLink("delete this player", $this->player->GetDeleteUrl());
+                if ($has_admin_permission) {
+             	  $panel->AddLink("delete this player", $this->player->GetDeleteUrl());
+                }
              	echo $panel;
              }
         }

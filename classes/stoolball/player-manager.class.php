@@ -297,29 +297,29 @@ class PlayerManager extends DataManager
 		}
 
 		# Transfer batting and bowling
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $batting SET player_id = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE player_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $batting SET dismissed_by_id = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE dismissed_by_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $batting SET bowler_id = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE bowler_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $bowling SET player_id = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE player_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
 		# Update dismissals in stats table too, because then fielding statistics will update correctly below.
 		# Normally dismissals are updated with the batting, but here it's quite possible we are only updating the fielding.
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $statistics SET caught_by = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE caught_by = " . Sql::ProtectNumeric($source_player->GetId()));
 
-		$this->GetDataConnection()->query(
+		$this->LoggedQuery(
 		"UPDATE $statistics SET run_out_by = " . Sql::ProtectNumeric($destination_player->GetId()) . "
 		WHERE run_out_by = " . Sql::ProtectNumeric($source_player->GetId()));
 
@@ -331,17 +331,17 @@ class PlayerManager extends DataManager
 			# setting it unknown.
 
 			# Transfer player of the match award
-			$this->GetDataConnection()->query(
+			$this->LoggedQuery(
 			"UPDATE $matches SET player_of_match_id = " . Sql::ProtectNumeric($destination_player->GetId()) . ",
 			date_changed = " . gmdate('U') . "
 			WHERE player_of_match_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
-			$this->GetDataConnection()->query(
+			$this->LoggedQuery(
 			"UPDATE $matches SET player_of_match_home_id = " . Sql::ProtectNumeric($destination_player->GetId()) . ",
 			date_changed = " . gmdate('U') . "
 			WHERE player_of_match_home_id = " . Sql::ProtectNumeric($source_player->GetId()));
 
-			$this->GetDataConnection()->query(
+			$this->LoggedQuery(
 			"UPDATE $matches SET player_of_match_away_id = " . Sql::ProtectNumeric($destination_player->GetId()) . ",
 			date_changed = " . gmdate('U') . "
 			WHERE player_of_match_away_id = " . Sql::ProtectNumeric($source_player->GetId()));
@@ -349,7 +349,7 @@ class PlayerManager extends DataManager
 			# If a user has claimed either player, remember that. If two different claimants, prefer the destination one.
 			if ($source_player->GetUser() instanceof User and $source_player->GetUser()->GetId())
 			{
-				$this->GetDataConnection()->query(
+				$this->LoggedQuery(
 				"UPDATE $players
 				SET user_id = " . Sql::ProtectNumeric($source_player->GetUser()->GetId()) . ",
 				date_changed = " . gmdate('U') . "
@@ -413,7 +413,7 @@ class PlayerManager extends DataManager
 		# Set up short URL manager
 		require_once('http/short-url-manager.class.php');
 		$url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
-		$new_short_url = $url_manager->EnsureShortUrl($player);
+		$new_short_url = $url_manager->EnsureShortUrl($player, true);
 
 		$corrected_player_name = ($player->GetPlayerRole() == Player::PLAYER) ? $this->CapitaliseName($player->GetName()) : $player->GetName();
  
@@ -550,7 +550,7 @@ class PlayerManager extends DataManager
     {
         if (!is_integer($player_id)) throw new Exception("player_id must be an integer");
         $sql = "UPDATE nsa_player SET update_search = 0 WHERE player_id = " . SQL::ProtectNumeric($player_id, false);
-        $this->GetDataConnection()->query($sql);
+        $this->LoggedQuery($sql);
     }
 	
 	/**
@@ -587,13 +587,13 @@ class PlayerManager extends DataManager
 
 		# remove player of the match awards
 		$sql = "UPDATE $matches SET player_of_match_id = NULL WHERE player_of_match_id IN ($player_id_list)";
-		$this->GetDataConnection()->query($sql);
+		$this->LoggedQuery($sql);
 
 		$sql = "UPDATE $matches SET player_of_match_home_id = NULL WHERE player_of_match_home_id IN ($player_id_list)";
-		$this->GetDataConnection()->query($sql);
+		$this->LoggedQuery($sql);
 
 		$sql = "UPDATE $matches SET player_of_match_away_id = NULL WHERE player_of_match_away_id IN ($player_id_list)";
-		$this->GetDataConnection()->query($sql);
+		$this->LoggedQuery($sql);
 
 		# Reassign batting and bowling to 'unknown' player
 		$unknown_player = new Player($this->GetSettings());
@@ -616,11 +616,11 @@ class PlayerManager extends DataManager
 
 		# Delete statistics
 		$sql = "DELETE FROM $stats WHERE player_id IN ($player_id_list)";
-		$this->GetDataConnection()->query($sql);
+		$this->LoggedQuery($sql);
 
 		# delete the player
 		$sql = "DELETE FROM $players WHERE player_id IN ($player_id_list)";
-		$this->GetDataConnection()->query($sql);
+		$this->LoggedQuery($sql);
  	}
 
 }
