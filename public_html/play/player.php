@@ -27,6 +27,8 @@ class CurrentPage extends StoolballPage
 	 * @var StatisticsFilterControl
 	 */
 	private $filter_control;
+    
+    private $filter_matched_nothing;
 
 	public function OnPageInit()
 	{
@@ -105,6 +107,7 @@ class CurrentPage extends StoolballPage
     		{
     			# If no matches matched the filter, ensure we have the player's name and team
     			$this->player = $this->player_unfiltered;
+                $this->filter_matched_nothing = true;
     		}
     		else
     		{
@@ -241,21 +244,22 @@ class CurrentPage extends StoolballPage
 		# When has this player played?
 		$match_or_matches = ($this->player->GetTotalMatches() == 1) ? " match " : " matches ";
 
+        $years = $this->player->GetPlayingYears();
+
 		$filtered = "";
 		if ($this->filter)
 		{
 			# If first played date is missing, the player came from PlayerManager because there were no statistics found
-			if ($this->player->GetFirstPlayedDate())
+			if (!$this->filter_matched_nothing)
 			{
 				$filtered = " matching this filter";
 			}
 			else
 			{
 				$filtered = ", but none match this filter";
+                $years = '';
 			}
 		}
-
-		$years = $this->player->GetPlayingYears();
 
 		$team_name = '<span rel="schema:memberOf"><span about="' . htmlentities($this->player->Team()->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '" typeof="schema:SportsTeam"><a property="schema:name" rel="schema:url" href="' . htmlentities($this->player->Team()->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->player->Team()->GetName(), ENT_QUOTES, "UTF-8", false) . "</a></span></span>";
 
