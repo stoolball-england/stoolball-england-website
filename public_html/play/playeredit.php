@@ -182,9 +182,6 @@ class CurrentPage extends StoolballPage
 		# ensure we have a player
 		if (!$this->player instanceof Player) $this->Redirect();
         
-        # ensure we have permission
-        $this->CheckForPermission($this->player->Team());
-        
         # if it's a new player, get the team details
         if (!$this->player->GetId() or $this->add_player_already_exists) {
             if (!$this->team instanceof Team) {
@@ -196,7 +193,11 @@ class CurrentPage extends StoolballPage
             }
             
             $this->player->Team()->SetName($this->team->GetName());
+            $this->player->Team()->SetShortUrl($this->team->GetShortUrl());
         }
+        
+        # ensure we have permission
+        $this->CheckForPermission($this->player->Team());
 	}
 
     private function CheckForPermission(Team $team) {

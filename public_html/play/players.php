@@ -117,7 +117,7 @@ class CurrentPage extends StoolballPage
 		}
 
 
-		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_PLAYERS))
+		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS, $this->team->GetLinkedDataUri()))
 		{
 			# Create a panel with actions
 			$this->AddSeparator();
