@@ -186,12 +186,10 @@ class CurrentPage extends StoolballPage
         if ($this->competition->GetIntro())
         {
             $intro = htmlentities($this->competition->GetIntro(), ENT_QUOTES, "UTF-8", false);
-            $intro = XhtmlMarkup::ApplyCharacterEntities($intro);
             $intro = XhtmlMarkup::ApplyParagraphs($intro);
-            $intro = XhtmlMarkup::ApplyLinks($intro);
             $intro = XhtmlMarkup::ApplyLists($intro);
-            $intro = XhtmlMarkup::ApplySimpleTags($intro);
-            $intro = XhtmlMarkup::ApplyTables($intro);
+            $intro = XhtmlMarkup::ApplySimpleXhtmlTags($intro, false);
+            $intro = XhtmlMarkup::ApplyLinks($intro);
             echo $intro;
         }
 
@@ -277,8 +275,9 @@ class CurrentPage extends StoolballPage
             $s_contact = $protector->ApplyEmailProtection($s_contact, AuthenticationManager::GetUser()->IsSignedIn());
 
             $s_contact = XhtmlMarkup::ApplyParagraphs($s_contact);
+            $s_contact = XhtmlMarkup::ApplyLists($s_contact);
+            $s_contact = XhtmlMarkup::ApplySimpleXhtmlTags($s_contact, false);
             $s_contact = XhtmlMarkup::ApplyLinks($s_contact);
-            $s_contact = XhtmlMarkup::ApplySimpleTags($s_contact);
 
             echo $s_contact;
         }

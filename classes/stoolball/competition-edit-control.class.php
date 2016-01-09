@@ -183,9 +183,7 @@ class CompetitionEditControl extends DataEditControl
 		$this->AddValidator(new RequiredFieldValidator('overs', 'Please specify the number of overs played'));
 		$this->AddValidator(new NumericValidator('overs', "The number of overs played should use only digits, for example '10' not 'ten'"));
 		$this->AddValidator(new NumericValidator($this->GetNamingPrefix() . 'category', 'The category identifier should be a number'));
-		$this->AddValidator(new PlainTextValidator('intro', 'Please use only letters, numbers and simple punctuation in the introduction'));
 		$this->AddValidator(new LengthValidator('intro', 'Please make the introduction shorter', 0, 10000));
-		$this->AddValidator(new PlainTextValidator('contact', 'Please use only letters, numbers and simple punctuation in the contact details'));
 		$this->AddValidator(new LengthValidator('contact', 'Please make the contact details shorter', 0, 10000));
 		$this->AddValidator(new EmailValidator('notification', 'Please enter a valid notification email address'));
 		$this->AddValidator(new LengthValidator('website', 'Please make the website URL shorter', 0, 250));

@@ -409,6 +409,7 @@ class CompetitionManager extends DataManager
 
 		# build query
 		$category_id = (is_null($o_competition->GetCategory()) ? null : $o_competition->GetCategory()->GetId());
+        $allowed_html = array('p','br','strong','em','a[href]', 'ul', 'ol', 'li');
 
 		# if no id, it's a new Competition; otherwise update the Competition
 		$is_new = !$o_competition->GetId();
@@ -417,8 +418,8 @@ class CompetitionManager extends DataManager
 			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Competition') . ' SET ' .
 			"competition_name = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetName()) . ", " .
 			"category_id = " . Sql::ProtectNumeric($category_id, true, false) . ', ' .
-			"intro = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetIntro()) . ", " .
-			"contact = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetContact()) . ", " .
+			"intro = " . $this->SqlHtmlString($o_competition->GetIntro(), $allowed_html) . ", " .
+			"contact = " . $this->SqlHtmlString($o_competition->GetContact(), $allowed_html) . ", " .
 			"notification_email = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetNotificationEmail()) . ", " .
 			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", " .
 			'active = ' . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .
@@ -452,8 +453,8 @@ class CompetitionManager extends DataManager
 			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Competition') . ' SET ' .
 			"competition_name = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetName()) . ", " .
 			"category_id = " . Sql::ProtectNumeric($category_id, true, false) . ', ' .
-			"intro = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetIntro()) . ", " .
-			"contact = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetContact()) . ", " .
+			"intro = " . $this->SqlHtmlString($o_competition->GetIntro(), $allowed_html) . ", " .
+			"contact = " . $this->SqlHtmlString($o_competition->GetContact(), $allowed_html) . ", " .
 			"notification_email = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetNotificationEmail()) . ", " .
 			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", " .
 			'active = ' . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .

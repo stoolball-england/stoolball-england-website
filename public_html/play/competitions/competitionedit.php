@@ -79,6 +79,8 @@ class CurrentPage extends StoolballPage
         /* @var $o_season Season */
 
         $this->SetPageTitle(is_object($this->o_competition) ? $this->o_competition->GetName() . ': Edit stoolball competition' : 'New stoolball competition');
+        $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
+        $this->LoadClientScript("/scripts/tinymce.js");
     }
 
     function OnPageLoad()
