@@ -14,7 +14,8 @@ $(function()
 	};
 	var map = new google.maps.Map(mapControl, myOptions);
 
-	new google.maps.Marker({ position : new google.maps.LatLng(51.07064141136184, -0.31114161014556885), map : map, title : "Kay Price, Stoolball England" });
+	new google.maps.Marker({ position : new google.maps.LatLng(51.07064141136184, -0.31114161014556885), map : map, title : "Kay Price, Sussex County Stoolball Association" });
+	new google.maps.Marker({ position : new google.maps.LatLng(50.924040, -0.140333), map : map, title : "Trevor Parsons, Mid Sussex" });
 	new google.maps.Marker({ position : new google.maps.LatLng(51.0436658, -0.9561287), map : map, title : "Shirley Reed, Hampshire/West Sussex border" });
 	new google.maps.Marker({ position : new google.maps.LatLng(50.790485, 0.2655421), map : map, title : "Trina Perry, Eastbourne" });
 	new google.maps.Marker({ position : new google.maps.LatLng(50.9612347, 0.3018266), map : map, title : "Toni Wheatley, East Sussex" });
