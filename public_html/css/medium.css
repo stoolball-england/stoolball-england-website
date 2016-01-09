@@ -1,0 +1,23 @@
+
+/* Start showing items designed to display in medium view. 
+   Don't hide .small though because this size used to be part of .small. */
+.medium { display: block; }
+
+/* increase the size of the logo */
+.logo-small { display: none; }
+.logo { display: block; margin: 20px 0 0; }
+
+/* Move the menu to accommodate a larger logo. */
+.menu { left: 270px; top: 38px; }
+
+/* Download calendar 
+ * 
+ * <a class="calendar">
+ * 		<p class="subscribe" />
+ * 		<p class="subscribe-to" />
+ * </a>
+ */
+.calendar { position: relative; float: right; width: 50%; margin: 25px 0 1.5em 1.5em; text-align: left; box-shadow: none; }
+.calendar .subscribe { padding: 10px 10px 20px 120px; text-decoration: underline; background: url(/images/noise-bottom.gif) repeat-x left bottom; }
+.calendar .subscribe:after { position: absolute; top: -15px; left: 10px; content: ' '; display: block; height: 88px; width: 81px; background: url(/images/sprite.4.png) no-repeat left -20px; }
+.calendar .subscribe-to { margin: 0; background: #ccc url(/images/wicket-tile.jpg); border-radius: 0 0 5px 5px; color: #000; padding: 10px 10px 10px 120px; }
