@@ -51,7 +51,7 @@ class StoolballPage extends Page
 		# Register JQuery early so it's loaded before other scripts
 		# IMPORTANT: The latest JQuery 1.X does not work with the auto complete used here, so that would need upgrading too.
 		$this->LoadClientScript($this->GetContext()->IsDevelopment() ? '/scripts/lib/jquery-1.7.2.min.js' : 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
-		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.2.js");
+		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.3.js");
 	}
 
 	/**
@@ -98,12 +98,15 @@ class StoolballPage extends Page
 	public function OnCloseHead()
 	{
         $css_mobile = $this->css_root . "/css/mobile.$this->css_version.css";
+        $css_medium = $this->css_root . "/css/medium.$this->css_version.css";
         $css_desktop = $this->css_root .= "/css/stoolball.$this->css_version.css";
         ?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="canonical" href="https://<?php echo $this->GetSettings()->GetDomain() . htmlspecialchars($_SERVER["REQUEST_URI"]);?>" />
 <link rel="stylesheet" href="<?php echo $css_mobile ?>" />
+<link rel="stylesheet" href="<?php echo $css_medium ?>" media="only screen and (min-width: 500px)" class="mqMedium" />
 <link rel="stylesheet" href="<?php echo $css_desktop ?>" media="only screen and (min-width: 800px)" class="mqLarge" />
+<!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_medium ?>" class="mqIE mqMedium" /><![endif]-->
 <!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_desktop ?>" class="mqIE mqLarge" /><![endif]-->
 <link rel="start" href="/" title="Go to home page" />
 <link rel="shortcut icon" href="<?php echo $this->resource_root ?>/favicon.ico" />

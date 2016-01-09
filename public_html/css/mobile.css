@@ -4,20 +4,16 @@ body { padding: 8px; margin: 0; background: url(/images/design/ball.png) no-repe
 img { border: 0; }
 
 /* Show and hide elements depending on which design is active */
-.large { display: none; }
+.medium, .large { display: none; }
 
 /* Move the sign-in/out links to a black bar across the top */
 #authControl { position: absolute; top: 0; left: 0; height: 20px; background: #000; width: 100%; text-align: right; }
 #authControl a:link, #authControl a:visited { color: #fff; margin-right: 15px; font-size: .9em;text-decoration: none; }
 #authControl form, #authControl div { display: inline;}
 
-/* Create a medium breakpoint and use it to increase the size of the logo at 500px */
+/* Position small logo at the top left */
 .logo-small { margin: 20px 0 10px;}
 .logo { display: none; }
-@media only screen and (min-width: 500px) {
-	.logo-small { display: none; }
-	.logo { display: block; margin: 20px 0 0; }
-}
 
 /* At the very smallest sizes show the menu below the logo, using overflow to contain the floated links.
  * 
@@ -33,11 +29,6 @@ img { border: 0; }
 
 .menu > li { list-style-type: none; display: inline; }
 .menu > li > em, .menu > li > a:link, .menu > li > a:visited { float: left; padding: 0 0 2px; margin: 0 2px 2px 0; width: 56px; font-style: normal; background: none repeat scroll 0 0 #009000; border-radius: 5px; color: #FFF; text-align: center; text-decoration: none; }
-
-/* Move the menu to accommodate a larger logo. */
-@media only screen and (min-width: 500px) {
-	.menu { left: 270px; top: 38px; }
-}
 
 /* Setup the header. Container div needs to be in-line to avoid an unexplained space at the top */
 #board { display: inline; }
@@ -86,6 +77,11 @@ ul.nav h2 { font: 1em Arial, Helvetica, sans-serif; margin: 0; }
 ul.nav a:link h2, ul.nav a:hover h2, ul.nav a:focus h2, ul.nav a:active h2 { color: #005920; }
 ul.nav a:visited h2 { color: #008044; }
 .nav p { display: none;}
+
+/* Menu used only on the Surrey ladies page */
+ul.surrey.nav { margin: 0; padding: 0;}
+ul.surrey li { display: inline-block; padding: 1em; border-radius: 5px; background: #008044; margin: 0 1em 1em 0; }
+ul.surrey a:link, ul.surrey a:visited { color: #fff; }
 
 /* Microformats */
 .metadata { display: none; }
@@ -266,7 +262,7 @@ table.numeric .nonNumeric { text-align: left; }
 /* League table */
 table.league .resultCount { width: 10%; text-align: center; white-space: nowrap; }
 table.league .runs { white-space: normal; }
-table.league .withdrawn { background-image: url(/images/wicket-dark-tile.jpg); }
+table.league .withdrawn { background-image: url(/images/wicket-tile.jpg); }
 table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Trebuchet MS', Arial, Helvetica, sans-serif; letter-spacing: .2em; text-transform: uppercase; }
 
 /* Statistics styles which appear on multiple pages */
@@ -298,6 +294,10 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 
 .chart-legend.horizontal li { display: inline-block; margin: 0 4px; }
 
+/* Download calendar */
+.calendar { display: block; background: #008044; border-radius: 5px; text-decoration: none; text-align: center; box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.2) inset; border-radius: 5px; }
+.calendar .subscribe { color: #fff; font-weight: bold; font-size: 1.3em; margin: 0; padding: 10px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; }
+
 /* Forum - list topics, and view a topic */
 .forumNavbar a { display: block; }
 
@@ -313,7 +313,7 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 .search p, .search ul { margin: 0; padding: 0;}
 .search .url { font-size: .8em; color: #503C03;}
 .search li { display: inline; margin: 0 1em 0 0; font-size: .9em;}
-mark { background-color: rgba(255,255,153,.4); padding: 2px; }
+mark { background-color: rgba(259,241,121,.8); padding: 2px; }
 
 /* Subscribe to RSS feeds using blogTrottr */
 .rss-form { clear: both; margin: 15px 0 0; padding: 15px; background: #999 url(/images/wicket-extra-dark.jpg) repeat; border-radius: 5px; }

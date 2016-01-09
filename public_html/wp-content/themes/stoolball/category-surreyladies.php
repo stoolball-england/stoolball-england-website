@@ -130,10 +130,6 @@ class CurrentPage extends StoolballPage
     function OnPageLoad()
     {
         ?>
-        <style>
-            ul.surrey { margin: 0; padding: 0;}
-            ul.surrey li { display: inline-block; padding: 1em; border-radius: 5px; background: #fff; margin: 0 1em 1em 0; }
-        </style>
         <h1>Surrey Ladies Stoolball Association</h1>
         
         <ul class="nav surrey">

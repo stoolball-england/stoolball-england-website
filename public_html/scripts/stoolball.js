@@ -1,5 +1,5 @@
 if (typeof (jQuery) != "undefined") {
-    if (!Modernizr.mq("only screen and (min-width: 800px)")) {
+    if (!Modernizr.mq("only screen and (min-width: 500px)")) {
 		// If no media query support, copy link tags which use media queries to new ones which don't.'
         $("link[media]", "head").each(function() {
             var a = document.createElement("link");
@@ -15,6 +15,19 @@ if (typeof (jQuery) != "undefined") {
         $("link.mqIE", "head").attr("disabled", "disabled");
         
         // Polyfill media query in JavaScript
+        var mqMedium = $("link.jsmqMedium", "head");
+        function applyMedium() {
+            mqMedium.each(function() {
+                this.disabled = document.documentElement.offsetWidth < 500;
+            });
+        }
+        $(window).resize(applyMedium);
+        applyMedium();
+    }
+    
+    if (!Modernizr.mq("only screen and (min-width: 800px)")) {
+        
+        // Polyfill media query in JavaScript
         var mqLarge = $("link.jsmqLarge", "head");
         function applyLarge() {
             mqLarge.each(function() {
@@ -24,7 +37,7 @@ if (typeof (jQuery) != "undefined") {
         $(window).resize(applyLarge);
         applyLarge();
     }
-    
+
     $(function(){
     	$(".sign-out input[type=submit]").replaceWith('<a href="/you/sign-out">Sign out</a>');
     	$(".sign-out a").click(function(e){ e.preventDefault(); $(".sign-out").submit(); });
