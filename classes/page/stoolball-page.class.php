@@ -51,7 +51,7 @@ class StoolballPage extends Page
 		# Register JQuery early so it's loaded before other scripts
 		# IMPORTANT: The latest JQuery 1.X does not work with the auto complete used here, so that would need upgrading too.
 		$this->LoadClientScript($this->GetContext()->IsDevelopment() ? '/scripts/lib/jquery-1.7.2.min.js' : 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
-		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.2.js");
+		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.3.js");
 	}
 
 	/**
@@ -98,12 +98,15 @@ class StoolballPage extends Page
 	public function OnCloseHead()
 	{
         $css_mobile = $this->css_root . "/css/mobile.$this->css_version.css";
+        $css_medium = $this->css_root . "/css/medium.$this->css_version.css";
         $css_desktop = $this->css_root .= "/css/stoolball.$this->css_version.css";
         ?>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="canonical" href="https://<?php echo $this->GetSettings()->GetDomain() . htmlspecialchars($_SERVER["REQUEST_URI"]);?>" />
 <link rel="stylesheet" href="<?php echo $css_mobile ?>" />
+<link rel="stylesheet" href="<?php echo $css_medium ?>" media="only screen and (min-width: 500px)" class="mqMedium" />
 <link rel="stylesheet" href="<?php echo $css_desktop ?>" media="only screen and (min-width: 800px)" class="mqLarge" />
+<!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_medium ?>" class="mqIE mqMedium" /><![endif]-->
 <!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_desktop ?>" class="mqIE mqLarge" /><![endif]-->
 <link rel="start" href="/" title="Go to home page" />
 <link rel="shortcut icon" href="<?php echo $this->resource_root ?>/favicon.ico" />
@@ -127,18 +130,24 @@ class StoolballPage extends Page
 	 */
 	protected function OnBodyOpened()
 	{
-		echo '<div id="logo-large" class="large">';
-		if ($_SERVER['REQUEST_URI'] != '/') echo '<a href="/">';
-		echo '<img src="' . $this->resource_root . '/images/logo-se.gif" width="210" height="62" alt="Go to home page" />';
-		if ($_SERVER['REQUEST_URI'] != '/') echo '</a>';
-		echo '</div>';
+        $mobile_logo = '<img src="' . $this->resource_root . '/images/logo/138x40-trans.png" width="138" height="40" alt="Go to the Stoolball England home page" class="small screen logo-small" />
+                        <img src="' . $this->resource_root . '/images/logo/210x61-trans.png" width="210" height="61" alt="Go to the Stoolball England home page" class="print logo" />';
+            
+        if (SiteContext::IsWordPress() and is_home())
+        {
+            echo $mobile_logo;  
+        }
+        else 
+        {
+            echo '<a href="/">' . $mobile_logo . '</a>'; 
+        }
 		
-			?>
+		?>
 <form id="handle" action="/search/" method="get" class="large"><div><input id="search" type="search" name="q" value="<?php if (isset($_GET['q'])) echo htmlentities($_GET['q'], ENT_QUOTES, "UTF-8", false); ?>" />
 	<input type="submit" value="Search" id="go" /></div>
 </form>
 <div id="bat1"></div>
-			<?php
+		<?php
 		if ($this->GetContentCssClass())
 		{
 			echo '<div id="board" class="' . $this->GetContentCssClass() . '">';
@@ -150,9 +159,6 @@ class StoolballPage extends Page
 			?>
 <div id="boardLeft">
 	<div id="boardRight">
-		<div id="boardTop">
-			<div></div>
-		</div>
 		<?php
 
 		# build navbar and add to control tree
@@ -161,17 +167,19 @@ class StoolballPage extends Page
 		$b_got_category = is_object($o_current);
 		$b_section_home = ($this->GetContext()->GetDepth() == 2 and str_replace("/", "", $_SERVER['REQUEST_URI']) == $o_current->GetUrl());
 
-		$o_news = new XhtmlElement('a', 'News', '#news');
-		$o_rules = new XhtmlElement('a', 'Rules', '#rules');
-		$o_play = new XhtmlElement('a', 'Play!', '#play');
-        $schools = new XhtmlElement('a', 'Schools', '#schools');
-		$o_about = new XhtmlElement('a', 'About us', '#about');
+		$o_news = new XhtmlElement('a', 'News');
+		$o_rules = new XhtmlElement('a', 'Rules');
+		$o_play = new XhtmlElement('a', 'Play!');
+        $schools = new XhtmlElement('a', 'Schools');
+		$o_about = new XhtmlElement('a', 'About <span class="large"> Us</span>');
+        $search = new XhtmlElement('a', 'Search');
 
 		if ($b_got_category and ($o_current->GetUrl() == 'news') or (SiteContext::IsWordPress() and  (is_single() or (is_archive() and !is_category()))))
 		{
 			if (!$b_section_home)
 			{
 				$o_news->AddAttribute('href', '/news');
+                $o_news->AddAttribute('role', 'menuitem');
 				$o_news->SetCssClass('current');
 			}
 			else $o_news->SetElementName('em');
@@ -183,6 +191,7 @@ class StoolballPage extends Page
 			if (!$b_section_home)
 			{
 				$o_rules->AddAttribute('href', '/rules');
+                $o_rules->AddAttribute('role', 'menuitem');
 				$o_rules->SetCssClass('current');
 			}
 			else $o_rules->SetElementName('em');
@@ -194,6 +203,7 @@ class StoolballPage extends Page
 			if (!$b_section_home)
 			{
 				$o_play->AddAttribute('href', '/play');
+                $o_play->AddAttribute('role', 'menuitem');
 				$o_play->SetCssClass('current');
 			}
 			else $o_play->SetElementName('em');
@@ -205,6 +215,7 @@ class StoolballPage extends Page
             if (!$b_section_home)
             {
                 $schools->AddAttribute('href', '/schools');
+                $schools->AddAttribute('role', 'menuitem');
                 $schools->SetCssClass('current');
             }
             else $schools->SetElementName('em');
@@ -216,48 +227,39 @@ class StoolballPage extends Page
 			if (!$b_section_home)
 			{
 				$o_about->AddAttribute('href', '/about');
+                $o_about->AddAttribute('role', 'menuitem');
 				$o_about->SetCssClass('current');
 			}
 			else $o_about->SetElementName('em');
 		}
 		else $o_about->AddAttribute('href', '/about');
 
-		$mobile_logo = '<img src="' . $this->resource_root . '/images/mobile/logo.gif" width="138" height="42" alt="Stoolball England" />';
-            
-        if (!preg_match('/^\/category\/news\/?$/', $_SERVER['REQUEST_URI']))
+        if ($b_got_category and $o_current->GetUrl() == 'search')
         {
-            $news_link = '<a href="/news" id="blog" class="small screen">News</a>';
+            if (!$b_section_home)
+            {
+                $search->AddAttribute('href', '/search');
+                $search->AddAttribute('role', 'menuitem');
+                $search->SetCssClass('current');
+            }
+            else $search->SetElementName('em');
         }
-        else
-        {
-            $news_link = '<em id="blog" class="small screen">News</em>';
-        }
-        
-        if (SiteContext::IsWordPress() and is_home())
-        {
-            echo '<div id="logo-small" class="small">' . $mobile_logo . '</div>' . 
-                 '<em id="menu" class="small screen">Home</em>' . 
-                 $news_link;
-        }
-        else 
-        {
-            echo '<div id="logo-small" class="small"><a href="/">' . $mobile_logo . '</a></div>' . 
-                 '<a href="/" id="menu" class="small screen">Home</a>' . 
-                 $news_link;
-        }
-
-        $authentication  = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
-        $authentication->SetCssClass("small screen");
-        echo $authentication;
-
-		echo '<ul id="navbar" class="large">';
-		echo '<li>' . $o_news->__toString() . '</li>';
-		echo '<li>' . $o_rules->__toString() . '</li>';
-		echo '<li>' . $o_play->__toString() . '</li>';
-        echo '<li>' . $schools->__toString() . '</li>';
-		echo '<li>' . $o_about->__toString() . '</li>';
-		echo '</ul>';
+        else $search->AddAttribute('href', '/search');
+        ?>
+        <nav>
+        <ul class="menu screen" role="menubar">
+        <?php
+		echo '';
+		echo '<li id="news">' . $o_news . '</li>';
+		echo '<li id="rules">' . $o_rules . '</li>';
+		echo '<li id="play">' . $o_play . '</li>';
+        echo '<li id="schools">' . $schools . '</li>';
+		echo '<li id="about">' . $o_about . '</li>';
+        echo '<li class="search small">' . $search . '</li>';
+		echo '';
 		?>
+		</ul>
+        </nav>
 	   <div id="bat2" class="large">
 			<div id="involved"></div>
 			<ul>
@@ -437,7 +439,6 @@ class StoolballPage extends Page
 
 	echo '<h2 id="your" class="large">Your stoolball.org.uk</h2>';
 	$authentication = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
-    $authentication->SetCssClass("large");
     $authentication->SetXhtmlId('authControl');
     echo $authentication;
 	
@@ -466,9 +467,7 @@ class StoolballPage extends Page
 		</div>
 	</div>
 </div></div></div>
-<div id="post">
-	<div></div>
-</div>
+<div id="post"></div>
 	<?php
 
 	if (!SiteContext::IsDevelopment() and !AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::EXCLUDE_FROM_ANALYTICS))

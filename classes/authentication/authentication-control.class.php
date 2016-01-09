@@ -43,10 +43,7 @@ class AuthenticationControl extends XhtmlElement
 		}
 		else
 		{
-		    # These bits are unnecessary on mobile
-		    $this->AddCssClass("large");
-            
-			# Build sign in link
+		    # Build sign in link
 			$o_sign_in = new XhtmlAnchor('Sign in', $o_settings->GetFolder('Account'));
 			$o_sign_in->AddAttribute('accesskey', '0');
 			$o_sign_in->SetCssClass('signIn');
@@ -55,11 +52,6 @@ class AuthenticationControl extends XhtmlElement
 			# Build register link
 			$register = new XhtmlAnchor('Register', $o_settings->GetUrl('AccountCreate'));
 			$this->AddControl($register);
-
-			# Add reason to register
-			$reasons = array(" to chat about stoolball", " to add your matches", " to add your scores", " to get forum alerts");
-			$reason = $reasons[array_rand($reasons, 1)];
-			$this->AddControl($reason);
 		}
 	}
 

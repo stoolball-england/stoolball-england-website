@@ -105,7 +105,6 @@ class CurrentPage extends StoolballPage
         if ($this->s_cal_title) $title .= ': ' . $this->s_cal_title;
 		$this->SetPageTitle($title);
 		$this->SetContentConstraint($this->ConstrainText());
-		$this->SetContentCssClass('calendarPage');
 	}
 
 	public function OnPageLoad()
@@ -114,21 +113,18 @@ class CurrentPage extends StoolballPage
         if ($this->s_cal_title) $title .= ': ' . $this->s_cal_title;
 		echo '<h1>' . htmlentities($title, ENT_QUOTES, "UTF-8", false) . '</h1>';
 
-        $subscribe_link = new XhtmlAnchor('Subscribe to calendar', "webcal://" . $_SERVER['HTTP_HOST'] . $this->s_cal_url . '.ics');
+        $subscribe_link = new XhtmlAnchor(null, "webcal://" . $_SERVER['HTTP_HOST'] . $this->s_cal_url . '.ics');
+        $subscribe_link->SetCssClass('calendar');
         $subscribe_link->AddAttribute('type', 'text/calendar');
         $subscribe_link->AddAttribute('rel', 'nofollow');
 
-		$download_link = new XhtmlAnchor('download the calendar', "http://" . $_SERVER['HTTP_HOST'] . $this->s_cal_url . '.ics');
+		$download_link = new XhtmlAnchor('download the calendar', "https://" . $_SERVER['HTTP_HOST'] . $this->s_cal_url . '.ics');
 		$download_link->AddAttribute('type', 'text/calendar');
 		$download_link->AddAttribute('rel', 'nofollow');
 
-        $o_cal_box = new XhtmlElement('div');
-		$o_cal_box->SetCssClass('calendar');
-		$o_cal_box_inner = new XhtmlElement('div');
-		$o_cal_box->AddControl($o_cal_box_inner);
-		$o_cal_box_inner->AddControl($subscribe_link);
-		$o_cal_box_inner->AddControl(new XhtmlElement('p', htmlentities($this->s_cal_title ? $this->s_cal_title : ucfirst($this->s_matches), ENT_QUOTES, "UTF-8", false),"large"));
-		echo $o_cal_box;
+		$subscribe_link->AddControl(new XhtmlElement('p', 'Subscribe to calendar', 'subscribe'));
+		$subscribe_link->AddControl(new XhtmlElement('p', Html::Encode($this->s_cal_title ? $this->s_cal_title : ucfirst($this->s_matches)),"subscribe-to medium large"));
+		echo $subscribe_link;
         ?>
         <p>If you run your life on your computer or mobile, you can save time by adding
 		all of your stoolball matches to your calendar, kept up-to-date automatically.</p>

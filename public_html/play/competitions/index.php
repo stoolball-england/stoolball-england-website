@@ -37,7 +37,7 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-        $this->content = new XhtmlElement("div",null, "box-content");
+        $this->content = new XhtmlElement("div");
         $category = $this->DisplayCompetitions($this->content);
 
         if (!$category)
@@ -52,7 +52,7 @@ class CurrentPage extends StoolballPage
 	function OnPageLoad()
 	{
   		echo new XhtmlElement('h1', htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false));
-        echo new XhtmlElement('div', $this->content, "box play");
+        echo new XhtmlElement('div', $this->content, "play");
 
         $this->ShowSocialAccounts();
 			
