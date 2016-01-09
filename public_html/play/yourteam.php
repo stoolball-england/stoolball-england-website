@@ -153,7 +153,6 @@ class CurrentPage extends StoolballPage
 
 			$email = new Zend_Mail('UTF-8');
 			$email->addTo($this->GetSettings()->GetWebEditorEmail());
-			#$email->SetCc('kay@stoolball.org.uk');
 			$email->setFrom($_POST['email'], $_POST['email']);
 			$email->setSubject('Stoolball team details');
 			$s_body = 'Team name: ' . $_POST['team'] . "\n\n" .
