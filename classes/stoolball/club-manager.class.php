@@ -25,7 +25,7 @@ class ClubManager extends DataManager
 	*/
 	function ReadById($a_ids=null)
 	{
-		$s_sql = "SELECT club.club_id, club.club_name, club.twitter, club.short_url, 
+		$s_sql = "SELECT club.club_id, club.club_name, club.twitter, club.clubmark, club.short_url, 
 		team.team_id, team.team_name, team.short_url AS team_short_url 
 		FROM nsa_club AS club LEFT OUTER JOIN nsa_team AS team ON club.club_id = team.club_id ";
 
@@ -73,6 +73,7 @@ class ClubManager extends DataManager
 				$o_club->SetName($o_row->club_name);
 				$o_club->SetShortUrl($o_row->short_url);
                 $o_club->SetTwitterAccount($o_row->twitter);
+                $o_club->SetClubmarkAccredited($o_row->clubmark);
 
 			}
 
@@ -96,11 +97,8 @@ class ClubManager extends DataManager
 	* @param Club $o_club
 	* @desc Save the supplied Club to the database, and return the id
 	*/
-	function Save($o_club)
+	public function Save(Club $o_club)
 	{
-		# check parameters
-		if (!$o_club instanceof Club) throw new Exception('Unable to save club');
-
 		# Set up short URL manager
 		require_once('http/short-url-manager.class.php');
 		$o_url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
@@ -111,8 +109,9 @@ class ClubManager extends DataManager
 		{
 			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
 			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", " .
-            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", " .
-			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", " .
+            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+            clubmark = " . Sql::ProtectBool($o_club->GetClubmarkAccredited()) . ",
+			short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", " .
 			'date_changed = ' . gmdate('U') . ' ' .
 			'WHERE club_id = ' . Sql::ProtectNumeric($o_club->GetId());
 
@@ -123,9 +122,10 @@ class ClubManager extends DataManager
 		{
 			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
 			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", " .
-            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", " .
-			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", " .
-			'date_added = ' . gmdate('U') . ', ' .
+            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+            clubmark = " . Sql::ProtectBool($o_club->GetClubmarkAccredited()) . ",
+			short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", 
+			date_added = " . gmdate('U') . ', ' .
 			'date_changed = ' . gmdate('U');
 
 			# run query

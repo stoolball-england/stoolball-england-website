@@ -173,8 +173,8 @@ class CurrentPage extends StoolballPage
 				echo '<p property="schema:description">' . $s_intro . '</p>';
 			}
 		}
-    
-		######################
+        
+ 		######################
 		### When and where ###
 		######################
 
@@ -298,8 +298,17 @@ class CurrentPage extends StoolballPage
 		$s_website = $team->GetWebsiteUrl();
 		if ($s_website)
 		{
-			echo new XhtmlAnchor("Visit " . htmlentities($team->GetName(), ENT_QUOTES, "UTF-8", false) . "'s website", $s_website);
+			echo new XhtmlElement('p', new XhtmlAnchor("Visit " . htmlentities($team->GetName(), ENT_QUOTES, "UTF-8", false) . "'s website", $s_website));
 		}
+        
+       if ($team->GetClub() instanceof Club and $team->GetClub()->GetClubmarkAccredited()) {
+            ?>
+            <p><img src="/images/logos/clubmark.png" alt="Clubmark accredited" width="150" height="29" /></p>
+            <p>This is a <a href="http://www.sportenglandclubmatters.com/club-mark/">Clubmark accredited</a> stoolball club.</p>
+            <?php
+        }
+    
+        
 
         if (!$this->is_one_time_team)
         { 

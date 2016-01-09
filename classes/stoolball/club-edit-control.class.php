@@ -28,6 +28,7 @@ class ClubEditControl extends DataEditControl
 		$o_club = new Club($this->GetSettings());
 		if (isset($_POST['item'])) $o_club->SetId($_POST['item']);
 		$o_club->SetName($_POST['name']);
+        $o_club->SetClubmarkAccredited($_POST['clubmark']);
         $o_club->SetTwitterAccount($_POST['twitter']);
 		$o_club->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
 
@@ -37,15 +38,17 @@ class ClubEditControl extends DataEditControl
 	function CreateControls()
 	{
 		# add name
-		$o_name_box = new TextBox('name', $this->GetDataObject()->GetName());
+		$o_name_box = new TextBox('name', $this->GetDataObject()->GetName(), $this->IsValidSubmit());
 		$o_name_box->AddAttribute('maxlength', 100);
 		$o_name = new FormPart('Name', $o_name_box);
 		$this->AddControl($o_name);
 
-        $twitter_box = new TextBox('twitter', $this->GetDataObject()->GetTwitterAccount());
+        $twitter_box = new TextBox('twitter', $this->GetDataObject()->GetTwitterAccount(), $this->IsValidSubmit());
         $twitter_box->AddAttribute('maxlength', 16);
         $twitter = new FormPart('Twitter account', $twitter_box);
         $this->AddControl($twitter);
+        
+        $this->AddControl(new FormPart('',new CheckBox('clubmark', 'Clubmark accredited', 1, $this->GetDataObject()->GetClubmarkAccredited(), $this->IsValidSubmit())));
 
 		# Remember short URL
 		$o_short_url = new TextBox($this->GetNamingPrefix() . 'ShortUrl', $this->GetDataObject()->GetShortUrl());

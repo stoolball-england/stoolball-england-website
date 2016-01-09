@@ -50,6 +50,13 @@ class CurrentPage extends StoolballPage
 			echo new TeamListControl($a_teams);
 		}
         
+        if ($this->o_club->GetClubmarkAccredited()) {
+            ?>
+            <p><img src="/images/logos/clubmark.png" alt="Clubmark accredited" width="150" height="29" /></p>
+            <p>This is a <a href="http://www.sportenglandclubmatters.com/club-mark/">Clubmark accredited</a> stoolball club.</p>
+            <?php
+        }
+        
         if ($this->o_club->GetTwitterAccount())
         {
             ?>

@@ -173,7 +173,7 @@ class TeamManager extends DataManager
 		$s_sql = "SELECT team.team_id, team.team_name, team.website, team.active, team.team_type, 
 		team.intro, team.player_type_id, team.playing_times, team.cost, team.short_url, 
 		team.contact, team.contact_nsa, team.update_search, team.date_changed, team.modified_by_id,  
-	    club.club_id, club.club_name, club.twitter, club.short_url AS club_short_url, 
+	    club.club_id, club.club_name, club.twitter, club.clubmark, club.short_url AS club_short_url, 
 		$s_season_link.withdrawn_league, " .
 		$s_season . '.season_id, ' . $s_season . '.season_name, ' . $s_season . '.is_latest, ' . $s_season . '.start_year, ' . $s_season . '.end_year, ' . $s_season . '.short_url AS season_short_url, ' .
 		$s_comp . '.competition_id, ' . $s_comp . '.competition_name, ' .
@@ -466,6 +466,7 @@ class TeamManager extends DataManager
 					$o_club->SetId($row->club_id);
 					if (isset($row->club_name)) $o_club->SetName($row->club_name);
                     if (isset($row->twitter)) $o_club->SetTwitterAccount($row->twitter);
+                    if (isset($row->clubmark)) $o_club->SetClubmarkAccredited($row->clubmark);
 					if (isset($row->club_short_url)) $o_club->SetShortUrl($row->club_short_url);
 					$o_team->SetClub($o_club);
 				}

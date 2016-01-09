@@ -130,8 +130,8 @@ class StoolballPage extends Page
 	 */
 	protected function OnBodyOpened()
 	{
-        $mobile_logo = '<img src="' . $this->resource_root . '/images/logo/138x40-trans.png" width="138" height="40" alt="Go to the Stoolball England home page" class="small screen logo-small" />
-                        <img src="' . $this->resource_root . '/images/logo/210x61-trans.png" width="210" height="61" alt="Go to the Stoolball England home page" class="print logo" />';
+        $mobile_logo = '<img src="' . $this->resource_root . '/images/logos/138x40-trans.png" width="138" height="40" alt="Go to the Stoolball England home page" class="small screen logo-small" />
+                        <img src="' . $this->resource_root . '/images/logos/210x61-trans.png" width="210" height="61" alt="Go to the Stoolball England home page" class="print logo" />';
             
         if (SiteContext::IsWordPress() and is_home())
         {

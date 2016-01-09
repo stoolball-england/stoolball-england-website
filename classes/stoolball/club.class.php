@@ -15,6 +15,7 @@ class Club extends Collection implements IHasShortUrl
 	private $o_settings;
 	private $s_short_url;
     private $twitter;
+    private $clubmark = false;
 
 	/**
 	 * Instantiates a Club
@@ -69,23 +70,27 @@ class Club extends Collection implements IHasShortUrl
     */
     public function GetTwitterAccount() { return $this->twitter; }
     
+    /**
+     * Sets whether the club is Clubmark accredited
+     */
+    public function SetClubmarkAccredited($accredited) {
+        $this->clubmark = (bool)$accredited;
+    }
+    
+    /**
+     * Gets whether the club is Clubmark accredited
+     */
+    public function GetClubmarkAccredited() {
+        return $this->clubmark;
+    }
+    
 	/**
 	* @return string
 	* @desc Gets the URL for the club
 	*/
 	public function GetNavigateUrl()
 	{
-		$s_url = '';
-		if ($this->GetShortUrl())
-		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl();
-		}
-		else
-		{
-			$s_url = $this->GetRealUrl();
-		}
-
-		return $s_url;
+        return $this->o_settings->GetClientRoot() . $this->GetShortUrl();
 	}
 	
 	/**
@@ -94,7 +99,7 @@ class Club extends Collection implements IHasShortUrl
 	*/
 	public function GetEditClubUrl()
 	{
-		return $this->o_settings->GetUrl('AdminClubEdit') . $this->GetId();
+		return $this->GetNavigateUrl() . "/edit";
 	}
 
 	/**
@@ -103,7 +108,7 @@ class Club extends Collection implements IHasShortUrl
 	*/
 	public function GetDeleteClubUrl()
 	{
-		return "/play/clubdelete.php?item=" . $this->GetId();
+		return $this->GetNavigateUrl() . "/delete";
 	}
 
 	/**
@@ -121,18 +126,6 @@ class Club extends Collection implements IHasShortUrl
 	public function GetShortUrl() { return $this->s_short_url; }
 
 	/**
-	 * Gets the real URL for a team
-	 *
-	 * @return string
-	 */
-	public function GetRealUrl()
-	{
-		$s_url = $this->o_settings->GetUrl('Club') . $this->GetId();
-		if (isset($_GET['tempus'])) $s_url .= '&amp;tempus=fixit';
-		return $s_url;
-	}
-
-	/**
 	 * Gets the format to use for a club's short URLs
 	 *
 	 * @param SiteSettings
@@ -140,7 +133,12 @@ class Club extends Collection implements IHasShortUrl
 	 */
 	public static function GetShortUrlFormatForType(SiteSettings $settings)
 	{
-		return new ShortUrlFormat($settings->GetTable('Club'), 'short_url', array('club_id'), array('GetId'), array('{0}' => $settings->GetUrl('Club') . '{0}'));
+        return new ShortUrlFormat("nsa_club", 'short_url', array('club_id'), array('GetId'),
+        array(
+        '{0}' => '/play/clubs/club.php?item={0}',
+        '{0}/edit' => "/play/clubs/clubedit.php?item={0}",
+        '{0}/delete' => "/play/clubs/clubdelete.php?item={0}" 
+        ));
 	}
 
 	/**

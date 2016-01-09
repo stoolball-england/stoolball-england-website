@@ -18,7 +18,7 @@ class CurrentPage extends StoolballPage
 
 		$list = '';
 		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_CATEGORIES)) $list .= '<li><a href="/yesnosorry/categorylist.php">Categories</a></li>';
-		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) $list .= '<li><a href="/yesnosorry/clublist.php">Clubs</a></li>';
+		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) $list .= '<li><a href="/play/clubs">Clubs</a></li>';
 		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_GROUNDS)) $list .= '<li><a href="/yesnosorry/groundlist.php">Grounds</a></li>';
 		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_USERS_AND_PERMISSIONS))
         {

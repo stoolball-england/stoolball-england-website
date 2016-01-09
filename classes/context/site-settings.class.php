@@ -52,10 +52,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Account') . 'settings.php';
             case 'AccountEssential':
                 return $this->GetFolder('Account') . 'essential.php';
-            case 'AdminClubEdit':
-                return $this->GetFolder('Admin') . 'clubedit.php?item=';
-            case 'Club':
-                return $this->GetFolder('Play') . 'club.php?item=';
             case 'Competition':
                 return $this->GetFolder('Play') . 'competitions/competition.php?latest=1&item=';
             case 'EmailAlerts':
