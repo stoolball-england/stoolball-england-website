@@ -82,7 +82,7 @@ class StatisticsFilter
 			if (!is_null($player))
 			{
 				$statistics_manager->FilterByPlayer(array($player->GetId()));
-				$filter = "by " . $player->GetName() . " ";
+				$filter = "for " . $player->GetName() . " ";
 			}
 		}
 		return $filter;

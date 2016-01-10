@@ -226,7 +226,8 @@ class CurrentPage extends StoolballPage
 			if ($has_player_of_match_stats)
 			{
 				echo new PlayerStatisticsTable("Most player of the match nominations", "Nominations", $this->most_player_of_match, false);
-				if ($has_player_of_match_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-player-of-match' . $this->statistics_query . '">Most player of the match nominations &#8211; view all and filter</a></p>';
+			    echo '<p class="statsViewAll"><a href="/play/statistics/player-of-match' . $this->statistics_query . '">Player of the match nominations &#8211; view all and filter</a></p>';
+            	if ($has_player_of_match_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-player-of-match' . $this->statistics_query . '">Most player of the match nominations &#8211; view all and filter</a></p>';
 			}
 
 			echo "</div>"; # close statsGroup

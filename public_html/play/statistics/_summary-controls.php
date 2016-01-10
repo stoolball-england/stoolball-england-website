@@ -89,6 +89,7 @@ if ($has_player_of_match_stats)
 	echo '<h2>All-round performance statistics</h2>';
 
 	echo new PlayerStatisticsTable("Most player of the match nominations", "Nominations", $this->statistics["most_player_of_match"]);
+	echo '<p class="statsViewAll"><a href="/play/statistics/player-of-match' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Player of the match nominations &#8211; view all and filter</a></p>';
 	if ($has_player_of_match_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-player-of-match' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Most player of the match nominations &#8211; view all and filter</a></p>';
 }
 ?>

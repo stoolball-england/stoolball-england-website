@@ -850,6 +850,87 @@ class StatisticsManager extends DataManager
 		return $performances;
 	}
 
+	
+    /**
+     * Gets player of the match nominations based on current filters
+     * @return An array of player performances, or CSV download
+     */
+    public function ReadPlayerOfTheMatchNominations()
+    {
+        $players = $this->GetSettings()->GetTable("Player");
+        $statistics = $this->GetSettings()->GetTable("PlayerMatch");
+        $sm = $this->GetSettings()->GetTable('SeasonMatch');
+        $seasons = $this->GetSettings()->GetTable("Season");
+
+        $performances = array();
+
+        $competition_filter_active = (bool)count($this->filter_competitions);
+        $from = "FROM $statistics INNER JOIN $players ON $statistics.player_id = $players.player_id 
+                 INNER JOIN nsa_match ON $statistics.match_id = nsa_match.match_id ";
+        if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
+        if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+
+        $where = "WHERE player_of_match = 1 ";
+        $where = $this->ApplyFilters($where);
+
+        $sql = "SELECT $players.player_id, player_name, $players.short_url AS player_short_url, 
+        runs_scored, how_out, runs_conceded, wickets, catches, run_outs, $statistics.match_id, 
+        nsa_match.match_title, match_time, nsa_match.short_url AS match_short_url
+        $from 
+        $where
+        ORDER BY match_time DESC ";
+
+        if ($this->filter_page_size and $this->filter_page)
+        {
+            # Get the total number of results on all pages
+            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where) AS total");
+            $row = $result->fetch();
+            $performances[] = $row->total;
+
+            # Limit main query to just the current page
+            $sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
+        }
+        else if ($this->filter_max_results)
+        {
+            $sql .= "LIMIT 0," . $this->filter_max_results;
+        }
+        
+        $result = $this->GetDataConnection()->query($sql);
+        $csv = is_array($this->output_as_csv);
+        while ($row = $result->fetch())
+        {
+            # Return data as an array rather than objects because when we return the full,
+            # page to dataset it's far more memory efficient
+            $performance["player_id"] = $row->player_id;
+            $performance["player_name"] = $row->player_name;
+            if (!$csv) $performance["player_url"] = "/" . $row->player_short_url;
+
+            $performance["match_id"] = $row->match_id;
+            $performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
+            $performance["match_title"] = $row->match_title;
+            if (!$csv) $performance["match_url"] = "/" . $row->match_short_url;
+
+            $performance["runs_scored"] = $row->runs_scored;
+            $performance["how_out"] = $csv ? Batting::Text($row->how_out) : $row->how_out;
+            $performance["wickets"] = $row->wickets;
+            $performance["runs_conceded"] = $row->runs_conceded;
+            $performance["catches"] = $row->catches;
+            $performance["run-outs"] = $row->run_outs;
+
+            $performances[] = $performance;
+        }
+
+        # Optionally add a header row and download a CSV file rather than returning the data
+        if ($csv)
+        {
+            require_once("data/csv.class.php");
+            array_unshift($performances, array("Player id", "Player", "Match id", "Match date (UTC)", "Match", "Runs", "How out", "Wickets", "Runs conceded", "Catches", "Run-outs"));
+            CSV::PublishData($performances);
+        }
+
+        return $performances;
+    }
+
 	/**
 	 * Reads the seasons which have player statistics fitting the current filters
 	 */

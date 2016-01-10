@@ -6,7 +6,7 @@ if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
 	"individual-scores", "most-runs", "batting-average",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
 	"most-catches", "most-run-outs",
-	"most-player-of-match"
+	"player-of-match", "most-player-of-match"
 )))
 {
 	require_once("../../wp-content/themes/stoolball/404.php");
@@ -62,6 +62,7 @@ class CurrentPage extends StoolballPage
 		{
 			case "individual-scores":
 			case "bowling-performances":
+            case "player-of-match":
 				$this->filter .= StatisticsFilter::ApplyPlayerFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
 		}
 
@@ -227,6 +228,26 @@ INTRO;
 				if ($csv) $statistics_manager->OutputAsCsv(array("Run-outs"));
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
 				break;
+                
+            case "player-of-match":
+                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+                $this->filter .= $filter_batting_position[2];
+
+                if ($csv)
+                {
+                    $statistics_manager->OutputAsCsv(array());
+                }
+                else
+                {
+                    $this->paging->SetResultsTextSingular("nominations");
+                    $this->paging->SetResultsTextPlural("nominations");
+                }
+
+                $this->statistic_title = "Player of the match nominations";
+                $this->statistic_description = "All of the matches where players were awarded player of the match for their outstanding performances on the pitch.";
+                $this->data = $statistics_manager->ReadPlayerOfTheMatchNominations();
+                break;
 
 			case "most-player-of-match":
 				$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
@@ -250,7 +271,7 @@ INTRO;
 	{
 		$this->SetPageTitle("$this->statistic_title $this->filter");
 		$this->SetPageDescription($this->statistic_intro ? strip_tags($this->statistic_intro) : $this->statistic_description);
-		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
+        $this->SetContentConstraint(StoolballPage::ConstrainBox());
 		$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 		$this->LoadClientScript("/play/statistics/statistics-filter.js");
 		?>
@@ -288,6 +309,11 @@ switch ($this->which_statistic)
 		echo new BowlingPerformanceTable($this->data, true, $this->paging->GetFirstResultOnPage());
 		break;
 
+    case "player-of-match":
+        require_once('stoolball/statistics/player-of-match-table.class.php');
+        echo new PlayerOfTheMatchTable($this->data, $this->paging->GetFirstResultOnPage());
+        break;
+
 	default:
 		require_once('stoolball/statistics/player-statistics-table.class.php');
 		echo new PlayerStatisticsTable($this->statistic_title, $this->statistic_column, $this->data, true, $this->paging->GetFirstResultOnPage());
@@ -299,9 +325,6 @@ if ($this->paging->GetTotalResults()) echo $this->paging->GetNavigationBar();
 </div>
 <?php
     $this->GetTheData("small");
-
-	$this->AddSeparator();
-	$this->BuySomething();
 
 	}
 

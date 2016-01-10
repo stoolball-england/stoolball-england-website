@@ -524,6 +524,9 @@ td.out { padding-right: .9em; }
 .statsViewAll { padding: 0 10px; }
 .box-content .statsViewAll { padding: 0;}
 
+/* Stats table of player of the match performances */
+.player-of-match .date { white-space: nowrap; text-align: right; }
+
 /* WordPress pages */
 .alignright, .screenshot { float: right; margin: 0 0 10px 10px; border: 0; }
 .alignleft { float: left; margin: 0 10px 10px 0; border: 0; }
@@ -555,7 +558,7 @@ tr.unavailable { opacity: .5; }
 .printable a { text-decoration: underline; }
 .printable p { margin-bottom: 0; }
 
-.get-the-data { border: none; width: 230px; float: right; margin: -10px 0 10px 20px; background: #ccc url(/images/wicket-tile.jpg);}
+.get-the-data { border: none; width: 230px; float: right; margin: 0 0 10px 20px; background: #ccc url(/images/wicket-tile.jpg);}
 .get-the-data h2 { margin: 0 0 4px; }
 .get-the-data div.csv { background: url(/images/icons/csv.gif) no-repeat left top; padding-left: 55px; } 
 .get-the-data a { text-decoration: underline; }

@@ -272,18 +272,21 @@ else
 {
 	echo "<p>$team_name recorded " . htmlentities($this->player->TotalRuns() . " " . strtolower($this->player->GetName()) . " in " . $this->player->GetTotalMatches() . $match_or_matches . "${filtered}${years}.", ENT_QUOTES, "UTF-8", false) . "</p>";
  }
+
+ $querystring = '?player=' . $this->player->GetId();
+ if ($_SERVER["QUERY_STRING"]) {
+     $querystring = htmlspecialchars('?' . $_SERVER["QUERY_STRING"]);
+ }
+
  # Player of match
  if ($this->player->GetTotalPlayerOfTheMatchNominations() > 0)
  {
  	$match_or_matches = ($this->player->GetTotalPlayerOfTheMatchNominations() == 1) ? " match." : " matches.";
- 	echo "<p>Nominated player of the match in " . $this->player->GetTotalPlayerOfTheMatchNominations() . $match_or_matches . "</p>";
+ 	echo '<p>Nominated <a href="/play/statistics/player-of-match' . $querystring . '">player of the match</a> in ' . $this->player->GetTotalPlayerOfTheMatchNominations() . $match_or_matches . "</p>";
  }
 
  # Filter control
  echo $this->filter_control;
-
- $querystring = 'player=' . $this->player->GetId();
- if ($_SERVER["QUERY_STRING"]) $querystring = htmlspecialchars($_SERVER["QUERY_STRING"]);
 
  # Batting stats
  $catches = $this->player->GetCatches();
@@ -324,7 +327,7 @@ else
 
  	if ($this->player->TotalBattingInnings())
  	{
- 		echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores?' . $querystring . '">Individual scores &#8211; view all and filter</a></p>';
+ 		echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores' . $querystring . '">Individual scores &#8211; view all and filter</a></p>';
  	}
     ?>
     <span class="chart-js-template" id="score-spread-chart"></span>
@@ -369,7 +372,7 @@ else
 
  	echo $bowling_table;
 
- 	echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances?' . $querystring . '">Bowling performances &#8211; view all and filter</a></p>';
+ 	echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $querystring . '">Bowling performances &#8211; view all and filter</a></p>';
  }
 /*
  if ($this->player->WicketsTaken())
