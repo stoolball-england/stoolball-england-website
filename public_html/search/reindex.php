@@ -284,9 +284,17 @@ class CurrentPage extends StoolballPage
 
 		$docs[] = new SearchItem("other", "/play/statistics/most-player-of-match", "/play/statistics/most-player-of-match", "Most player of the match nominations",
 		"Find out who has won the most player of the match awards for their outstanding performances on the pitch. Filter by team, ground, date and more.", 
-		"man of the match, mom, awards");
+		"man of the match mom awards batting bowling fielding catches statistics tables");
 
-		$docs[] = new SearchItem("other", "spreadshirt", "https://shop.spreadshirt.co.uk/stoolball", "Gift shop - hoodies, t-shirts, hats, bags and more",
+        $docs[] = new SearchItem("other", "/play/statistics/player-of-match", "/play/statistics/player-of-match", "Player of the match nominations",
+        "All of the matches where players were awarded player of the match for their outstanding performances on the pitch. Filter by team, ground, date and more.", 
+        "man of the match mom awards batting bowling fielding catches statistics tables");
+
+        $docs[] = new SearchItem("other", "/play/statistics/player-performances", "/play/statistics/player-performances", "Player performances",
+        "All of the match performances by a stoolball player, summarising their batting, bowling and fielding in the match. Filter by team, ground, date and more.", 
+        "batting bowling fielding catches statistics tables");
+
+   		$docs[] = new SearchItem("other", "spreadshirt", "https://shop.spreadshirt.co.uk/stoolball", "Gift shop - hoodies, t-shirts, hats, bags and more",
 		"Buy hoodies, t-shirts, hats, bags, umbrellas, teddy bears and a lot more in our stoolball gift shop. Like us on Facebook or follow us on Twitter to find out about special offers.", 
         "gifts presents clothing buy bags t-shirts polo hats merchandise wear clothes shopping shop");
 
