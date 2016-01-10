@@ -193,7 +193,7 @@ fieldset.formPart .formControl { margin-top: 0; }
 /* Home */
 .home .articleList li { margin-bottom: 5px; }
 .home .articleListTopItem p { margin-bottom: 0; }
-.articleList .subscribe { padding-top: 5px; margin-top: 10px; border-top: 1px solid #aaa; }
+.articleList .subscribe { clear: both; padding-top: 5px; margin-top: 10px; border-top: 1px solid #aaa; }
 .articleList .subscribe a { white-space: nowrap; }
 
 .home .box {background: #ccc url(/images/wicket-tile.jpg); }
