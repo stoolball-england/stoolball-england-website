@@ -6,7 +6,7 @@ if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
 	"individual-scores", "most-runs", "batting-average",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
 	"most-catches", "most-run-outs",
-	"player-of-match", "most-player-of-match"
+	"player-performances", "player-of-match", "most-player-of-match"
 )))
 {
 	require_once("../../wp-content/themes/stoolball/404.php");
@@ -62,6 +62,7 @@ class CurrentPage extends StoolballPage
 		{
 			case "individual-scores":
 			case "bowling-performances":
+            case "player-performances":
             case "player-of-match":
 				$this->filter .= StatisticsFilter::ApplyPlayerFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
 		}
@@ -229,7 +230,28 @@ INTRO;
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
 				break;
                 
+            case "player-performances":
+                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+                $this->filter .= $filter_batting_position[2];
+
+                if ($csv)
+                {
+                    $statistics_manager->OutputAsCsv(array());
+                }
+                else
+                {
+                    $this->paging->SetResultsTextSingular("performance");
+                    $this->paging->SetResultsTextPlural("performances");
+                }
+
+                $this->statistic_title = "Player performances";
+                $this->statistic_description = "All of the match performances by a stoolball player, summarising their batting, bowling and fielding in the match.";
+                $this->data = $statistics_manager->ReadMatchPerformances();
+                break;
+
             case "player-of-match":
+                $statistics_manager->FilterPlayerOfTheMatch(true);
                 $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
                 $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
                 $this->filter .= $filter_batting_position[2];
@@ -246,7 +268,7 @@ INTRO;
 
                 $this->statistic_title = "Player of the match nominations";
                 $this->statistic_description = "All of the matches where players were awarded player of the match for their outstanding performances on the pitch.";
-                $this->data = $statistics_manager->ReadPlayerOfTheMatchNominations();
+                $this->data = $statistics_manager->ReadMatchPerformances();
                 break;
 
 			case "most-player-of-match":
@@ -309,9 +331,10 @@ switch ($this->which_statistic)
 		echo new BowlingPerformanceTable($this->data, true, $this->paging->GetFirstResultOnPage());
 		break;
 
+    case "player-performances":
     case "player-of-match":
-        require_once('stoolball/statistics/player-of-match-table.class.php');
-        echo new PlayerOfTheMatchTable($this->data, $this->paging->GetFirstResultOnPage());
+        require_once('stoolball/statistics/player-performance-table.class.php');
+        echo new PlayerPerformanceTable($this->data, $this->paging->GetFirstResultOnPage());
         break;
 
 	default:

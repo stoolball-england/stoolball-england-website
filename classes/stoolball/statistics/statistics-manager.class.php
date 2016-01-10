@@ -19,6 +19,7 @@ class StatisticsManager extends DataManager
 	private $filter_after_date = null;
 	private $filter_page_size = null;
 	private $filter_page = null;
+    private $filter_player_of_match = false;
 	private $output_as_csv = null;
 
 	/**
@@ -163,6 +164,16 @@ class StatisticsManager extends DataManager
         else $this->filter_tournaments = array();
     }
 
+    /**
+     * Limits supporting queries to consider only statistics where the player was nominated player of the match
+     * @param bool $apply_filter
+     * @return void
+     */
+    public function FilterPlayerOfTheMatch($apply_filter)
+    {
+        $this->filter_player_of_match = (bool)$apply_filter;
+    }
+    
 	/**
 	 * Sets the maximum number of results for supporting queries
 	 * @param $maximum
@@ -205,6 +216,7 @@ class StatisticsManager extends DataManager
 		$sm = $this->GetSettings()->GetTable('SeasonMatch');
 		$seasons = $this->GetSettings()->GetTable("Season");
 
+        if ($this->filter_player_of_match) $where .= "AND $statistics.player_of_match = 1 ";
 		if (count($this->filter_players)) $where .= "AND $statistics.player_id IN (" . implode(",",$this->filter_players) . ") ";
 		if (count($this->filter_seasons)) $where .= "AND $sm.season_id IN (" . implode(",",$this->filter_seasons) . ") ";
 		if (count($this->filter_competitions)) $where .= "AND $seasons.competition_id IN (" . implode(",",$this->filter_competitions) . ") ";
@@ -852,10 +864,10 @@ class StatisticsManager extends DataManager
 
 	
     /**
-     * Gets player of the match nominations based on current filters
+     * Gets match performances by individual players based on current filters
      * @return An array of player performances, or CSV download
      */
-    public function ReadPlayerOfTheMatchNominations()
+    public function ReadMatchPerformances()
     {
         $players = $this->GetSettings()->GetTable("Player");
         $statistics = $this->GetSettings()->GetTable("PlayerMatch");
@@ -870,7 +882,7 @@ class StatisticsManager extends DataManager
         if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
         if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
 
-        $where = "WHERE player_of_match = 1 ";
+        $where = "WHERE player_role = " . Player::PLAYER . " ";
         $where = $this->ApplyFilters($where);
 
         $sql = "SELECT $players.player_id, player_name, $players.short_url AS player_short_url, 

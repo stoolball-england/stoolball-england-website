@@ -2,11 +2,11 @@
 require_once 'xhtml/tables/xhtml-table.class.php';
 
 /**
- * Table of player of the match nominations
+ * Table of player performances in batting, bowling and fielding
  * @author Rick
  *
  */
-class PlayerOfTheMatchTable extends XhtmlTable
+class PlayerPerformanceTable extends XhtmlTable
 {
     private $performance_data;
     private $first_result;
@@ -29,7 +29,7 @@ class PlayerOfTheMatchTable extends XhtmlTable
         parent::XhtmlTable();
 
         # Create the table header
-        $this->SetCaption("Player of the match nominations, most recent first");
+        $this->SetCaption("Player performances, most recent first");
         $this->SetCssClass('player-of-match');
         $player = new XhtmlCell(true, "Player");
         $player->SetCssClass("player");

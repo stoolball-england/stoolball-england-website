@@ -242,7 +242,7 @@ class CurrentPage extends StoolballPage
 		echo '<h1><span property="schema:name">' . htmlentities($this->player->GetName(), ENT_QUOTES, "UTF-8", false) . '</span>' . htmlentities($by . ' ' . $this->player->Team()->GetName() . $this->filter, ENT_QUOTES, "UTF-8", false) . "</h1>";
 
 		# When has this player played?
-		$match_or_matches = ($this->player->GetTotalMatches() == 1) ? " match " : " matches ";
+		$match_or_matches = ($this->player->GetTotalMatches() == 1) ? " match" : " matches";
 
         $years = $this->player->GetPlayingYears();
 
@@ -263,20 +263,27 @@ class CurrentPage extends StoolballPage
 
 		$team_name = '<span rel="schema:memberOf"><span about="' . htmlentities($this->player->Team()->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '" typeof="schema:SportsTeam"><a property="schema:name" rel="schema:url" href="' . htmlentities($this->player->Team()->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->player->Team()->GetName(), ENT_QUOTES, "UTF-8", false) . "</a></span></span>";
 
+         $querystring = '?player=' . $this->player->GetId();
+         if ($_SERVER["QUERY_STRING"]) {
+             $querystring = htmlspecialchars('?' . $_SERVER["QUERY_STRING"]);
+         }
+
 		if ($this->player->GetPlayerRole() == Player::PLAYER)
 		{
-		    $played_total = $this->player->GetTotalMatches() == 0 ? " hasn't played any " : " played " . $this->player->GetTotalMatches();
-			echo "<p>" . htmlentities($this->player->GetName() . $played_total . $match_or_matches, ENT_QUOTES, "UTF-8", false) . "for ${team_name}${filtered}${years}.</p>";
-}
-else
-{
-	echo "<p>$team_name recorded " . htmlentities($this->player->TotalRuns() . " " . strtolower($this->player->GetName()) . " in " . $this->player->GetTotalMatches() . $match_or_matches . "${filtered}${years}.", ENT_QUOTES, "UTF-8", false) . "</p>";
- }
-
- $querystring = '?player=' . $this->player->GetId();
- if ($_SERVER["QUERY_STRING"]) {
-     $querystring = htmlspecialchars('?' . $_SERVER["QUERY_STRING"]);
- }
+		    if ($this->player->GetTotalMatches() == 0) 
+		    {
+    		    $played_total = " hasn't played any " . $match_or_matches;
+            }
+            else 
+            {
+                $played_total = ' played <a href="/play/statistics/player-performances' . $querystring . '">' . $this->player->GetTotalMatches() . $match_or_matches . '</a>';
+            }
+			echo "<p>" . htmlentities($this->player->GetName(), ENT_QUOTES, "UTF-8", false) . $played_total . " for ${team_name}${filtered}${years}.</p>";
+        }
+        else
+        {
+        	echo "<p>$team_name recorded " . htmlentities($this->player->TotalRuns() . " " . strtolower($this->player->GetName()) . " in " . $this->player->GetTotalMatches() . $match_or_matches . "${filtered}${years}.", ENT_QUOTES, "UTF-8", false) . "</p>";
+        }
 
  # Player of match
  if ($this->player->GetTotalPlayerOfTheMatchNominations() > 0)
