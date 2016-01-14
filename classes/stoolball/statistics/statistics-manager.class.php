@@ -803,7 +803,7 @@ class StatisticsManager extends DataManager
 		}
 
 		$sql = "SELECT player_id, player_name, player_url, team_id, team_name,
-		overs, maidens, runs_conceded, wickets, match_id, match_time, opposition_id, opposition_name
+		overs, maidens, runs_conceded, wickets, $statistics.match_id, match_time, opposition_id, opposition_name
 		$from 
 		$where 
 		$max_results
