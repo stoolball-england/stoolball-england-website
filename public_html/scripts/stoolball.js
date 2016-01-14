@@ -25,13 +25,13 @@ if (typeof (jQuery) != "undefined") {
         applyMedium();
     }
     
-    if (!Modernizr.mq("only screen and (min-width: 800px)")) {
+    if (!Modernizr.mq("only screen and (min-width: 900px)")) {
         
         // Polyfill media query in JavaScript
         var mqLarge = $("link.jsmqLarge", "head");
         function applyLarge() {
             mqLarge.each(function() {
-                this.disabled = document.documentElement.offsetWidth < 800;
+                this.disabled = document.documentElement.offsetWidth < 900;
             });
         }
         $(window).resize(applyLarge);

@@ -80,10 +80,11 @@ class CurrentPage extends StoolballPage
             $title = "Go to a " . strtolower($this->player_type_text) . " stoolball tournament";
         } 
         echo "<h1>" . htmlentities($title, ENT_QUOTES, "UTF-8", false) . "</h1>";
-        ?>
-        <div class="tab-option tab-active large"><h2>List of tournaments</h2></div>
-        <div class="tab-option tab-inactive"><p><a href="/tournaments/map">Map of tournaments</a></p></div>
 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('List of tournaments' => '', 'Map of tournaments' => '/tournaments/map');
+        echo new Tabs($tabs);
+        ?>
         <div class="box tab-box">
         <div class="dataFilter"><nav><p class="follow-on large">Show me:</p>
             <ul>

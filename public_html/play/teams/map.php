@@ -51,11 +51,11 @@ class CurrentPage extends StoolballPage
 	{
 		echo new XhtmlElement('h1', htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false));
 		
-		# Content container
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('List of teams' => '/teams/all', 'Map of teams' => '');
+        echo new Tabs($tabs);
+ 
         ?>
-        <div class="tab-option tab-inactive"><p><a href="/teams/all">List of teams</a></p></div>
-        <div class="tab-option tab-active large"><h2>Map of teams</h2></div>
-
         <div class="box tab-box">
         <div class="dataFilter"><nav><p class="follow-on large">Show me:</p>
             <ul>

@@ -10,6 +10,13 @@
 /* Move the menu to accommodate a larger logo. */
 .menu { left: 270px; top: 38px; }
 
+/* Tabs used in Play! section. */
+
+.tab-option { min-width: 100px; font-size: 1.33em; }
+.tab-active h2 { margin: 10px 15px; }
+.tab-inactive a:link, .tab-inactive a:visited { padding: 10px 15px; }
+.tab-box img { float: right; margin: 0 0 15px 15px;}
+
 /* Download calendar 
  * 
  * <a class="calendar">

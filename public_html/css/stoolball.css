@@ -119,22 +119,6 @@ div.nav p { display: block; }
                            -15px 0 3px #999,
                             0 10px 20px #ccc inset;}
 
-/* Re-usable box style
- * 
- * <div class="box">
- * 		<div class="box-content" />
- * </div>
- * */
-.box { background: #eee url(/images/wicket-light-tile.jpg); margin: 15px 0; overflow: hidden; width: 100%; border-radius: 5px; }
-.box-content { padding: 15px; }
-
-.box-content > h2:first-child { margin-top: 0;}
-
-.box-content table { background: none;}
-.box-content tr { border: 1px solid #BBB;}
-.box-content thead tr { border-top: none;}
-.box-content td, .box-content th { border-color: #BBB; }
-
 /* Forms 
    .legacy-form indicates a style which has been limited to old .formPart-style forms
  */
@@ -241,29 +225,6 @@ ul.tiles .manage-tile { background: url(/images/play/diary.jpg) no-repeat center
 ul.tiles .equipment-tile { background: url(/images/play/bat.jpg) no-repeat center bottom; }
 ul.tiles .coaching-tile { background: url(/images/play/coaching.jpg) no-repeat center bottom; }
 ul.tiles .facebook-tile { background: url(/images/play/facebook.jpg) no-repeat center bottom; }
-
-/* Tabs used in Play! section.
- * .tab-box should be longer than the tabs, and can have a rounded top right corner */
-
-.tab-option { margin: 10px 1px 0 0; float: left; min-width: 100px; max-width: 300px; height: 2.5em; font-size: 1.33em; border-radius: 10px 10px 0 0; }
-.tab-active { background: #008040; color: #fff;}
-.tab-inactive { background: #503C03 url(/images/tab-inactive.gif) repeat; color: #fff;}
-.tab-active h2 { margin: 10px 15px; color: #fff; font-size: 1em; line-height: 1.4em; }
-.tab-inactive a:link, .tab-inactive a:visited { display: block; padding: 10px 15px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; text-decoration: none; }
-.tab-inactive a:hover, .tab-inactive a:focus, .tab-inactive a:active { background-image: url(/images/tab-hover.gif); border-radius: 10px 10px 0 0; }
-.tab-box { clear:both; border-radius: 0 5px 5px 5px; }
-.tab-box .dataFilter { border-radius: 0 5px 0 0; }
-.tab-box img { float: right; margin: 0 0 15px 15px;}
-
-.dataFilter { margin: 0; background: #008040 url(/images/noise-bottom-light.gif) repeat-x left bottom; padding: 5px 15px 18px; }
-.dataFilter h1 { color: #FFF; padding: 4px 12px 0; margin: 0; font-size: 1.2em; }
-.dataFilter p { clear: both; margin: 5px 15px 5px 0; }
-.dataFilter p.follow-on { clear: none; float: left; }
-.dataFilter p.total { clear: none; float: right; margin: 5px 0 5px 15px; }
-.dataFilter ul { max-width: none; }
-.dataFilter .multiple-filters { float: left; margin: 0 0 5px; }
-.dataFilter .first-filter { border-bottom: 1px solid #CCC; padding-bottom: 10px; margin: 0 0 -1px; }
-.dataFilter .following-filter { clear: both; border-top: 1px solid #CCC; margin-top: 0; padding: 10px 0 0; } 
 
 /* Listings in Play! section */
 .play img { float: right; margin: 0 0 15px 15px; border: 1px solid #999; border-radius: 5px; }

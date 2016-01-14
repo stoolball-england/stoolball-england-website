@@ -83,29 +83,39 @@ class CurrentPage extends StoolballPage
 	{
 		echo new XhtmlElement('h1', htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false));
 		
+        ?>
+        <div class="small">
+        <?php
+
 		if (is_null($this->player_type) and !$this->administrative_area)
 		{
-		 ?>
-<nav>
-<ul class="nav small">
-	<li><a href="/teams/map">Map of stoolball teams</a></li>
-	<li><a href="/teams/mixed">Mixed teams</a></li>
-	<li><a href="/teams/ladies">Ladies' teams</a></li>
-	<li><a href="/teams/junior">Junior teams</a></li>
-	<li><a href="/teams/past">Past teams</a></li>
-	<li><a href="/play/manage/start-a-new-stoolball-team/">Start a team</a></li>
-	<li><a href="<?php  echo $this->GetSettings()->GetUrl('TeamAdd'); ?>">Tell us about your team</a></li>
-</ul>
-</nav>
-		 <?php
-		}
-        		
-        ?>
-        <div class="tab-option tab-active large"><h2>List of teams</h2></div>
-        <div class="tab-option tab-inactive large"><p><a href="/teams/map">Map of teams</a></p></div>
+		?>
+            <nav>
+            <ul class="nav">
+            	<li><a href="/teams/map">Map of stoolball teams</a></li>
+            	<li><a href="/teams/mixed">Mixed teams</a></li>
+            	<li><a href="/teams/ladies">Ladies' teams</a></li>
+            	<li><a href="/teams/junior">Junior teams</a></li>
+            	<li><a href="/teams/past">Past teams</a></li>
+            	<li><a href="/play/manage/start-a-new-stoolball-team/">Start a team</a></li>
+            	<li><a href="<?php  echo $this->GetSettings()->GetUrl('TeamAdd'); ?>">Tell us about your team</a></li>
+            </ul>
+            </nav>
 
-        <div class="box tab-box">
-        <div class="dataFilter large"><nav>
+    		 <?php
+ 		}
+    
+        $this->DisplayTeams();
+        ?>
+        </div>
+        <?php		
+                
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('List of teams' => '', 'Map of teams' => '/teams/map');
+        echo new Tabs($tabs, 'large');
+        ?>
+        <div class="box tab-box large">
+        <div class="dataFilter"><nav>
                         <?php 
             if ($this->administrative_area)
             { 
@@ -152,30 +162,7 @@ class CurrentPage extends StoolballPage
 
         <div class="box-content play">
         <?php 		
-        if ($this->administrative_area)
-        { 
-	        $team_list = new TeamListControl($this->teams);
-            $team_list->SetShowPlayerType(true);
-            $team_list->SetIsNavigationList(true);
-    		$team_list->SetNoTeamsMessage('There are no teams which match your selection.');
-    		echo $team_list;
-        }
-        else if (is_array($this->areas) and count($this->areas))  
-        {
-            $html = '<ul class="nav';
-            if (is_null($this->player_type))
-            {
-                $html .= " large";
-            } 
-            $html .= '">';
-            foreach ($this->areas as $area) 
-            {
-                $html .= '<li><a href="/teams/' . (isset($_GET['player']) ? html::Encode(preg_replace('/[^a-z]/',"",$_GET['player'])) : "all") . '/' . HTML::Encode(preg_replace('/[^a-z]/',"",strtolower($area))) . '">' . 
-                            htmlentities($area, ENT_QUOTES, "UTF-8", false) . '</a></li>';
-            }
-            $html .= "</ul>";
-            echo $html;
-        }      
+        $this->DisplayTeams();     
         ?>
         </div>
         </div>
@@ -199,6 +186,34 @@ class CurrentPage extends StoolballPage
             $this->ShowSocialAccounts();
         }
 	}
+
+    private function DisplayTeams()
+    {
+        if ($this->administrative_area)
+        { 
+            $team_list = new TeamListControl($this->teams);
+            $team_list->SetShowPlayerType(true);
+            $team_list->SetIsNavigationList(true);
+            $team_list->SetNoTeamsMessage('There are no teams which match your selection.');
+            echo $team_list;
+        }
+        else if (is_array($this->areas) and count($this->areas))  
+        {
+            $html = '<ul class="nav';
+            if (is_null($this->player_type))
+            {
+                $html .= " large";
+            } 
+            $html .= '">';
+            foreach ($this->areas as $area) 
+            {
+                $html .= '<li><a href="/teams/' . (isset($_GET['player']) ? html::Encode(preg_replace('/[^a-z]/',"",$_GET['player'])) : "all") . '/' . HTML::Encode(preg_replace('/[^a-z]/',"",strtolower($area))) . '">' . 
+                            htmlentities($area, ENT_QUOTES, "UTF-8", false) . '</a></li>';
+            }
+            $html .= "</ul>";
+            echo $html;
+        } 
+    }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
 ?>

@@ -65,32 +65,27 @@ class CurrentPage extends StoolballPage
 
 	function OnPageLoad()
 	{
-
+ 
 		echo "<h1>Statistics for " . Html::Encode($this->competition->GetName()) . ", All seasons</h1>";
 
 		require_once("_summary-data-found.php");
+        require_once('xhtml/navigation/tabs.class.php');
         
-        ?>
-        <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($this->season->GetNavigateUrl());?>">Summary</a></p></div>
-        <?php
+        $tabs = array('Summary' => $this->season->GetNavigateUrl());
         if ($this->season->MatchTypes()->Contains(MatchType::LEAGUE))
         {
-            ?>
-            <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($this->season->GetTableUrl());?>">Table</a></p></div>
-            <?php
+            $tabs['Table'] = $this->season->GetTableUrl();
         }
-
         if (count($this->season->GetTeams()))
         {
-            ?>
-            <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($this->season->GetMapUrl());?>">Map</a></p></div>
-            <?php 
+            $tabs['Map'] = $this->season->GetMapUrl();
         }
+        $tabs['Statistics'] = '';
+        
+        echo new Tabs($tabs);
         ?>
-        <div class="tab-option tab-active large"><h2>Statistics</h2></div>
-
         <div class="box tab-box">
-            <div class="dataFilter large"></div>
+            <div class="dataFilter"></div>
             <div class="box-content">
         <?php 
 

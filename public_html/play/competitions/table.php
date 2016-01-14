@@ -103,6 +103,7 @@ class CurrentPage extends StoolballPage
 
 	function OnPageLoad()
 	{
+        require_once('xhtml/navigation/tabs.class.php');
         require_once('stoolball/season-list-control.class.php');
 
         /* @var $season Season */
@@ -110,21 +111,19 @@ class CurrentPage extends StoolballPage
 
         echo new XhtmlElement('h1', Html::Encode($this->GetPageTitle()));
 
-        ?>
-        <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($season->GetNavigateUrl()); ?>">Summary</a></p></div>
-        <div class="tab-option tab-active large"><h2>Table</h2></div>
-        <?php 
+        $tabs = array('Summary' => $season->GetNavigateUrl());
+        $tabs['Table'] = '';
+
         if (count($season->GetTeams()))
         {
-            ?>
-            <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($season->GetMapUrl());?>">Map</a></p></div>
-            <?php 
+            $tabs['Map'] = $season->GetMapUrl();
         }
+        $tabs['Statistics'] = $season->GetStatisticsUrl();
+        
+        echo new Tabs($tabs);
         ?>
-        <div class="tab-option tab-inactive"><p><a href="<?php echo Html::Encode($season->GetStatisticsUrl());?>">Statistics</a></p></div>
-
         <div class="box tab-box">
-            <div class="dataFilter large"></div>
+            <div class="dataFilter"></div>
             <div class="box-content">
   
         <?php 
