@@ -91,7 +91,7 @@ class CurrentPage extends StoolballPage
                 $this->add_player_already_exists = true;
             } 
             else {
-                $this->player_manager->SavePlayer($this->player, true);
+                $this->player_manager->SavePlayer($this->player);
                 unset($player_manager);
 
                 $this->Redirect($this->team->GetPlayersNavigateUrl());
@@ -161,7 +161,7 @@ class CurrentPage extends StoolballPage
                 # Set the team short URL so that it can be used to regenerate the player's short URL
                 $this->player->Team()->SetShortUrl($player_to_edit->Team()->GetShortUrl());             
 
-                $this->player_manager->SavePlayer($this->player, true);
+                $this->player_manager->SavePlayer($this->player);
                 unset($player_manager);
 
                 $this->Redirect($this->player->GetPlayerUrl());

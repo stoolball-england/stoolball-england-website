@@ -695,6 +695,14 @@ class TeamManager extends DataManager
                 $o_url_manager->Save($new_short_url);
                 if (!$adding) { 
                     $o_url_manager->ReplacePrefixForChildUrls(Player::GetShortUrlFormatForType($this->GetSettings()), $old_team->GetShortUrl(), $team->GetShortUrl());
+                    
+                    $old_prefix = $this->SqlString($old_team->GetShortUrl() . "/%");
+                    $new_prefix = $this->SqlString($team->GetShortUrl());
+                    $sql = "UPDATE nsa_player_match SET
+                            player_url = CONCAT($new_prefix, RIGHT(player_url,CHAR_LENGTH(player_url)-LOCATE('/',player_url)+1))
+                            WHERE player_url LIKE $old_prefix";
+
+                    $this->LoggedQuery($sql);
                 }
             }
             unset($o_url_manager);

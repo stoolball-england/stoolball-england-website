@@ -29,6 +29,8 @@ class CurrentPage extends StoolballPage
 	private $filter_control;
     
     private $filter_matched_nothing;
+    
+    private $not_found = false;
 
 	public function OnPageInit()
 	{
@@ -45,6 +47,12 @@ class CurrentPage extends StoolballPage
 		$player_manager = new PlayerManager($this->GetSettings(), $this->GetDataConnection());
 		$player_manager->ReadPlayerById($this->player->GetId());
 		$this->player_unfiltered = $player_manager->GetFirst();
+        if (!$this->player_unfiltered instanceof Player) 
+        {
+            http_response_code(404);
+            $this->not_found = true;
+            return;
+        }
         
         # Update search engine
         if ($this->player_unfiltered->GetSearchUpdateRequired())
@@ -148,6 +156,12 @@ class CurrentPage extends StoolballPage
 
 	public function OnPrePageLoad()
 	{
+	    if ($this->not_found) 
+	    {
+	       $this->SetPageTitle("Page not found");
+           return;    
+	    }
+        
 		if ($this->player->GetId())
 		{
 			$title = ($this->player->GetPlayerRole() == Player::PLAYER) ? ", a player for " : " conceded by ";
@@ -198,6 +212,12 @@ class CurrentPage extends StoolballPage
 
 	public function OnPageLoad()
 	{
+	    if ($this->not_found) 
+	    {
+           require_once($_SERVER['DOCUMENT_ROOT'] . "/wp-content/themes/stoolball/section-404.php");
+	       return;   
+	    }
+        
 		if (!$this->player->GetId())
 		{
 			$url = $_SERVER['REQUEST_URI'];

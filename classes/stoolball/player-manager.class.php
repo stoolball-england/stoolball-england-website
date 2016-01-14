@@ -385,10 +385,9 @@ class PlayerManager extends DataManager
 	/**
 	 * @return int
 	 * @param Player $player
-     * @param bool $rename_only
 	 * @desc Save the supplied player to the database, and return the id
 	 */
-	public function SavePlayer($player, $rename_only=false)
+	public function SavePlayer($player)
 	{
 		/* @var $player Player */
 		if (!$player instanceof Player) throw new Exception("Unable to save player");
@@ -427,13 +426,17 @@ class PlayerManager extends DataManager
 			short_url = " . Sql::ProtectString($this->GetDataConnection(), $player->GetShortUrl(), false) . ",
             update_search = 1,  
 			date_changed = " . gmdate('U');
-            if (!$rename_only) {
-                $sql .= ", team_id = " . Sql::ProtectNumeric($player->Team()->GetId(), false) . ",
-                           player_role = " . Sql::ProtectNumeric($player->GetPlayerRole(), false);
-            }
 			$sql .= " WHERE player_id = " . Sql::ProtectNumeric($player->GetId());
 
 			$this->LoggedQuery($sql);
+            
+            # Because name or URL may have changed, update stats table
+            $sql = "UPDATE nsa_player_match SET 
+            player_name = " . Sql::ProtectString($this->GetDataConnection(), $corrected_player_name, false) . ",
+            player_url = " . Sql::ProtectString($this->GetDataConnection(), $player->GetShortUrl(), false) . "
+            WHERE player_id = " . Sql::ProtectNumeric($player->GetId());
+
+            $this->LoggedQuery($sql); 
 		}
 		else
 		{
