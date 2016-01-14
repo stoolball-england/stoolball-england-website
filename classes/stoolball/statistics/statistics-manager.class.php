@@ -603,7 +603,7 @@ class StatisticsManager extends DataManager
 
 		$order_by = "ORDER BY SUM($divide_field)/SUM($divide_by_field) ";
 		$order_by .= $higher_is_better ? "DESC" : "ASC";
-		$order_by .= ", COUNT(DISTINCT $statistics.match_id) ASC, player_name ASC ";
+		$order_by .= ", COUNT(DISTINCT $statistics.match_id) ASC, $players.player_name ASC ";
 
 		if ($this->filter_max_results)
 		{
@@ -712,7 +712,7 @@ class StatisticsManager extends DataManager
 		}
 
 		$sql = "SELECT player_id, player_name, player_url, team_id, team_name,
-		runs_scored, how_out, match_id, match_time, opposition_id, opposition_name
+		runs_scored, how_out, $statistics.match_id, match_time, opposition_id, opposition_name
 		$from 
 		$where 
 		$max_results
