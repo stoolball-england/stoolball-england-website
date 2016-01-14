@@ -675,6 +675,15 @@ class TeamManager extends DataManager
             $sql .= "WHERE team_id = " . Sql::ProtectNumeric($team->GetId());
 
             $this->LoggedQuery($sql);
+            
+            # In case team name changed, update stats table
+            if ($is_admin or $is_once_only) 
+            {
+                $sql = "UPDATE nsa_player_match SET team_name = " . $this->SqlString($team->GetName()) . " WHERE team_id = " . Sql::ProtectNumeric($team->GetId());
+                $this->LoggedQuery($sql);
+                $sql = "UPDATE nsa_player_match SET opposition_name = " . $this->SqlString($team->GetName()) . " WHERE opposition_id = " . Sql::ProtectNumeric($team->GetId());
+                $this->LoggedQuery($sql);
+            }
 		}
 
         if ($adding or $is_admin)
