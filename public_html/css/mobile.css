@@ -190,9 +190,8 @@ input.year { width: 3em; }
 .box-content > h2:first-child { margin-top: 0;}
 
 .box-content table { background: none;}
-.box-content caption { background-image: url(/images/noise-bottom.gif); }
 .box-content tr { border: 1px solid #BBB;}
-.box-content thead tr { border-top: none; background: #ccc url(/images/wicket-tile.jpg); }
+.box-content thead tr { border-top: none; }
 .box-content td, .box-content th { border-color: #BBB; }
 
 /* Tabs used in Play! section.
@@ -205,7 +204,7 @@ input.year { width: 3em; }
 .tab-inactive p { margin-top: 0;}
 .tab-inactive a:link, .tab-inactive a:visited { display: block; padding: 10px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; text-decoration: none; }
 .tab-inactive a:hover, .tab-inactive a:focus, .tab-inactive a:active { background-image: url(/images/tab-hover.gif); border-radius: 10px 10px 0 0; }
-.tab-box { clear:both; border-radius: 0 5px 5px 5px; }
+.tab-box { clear:both; border-radius: 0 5px 5px 5px; box-shadow: rgba(0,0,0,.2) 0px 0px 1px 1px inset; background: none; }
 .tab-box .dataFilter { border-radius: 0 5px 0 0; }
 .tab-box img { margin: 10px 0;} /* Identity images on pages in the Play section */
 
