@@ -190,8 +190,9 @@ input.year { width: 3em; }
 .box-content > h2:first-child { margin-top: 0;}
 
 .box-content table { background: none;}
+.box-content caption { background-image: url(/images/noise-bottom.gif); }
 .box-content tr { border: 1px solid #BBB;}
-.box-content thead tr { border-top: none;}
+.box-content thead tr { border-top: none; background: #ccc url(/images/wicket-tile.jpg); }
 .box-content td, .box-content th { border-color: #BBB; }
 
 /* Tabs used in Play! section.

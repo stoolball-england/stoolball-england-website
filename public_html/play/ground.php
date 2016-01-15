@@ -128,6 +128,16 @@ class CurrentPage extends StoolballPage
 		$o_fn->AddAttribute("property", "schema:name");
 		echo $o_fn;
 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => '', 'Statistics' => $this->ground->GetStatsNavigateUrl());       
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+ 
 		$address = new XhtmlElement("div");
 		$address->AddAttribute("rel", "schema:address");
 		$address->AddAttribute("resource", $this->ground->GetLinkedDataUri() . "#PostalAddress");
@@ -250,10 +260,15 @@ class CurrentPage extends StoolballPage
 
 		echo $o_meta;
 		echo "</div>";
+        ?>
+        </div>
+        </div>
+        <?php 
 
 		$this->AddSeparator();
 
 		$o_user = new UserEditPanel($this->GetSettings(), 'this ground');
+        $o_user->AddCssClass("with-tabs");
 		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_GROUNDS))
 		{
 			$o_user->AddLink("edit this ground", $this->ground->GetEditGroundUrl());
@@ -277,31 +292,6 @@ class CurrentPage extends StoolballPage
 		{
 			require_once('stoolball/statistics-highlight-table.class.php');
 			echo new StatisticsHighlightTable($this->best_batting, $this->most_runs, $this->best_bowling, $this->most_wickets, $this->most_catches, "All seasons");
-			?>
-<div class="box statsAd large">
-<div>
-<div>
-<div>
-<div><a href="<?php echo $this->ground->GetStatsNavigateUrl(); ?>">View statistics <span>for this ground</span></a></div>
-</div>
-</div>
-</div>
-</div>
-			<?php
-		}
-		else
-		{
-			?>
-<div class="box statsAd large">
-<div>
-<div>
-<div>
-<div><a href="/play/manage/website/how-to-add-match-results/">Add player <span>statistics now</span></a></div>
-</div>
-</div>
-</div>
-</div>
-			<?php
 		}
 	}
 }

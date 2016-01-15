@@ -78,7 +78,7 @@ class CurrentPage extends StoolballPage
 		$title = "Statistics at " . $this->ground->GetNameAndTown() . ' stoolball ground';
 		if ($this->season) $title .= " in the $this->season season";
 		$this->SetPageTitle($title);
-		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
+		$this->SetContentConstraint(StoolballPage::ConstrainBox());
 		$this->SetContentCssClass('stats');
 	}
 
@@ -90,8 +90,16 @@ class CurrentPage extends StoolballPage
 
 		# See what stats we've got available
 		require_once("_summary-data-found.php");
-
-        $ground_page_link = "<a href=\"" . htmlentities($this->ground->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->ground->GetName(), ENT_QUOTES, "UTF-8", false) . " page</a>";
+ 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => $this->ground->GetNavigateUrl(), 'Statistics' => '');       
+        echo new Tabs($tabs);
+ 
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
 		if (!$has_player_stats)
 		{
 			$yet = ($this->season) ? "in the $this->season season yet" : "yet";
@@ -101,7 +109,6 @@ class CurrentPage extends StoolballPage
 		}
 		else
 		{
-		    echo "<p>View the $ground_page_link.</p>";
 			require_once("_summary-controls.php");
 
 			# Link to other seasons
@@ -128,8 +135,10 @@ class CurrentPage extends StoolballPage
 				echo "</ul>";
 			}
 		}
-	$this->AddSeparator();
-	$this->BuySomething();
+        ?>
+        </div>
+        </div>
+        <?php 
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
