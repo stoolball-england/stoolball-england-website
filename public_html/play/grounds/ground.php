@@ -93,10 +93,10 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		$this->SetPageTitle($this->ground->GetName());
+		$this->SetPageTitle($this->ground->GetNameAndTown());
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 		$this->LoadClientScript('/scripts/maps-3.js');
-		$this->LoadClientScript('ground-4.js', true);
+		$this->LoadClientScript('ground.js', true);
 		
 		$description = $this->ground->GetNameAndTown();
 		$teams = $this->ground->Teams()->GetItems();
@@ -123,7 +123,7 @@ class CurrentPage extends StoolballPage
 	{
 		echo '<div class="ground vcard" typeof="schema:Place" about="' . $this->ground->GetLinkedDataUri() . '">';
 		
-		$o_fn = new XhtmlElement('h1', htmlentities($this->ground->GetName(), ENT_QUOTES, "UTF-8", false));
+		$o_fn = new XhtmlElement('h1', htmlentities($this->ground->GetNameAndTown(), ENT_QUOTES, "UTF-8", false));
 		$o_fn->SetCssClass('fn');
 		$o_fn->AddAttribute("property", "schema:name");
 		echo $o_fn;

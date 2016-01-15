@@ -219,7 +219,7 @@ class Ground implements IHasShortUrl
 	public static function GetShortUrlFormatForType(SiteSettings $settings)
 	{
 		return new ShortUrlFormat($settings->GetTable('Ground'), 'short_url', array('ground_id'), array('GetId'),
-			array('{0}' => $settings->GetUrl('Ground') . '{0}',
+			array('{0}' => '/play/grounds/ground.php?item={0}',
 				'{0}/statistics' => $settings->GetUrl('GroundStatistics'),
                 '{0}/edit' => '/play/grounds/groundedit.php?item={0}',
                 '{0}/delete' => '/play/grounds/grounddelete.php?item={0}'

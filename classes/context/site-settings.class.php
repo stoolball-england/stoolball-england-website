@@ -56,8 +56,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'competitions/competition.php?latest=1&item=';
             case 'EmailAlerts':
                 return $this->GetFolder('Account') . 'emails.php';
-            case 'Ground':
-                return $this->GetFolder('Play') . 'ground.php?item=';
             case 'GroundStatistics':
                 return $this->GetFolder('Play') . 'statistics/summary-ground.php?item={0}';
             case 'Match':

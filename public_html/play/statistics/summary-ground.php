@@ -104,8 +104,7 @@ class CurrentPage extends StoolballPage
 		{
 			$yet = ($this->season) ? "in the $this->season season yet" : "yet";
 			echo "<p>There aren't any statistics for " . htmlentities($this->ground->GetName() . ' ' . $yet, ENT_QUOTES, "UTF-8", false) . '.</p>
-			<p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>' .
-			"<p>You can also view the $ground_page_link.</p>";
+			<p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>';
 		}
 		else
 		{
