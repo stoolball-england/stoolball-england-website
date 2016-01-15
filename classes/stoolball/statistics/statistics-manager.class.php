@@ -674,6 +674,143 @@ class StatisticsManager extends DataManager
 		return $performances;
 	}
 
+    /**
+     * Gets best performances in a match based on the specified fields and any current filters
+     * @param $exclude_extras bool
+     * @return An array of performances, or CSV download
+     */
+    public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $exclude_extras = true)
+    {
+        $players = $this->GetSettings()->GetTable("Player");
+        $statistics = $this->GetSettings()->GetTable("PlayerMatch");
+        $sm = $this->GetSettings()->GetTable('SeasonMatch');
+        $seasons = $this->GetSettings()->GetTable("Season");
+        $primary_field_name = $primary_field->FieldName();
+        $primary_field_header = $primary_field->DisplayHeader();
+        
+        $performances = array();
+
+        $select = "SELECT player_id, player_name, player_url, team_id, team_name,
+        $primary_field_name, $statistics.match_id, match_time, opposition_id, opposition_name";
+        
+        foreach ($secondary_fields as $secondary_field) {
+             /* @var $secondary_field StatisticsField */
+             
+            # No display header means it's not for selection or display
+            if (!$secondary_field->DisplayHeader()) {
+                continue;
+            }
+
+            $select .= ", " . $secondary_field->FieldName();
+        }
+                     
+        $competition_filter_active = (bool)count($this->filter_competitions);
+        $from = "FROM $statistics ";
+        if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
+        if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+
+        $where = "WHERE $primary_field_name IS NOT NULL ";
+        if ($exclude_extras) $where .= "AND player_role = " . Player::PLAYER . " ";
+        $where = $this->ApplyFilters($where);
+
+        $order_by = "ORDER BY $primary_field_name DESC";
+        
+        foreach ($secondary_fields as $secondary_field) {
+             /* @var $secondary_field StatisticsField */
+            
+            if (is_null($secondary_field->SortAscending()))
+            {
+                continue;
+            } 
+            
+            $order_by .= ", " . $secondary_field->FieldName();
+            $order_by .= ($secondary_field->SortAscending() ? " ASC" : " DESC");
+        }
+         
+        if ($this->filter_max_results)
+        {
+            # Need to get the value at the last position to show, but first must check there are at least as many
+            # records as the total requested, and set a lower limit if not
+            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS count $from $where");
+            $row = $result->fetch();
+            $limit = (intval($row->count) > 0 and intval($row->count) < $this->filter_max_results) ? intval($row->count)-1 : ($this->filter_max_results-1);
+            $max_results = "AND $primary_field_name >= (SELECT $primary_field_name $from $where $order_by LIMIT $limit,1) ";
+        }
+        else
+        {
+            $max_results = "";
+        }
+
+        $sql = "$select $from $where $max_results $order_by ";
+
+        if ($this->filter_page_size and $this->filter_page)
+        {
+            # Get the total number of results on all pages
+            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $max_results) AS total");
+            $row = $result->fetch();
+            $performances[] = $row->total;
+
+            # Limit main query to just the current page
+            $sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
+        }
+
+        $result = $this->GetDataConnection()->query($sql);
+        $csv = is_array($this->output_as_csv);
+        while ($row = $result->fetch())
+        {
+            # Return data as an array rather than objects because when we return the full,
+            # page to dataset it's far more memory efficient
+            $performance["player_id"] = $row->player_id;
+            $performance["player_name"] = $row->player_name;
+            if (!$csv) $performance["player_url"] = "/" . $row->player_url;
+            $performance["team_id"] = $row->team_id;
+            $performance["team_name"] = $row->team_name;
+
+            $performance["opposition_id"] = $row->opposition_id;
+            $performance["opposition_name"] = $row->opposition_name;
+
+            $performance["match_id"] = $row->match_id;
+            $performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
+
+            $performance[$primary_field_name] = $row->$primary_field_name;
+            
+            foreach ($secondary_fields as $secondary_field) {
+                /* @var $secondary_field StatisticsField */
+                
+                # No display header means it's not for selection or display
+                if (!$secondary_field->DisplayHeader()) {
+                    continue;
+                }
+
+                $secondary_field_name = $secondary_field->FieldName();
+                $performance[$secondary_field_name] = $csv ? $secondary_field->TransformValueForCsv($row->$secondary_field_name) : $row->$secondary_field_name;
+            }
+
+            $performances[] = $performance;
+        }
+
+        # Optionally add a header row and download a CSV file rather than returning the data
+        if ($csv)
+        {
+            require_once("data/csv.class.php");
+            $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)", $primary_field_header);
+            foreach ($secondary_fields as $secondary_field) {
+                /* @var $secondary_field StatisticsField */
+
+                # No display header means it's not for selection or display
+                if (!$secondary_field->DisplayHeader()) {
+                    continue;
+                }
+
+                $header_row[] = $secondary_field->DisplayHeader();
+            }
+            array_unshift($performances, $header_row);
+            CSV::PublishData($performances);
+        }
+
+        return $performances;
+    }
+    
 	/**
 	 * Gets best batting performances based on current filters
 	 * @param $exclude_extras bool
@@ -681,87 +818,15 @@ class StatisticsManager extends DataManager
 	 */
 	public function ReadBestBattingPerformance($exclude_extras = true)
 	{
-		$players = $this->GetSettings()->GetTable("Player");
-		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
-		$sm = $this->GetSettings()->GetTable('SeasonMatch');
-		$seasons = $this->GetSettings()->GetTable("Season");
-
-		$performances = array();
-
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		$from = "FROM $statistics ";
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
-
-		$where = "WHERE runs_scored IS NOT NULL ";
-		if ($exclude_extras) $where .= "AND player_role = " . Player::PLAYER . " ";
-		$where = $this->ApplyFilters($where);
-
-		if ($this->filter_max_results)
-		{
-			# Need to get the value at the last position to show, but first must check there are at least as many
-			# records as the total requested, and set a lower limit if not
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS count $from $where");
-			$row = $result->fetch();
-			$limit = (intval($row->count) > 0 and intval($row->count) < $this->filter_max_results) ? intval($row->count)-1 : ($this->filter_max_results-1);
-			$max_results = "AND runs_scored >= (SELECT runs_scored $from $where ORDER BY runs_scored DESC LIMIT $limit,1) ";
-		}
-		else
-		{
-			$max_results = "";
-		}
-
-		$sql = "SELECT player_id, player_name, player_url, team_id, team_name,
-		runs_scored, how_out, $statistics.match_id, match_time, opposition_id, opposition_name
-		$from 
-		$where 
-		$max_results
-		ORDER BY runs_scored DESC, how_out ASC ";
-
-		if ($this->filter_page_size and $this->filter_page)
-		{
-			# Get the total number of results on all pages
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $max_results) AS total");
-			$row = $result->fetch();
-			$performances[] = $row->total;
-
-			# Limit main query to just the current page
-			$sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
-		}
-
-		$result = $this->GetDataConnection()->query($sql);
-		$csv = is_array($this->output_as_csv);
-		while ($row = $result->fetch())
-		{
-			# Return data as an array rather than objects because when we return the full,
-			# page to dataset it's far more memory efficient
-			$performance["player_id"] = $row->player_id;
-			$performance["player_name"] = $row->player_name;
-			if (!$csv) $performance["player_url"] = "/" . $row->player_url;
-			$performance["team_id"] = $row->team_id;
-			$performance["team_name"] = $row->team_name;
-
-			$performance["opposition_id"] = $row->opposition_id;
-			$performance["opposition_name"] = $row->opposition_name;
-
-			$performance["match_id"] = $row->match_id;
-			$performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
-
-			$performance["runs_scored"] = $row->runs_scored;
-			$performance["how_out"] = $csv ? Batting::Text($row->how_out) : $row->how_out;
-
-			$performances[] = $performance;
-		}
-
-		# Optionally add a header row and download a CSV file rather than returning the data
-		if ($csv)
-		{
-			require_once("data/csv.class.php");
-			array_unshift($performances, array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)", "Runs", "How out"));
-			CSV::PublishData($performances);
-		}
-
-		return $performances;
+	    require_once("statistics-field.class.php");
+        require_once("stoolball/batting.class.php");
+        
+        $runs_scored = new StatisticsField("runs_scored", "Runs", true, null);
+        $how_out = new StatisticsField("how_out", "How out", true, function($value) {
+            return Batting::Text($value);
+        });
+        
+        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out), $exclude_extras);
 	}
 
 	/**
@@ -771,90 +836,18 @@ class StatisticsManager extends DataManager
 	public function ReadBestBowlingPerformance()
 	{
 		# NOTE: Don't check for runs_conceded IS NOT NULL in this stat, because 5/NULL is still better than 4/20
-
-		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
-        $sm = $this->GetSettings()->GetTable('SeasonMatch');
-		$seasons = $this->GetSettings()->GetTable("Season");
-
-		$performances = array();
-
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		$from = "FROM $statistics ";
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
-
-		// Wickets, even if 0, means the player bowled in the match, so check it is not null.
-		// Can trust wickets, not other fields, because wickets figure is generated whether bowling is recorded on batting and/or bowling card.
-		$where = "WHERE player_role = " . Player::PLAYER . " AND wickets IS NOT NULL ";
-		$where = $this->ApplyFilters($where);
-
-		if ($this->filter_max_results)
-		{
-			# Need to get the value at the last position to show, but first must check there are at least as many
-			# records as the total requested, and set a lower limit if not
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS count $from $where");
-			$row = $result->fetch();
-			$limit = (intval($row->count) > 0 and intval($row->count) < $this->filter_max_results) ? intval($row->count)-1 : ($this->filter_max_results-1);
-			$max_results = "AND wickets >= (SELECT wickets $from $where ORDER BY wickets DESC, has_runs_conceded DESC, runs_conceded ASC LIMIT $limit,1) ";
-		}
-		else
-		{
-			$max_results = "";
-		}
-
-		$sql = "SELECT player_id, player_name, player_url, team_id, team_name,
-		overs, maidens, runs_conceded, wickets, $statistics.match_id, match_time, opposition_id, opposition_name
-		$from 
-		$where 
-		$max_results
-		ORDER BY wickets DESC, has_runs_conceded DESC, runs_conceded ASC ";
-
-		if ($this->filter_page_size and $this->filter_page)
-		{
-			# Get the total number of results on all pages
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $max_results) AS total");
-			$row = $result->fetch();
-			$performances[] = $row->total;
-
-			# Limit main query to just the current page
-			$sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
-		}
-
-		$result = $this->GetDataConnection()->query($sql);
-		$csv = is_array($this->output_as_csv);
-		while ($row = $result->fetch())
-		{
-			# Return data as an array rather than objects because when we return the full,
-			# page to dataset it's far more memory efficient
-			$performance["player_id"] = $row->player_id;
-			$performance["player_name"] = $row->player_name;
-			if (!$csv) $performance["player_url"] = "/" . $row->player_url;
-			$performance["team_id"] = $row->team_id;
-			$performance["team_name"] = $row->team_name;
-
-			$performance["opposition_id"] = $row->opposition_id;
-			$performance["opposition_name"] = $row->opposition_name;
-
-			$performance["match_id"] = $row->match_id;
-			$performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
-
-			$performance["overs"] = $row->overs;
-			$performance["maidens"] = $row->maidens;
-			$performance["wickets"] = $row->wickets;
-			$performance["runs_conceded"] = $row->runs_conceded;
-
-			$performances[] = $performance;
-		}
-
-		# Optionally add a header row and download a CSV file rather than returning the data
-		if ($csv)
-		{
-			require_once("data/csv.class.php");
-			array_unshift($performances, array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)", "Wickets", "Runs"));
-			CSV::PublishData($performances);
-		}
-
-		return $performances;
+        # Wickets, even if 0, means the player bowled in the match, so check it is not null.
+        # Can trust wickets, not other fields, because wickets figure is generated whether bowling is recorded on batting and/or bowling card.
+		        
+        require_once("statistics-field.class.php");
+        
+        $wickets = new StatisticsField("wickets", "Wickets", true, null);
+        $has_runs_conceded = new StatisticsField("has_runs_conceded", "", false, null);
+        $runs_conceded = new StatisticsField("runs_conceded", "Runs", true, null);
+        $overs = new StatisticsField("overs", "Overs", null, null);
+        $maidens = new StatisticsField("maidens", "Maidens", null, null);
+        
+        return $this->ReadBestFiguresInAMatch($wickets, array($has_runs_conceded, $runs_conceded, $overs, $maidens), true);
 	}
 
 	
