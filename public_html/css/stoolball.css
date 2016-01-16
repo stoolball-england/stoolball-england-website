@@ -261,7 +261,8 @@ a.promo { margin: 15px 0; display: block; }
 .spreadshirt-box { border: 3px solid #008044; border-top: 0; margin: 0 0 15px; border-radius: 0 0 5px 5px; padding: 10px; overflow: hidden;}
 
 /* Teams, seasons and competitions */
-.player-list li { width: 30%; }
+.player-list li { width: 50%; }
+@media only screen and (min-width: 1000px) { .player-list li { width: 30%; } }
 
 /* League table for a season - when it's missing, need to clear after the image */
 .season-table .box-content h2 { clear: both; }
@@ -465,8 +466,9 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsGroup { width: 100%; overflow: hidden; margin-bottom: 40px; }
 .statsColumns { width: 100%; overflow: hidden; }
 .statsColumns h2 { margin-bottom: 0; }
-.statsColumn { float: left; width: 278px; margin: 0 22px 0 0; }
+.statsColumn { float: left; width: 48%; margin: 0 2% 0 0; }
 .statsColumn table.stats td.date { white-space: nowrap; }
+.statsColumn .numeric { width: 15%; }
 .statsGroup .chart { margin-top: 16px; }
 
 .statsAd { background: #ccc url(/images/wicket-tile.jpg);}

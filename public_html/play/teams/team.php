@@ -140,6 +140,20 @@ class CurrentPage extends StoolballPage
 
 		echo new TeamNameControl($this->team, 'h1');
 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => '');       
+        if ($this->has_player_stats) {
+            $tabs['Players'] = $this->team->GetPlayersNavigateUrl();
+        }
+        $tabs['Statistics'] = $this->team->GetStatsNavigateUrl();
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+		
         if (!$this->is_one_time_team)
         { 
     		# add club name
@@ -333,7 +347,6 @@ class CurrentPage extends StoolballPage
     			<?php
     		}
 		}
-		echo '</div>';
 
         
         if ($this->team->GetClub() and $this->team->GetClub()->GetTwitterAccount()) {
@@ -347,9 +360,15 @@ class CurrentPage extends StoolballPage
             $this->ShowSocial();
         }
 
+        ?>
+        </div>
+        </div>
+        </div>
+        <?php 
 		$this->AddSeparator();
 
 		$o_panel = new TeamEditPanel($this->GetSettings(), $this->team, $this->seasons, $this->a_matches);
+        $o_panel->AddCssClass("with-tabs");
 
 		$o_panel->AddLink("view statistics for this team", $this->team->GetStatsNavigateUrl(), "small");
 
@@ -373,18 +392,6 @@ class CurrentPage extends StoolballPage
              <span class="chart-js-template supporting-chart" id="all-results-chart"></span>
             <?php
 		}
-
-			?>
-<div class="box statsAd large">
-<div>
-<div>
-<div>
-<div><a href="<?php echo htmlentities($this->team->GetStatsNavigateUrl(), ENT_QUOTES, "UTF-8", false); ?>">View statistics <span>for this team</span></a></div>
-</div>
-</div>
-</div>
-</div>
-			<?php
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

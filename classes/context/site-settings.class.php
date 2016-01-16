@@ -78,8 +78,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'matchadd.php?team={0}&type=' . MatchType::PRACTICE;
             case 'MatchCalendar':
                 return $this->GetFolder('Play') . 'calendar.php?match={0}';
-            case 'Players':
-                return $this->GetFolder('Play') . 'players.php?team={0}';
             case 'Player':
                 return $this->GetFolder('Play') . 'player.php?player={0}';
             case 'PlayerAdd':

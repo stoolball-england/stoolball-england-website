@@ -251,7 +251,10 @@ input.year { width: 3em; }
 body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; margin: 0 0 1em; padding: 0; overflow: hidden; list-style: none; }
 .season-list li, .player-list li { float: left; margin: 0 0 .5em; padding: 0; }
 .season-list li { width: 9em; }
+
+.player-list h2:first-child { margin-top: 0; }
 .player-list li { width: 50%; }
+.player-list ul:last-child { margin-bottom: 0; }
 
 /* View match */
 .sunset { background: url(/images/sunset.gif) no-repeat 10px center; padding-left: 40px; font-size: .8em; white-space: nowrap; }

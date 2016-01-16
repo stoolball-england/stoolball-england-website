@@ -375,17 +375,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetPlayersNavigateUrl()
 	{
-		$s_url = '';
-		if ($this->GetShortUrl())
-		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/players';
-		}
-		else
-		{
-			$s_url = str_replace('{0}', $this->GetId(), $this->o_settings->GetUrl('Players'));
-		}
-
-		return $s_url;
+		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/players';
 	}
 
 	/**
@@ -533,7 +523,7 @@ class Team implements IHasShortUrl
 		'{0}/matches/edit' => $settings->GetUrl('TeamResults'),
 		'{0}/calendar' => $settings->GetUrl('TeamCalendar'),
 		'{0}/statistics' => $settings->GetUrl('TeamStats'),
-		'{0}/players' => $settings->GetUrl('Players'),
+		'{0}/players' => '/play/players/players.php?team={0}',
 		'{0}/players/add' => $settings->GetUrl('PlayerAdd'),
         '{0}/statistics.json' => "/play/statistics/team.js.php?team={0}"
 		));

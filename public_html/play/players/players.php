@@ -38,22 +38,31 @@ class CurrentPage extends StoolballPage
 	public function OnPrePageLoad()
 	{
 		# set up page
-		$this->SetPageTitle("Player statistics for " . $this->team->GetName() . ' stoolball team');
+		$this->SetPageTitle("Players for " . $this->team->GetName() . ' stoolball team');
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 		$this->SetContentCssClass("playersPage");
 	}
 
 	public function OnPageLoad()
 	{
-		if (count($this->players))
+        echo '<article typeof="schema:SportsTeam" about="' . htmlentities($this->team->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '">';
+        echo '<h1>Players for <span property="schema:name">' . htmlentities($this->team->GetName(), ENT_QUOTES, "UTF-8", false) . "</span></h1>";
+
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => $this->team->GetNavigateUrl());
+        $tabs['Players'] = '';
+        $tabs['Statistics'] = $this->team->GetStatsNavigateUrl();
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+        
+        
+		if (count($this->players) > 4)
 		{
-			echo '<article typeof="schema:SportsTeam" about="' . htmlentities($this->team->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '">';
-			echo '<h1>Player statistics for <span property="schema:name">' . htmlentities($this->team->GetName(), ENT_QUOTES, "UTF-8", false) . "</span></h1>";
-
-			echo "<p>View <a href=\"" . htmlentities($this->team->GetStatsNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">team statistics</a> 
-			     or the <a href=\"" . htmlentities($this->team->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->team->GetName(), ENT_QUOTES, "UTF-8", false) . " team page</a>, 
-			     or select a player below.</p>";
-
             $threshold = ((int)gmdate("Y"))-1;
             $list_open = false;
             
@@ -105,27 +114,38 @@ class CurrentPage extends StoolballPage
             }
             if ($list_open) echo "</ul>";
             
-			echo "</div></article>";
+			echo "</div>";
 		}
 		else
 		{
 			?>
-<h1>Add player statistics for this team</h1>
 <p>There aren't any player statistics for this team yet.</p>
 <p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results &#8211; why you should add yours</a>.</p>
 			<?php
 		}
 
-
+        ?>
+        </div>
+        </div>
+        </article>
+        <?php 
+        $this->AddSeparator();
+        
 		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS, $this->team->GetLinkedDataUri()))
 		{
 			# Create a panel with actions
-			$this->AddSeparator();
-
 			$panel = new UserEditPanel($this->GetSettings());
+            $panel->AddCssClass("with-tabs");
 			$panel->AddLink("add a player", $this->team->GetPlayerAddNavigateUrl());
 			echo $panel;
+            $this->BuySomething();
 		}
+        else {
+            echo '<div class="with-tabs">';
+            $this->BuySomething();
+            echo '</div>';
+        }
+        
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

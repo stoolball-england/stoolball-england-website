@@ -91,7 +91,7 @@ class CurrentPage extends StoolballPage
 		$title = "Team statistics for " . $this->team->GetNameAndType() . ' stoolball team';
 		if ($this->season) $title .= " in the $this->season season";
 		$this->SetPageTitle($title);
-		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
+		$this->SetContentConstraint(StoolballPage::ConstrainBox());
 		$this->SetContentCssClass('stats');
         
         
@@ -122,6 +122,21 @@ class CurrentPage extends StoolballPage
 		$has_player_of_match_stats = count($this->most_player_of_match);
 		$has_player_stats = ($has_most_runs or $has_most_wickets or $has_catch_stats or $has_run_outs or $has_player_of_match_stats);
 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => $this->team->GetNavigateUrl());       
+
+        if ($has_player_stats) {
+            $tabs['Players'] = $this->team->GetPlayersNavigateUrl();
+        }
+        $tabs['Statistics'] = '';
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+        
 		if (!$has_team_stats and !$has_player_stats)
 		{
 		    $scope = $this->team->GetNameAndType();
@@ -129,15 +144,10 @@ class CurrentPage extends StoolballPage
             $scope = htmlentities($scope, ENT_QUOTES, "UTF-8", false);
         
 			echo "<p>There aren't any statistics for $scope yet.</p>" . 
-			'<p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>' .
-			"<p>You can also view the <a href=\"" . htmlentities($this->team->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->team->GetName(), ENT_QUOTES, "UTF-8", false) . " team page</a>.</p>";
+			'<p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>';
 		}
 		else
 		{
-			$player_stats_link = $has_player_stats ? "<a href=\"" . htmlentities($this->team->GetPlayersNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">player statistics</a> or " : "";
-			echo "<p>View $player_stats_link the <a href=\"" . htmlentities($this->team->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->team->GetName(), ENT_QUOTES, "UTF-8", false) . " team page</a>.</p>";
-			echo '<p>You can add player statistics for this team. To find out how, see <a href="/play/manage/website/how-to-add-match-results/">How to add match results</a>.</p>';
-
 			require_once('stoolball/team-runs-table.class.php');
 			require_once('stoolball/statistics/player-statistics-table.class.php');
 
@@ -258,13 +268,11 @@ class CurrentPage extends StoolballPage
 				}
 				echo "</ul></div>";
 			}
-
-			?>
-<p>Please note: We include only completed matches, not forfeits or cancellations. Statistics will be correct only if scores and results are added for all matches.</p>
-			<?php
-			$this->AddSeparator();
-			$this->BuySomething();
 		}
+        ?>
+        </div>
+        </div>
+        <?php
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

@@ -17,6 +17,9 @@
 .tab-inactive a:link, .tab-inactive a:visited { padding: 10px 15px; }
 .tab-box img { float: right; margin: 0 0 15px 15px;}
 
+/* Teams, seasons and competitions */
+.player-list li { width: 30%; }
+
 /* Download calendar 
  * 
  * <a class="calendar">
