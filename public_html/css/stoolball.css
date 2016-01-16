@@ -486,7 +486,7 @@ td.out { padding-right: .9em; }
 .box-content .statsViewAll { padding: 0;}
 
 /* Stats table of player of the match performances */
-.player-of-match .date { white-space: nowrap; text-align: right; }
+.player-performances .date { white-space: nowrap; text-align: right; }
 
 /* WordPress pages */
 .alignright, .screenshot { float: right; margin: 0 0 10px 10px; border: 0; }

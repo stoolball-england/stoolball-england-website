@@ -75,12 +75,14 @@ if ($has_catch_stats or $has_run_outs)
 	{
 		echo new PlayerStatisticsTable("Most catches", "Catches", $this->statistics["most_catches"]);
 		if ($has_catch_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-catches' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Most catches &#8211; view all and filter</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Most catches in an innings &#8211; view all and filter</a></p>';
 	}
 
 	if ($has_run_outs)
 	{
 		echo new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->statistics["most_run_outs"]);
 		if ($has_run_outs >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Most run-outs &#8211; view all and filter</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Most run-outs in an innings &#8211; view all and filter</a></p>';
 	}
 }
 

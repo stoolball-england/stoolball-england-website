@@ -676,10 +676,12 @@ class StatisticsManager extends DataManager
 
     /**
      * Gets best performances in a match based on the specified fields and any current filters
-     * @param $exclude_extras bool
+     * @param int $minimum_value
+     * @param bool $exclude_extras
+     * @param bool $with_match_details
      * @return An array of performances, or CSV download
      */
-    public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $exclude_extras = true)
+    public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $minimum_value, $exclude_extras, $with_match_details)
     {
         $players = $this->GetSettings()->GetTable("Player");
         $statistics = $this->GetSettings()->GetTable("PlayerMatch");
@@ -703,14 +705,24 @@ class StatisticsManager extends DataManager
 
             $select .= ", " . $secondary_field->FieldName();
         }
-                     
+
+        if ($with_match_details) {
+            $select .= ", nsa_match.match_title, nsa_match.short_url AS match_short_url";
+        }
+                             
         $competition_filter_active = (bool)count($this->filter_competitions);
         $from = "FROM $statistics ";
+        if ($with_match_details) {
+            $from .= "INNER JOIN nsa_match ON $statistics.match_id = nsa_match.match_id ";
+        }
         if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
         if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
 
-        $where = "WHERE $primary_field_name IS NOT NULL ";
-        if ($exclude_extras) $where .= "AND player_role = " . Player::PLAYER . " ";
+        $where = "WHERE $primary_field_name IS NOT NULL AND $primary_field_name >= " . Sql::ProtectNumeric($minimum_value, false, false) . " ";
+        if ($exclude_extras) {
+            $where .= "AND player_role = " . Player::PLAYER . " ";
+        }
+        
         $where = $this->ApplyFilters($where);
 
         $order_by = "ORDER BY $primary_field_name DESC";
@@ -771,7 +783,11 @@ class StatisticsManager extends DataManager
 
             $performance["match_id"] = $row->match_id;
             $performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
-
+            if ($with_match_details) {
+                $performance["match_title"] = $row->match_title;
+                if (!$csv) $performance["match_url"] = "/" . $row->match_short_url;
+            }
+            
             $performance[$primary_field_name] = $row->$primary_field_name;
             
             foreach ($secondary_fields as $secondary_field) {
@@ -793,7 +809,11 @@ class StatisticsManager extends DataManager
         if ($csv)
         {
             require_once("data/csv.class.php");
-            $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)", $primary_field_header);
+            $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)");
+            if ($with_match_details) {
+                $header_row[] = "Match";
+            }
+            $header_row[] = $primary_field_header;
             foreach ($secondary_fields as $secondary_field) {
                 /* @var $secondary_field StatisticsField */
 
@@ -826,7 +846,7 @@ class StatisticsManager extends DataManager
             return Batting::Text($value);
         });
         
-        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out), $exclude_extras);
+        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out), 0, $exclude_extras, false);
 	}
 
 	/**
@@ -847,7 +867,7 @@ class StatisticsManager extends DataManager
         $overs = new StatisticsField("overs", "Overs", null, null);
         $maidens = new StatisticsField("maidens", "Maidens", null, null);
         
-        return $this->ReadBestFiguresInAMatch($wickets, array($has_runs_conceded, $runs_conceded, $overs, $maidens), true);
+        return $this->ReadBestFiguresInAMatch($wickets, array($has_runs_conceded, $runs_conceded, $overs, $maidens), 0, true, false);
 	}
 
 	
@@ -914,7 +934,7 @@ class StatisticsManager extends DataManager
             $performance["wickets"] = $row->wickets;
             $performance["runs_conceded"] = $row->runs_conceded;
             $performance["catches"] = $row->catches;
-            $performance["run-outs"] = $row->run_outs;
+            $performance["run_outs"] = $row->run_outs;
 
             $performances[] = $performance;
         }

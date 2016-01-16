@@ -5,7 +5,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
 	"individual-scores", "most-runs", "batting-average",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
-	"most-catches", "most-run-outs",
+	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings",
 	"player-performances", "player-of-match", "most-player-of-match"
 )))
 {
@@ -220,6 +220,28 @@ INTRO;
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("catches");
 				break;
 
+            case "most-catches-in-innings":
+                $this->statistic_title = "Most catches in an innings";
+                $this->statistic_column = "Catches";
+                $this->statistic_intro = <<<INTRO
+<p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out. We only include players who took at least three catches.</p>
+INTRO;
+                if ($csv)
+                {
+                    $statistics_manager->OutputAsCsv(array());
+                }
+                else
+                {
+                    $this->paging->SetResultsTextSingular("innings");
+                    $this->paging->SetResultsTextPlural("innings");
+                }
+                
+                require_once("stoolball/statistics/statistics-field.class.php");
+                $catches = new StatisticsField("catches", "Catches", false, null);
+                $player_name = new StatisticsField("player_name", null, true, null);
+                $this->data = $statistics_manager->ReadBestFiguresInAMatch($catches, array($player_name), 3, true, true);
+                break;
+
 			case "most-run-outs":
 				$this->statistic_title = "Most run-outs";
 				$this->statistic_column = "Run-outs";
@@ -230,6 +252,28 @@ INTRO;
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
 				break;
                 
+            case "most-run-outs-in-innings":
+                $this->statistic_title = "Most run-outs in an innings";
+                $this->statistic_column = "Run-outs";
+                $this->statistic_intro = <<<INTRO
+<p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out. We only include players who completed at least two run-outs.</p>
+INTRO;
+                if ($csv)
+                {
+                    $statistics_manager->OutputAsCsv(array());
+                }
+                else
+                {
+                    $this->paging->SetResultsTextSingular("innings");
+                    $this->paging->SetResultsTextPlural("innings");
+                }
+                
+                require_once("stoolball/statistics/statistics-field.class.php");
+                $runouts = new StatisticsField("run_outs", "Run-outs", false, null);
+                $player_name = new StatisticsField("player_name", null, true, null);
+                $this->data = $statistics_manager->ReadBestFiguresInAMatch($runouts, array($player_name), 2, true, true);
+                break;
+
             case "player-performances":
                 $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
                 $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
@@ -286,7 +330,10 @@ INTRO;
 
 		unset($statistics_manager);
 
-		$this->paging->SetTotalResults(array_shift($this->data));
+        if (is_array($this->data))
+        {
+		  $this->paging->SetTotalResults(array_shift($this->data));
+		}
 	}
 
 	function OnPrePageLoad()
@@ -331,10 +378,20 @@ switch ($this->which_statistic)
 		echo new BowlingPerformanceTable($this->data, true, $this->paging->GetFirstResultOnPage());
 		break;
 
+    case "most-catches-in-innings":
+        require_once('stoolball/statistics/player-performance-table.class.php');
+        echo new PlayerPerformanceTable("Number of catches, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        break;
+
+    case "most-run-outs-in-innings":
+        require_once('stoolball/statistics/player-performance-table.class.php');
+        echo new PlayerPerformanceTable("Number of run-outs, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        break;
+
     case "player-performances":
     case "player-of-match":
         require_once('stoolball/statistics/player-performance-table.class.php');
-        echo new PlayerPerformanceTable($this->data, $this->paging->GetFirstResultOnPage());
+        echo new PlayerPerformanceTable("Player performances, most recent first", $this->data, $this->paging->GetFirstResultOnPage(), false);
         break;
 
 	default:

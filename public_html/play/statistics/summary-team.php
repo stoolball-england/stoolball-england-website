@@ -210,6 +210,7 @@ class CurrentPage extends StoolballPage
 					# Show top catchers
 					echo new PlayerStatisticsTable("Most catches", "Catches", $this->most_catches, false);
 					if ($has_catch_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-catches' . $this->statistics_query . '">Most catches &#8211; view all and filter</a></p>';
+                    echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . $this->statistics_query . '">Most catches in an innings &#8211; view all and filter</a></p>';
 				}
 
 				echo "</div><div class=\"statsColumn\">";
@@ -218,6 +219,7 @@ class CurrentPage extends StoolballPage
 				{
 					echo new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->most_run_outs, false);
 					if ($has_run_outs >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs' . $this->statistics_query . '">Most run-outs &#8211; view all and filter</a></p>';
+                    echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . $this->statistics_query . '">Most run-outs in an innings &#8211; view all and filter</a></p>';
 				}
 
 				echo "</div></div>";
