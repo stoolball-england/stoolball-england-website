@@ -16,7 +16,7 @@ class CurrentPage extends StoolballPage
     
     public function OnPageInit()
     {
-        if (isset($_GET['q']))
+        if (isset($_GET['q']) and $_GET['q'])
         {
             require_once("search/search-query.class.php");
             $this->query = new SearchQuery($_GET['q']);
