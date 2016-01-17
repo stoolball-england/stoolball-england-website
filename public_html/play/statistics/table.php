@@ -31,6 +31,7 @@ class CurrentPage extends StoolballPage
 	 */
 	private $filter_control;
 	private $which_statistic;
+    private $statistic;
 	private $statistic_title;
 	private $statistic_column;
 	private $statistic_intro;
@@ -46,7 +47,11 @@ class CurrentPage extends StoolballPage
 
 		# Is this a request for CSV data?
 		$csv = (isset($_GET["format"]) and $_GET["format"] == "csv");
-		if (!$csv)
+		if ($csv)
+        {
+            $statistics_manager->OutputAsCsv(array());
+        }
+        else
 		{
 			$this->paging = new PagedResults();
 			$this->paging->SetPageName($this->which_statistic);
@@ -105,110 +110,44 @@ class CurrentPage extends StoolballPage
 		switch ($this->which_statistic)
 		{
 			case "individual-scores":
-				$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-				$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-				$this->filter .= $filter_batting_position[2];
-
-				$this->statistic_title = $this->filter ? "Individual scores" : "All individual scores";
-				$this->statistic_description = "See the highest scores by individuals in a single stoolball innings.";
-				if ($csv)
-				{
-					$statistics_manager->OutputAsCsv(array());
-				}
-				else
-				{
-					$this->paging->SetResultsTextSingular("innings");
-					$this->paging->SetResultsTextPlural("innings");
-				}
-				$this->data = $statistics_manager->ReadBestBattingPerformance();
+				require_once("stoolball/statistics/individual-scores.class.php");
+				$this->statistic = new IndividualScores($statistics_manager, $this->filter);
 				break;
 
 			case "most-runs":
-				$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-				$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-				$this->filter .= $filter_batting_position[2];
-
-				$this->statistic_title = "Most runs";
-				$this->statistic_column = "Runs";
-				$this->statistic_description = "Find out who has scored the most runs overall in all stoolball matches.";
-				if ($csv) $statistics_manager->OutputAsCsv(array("Runs"));
-				$this->data = $statistics_manager->ReadBestPlayerAggregate("runs_scored");
+                require_once("stoolball/statistics/most-runs.class.php");
+                $this->statistic = new MostRuns($statistics_manager);
 				break;
 
 			case "batting-average":
-				$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-				$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-				$this->filter .= $filter_batting_position[2];
-
-				$this->statistic_title = "Batting averages";
-				$this->statistic_column = "Average";
-				$this->statistic_intro = <<<INTRO
-<p>A batsman's average measures how many runs he or she typically scores before getting out.
-We only include people who have batted at least three times, and got out at least once.</p>
-INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Batting average"));
-				$this->data = $statistics_manager->ReadBestPlayerAverage("runs_scored", "dismissed", true, "runs_scored", 3);
+                require_once("stoolball/statistics/batting-average.class.php");
+                $this->statistic = new BattingAverage($statistics_manager);
 				break;
 
 			case "bowling-performances":
-				$this->statistic_title = $this->filter ? "Bowling performances" : "All bowling performances";
-				$this->statistic_description = "See the best wicket-taking performances in all stoolball matches.";
-				if ($csv)
-				{
-					$statistics_manager->OutputAsCsv(array());
-				}
-				else
-				{
-					$this->paging->SetResultsTextSingular("innings");
-					$this->paging->SetResultsTextPlural("innings");
-				}
-				$this->data = $statistics_manager->ReadBestBowlingPerformance();
+                require_once("stoolball/statistics/bowling-performances.class.php");
+                $this->statistic = new BowlingPerformances($statistics_manager, $this->filter);
 				break;
 
 			case "most-wickets":
-				$this->statistic_title = "Most wickets";
-				$this->statistic_column = "Wickets";
-				$this->statistic_intro = <<<INTRO
-<p>If a player is out caught, caught and bowled, bowled, body before wicket or for hitting the ball twice the wicket is credited to the bowler and included here.
-Players run-out or timed out are not counted.</p>
-INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Wickets"));
-				$this->data = $statistics_manager->ReadBestPlayerAggregate("wickets");
+                require_once("stoolball/statistics/most-wickets.class.php");
+                $this->statistic = new MostWickets($statistics_manager);
 				break;
 
 			case "bowling-average":
-				$this->statistic_title = "Bowling averages";
-				$this->statistic_column = "Average";
-				$this->statistic_intro = <<<INTRO
-<p>A bowler's average measures how many runs he or she typically concedes before taking a wicket. Lower numbers are better.</p>
-<p>We only include people who have bowled in at least three matches, and we ignore wickets in innings where the bowling card wasn't filled in.</p>
-INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Bowling average"));
-				$this->data = $statistics_manager->ReadBestPlayerAverage("runs_conceded", "wickets_with_bowling", false, "runs_conceded", 3);
+                require_once("stoolball/statistics/bowling-average.class.php");
+                $this->statistic = new BowlingAverage($statistics_manager);
 				break;
 
 			case "economy-rate":
-				$this->statistic_title = "Economy rates";
-				$this->statistic_column = "Economy rate";
-				$this->statistic_intro = <<<INTRO
-<p>A bowler's economy rate measures how many runs he or she typically concedes in each over. Lower numbers are better.
-We only include people who have bowled in at least three matches.</p>
-INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Economy rate"));
-				$this->data = $statistics_manager->ReadBestPlayerAverage("runs_conceded", "overs_decimal", false, "runs_conceded", 3);
+                require_once("stoolball/statistics/economy-rate.class.php");
+                $this->statistic = new EconomyRate($statistics_manager);
 				break;
 
 			case "bowling-strike-rate":
-				$this->statistic_title = "Bowling strike rates";
-				$this->statistic_column = "Strike rate";
-				$this->statistic_intro = <<<INTRO
-<p>A bowler's strike rate measures how many deliveries he or she typically bowls before taking a wicket. Lower numbers are better.</p>
-<p>We only include people who have bowled in at least three matches, and we ignore wickets in innings where the bowling card wasn't filled in.</p>
-INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Bowling strike rate"));
-				$this->data = $statistics_manager->ReadBestPlayerAverage("balls_bowled", "wickets_with_bowling", false, "balls_bowled", 3);
+                require_once("stoolball/statistics/bowling-strike-rate.class.php");
+                $this->statistic = new BowlingStrikeRate($statistics_manager);
 				break;
-
 
 			case "most-catches":
 				$this->statistic_title = "Most catches";
@@ -216,7 +155,6 @@ INTRO;
 				$this->statistic_intro = <<<INTRO
 <p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out.</p>
 INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Catches"));
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("catches");
 				break;
 
@@ -226,15 +164,8 @@ INTRO;
                 $this->statistic_intro = <<<INTRO
 <p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out. We only include players who took at least three catches.</p>
 INTRO;
-                if ($csv)
-                {
-                    $statistics_manager->OutputAsCsv(array());
-                }
-                else
-                {
-                    $this->paging->SetResultsTextSingular("innings");
-                    $this->paging->SetResultsTextPlural("innings");
-                }
+                $this->paging->SetResultsTextSingular("innings");
+                $this->paging->SetResultsTextPlural("innings");
                 
                 require_once("stoolball/statistics/statistics-field.class.php");
                 $catches = new StatisticsField("catches", "Catches", false, null);
@@ -248,7 +179,6 @@ INTRO;
 				$this->statistic_intro = <<<INTRO
 <p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out.</p>
 INTRO;
-				if ($csv) $statistics_manager->OutputAsCsv(array("Run-outs"));
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
 				break;
                 
@@ -258,15 +188,8 @@ INTRO;
                 $this->statistic_intro = <<<INTRO
 <p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out. We only include players who completed at least two run-outs.</p>
 INTRO;
-                if ($csv)
-                {
-                    $statistics_manager->OutputAsCsv(array());
-                }
-                else
-                {
-                    $this->paging->SetResultsTextSingular("innings");
-                    $this->paging->SetResultsTextPlural("innings");
-                }
+                $this->paging->SetResultsTextSingular("innings");
+                $this->paging->SetResultsTextPlural("innings");
                 
                 require_once("stoolball/statistics/statistics-field.class.php");
                 $runouts = new StatisticsField("run_outs", "Run-outs", false, null);
@@ -279,15 +202,8 @@ INTRO;
                 $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
                 $this->filter .= $filter_batting_position[2];
 
-                if ($csv)
-                {
-                    $statistics_manager->OutputAsCsv(array());
-                }
-                else
-                {
-                    $this->paging->SetResultsTextSingular("performance");
-                    $this->paging->SetResultsTextPlural("performances");
-                }
+                $this->paging->SetResultsTextSingular("performance");
+                $this->paging->SetResultsTextPlural("performances");
 
                 $this->statistic_title = "Player performances";
                 $this->statistic_description = "All of the match performances by a stoolball player, summarising their batting, bowling and fielding in the match.";
@@ -300,15 +216,8 @@ INTRO;
                 $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
                 $this->filter .= $filter_batting_position[2];
 
-                if ($csv)
-                {
-                    $statistics_manager->OutputAsCsv(array());
-                }
-                else
-                {
-                    $this->paging->SetResultsTextSingular("nominations");
-                    $this->paging->SetResultsTextPlural("nominations");
-                }
+                $this->paging->SetResultsTextSingular("nominations");
+                $this->paging->SetResultsTextPlural("nominations");
 
                 $this->statistic_title = "Player of the match nominations";
                 $this->statistic_description = "All of the matches where players were awarded player of the match for their outstanding performances on the pitch.";
@@ -323,17 +232,42 @@ INTRO;
 				$this->statistic_title = "Most player of the match nominations";
 				$this->statistic_column = "Nominations";
 				$this->statistic_description = "Find out who has won the most player of the match awards for their outstanding performances on the pitch.";
-				if ($csv) $statistics_manager->OutputAsCsv(array("Player of the match nominations"));
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
 				break;
 		}
 
-		unset($statistics_manager);
+		if ($this->statistic instanceof Statistic) {
+		    $this->statistic_title = $this->statistic->Title();
+            $this->statistic_description = $this->statistic->Description();
+            if ($this->statistic->ShowDescription()) {
+                require_once("markup/xhtml-markup.class.php");
+                $this->statistic_intro = XhtmlMarkup::ApplyParagraphs($this->statistic->Description());
+            }
+            
+            if (count($this->statistic->ColumnHeaders())) {
+                $headers = $this->statistic->ColumnHeaders();
+                $this->statistic_column = $headers[0];
+            }
+                        
+            if ($this->statistic->SupportsFilterByBattingPosition()) {
+                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+                $this->filter .= $filter_batting_position[2];
+            }
+
+            if ($this->statistic->SupportsPagedResults()) {
+                $this->paging->SetResultsTextSingular($this->statistic->ItemTypeSingular());
+                $this->paging->SetResultsTextPlural($this->statistic->ItemTypePlural());
+            }
+            $this->data = $this->statistic->ReadStatistic();
+    	}
 
         if (is_array($this->data))
         {
-		  $this->paging->SetTotalResults(array_shift($this->data));
-		}
+          $this->paging->SetTotalResults(array_shift($this->data));
+        }
+        
+        unset($statistics_manager);
 	}
 
 	function OnPrePageLoad()
