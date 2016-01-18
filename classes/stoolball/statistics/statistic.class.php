@@ -10,6 +10,7 @@ abstract class Statistic
     private $show_description = false;
     private $item_type_singular;
     private $item_type_plural;
+    private $supports_filter_by_player = false;
     private $supports_filter_by_batting_postition = false;
     private $supports_paged_results = true;
     private $column_headers = array();
@@ -81,6 +82,20 @@ abstract class Statistic
      */
     public function ColumnHeaders() {
         return $this->column_headers;
+    }
+        
+    /**
+     * Sets whether this statistic can be filtered by player
+     */
+    protected function SetSupportsFilterByPlayer($supported) {
+        $this->supports_filter_by_player = (bool)$supported;
+    }
+    
+    /**
+     * Gets whether this statistic can be filtered by player
+     */
+    public function SupportsFilterByPlayer() {
+        return $this->supports_filter_by_player;
     }
         
     /**

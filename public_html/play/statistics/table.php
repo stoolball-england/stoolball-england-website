@@ -18,7 +18,6 @@ require_once('page/stoolball-page.class.php');
 require_once('stoolball/statistics/statistics-manager.class.php');
 require_once("stoolball/statistics/statistics-filter.class.php");
 require_once("stoolball/statistics/statistics-filter-control.class.php");
-require_once('data/paged-results.class.php');
 
 # create page
 class CurrentPage extends StoolballPage
@@ -32,10 +31,6 @@ class CurrentPage extends StoolballPage
 	private $filter_control;
 	private $which_statistic;
     private $statistic;
-	private $statistic_title;
-	private $statistic_column;
-	private $statistic_intro;
-	private $statistic_description;
 
 	function OnLoadPageData()
 	{
@@ -45,73 +40,12 @@ class CurrentPage extends StoolballPage
 		# Set up statistics manager
 		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
 
-		# Is this a request for CSV data?
-		$csv = (isset($_GET["format"]) and $_GET["format"] == "csv");
-		if ($csv)
-        {
-            $statistics_manager->OutputAsCsv(array());
-        }
-        else
-		{
-			$this->paging = new PagedResults();
-			$this->paging->SetPageName($this->which_statistic);
-			$this->paging->SetQueryString(preg_replace("/statistic=$this->which_statistic&?/", "", $this->paging->GetQueryString()));
-			$this->paging->SetPageSize(50);
-			$this->paging->SetResultsTextSingular("player");
-			$this->paging->SetResultsTextPlural("players");
-			$statistics_manager->FilterByPage($this->paging->GetPageSize(), $this->paging->GetCurrentPage());
-		}
-
-		# Apply player filter first because it can be used to limit the choices for other filters
-		switch ($this->which_statistic)
-		{
-			case "individual-scores":
-			case "bowling-performances":
-            case "player-performances":
-            case "player-of-match":
-				$this->filter .= StatisticsFilter::ApplyPlayerFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-		}
-
-		# Apply filters common to all statistics
-		$this->filter_control = new StatisticsFilterControl();
-
-		# If player filter applied, no point filtering by team. Check for player filter is stricter than this
-		# but this is good enough. If this applies, but the player filter isn't applied, it's because someone
-		# is playing with the query string, so that's tough.
-		if (!isset($_GET['player']))
-		{
-			$filter_team = StatisticsFilter::SupportTeamFilter($statistics_manager);
-			$this->filter_control->SupportTeamFilter($filter_team);
-			$this->filter .= $filter_team[2];
-		}
-
-		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
-		$this->filter_control->SupportOppositionFilter($filter_opposition);
-		$this->filter .= $filter_opposition[2];
-
-		$filter_competition = StatisticsFilter::SupportCompetitionFilter($statistics_manager);
-		$this->filter_control->SupportCompetitionFilter($filter_competition);
-		$this->filter .= $filter_competition[2];
-
-		$this->filter .= StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-		$filter_ground = StatisticsFilter::SupportGroundFilter($statistics_manager);
-		$this->filter_control->SupportGroundFilter($filter_ground);
-		$this->filter .= $filter_ground[2];
-
-		$filter_date = StatisticsFilter::SupportDateFilter($statistics_manager);
-		if (!is_null($filter_date[0])) $this->filter_control->SupportAfterDateFilter($filter_date[0]);
-		if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
-		$this->filter .= $filter_date[2];
-
-        $this->filter .= StatisticsFilter::ApplyTournamentFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-		# Configure and read the requested statistic
+		# Configure the requested statistic
 		switch ($this->which_statistic)
 		{
 			case "individual-scores":
 				require_once("stoolball/statistics/individual-scores.class.php");
-				$this->statistic = new IndividualScores($statistics_manager, $this->filter);
+				$this->statistic = new IndividualScores($statistics_manager);
 				break;
 
 			case "most-runs":             
@@ -126,7 +60,7 @@ class CurrentPage extends StoolballPage
 
 			case "bowling-performances":
                 require_once("stoolball/statistics/bowling-performances.class.php");
-                $this->statistic = new BowlingPerformances($statistics_manager, $this->filter);
+                $this->statistic = new BowlingPerformances($statistics_manager);
 				break;
 
 			case "most-wickets":
@@ -150,133 +84,106 @@ class CurrentPage extends StoolballPage
 				break;
 
 			case "most-catches":
-				$this->statistic_title = "Most catches";
-				$this->statistic_column = "Catches";
-				$this->statistic_intro = <<<INTRO
-<p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out.</p>
-INTRO;
-                if ($csv) {
-                    $statistics_manager->OutputAsCsv(array("Catches"));
-                }
-                
-				$this->data = $statistics_manager->ReadBestPlayerAggregate("catches");
+                require_once("stoolball/statistics/most-catches.class.php");
+                $this->statistic = new MostCatches($statistics_manager);
 				break;
 
             case "most-catches-in-innings":
-                $this->statistic_title = "Most catches in an innings";
-                $this->statistic_column = "Catches";
-                $this->statistic_intro = <<<INTRO
-<p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out. We only include players who took at least three catches.</p>
-INTRO;
-                if ($csv) {
-                    $statistics_manager->OutputAsCsv(array("Catches"));
-                }
-                $this->paging->SetResultsTextSingular("innings");
-                $this->paging->SetResultsTextPlural("innings");
-                
-                require_once("stoolball/statistics/statistics-field.class.php");
-                $catches = new StatisticsField("catches", "Catches", false, null);
-                $player_name = new StatisticsField("player_name", null, true, null);
-                $this->data = $statistics_manager->ReadBestFiguresInAMatch($catches, array($player_name), 3, true, true);
+                require_once("stoolball/statistics/most-catches-in-innings.class.php");
+                $this->statistic = new MostCatchesInAnInnings($statistics_manager);
                 break;
 
 			case "most-run-outs":
-				$this->statistic_title = "Most run-outs";
-				$this->statistic_column = "Run-outs";
-				$this->statistic_intro = <<<INTRO
-<p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out.</p>
-INTRO;
-                if ($csv) {
-                    $statistics_manager->OutputAsCsv(array("Run-outs"));
-                }
-				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
+                require_once("stoolball/statistics/most-run-outs.class.php");
+                $this->statistic = new MostRunOuts($statistics_manager);
 				break;
                 
             case "most-run-outs-in-innings":
-                $this->statistic_title = "Most run-outs in an innings";
-                $this->statistic_column = "Run-outs";
-                $this->statistic_intro = <<<INTRO
-<p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out. We only include players who completed at least two run-outs.</p>
-INTRO;
-                $this->paging->SetResultsTextSingular("innings");
-                $this->paging->SetResultsTextPlural("innings");
-                if ($csv) {
-                    $statistics_manager->OutputAsCsv(array("Run-outs"));
-                }
-                
-                require_once("stoolball/statistics/statistics-field.class.php");
-                $runouts = new StatisticsField("run_outs", "Run-outs", false, null);
-                $player_name = new StatisticsField("player_name", null, true, null);
-                $this->data = $statistics_manager->ReadBestFiguresInAMatch($runouts, array($player_name), 2, true, true);
+                require_once("stoolball/statistics/most-run-outs-in-innings.class.php");
+                $this->statistic = new MostRunOutsInAnInnings($statistics_manager);
                 break;
 
             case "player-performances":
-                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-                $this->filter .= $filter_batting_position[2];
-
-                $this->paging->SetResultsTextSingular("performance");
-                $this->paging->SetResultsTextPlural("performances");
-
-                $this->statistic_title = "Player performances";
-                $this->statistic_description = "All of the match performances by a stoolball player, summarising their batting, bowling and fielding in the match.";
-                $this->data = $statistics_manager->ReadMatchPerformances();
+                require_once("stoolball/statistics/player-performances.class.php");
+                $this->statistic = new PlayerPerformances($statistics_manager);
                 break;
 
             case "player-of-match":
-                $statistics_manager->FilterPlayerOfTheMatch(true);
-                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-                $this->filter .= $filter_batting_position[2];
-
-                $this->paging->SetResultsTextSingular("nominations");
-                $this->paging->SetResultsTextPlural("nominations");
-
-                $this->statistic_title = "Player of the match nominations";
-                $this->statistic_description = "All of the matches where players were awarded player of the match for their outstanding performances on the pitch.";
-                $this->data = $statistics_manager->ReadMatchPerformances();
+                require_once("stoolball/statistics/player-of-match.class.php");
+                $this->statistic = new PlayerOfTheMatch($statistics_manager);
                 break;
 
 			case "most-player-of-match":
-				$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-				$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-				$this->filter .= $filter_batting_position[2];
-
-				$this->statistic_title = "Most player of the match nominations";
-				$this->statistic_column = "Nominations";
-				$this->statistic_description = "Find out who has won the most player of the match awards for their outstanding performances on the pitch.";
-				$this->data = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
+                require_once("stoolball/statistics/most-player-of-match.class.php");
+                $this->statistic = new MostPlayerOfTheMatch($statistics_manager);
 				break;
 		}
 
-		if ($this->statistic instanceof Statistic) {
-		    $this->statistic_title = $this->statistic->Title();
-            $this->statistic_description = $this->statistic->Description();
-            if ($this->statistic->ShowDescription()) {
-                require_once("markup/xhtml-markup.class.php");
-                $this->statistic_intro = XhtmlMarkup::ApplyParagraphs($this->statistic->Description());
-            }
-            
-            if (count($this->statistic->ColumnHeaders())) {
-                $headers = $this->statistic->ColumnHeaders();
-                $this->statistic_column = $headers[0];
-                if ($csv) {
-                    $statistics_manager->OutputAsCsv($headers);
-                }                
-            }
-                        
-            if ($this->statistic->SupportsFilterByBattingPosition()) {
-                $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-                $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-                $this->filter .= $filter_batting_position[2];
-            }
+        # Is this a request for CSV data?
+        $csv = (isset($_GET["format"]) and $_GET["format"] == "csv");
+        if ($csv) {
+            $statistics_manager->OutputAsCsv($this->statistic->ColumnHeaders());
+        }                
+                    
+        # Apply player filter first because it can be used to limit the choices for other filters
+        if ($this->statistic->SupportsFilterByPlayer())
+        {
+            $this->filter .= StatisticsFilter::ApplyPlayerFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+        }
 
-            if (isset($this->paging) and $this->statistic->SupportsPagedResults()) {
-                $this->paging->SetResultsTextSingular($this->statistic->ItemTypeSingular());
-                $this->paging->SetResultsTextPlural($this->statistic->ItemTypePlural());
-            }
-            $this->data = $this->statistic->ReadStatistic();
-    	}
+        # Apply filters common to all statistics
+        $this->filter_control = new StatisticsFilterControl();
+
+        # If player filter applied, no point filtering by team. Check for player filter is stricter than this
+        # but this is good enough. If this applies, but the player filter isn't applied, it's because someone
+        # is playing with the query string, so that's tough.
+        if (!isset($_GET['player']))
+        {
+            $filter_team = StatisticsFilter::SupportTeamFilter($statistics_manager);
+            $this->filter_control->SupportTeamFilter($filter_team);
+            $this->filter .= $filter_team[2];
+        }
+
+        $filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
+        $this->filter_control->SupportOppositionFilter($filter_opposition);
+        $this->filter .= $filter_opposition[2];
+
+        $filter_competition = StatisticsFilter::SupportCompetitionFilter($statistics_manager);
+        $this->filter_control->SupportCompetitionFilter($filter_competition);
+        $this->filter .= $filter_competition[2];
+
+        $this->filter .= StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+
+        $filter_ground = StatisticsFilter::SupportGroundFilter($statistics_manager);
+        $this->filter_control->SupportGroundFilter($filter_ground);
+        $this->filter .= $filter_ground[2];
+
+        $filter_date = StatisticsFilter::SupportDateFilter($statistics_manager);
+        if (!is_null($filter_date[0])) $this->filter_control->SupportAfterDateFilter($filter_date[0]);
+        if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
+        $this->filter .= $filter_date[2];
+
+        $this->filter .= StatisticsFilter::ApplyTournamentFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+
+        if ($this->statistic->SupportsFilterByBattingPosition()) {
+            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+            $this->filter .= $filter_batting_position[2];
+        }
+
+        # Configure paging of results
+        if (!$csv and $this->statistic->SupportsPagedResults()) {
+            require_once('data/paged-results.class.php');
+            $this->paging = new PagedResults();
+            $this->paging->SetPageName($this->which_statistic);
+            $this->paging->SetQueryString(preg_replace("/statistic=$this->which_statistic&?/", "", $this->paging->GetQueryString()));
+            $this->paging->SetPageSize(50);
+            $this->paging->SetResultsTextSingular($this->statistic->ItemTypeSingular());
+            $this->paging->SetResultsTextPlural($this->statistic->ItemTypePlural());
+            $statistics_manager->FilterByPage($this->paging->GetPageSize(), $this->paging->GetCurrentPage());
+        }
+
+        $this->data = $this->statistic->ReadStatistic();
 
         if (is_array($this->data))
         {
@@ -288,8 +195,8 @@ INTRO;
 
 	function OnPrePageLoad()
 	{
-		$this->SetPageTitle("$this->statistic_title $this->filter");
-		$this->SetPageDescription($this->statistic_intro ? strip_tags($this->statistic_intro) : $this->statistic_description);
+		$this->SetPageTitle($this->statistic->Title() . " $this->filter");
+		$this->SetPageDescription($this->statistic->Description());
         $this->SetContentConstraint(StoolballPage::ConstrainBox());
 		$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 		$this->LoadClientScript("/play/statistics/statistics-filter.js");
@@ -300,9 +207,14 @@ INTRO;
 
 	function OnPageLoad()
 	{
-		echo ("<h1>" . htmlentities($this->statistic_title, ENT_QUOTES, "UTF-8", false) . " " . htmlentities($this->filter, ENT_QUOTES, "UTF-8", false) . "</h1>");
+		echo ("<h1>" . htmlentities($this->statistic->Title(), ENT_QUOTES, "UTF-8", false) . " " . htmlentities($this->filter, ENT_QUOTES, "UTF-8", false) . "</h1>");
 		$this->GetTheData("large");
-		echo $this->statistic_intro; ?>
+        
+        if ($this->statistic->ShowDescription()) {
+            require_once("markup/xhtml-markup.class.php");
+            echo XhtmlMarkup::ApplyParagraphs($this->statistic->Description());
+        }
+        ?>
 
 <p>
 	The statistics below are based on scorecards added to this website. If you know someone who's played better, add the scorecard for that match &#8211; see <a
@@ -346,7 +258,8 @@ switch ($this->which_statistic)
 
 	default:
 		require_once('stoolball/statistics/player-statistics-table.class.php');
-		echo new PlayerStatisticsTable($this->statistic_title, $this->statistic_column, $this->data, true, $this->paging->GetFirstResultOnPage());
+        $headers = $this->statistic->ColumnHeaders();
+		echo new PlayerStatisticsTable($this->statistic->Title(), $headers[0], $this->data, true, $this->paging->GetFirstResultOnPage());
 		break;
 }
 

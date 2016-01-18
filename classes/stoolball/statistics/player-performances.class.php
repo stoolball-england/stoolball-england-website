@@ -2,9 +2,9 @@
 require_once("statistic.class.php");
 
 /**
- * Batting innings for a player
+ * Player performance summaries for matches a player was involved in
  */
-class IndividualScores extends Statistic {
+class PlayerPerformances extends Statistic {
 
     /**
      * @var StatisticsManager
@@ -13,21 +13,21 @@ class IndividualScores extends Statistic {
     
     public function __construct(StatisticsManager $statistics_data_source) {
         $this->statistics_data_source = $statistics_data_source;
-        parent::SetUrlSegment("individual-scores");
-        parent::SetTitle("All individual scores");
-        parent::SetDescription("See the highest scores by individuals in a single stoolball innings.");
+        parent::SetUrlSegment("player-performances");
+        parent::SetTitle("Player performances");
+        parent::SetDescription("All of the match performances by a stoolball player, summarising their batting, bowling and fielding in the match.");
         parent::SetSupportsFilterByPlayer(true);
         parent::SetSupportsFilterByBattingPosition(true);
         parent::SetSupportsPagedResults(true);
-        parent::SetItemTypeSingular("innings");
-        parent::SetItemTypePlural("innings");
+        parent::SetItemTypeSingular("performance");
+        parent::SetItemTypePlural("performances");
     }
             
     /**
      * Gets the statistical data from the data source
      */
     public function ReadStatistic() {
-        return $this->statistics_data_source->ReadBestBattingPerformance();        
+        return $this->statistics_data_source->ReadMatchPerformances();
     }
 }
 ?>

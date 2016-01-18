@@ -11,11 +11,12 @@ class BowlingPerformances extends Statistic {
      */
     private $statistics_data_source;
     
-    public function __construct(StatisticsManager $statistics_data_source, $filter_applied) {
+    public function __construct(StatisticsManager $statistics_data_source) {
         $this->statistics_data_source = $statistics_data_source;
         parent::SetUrlSegment("bowling-performances");
-        parent::SetTitle($filter_applied ? "Bowling performances" : "All bowling performances");
+        parent::SetTitle("All bowling performances");
         parent::SetDescription("See the best wicket-taking performances in all stoolball matches.");
+        parent::SetSupportsFilterByPlayer(true);
         parent::SetSupportsPagedResults(true);
         parent::SetItemTypeSingular("innings");
         parent::SetItemTypePlural("innings");
