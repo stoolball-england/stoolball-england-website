@@ -114,7 +114,7 @@ class CurrentPage extends StoolballPage
 				$this->statistic = new IndividualScores($statistics_manager, $this->filter);
 				break;
 
-			case "most-runs":
+			case "most-runs":             
                 require_once("stoolball/statistics/most-runs.class.php");
                 $this->statistic = new MostRuns($statistics_manager);
 				break;
@@ -155,6 +155,10 @@ class CurrentPage extends StoolballPage
 				$this->statistic_intro = <<<INTRO
 <p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out.</p>
 INTRO;
+                if ($csv) {
+                    $statistics_manager->OutputAsCsv(array("Catches"));
+                }
+                
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("catches");
 				break;
 
@@ -164,6 +168,9 @@ INTRO;
                 $this->statistic_intro = <<<INTRO
 <p>This measures the number of catches taken by a fielder, not how often a batsman has been caught out. We only include players who took at least three catches.</p>
 INTRO;
+                if ($csv) {
+                    $statistics_manager->OutputAsCsv(array("Catches"));
+                }
                 $this->paging->SetResultsTextSingular("innings");
                 $this->paging->SetResultsTextPlural("innings");
                 
@@ -179,6 +186,9 @@ INTRO;
 				$this->statistic_intro = <<<INTRO
 <p>This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out.</p>
 INTRO;
+                if ($csv) {
+                    $statistics_manager->OutputAsCsv(array("Run-outs"));
+                }
 				$this->data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
 				break;
                 
@@ -190,6 +200,9 @@ INTRO;
 INTRO;
                 $this->paging->SetResultsTextSingular("innings");
                 $this->paging->SetResultsTextPlural("innings");
+                if ($csv) {
+                    $statistics_manager->OutputAsCsv(array("Run-outs"));
+                }
                 
                 require_once("stoolball/statistics/statistics-field.class.php");
                 $runouts = new StatisticsField("run_outs", "Run-outs", false, null);
@@ -247,6 +260,9 @@ INTRO;
             if (count($this->statistic->ColumnHeaders())) {
                 $headers = $this->statistic->ColumnHeaders();
                 $this->statistic_column = $headers[0];
+                if ($csv) {
+                    $statistics_manager->OutputAsCsv($headers);
+                }                
             }
                         
             if ($this->statistic->SupportsFilterByBattingPosition()) {
@@ -255,7 +271,7 @@ INTRO;
                 $this->filter .= $filter_batting_position[2];
             }
 
-            if ($this->statistic->SupportsPagedResults()) {
+            if (isset($this->paging) and $this->statistic->SupportsPagedResults()) {
                 $this->paging->SetResultsTextSingular($this->statistic->ItemTypeSingular());
                 $this->paging->SetResultsTextPlural($this->statistic->ItemTypePlural());
             }
