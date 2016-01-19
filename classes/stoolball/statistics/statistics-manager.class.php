@@ -9,6 +9,7 @@ class StatisticsManager extends DataManager
 	private $filter_teams = array();
 	private $filter_opposition = array();
 	private $filter_players = array();
+    private $filter_bowlers = array();
 	private $filter_seasons = array();
 	private $filter_competitions = array();
 	private $filter_grounds = array();
@@ -20,6 +21,7 @@ class StatisticsManager extends DataManager
 	private $filter_page_size = null;
 	private $filter_page = null;
     private $filter_player_of_match = false;
+    private $filter_how_out = array();
 	private $output_as_csv = null;
 
 	/**
@@ -47,7 +49,7 @@ class StatisticsManager extends DataManager
 	/**
 	 * Limits supporting queries to returning only players in the supplied array of ids
 	 *
-	 * @param string[] $player_ids
+	 * @param int[] $player_ids
 	 */
 	public function FilterByPlayer($player_ids)
 	{
@@ -59,6 +61,21 @@ class StatisticsManager extends DataManager
 		else $this->filter_players = array();
 	}
 
+    /**
+     * Limits supporting queries to returning only data where the wicket-taking bowler is in the supplied array of ids
+     *
+     * @param int[] $player_ids
+     */
+    public function FilterByBowler($player_ids)
+    {
+        if (is_array($player_ids))
+        {
+            $this->ValidateNumericArray($player_ids);
+            $this->filter_bowlers = $player_ids;
+        }
+        else $this->filter_bowlers = array();
+    }
+    
 	/**
 	 * Limits supporting queries to returning only teams in the supplied array of ids
 	 *
@@ -173,6 +190,21 @@ class StatisticsManager extends DataManager
     {
         $this->filter_player_of_match = (bool)$apply_filter;
     }
+        
+    /**
+     * Limits supporting queries to returning only performances where players were out (or not out) in the specified ways
+     *
+     * @param int[] $how_out_ids
+     */
+    public function FilterByHowOut($how_out_ids)
+    {
+        if (is_array($how_out_ids))
+        {
+            $this->ValidateNumericArray($how_out_ids);
+            $this->filter_how_out = $how_out_ids;
+        }
+        else $this->filter_how_out = array();
+    }
     
 	/**
 	 * Sets the maximum number of results for supporting queries
@@ -218,13 +250,23 @@ class StatisticsManager extends DataManager
 
         if ($this->filter_player_of_match) $where .= "AND $statistics.player_of_match = 1 ";
 		if (count($this->filter_players)) $where .= "AND $statistics.player_id IN (" . implode(",",$this->filter_players) . ") ";
+        if (count($this->filter_bowlers)) {
+            $where .= "AND $statistics.bowled_by IN (" . implode(",",$this->filter_bowlers) . ") ";
+            
+            # When querying by bowler, flip team and opposition because the bowler's team is the opposition_id   
+            if (count($this->filter_teams)) $where .= "AND $statistics.opposition_id IN (" . implode(",",$this->filter_teams) . ") ";
+            if (count($this->filter_opposition)) $where .= "AND $statistics.team_id IN (" . implode(",",$this->filter_opposition) . ") ";
+        }
+        else {
+            if (count($this->filter_teams)) $where .= "AND $statistics.team_id IN (" . implode(",",$this->filter_teams) . ") ";
+            if (count($this->filter_opposition)) $where .= "AND $statistics.opposition_id IN (" . implode(",",$this->filter_opposition) . ") ";
+        }
 		if (count($this->filter_seasons)) $where .= "AND $sm.season_id IN (" . implode(",",$this->filter_seasons) . ") ";
 		if (count($this->filter_competitions)) $where .= "AND $seasons.competition_id IN (" . implode(",",$this->filter_competitions) . ") ";
-		if (count($this->filter_teams)) $where .= "AND $statistics.team_id IN (" . implode(",",$this->filter_teams) . ") ";
-		if (count($this->filter_opposition)) $where .= "AND $statistics.opposition_id IN (" . implode(",",$this->filter_opposition) . ") ";
 		if (count($this->filter_grounds)) $where .= "AND $statistics.ground_id IN (" . implode(",",$this->filter_grounds) . ") ";
 		if (count($this->filter_batting_position)) $where .= "AND $statistics.batting_position IN (" . implode(",",$this->filter_batting_position) . ") ";
         if (count($this->filter_tournaments)) $where .= "AND $statistics.tournament_id IN (" . implode(",",$this->filter_tournaments) . ") ";
+	    if (count($this->filter_how_out)) $where .= "AND $statistics.how_out IN (" . implode(",", $this->filter_how_out) . ") ";
 		if (!is_null($this->filter_after_date)) $where .= "AND $statistics.match_time >= " . $this->filter_after_date . " ";
 		if (!is_null($this->filter_before_date)) $where .= "AND $statistics.match_time <= " . $this->filter_before_date . " ";
 
@@ -461,7 +503,7 @@ class StatisticsManager extends DataManager
 				if (isset($row->first_played)) $player->SetFirstPlayedDate($row->first_played);
 				if (isset($row->last_played)) $player->SetLastPlayedDate($row->last_played);
 				if (isset($row->player_role)) $player->SetPlayerRole($row->player_role);
-				if (isset($row->short_url)) $player->SetShortUrl($row->player_url);
+				if (isset($row->player_url)) $player->SetShortUrl($row->player_url);
 				$player->Team()->SetId($row->team_id);
 				$player->Team()->SetName($row->team_name);
 				if (isset($row->team_short_url)) $player->Team()->SetShortUrl($row->team_short_url);
@@ -948,6 +990,72 @@ class StatisticsManager extends DataManager
         }
 
         return $performances;
+    }
+
+   /**
+     * Gets total occurrences for each type of dismissal based on current filters
+     * @return An array indexed by type of dismissal, or CSV download
+     */
+  
+    public function ReadHowWicketsFall() {
+   
+        $joins_for_filters = "";
+        $competition_filter_active = (bool)count($this->filter_competitions);
+        if (count($this->filter_seasons) or $competition_filter_active) $joins_for_filters .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
+        if ($competition_filter_active) $joins_for_filters .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+
+        $where = "WHERE how_out IS NOT NULL ";
+        $where = $this->ApplyFilters($where);
+   
+        $sql = "SELECT how_out, COUNT(how_out) AS total
+                FROM nsa_player_match 
+                $joins_for_filters
+                $where
+                GROUP BY how_out";
+
+        if (count($this->filter_how_out)) {
+            $how_out = array_flip($this->filter_how_out);
+            foreach ($how_out as $method => $value) {
+                $how_out[$method] = 0;
+            }     
+        } else {
+            $how_out = array_fill_keys(array(
+                                    Batting::BODY_BEFORE_WICKET, 
+                                    Batting::BOWLED, 
+                                    Batting::CAUGHT,
+                                    Batting::CAUGHT_AND_BOWLED,
+                                    Batting::DID_NOT_BAT,
+                                    Batting::HIT_BALL_TWICE,
+                                    Batting::NOT_OUT,
+                                    Batting::RETIRED,
+                                    Batting::RETIRED_HURT,
+                                    Batting::RUN_OUT,
+                                    Batting::TIMED_OUT,
+                                    Batting::UNKNOWN_DISMISSAL), 0);
+        }
+        
+        $result = $this->GetDataConnection()->query($sql);
+        $csv = is_array($this->output_as_csv);
+        while ($row = $result->fetch())
+        {
+            $how_out[$row->how_out] = $row->total;
+        }
+        
+        asort($how_out, SORT_NUMERIC);
+        $how_out = array_reverse($how_out, true);
+
+        # Optionally add a header row and download a CSV file rather than returning the data
+        if ($csv)
+        {
+            require_once("data/csv.class.php");
+            $csv_data = array("How out", "Total");
+            foreach ($how_out as $method => $total){
+                $csv_data[Batting::Text($method)] = $total;
+            }
+            CSV::PublishData($csv_data);
+        }
+
+        return $how_out;
     }
 
 	/**

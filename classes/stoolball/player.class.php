@@ -414,16 +414,6 @@ class Player implements IHasShortUrl
             $this->WorkOutScoreSpread();
 		}
 
-		# Gather wicket stats
-		$this->how_wickets_taken = array();
-		foreach ($this->wickets as $wicket)
-		{
-			/* @var $wicket Batting */
-
-			if (!array_key_exists($wicket->GetHowOut(), $this->how_wickets_taken)) $this->how_wickets_taken[$wicket->GetHowOut()] = 0;
-			$this->how_wickets_taken[$wicket->GetHowOut()]++;
-		}
-
 		# Gather bowling stats
 		$this->bowling_innings = 0;
 		$this->balls = null;
@@ -664,13 +654,21 @@ class Player implements IHasShortUrl
 		return $this->how_out;
 	}
 
+    /**
+     * Sets the ways the player got others out, in an array indexed by dismissal method
+     * @return int[int]
+     */
+    public function SetHowWicketsTaken(array $how_wickets_taken)
+    {
+        $this->how_wickets_taken = $how_wickets_taken;
+    }
+
 	/**
 	 * Gets the ways the player got others out, in an array indexed by dismissal method
 	 * @return int[int]
 	 */
-	public function HowWicketsTaken()
+	public function GetHowWicketsTaken()
 	{
-		if (is_null($this->total_innings)) $this->RecalculateStatistics();
 		return $this->how_wickets_taken;
 	}
 
@@ -812,16 +810,6 @@ class Player implements IHasShortUrl
 	public function GetShortUrl() { return $this->short_url; }
 
 	/**
-	 * Gets the real URL for a player
-	 *
-	 * @return string
-	 */
-	public function GetRealUrl()
-	{
-		return str_replace("{0}", $this->GetId(), $this->settings->GetUrl('Player'));
-	}
-
-	/**
 	 * Gets the URL of the page to view the player's details
 	 * @return string
 	 */
@@ -852,9 +840,9 @@ class Player implements IHasShortUrl
 	{
 		return new ShortUrlFormat($settings->GetTable('Player'), 'short_url', array('player_id'), array('GetId'),
 		array(
-		'{0}' => $settings->GetUrl('Player'),
-		'{0}/edit' => $settings->GetUrl('PlayerEdit'),
-		'{0}/delete' => $settings->GetUrl('PlayerDelete'),
+		'{0}' => '/play/statistics/player.php?player={0}',
+		'{0}/edit' => '/play/statistics/playeredit.php?item={0}',
+		'{0}/delete' => '/play/statistics/playerdelete.php?item={0}',
 		'{0}.json' => "/play/statistics/player.js.php?player={0}"
 		));
 	}

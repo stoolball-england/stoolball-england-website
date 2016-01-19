@@ -32,8 +32,9 @@ class CurrentPage extends Page
 	public function OnLoadPageData()
 	{
 		# Now get statistics for the player
+		$filter_by_player = array($this->player->GetId());
 		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
-		$statistics_manager->FilterByPlayer(array($this->player->GetId()));
+		$statistics_manager->FilterByPlayer($filter_by_player);
 
 		# Apply filters common to all statistics
 		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
@@ -62,6 +63,11 @@ class CurrentPage extends Page
 			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"]);
 			$this->player->Batting()->Add($batting);
 		}
+       
+        $statistics_manager->FilterByPlayer(null);
+        $statistics_manager->FilterByBowler($filter_by_player);
+        $statistics_manager->FilterByHowOut(array(Batting::BODY_BEFORE_WICKET, Batting::BOWLED, Batting::CAUGHT, Batting::CAUGHT_AND_BOWLED, Batting::HIT_BALL_TWICE));
+        $this->player->SetHowWicketsTaken($statistics_manager->ReadHowWicketsFall());
 		unset($statistics_manager);
 
         # How dismissed 
@@ -131,6 +137,21 @@ class CurrentPage extends Page
         {
             if ($key == Batting::DID_NOT_BAT) continue;
     
+            $label = ucfirst(html_entity_decode(Batting::Text($key)));
+            echo '{ "label":"' . $label . '","value":' . $value . "}";
+            
+            $count++;
+            if ($count < $len) echo ',';
+        }
+        ?>        
+    ],
+    "wickets": [
+        <?php
+        $how_out = $this->player->GetHowWicketsTaken();
+        $len = count($how_out);
+        $count = 0;
+        foreach ($how_out as $key=>$value)
+        {
             $label = ucfirst(html_entity_decode(Batting::Text($key)));
             echo '{ "label":"' . $label . '","value":' . $value . "}";
             

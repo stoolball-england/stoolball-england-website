@@ -523,7 +523,7 @@ class Team implements IHasShortUrl
 		'{0}/matches/edit' => $settings->GetUrl('TeamResults'),
 		'{0}/calendar' => $settings->GetUrl('TeamCalendar'),
 		'{0}/statistics' => $settings->GetUrl('TeamStats'),
-		'{0}/players' => '/play/players/players.php?team={0}',
+		'{0}/players' => '/play/teams/players.php?team={0}',
 		'{0}/players/add' => $settings->GetUrl('PlayerAdd'),
         '{0}/statistics.json' => "/play/statistics/team.js.php?team={0}"
 		));

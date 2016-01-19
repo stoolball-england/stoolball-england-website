@@ -401,24 +401,9 @@ class CurrentPage extends StoolballPage
 
  	echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $querystring . '">Bowling performances &#8211; view all and filter</a></p>';
  }
-/*
- if ($this->player->WicketsTaken())
- {
- 	# Wickets - breakdown by dismissal method
- 	$how_wickets_taken = $this->player->HowWicketsTaken();
-    
- 	$wickets_data = array();
- 	if (array_key_exists(Batting::CAUGHT, $how_wickets_taken)) $wickets_data[ucfirst(html_entity_decode(Batting::Text(Batting::CAUGHT))) . " (" . $how_wickets_taken[Batting::CAUGHT] . ")"] = $how_wickets_taken[Batting::CAUGHT];
- 	if (array_key_exists(Batting::CAUGHT_AND_BOWLED, $how_wickets_taken)) $wickets_data[ucfirst(html_entity_decode(Batting::Text(Batting::CAUGHT_AND_BOWLED))) . " (" . $how_wickets_taken[Batting::CAUGHT_AND_BOWLED] . ")"] = $how_wickets_taken[Batting::CAUGHT_AND_BOWLED];
- 	if (array_key_exists(Batting::BOWLED, $how_wickets_taken)) $wickets_data[ucfirst(html_entity_decode(Batting::Text(Batting::BOWLED))) . " (" . $how_wickets_taken[Batting::BOWLED] . ")"] = $how_wickets_taken[Batting::BOWLED];
- 	if (array_key_exists(Batting::BODY_BEFORE_WICKET, $how_wickets_taken)) $wickets_data[ucfirst(html_entity_decode(Batting::Text(Batting::BODY_BEFORE_WICKET))) . " (" . $how_wickets_taken[Batting::BODY_BEFORE_WICKET] . ")"] = $how_wickets_taken[Batting::BODY_BEFORE_WICKET];
- 	if (array_key_exists(Batting::HIT_BALL_TWICE, $how_wickets_taken)) $wickets_data[ucfirst(html_entity_decode(Batting::Text(Batting::HIT_BALL_TWICE))) . " (" . $how_wickets_taken[Batting::HIT_BALL_TWICE] . ")"] = $how_wickets_taken[Batting::HIT_BALL_TWICE];
-
- 	$wickets_chart = new PieChart(400,147,"How this player takes wickets");
- 	$wickets_chart->SetChartData($wickets_data);
- 	echo $wickets_chart;
- }
-*/
+ ?>
+    <span class="chart-js-template" id="wickets-chart"></span>
+<?php
  echo '<p>View <a href="' . htmlentities($this->player->Team()->GetPlayersNavigateUrl(), ENT_QUOTES, "UTF-8", false) . '">player statistics for ' . htmlentities($this->player->Team()->GetName(), ENT_QUOTES, "UTF-8", false) . '</a>.</p>';
 
  # End container for structured data

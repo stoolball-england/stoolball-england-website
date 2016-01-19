@@ -17,6 +17,12 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 			// Show pie charts for results
 			stoolballCharts.displayPieChart("dismissals-chart", data.dismissals, "How this player gets out", "innings", "innings",  200);
 			
+			for (var i = 0; i < data.wickets.length; i++) {
+				if (data.wickets[i].value) {
+					stoolballCharts.displayPieChart("wickets-chart", data.wickets, "How this player takes wickets", "wickets", "wickets",  200);
+				}
+				break;
+			}
 		});		
 	});
 }
