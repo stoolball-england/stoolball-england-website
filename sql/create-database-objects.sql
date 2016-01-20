@@ -379,6 +379,7 @@ CREATE TABLE IF NOT EXISTS `nsa_player_match` (
   INDEX `balls_bowled` (`balls_bowled` ASC),
   INDEX `catches` (`catches` ASC),
   INDEX `run_outs` (`run_outs` ASC),
+  INDEX `bowled_by` (`bowled_by` ASC),
   INDEX `player_of_match` (`player_of_match` ASC),
   INDEX `tournament_id` (`tournament_id` ASC))
 ENGINE = InnoDB
