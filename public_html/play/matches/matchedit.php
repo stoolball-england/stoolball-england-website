@@ -5,7 +5,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('stoolball/match-type.enum.php');
 if (isset($_GET['type']) and $_GET['type'] == MatchType::TOURNAMENT and isset($_GET['item']))
 {
-	require_once('tournaments/edit.php');
+	require_once('/play/tournaments/edit.php');
 	exit();
 }
 
@@ -154,43 +154,9 @@ class CurrentPage extends StoolballPage
 				case MatchEditControl::SECOND_INNINGS:
 
 					$this->match_manager->SaveScorecard($this->match, false, $this->SearchIndexer());
-					$this->editor->SetCurrentPage(MatchEditControl::HIGHLIGHTS);
-
-					break;
-
-				case MatchEditControl::HIGHLIGHTS:
-
-					# Save player of match
-					$this->match_manager->SaveHighlights($this->match);
                     $this->match_manager->ExpandMatchUrl($this->match);
-
-					# Add comment if provided
-					if (trim($this->match->GetNewComment()))
-					{
-						require_once('forums/topic-manager.class.php');
-						require_once('forums/review-item.class.php');
-						require_once('forums/subscription-manager.class.php');
-						$topic_manager = new TopicManager($this->GetSettings(), $this->GetDataConnection());
-
-						$item_to_comment_on = new ReviewItem($this->GetSettings());
-						$item_to_comment_on->SetType(ContentType::STOOLBALL_MATCH);
-						$item_to_comment_on->SetId($this->match->GetId());
-                        $item_to_comment_on->SetNavigateUrl("https://" . $this->GetSettings()->GetDomain() . $this->match->GetNavigateUrl());
-						$message = $topic_manager->SaveComment($item_to_comment_on, $this->match->GetNewComment());
-
-						# send subscription emails - new object each time to reset list of who's already recieved an email
-						$subs_manager = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
-						$subs_manager->SendCommentsSubscriptions($item_to_comment_on, $message);
-						unset($subs_manager);
-					}
-
-					# Match may have been updated so send an email
-					$this->match_manager->NotifyMatchModerator($this->match->GetId());
-
-					# Show user the match, so they can see update was applied
-                    $this->match_manager->ExpandMatchUrl($this->match);
-					$this->Redirect($this->match->GetNavigateUrl());
-
+					http_response_code(303);
+					$this->Redirect($this->match->EditHighlightsUrl());
 					break;
 			}
 		}
@@ -280,9 +246,6 @@ class CurrentPage extends StoolballPage
 
 			case MatchEditControl::SECOND_INNINGS:
 				break;
-
-			case MatchEditControl::HIGHLIGHTS:
-				break;
 		}
 	}
 
@@ -323,11 +286,6 @@ class CurrentPage extends StoolballPage
 
 			case MatchEditControl::SECOND_INNINGS:
 				$this->SetContentCssClass('scorecardPage');
-				break;
-
-			case MatchEditControl::HIGHLIGHTS:
-                $this->LoadClientScript("/scripts/tiny_mce/jquery.tinymce.js");
-                $this->LoadClientScript("/scripts/tinymce.js");
 				break;
 		}
 

@@ -58,24 +58,6 @@ abstract class SiteSettings
                 return $this->GetFolder('Account') . 'emails.php';
             case 'GroundStatistics':
                 return $this->GetFolder('Play') . 'statistics/summary-ground.php?item={0}';
-            case 'Match':
-                return $this->GetFolder('Play') . 'match.php?item=';
-            case 'MatchAddFriendlyToSeason':
-                return $this->GetFolder('Play') . 'matchadd.php?season={0}';
-            case 'MatchAddLeagueToSeason':
-                return $this->GetFolder('Play') . 'matchadd.php?season={0}&type=' . MatchType::LEAGUE;
-            case 'MatchAddCupToSeason':
-                return $this->GetFolder('Play') . 'matchadd.php?season={0}&type=' . MatchType::CUP;
-            case 'MatchAddPracticeToSeason':
-                return $this->GetFolder('Play') . 'matchadd.php?season={0}&type=' . MatchType::PRACTICE;
-            case 'MatchAddFriendlyToTeam':
-                return $this->GetFolder('Play') . 'matchadd.php?team={0}';
-            case 'MatchAddLeagueToTeam':
-                return $this->GetFolder('Play') . 'matchadd.php?team={0}&type=' . MatchType::LEAGUE;
-            case 'MatchAddCupToTeam':
-                return $this->GetFolder('Play') . 'matchadd.php?team={0}&type=' . MatchType::CUP;
-            case 'MatchAddPracticeToTeam':
-                return $this->GetFolder('Play') . 'matchadd.php?team={0}&type=' . MatchType::PRACTICE;
             case 'MatchCalendar':
                 return $this->GetFolder('Play') . 'calendar.php?match={0}';
             case 'PlayerAdd':

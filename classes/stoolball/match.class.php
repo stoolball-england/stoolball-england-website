@@ -736,16 +736,6 @@ class Match implements IHasShortUrl
 	public function GetShortUrl() { return $this->s_short_url; }
 
 	/**
-	 * Gets the real URL for a team
-	 *
-	 * @return string
-	 */
-	public function GetRealUrl()
-	{
-		return $this->o_settings->GetUrl('Match') . $this->GetId();
-	}
-
-	/**
 	 * Sets whether the short URL has been explicitly specified
 	 *
 	 * @param bool $b_custom
@@ -775,10 +765,11 @@ class Match implements IHasShortUrl
 	{
 		return new ShortUrlFormat($settings->GetTable('Match'), 'short_url', array('match_id', 'match_type'), array('GetId', 'GetMatchType'),
 		array(
-		'{0}' => $settings->GetUrl('Match') . '{0}',
+		'{0}' => '/play/matches/match.php?item={0}',
         '{0}/add/teams' => '/play/tournaments/teams.php?item={0}&action=add',
         '{0}/add/competitions' => '/play/tournaments/seasons.php?item={0}&action=add',
-		'{0}/edit' => '/play/matchedit.php?item={0}&type={1}',
+		'{0}/edit' => '/play/matches/matchedit.php?item={0}&type={1}',
+        '{0}/edit/highlights' => '/play/matches/edit-highlights.php?item={0}',
         '{0}/edit/teams' => '/play/tournaments/teams.php?item={0}',
         '{0}/edit/competitions' => '/play/tournaments/seasons.php?item={0}',
 		'{0}/delete' => '/play/matches/matchdelete.php?item={0}',
@@ -897,6 +888,16 @@ class Match implements IHasShortUrl
 		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/delete';
 	}
 
+
+    /**
+     * @return string
+     * @desc Gets the URL for editing the match highlights
+     */
+    public function EditHighlightsUrl()
+    {
+        return $this->GetEditNavigateUrl() . '/highlights';
+    }
+    
     /**
      * Gets the URL for editing the teams entered in this tournament, when first adding the tournament
      */
