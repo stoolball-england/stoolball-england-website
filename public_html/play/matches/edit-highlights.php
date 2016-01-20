@@ -4,7 +4,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 # include required functions
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/match-manager.class.php');
-require_once('stoolball/match-edit-control.class.php');
+require_once('stoolball/matches/match-highlights-edit-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -18,7 +18,7 @@ class CurrentPage extends StoolballPage
 	/**
 	 * Editor for the match
 	 *
-	 * @var MatchEditControl
+	 * @var MatchHighlightsEditControl
 	 */
 	private $editor;
 
@@ -32,6 +32,7 @@ class CurrentPage extends StoolballPage
 	private $b_user_is_match_admin = false;
 	private $b_user_is_match_owner = false;
 	private $b_is_tournament = false;
+    private $page_not_found = false;
 
 	public function OnPageInit()
 	{
@@ -39,8 +40,7 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new MatchEditControl($this->GetSettings());
-        $this->editor->SetCurrentPage(MatchEditControl::HIGHLIGHTS);
+		$this->editor = new MatchHighlightsEditControl($this->GetSettings());
 		$this->RegisterControlForValidation($this->editor);
 
 		# check permissions
@@ -136,10 +136,12 @@ class CurrentPage extends StoolballPage
 		}
 		unset($this->match_manager);
         
-        # Tournament or match in the future is page not found
-        if ($this->b_is_tournament or $this->match->GetStartTime() > gmdate('U'))
+        # Tournament or match in the future or not played is page not found
+        $editable_results = array(MatchResult::UNKNOWN, MatchResult::HOME_WIN, MatchResult::AWAY_WIN, MatchResult::TIE, MatchResult::ABANDONED);
+        if ($this->b_is_tournament or $this->match->GetStartTime() > gmdate('U') or !in_array($this->match->Result()->GetResultType(), $editable_results))
         {
             http_response_code(404);
+            $this->page_not_found  = true;
         }
 	}
 
@@ -154,8 +156,7 @@ class CurrentPage extends StoolballPage
 			return; # Don't load any JS
 		}
 
-        # Tournament or match in the future is page not found
-        if ($this->b_is_tournament or $this->match->GetStartTime() > gmdate('U'))
+        if ($this->page_not_found)
         {
             $this->SetPageTitle('Page not found');
             return; # Don't load any JS
@@ -193,8 +194,8 @@ class CurrentPage extends StoolballPage
 			return ;
 		}
 
-        # Tournament or match in the future is page not found
-        if ($this->b_is_tournament or $this->match->GetStartTime() > gmdate('U'))
+        # Matches this page shouldn't edit are page not found
+        if ($this->page_not_found)
         {
            require_once($_SERVER['DOCUMENT_ROOT'] . "/wp-content/themes/stoolball/section-404.php");
            return;
