@@ -86,7 +86,6 @@ class CurrentPage extends StoolballPage
 </div>
 
 <ul class="nav small">
-<li><a href="/search">Search</a></li>
 <li><a href="/rules/what-is-stoolball">What is stoolball?</a></li>
 <li><a href="/rules">Rules of stoolball</a></li>
 <li><a href="/teams">Find a team</a></li>
