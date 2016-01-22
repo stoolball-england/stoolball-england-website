@@ -445,7 +445,7 @@ class MatchControl extends XhtmlElement
 			$bowled_by->AddCssClass("bowler");
             $runs = new XhtmlCell(false, htmlentities($batting->GetRuns(), ENT_QUOTES, "UTF-8", false));
             $runs->SetCssClass("numeric runs");
-            $balls_faced = is_null($batting->GetBallsFaced()) ? "" : '<span class="balls-faced">('  . htmlentities($batting->GetBallsFaced(), ENT_QUOTES, "UTF-8", false) . ')</span>';
+            $balls_faced = is_null($batting->GetBallsFaced()) ? "" : '<span class="balls-faced">'  . htmlentities($batting->GetBallsFaced(), ENT_QUOTES, "UTF-8", false) . '</span>';
             $balls = new XhtmlCell(false, $balls_faced);
             $balls->SetCssClass("numeric");
 			$row = new XhtmlRow(array($player, $how, $bowled_by, $runs, $balls));

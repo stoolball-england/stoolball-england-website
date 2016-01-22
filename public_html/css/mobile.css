@@ -269,10 +269,12 @@ body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; 
 .time { white-space: nowrap; } /* Drop-down lists to enter a time */
 
 /* Scorecards */
+span.balls-faced:before {content: '(';}
+span.balls-faced { font-size: .8em; }
+span.balls-faced:after {content: ')';}
 td.batsman, td.bowler { padding-left: 0;}
 table.batting td.runs { white-space: nowrap; }
 table.batting th.balls-faced { width: 1em; } 
-table.batting span.balls-faced { font-size: .8em; }
 tr.extras th { text-align: right; font-weight: normal; vertical-align: middle; }
 tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: middle; text-align: right; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-color: #999; }
 

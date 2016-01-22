@@ -48,13 +48,15 @@ class BattingInningsTable extends XhtmlTable
 		$when->SetCssClass("date");
 		$runs = new XhtmlCell(true, "Runs");
 		$runs->SetCssClass("numeric");
+        $balls = new XhtmlCell(true, "Balls");
+        $balls->SetCssClass("numeric");
 		if ($display_team)
 		{
-			$best_batting_header = new XhtmlRow(array($position, $player, $team, $opposition, $when, $runs));
+			$best_batting_header = new XhtmlRow(array($position, $player, $team, $opposition, $when, $runs, $balls));
 		}
 		else
 		{
-			$best_batting_header = new XhtmlRow(array($position, $player, $opposition, $when, $runs));
+			$best_batting_header = new XhtmlRow(array($position, $player, $opposition, $when, $runs, $balls));
 		}
 		$best_batting_header->SetIsHeader(true);
 		$this->AddRow($best_batting_header);
@@ -105,14 +107,17 @@ class BattingInningsTable extends XhtmlTable
 			$runs = new XhtmlCell(false, $current_value);
 			$runs->SetCssClass("numeric");
 			if (!$not_out) $runs->AddCssClass("out");
+            $balls_faced = is_null($batting["balls_faced"]) ? "&#8211;" : '<span class="balls-faced">' . $batting["balls_faced"] . '</span>';
+            $balls = new XhtmlCell(false, $balls_faced);
+            $balls->SetCssClass("numeric");
 
 			if ($this->display_team)
 			{
-				$row = new XhtmlRow(array($position, $player, $team, $opposition, $date, $runs));
+				$row = new XhtmlRow(array($position, $player, $team, $opposition, $date, $runs, $balls));
 			}
 			else
 			{
-				$row = new XhtmlRow(array($position, $player, $opposition, $date, $runs));
+				$row = new XhtmlRow(array($position, $player, $opposition, $date, $runs, $balls));
 			}
 			$this->AddRow($row);
 		}
