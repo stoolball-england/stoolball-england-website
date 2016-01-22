@@ -1,6 +1,6 @@
 /* Setup the main content area */
 html { background: url(/images/design/wood.jpg) repeat #D0CCCA; }
-body { padding: 8px; margin: 0; background: url(/images/design/ball.png) no-repeat; font: 80%/150% Arial, Helvetica, sans-serif; }
+body { padding: 8px; margin: 0; background: url(/images/design/ball.png) no-repeat; min-height: 242px; font: 80%/150% Arial, Helvetica, sans-serif; }
 img { border: 0; }
 
 /* Show and hide elements depending on which design is active */
