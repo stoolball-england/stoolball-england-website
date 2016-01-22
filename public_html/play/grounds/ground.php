@@ -276,15 +276,6 @@ class CurrentPage extends StoolballPage
 		}
 		$o_user->AddLink('add this ground to your address book', 'http://www.technorati.com/contacts/' . $_SERVER['HTTP_HOST'] . $this->ground->GetNavigateUrl());
 		
-    	if ($this->has_player_stats)
-		{
-			$o_user->AddLink("view statistics for this ground", $this->ground->GetStatsNavigateUrl(), "small");
-		}
-		else
-		{
-			$o_user->AddLink("add player statistics now", "/play/manage/website/how-to-add-match-results/", "small");
-		}
-
 		echo $o_user;
 
 		# Show top players

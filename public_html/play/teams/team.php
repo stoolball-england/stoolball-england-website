@@ -369,9 +369,6 @@ class CurrentPage extends StoolballPage
 
 		$o_panel = new TeamEditPanel($this->GetSettings(), $this->team, $this->seasons, $this->a_matches);
         $o_panel->AddCssClass("with-tabs");
-
-		$o_panel->AddLink("view statistics for this team", $this->team->GetStatsNavigateUrl(), "small");
-
 		echo $o_panel;
 
 		$this->Render();

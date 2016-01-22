@@ -345,14 +345,6 @@ class CurrentPage extends StoolballPage
 			$you_can->AddLink('add matches to your calendar', $this->season->GetCalendarNavigateUrl());
 		}
 
-		if ($this->has_player_stats)
-		{
-			$you_can->AddLink("view statistics for this season", $this->season->GetStatisticsUrl(), "small");
-		}
-		else
-		{
-			$you_can->AddLink("add player statistics now", "/play/manage/website/how-to-add-match-results/", "small");
-		}
 		echo $you_can;
 
         if ($this->has_player_stats)
