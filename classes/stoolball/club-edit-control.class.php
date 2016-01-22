@@ -28,7 +28,7 @@ class ClubEditControl extends DataEditControl
 		$o_club = new Club($this->GetSettings());
 		if (isset($_POST['item'])) $o_club->SetId($_POST['item']);
 		$o_club->SetName($_POST['name']);
-        $o_club->SetClubmarkAccredited($_POST['clubmark']);
+        $o_club->SetClubmarkAccredited(isset($_POST['clubmark']));
         $o_club->SetTwitterAccount($_POST['twitter']);
 		$o_club->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
 
