@@ -262,7 +262,7 @@ body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; 
 .player-list ul:last-child { margin-bottom: 0; }
 
 /* View match */
-.sunset { background: url(/images/sunset.gif) no-repeat 10px center; padding-left: 40px; font-size: .8em; white-space: nowrap; }
+.sunset { background: url(/images/matches/sunset.png) no-repeat 10px center; padding-left: 40px; font-size: .8em; white-space: nowrap; }
 
 /* Add a match */
 .time { white-space: nowrap; } /* Drop-down lists to enter a time */
