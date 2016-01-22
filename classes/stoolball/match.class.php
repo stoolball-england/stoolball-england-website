@@ -769,7 +769,8 @@ class Match implements IHasShortUrl
         '{0}/add/teams' => '/play/tournaments/teams.php?item={0}&action=add',
         '{0}/add/competitions' => '/play/tournaments/seasons.php?item={0}&action=add',
 		'{0}/edit' => '/play/matches/matchedit.php?item={0}&type={1}',
-        '{0}/edit/highlights' => '/play/matches/edit-highlights.php?item={0}',
+        '{0}/edit/highlights' => '/play/matches/highlights.php?item={0}',
+        '{0}/edit/scorecard' => '/play/matches/scorecard.php?item={0}',
         '{0}/edit/teams' => '/play/tournaments/teams.php?item={0}',
         '{0}/edit/competitions' => '/play/tournaments/seasons.php?item={0}',
 		'{0}/delete' => '/play/matches/matchdelete.php?item={0}',
@@ -888,7 +889,15 @@ class Match implements IHasShortUrl
 		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/delete';
 	}
 
-
+    /**
+     * @return string
+     * @desc Gets the URL for editing the match scorecard
+     */
+    public function EditScorecardUrl()
+    {
+        return $this->GetEditNavigateUrl() . '/scorecard';
+    }
+    
     /**
      * @return string
      * @desc Gets the URL for editing the match highlights

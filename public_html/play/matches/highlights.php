@@ -1,7 +1,6 @@
 <?php
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
-# include required functions
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/match-manager.class.php');
 require_once('stoolball/matches/match-highlights-edit-control.class.php');
@@ -113,17 +112,12 @@ class CurrentPage extends StoolballPage
 	{
 
 		/* @var $match_manager MatchManager */
-		/* @var $editor MatchEditControl */
 
 		# get id of Match
 		$i_id = $this->match_manager->GetItemId();
 
-		# If there's no id, ensure no match object is created. Page will then display a "match not found" message.
-		# There's a separate page for adding matches, even for admins.
-		if (!$i_id) return;
-
 		# Get details of match but, if invalid, don't replace submitted details with saved ones
-		if ($this->IsValid())
+		if ($i_id and $this->IsValid())
 		{
 			$this->match_manager->ReadByMatchId(array($i_id));
             $this->match_manager->ExpandMatchScorecards();
@@ -138,7 +132,10 @@ class CurrentPage extends StoolballPage
         
         # Tournament or match in the future or not played is page not found
         $editable_results = array(MatchResult::UNKNOWN, MatchResult::HOME_WIN, MatchResult::AWAY_WIN, MatchResult::TIE, MatchResult::ABANDONED);
-        if ($this->b_is_tournament or $this->match->GetStartTime() > gmdate('U') or !in_array($this->match->Result()->GetResultType(), $editable_results))
+        if (!$this->match instanceof Match or 
+            $this->b_is_tournament or 
+            $this->match->GetStartTime() > gmdate('U') 
+            or !in_array($this->match->Result()->GetResultType(), $editable_results))
         {
             http_response_code(404);
             $this->page_not_found  = true;
@@ -149,12 +146,6 @@ class CurrentPage extends StoolballPage
 	{
 		/* @var $match Match */
 		$this->SetContentConstraint(StoolballPage::ConstrainText());
-
-		if (!$this->match instanceof Match)
-		{
-			$this->SetPageTitle('Match not found');
-			return; # Don't load any JS
-		}
 
         if ($this->page_not_found)
         {
@@ -187,13 +178,6 @@ class CurrentPage extends StoolballPage
 
 	public function OnPageLoad()
 	{
-		# There's a separate page for adding matches, even for admins.
-		if (!$this->match instanceof Match)
-		{
-			echo new XhtmlElement('p', "Sorry, we couldn't find the match you're trying to edit.");
-			return ;
-		}
-
         # Matches this page shouldn't edit are page not found
         if ($this->page_not_found)
         {
