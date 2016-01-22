@@ -887,8 +887,9 @@ class StatisticsManager extends DataManager
         $how_out = new StatisticsField("how_out", "How out", true, function($value) {
             return Batting::Text($value);
         });
+        $balls_faced = new StatisticsField("balls_faced", "Balls faced", null, null);
         
-        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out), 0, $exclude_extras, false);
+        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out, $balls_faced), 0, $exclude_extras, false);
 	}
 
 	/**
@@ -1441,7 +1442,7 @@ class StatisticsManager extends DataManager
 		$batter_ids_recorded = array();
 
 		# reset batting stats for these players
-		$sql = "UPDATE $stats_table SET batting_position = NULL, how_out = NULL, dismissed = NULL, bowled_by = NULL, caught_by = NULL, run_out_by = NULL, runs_scored = NULL
+		$sql = "UPDATE $stats_table SET batting_position = NULL, how_out = NULL, dismissed = NULL, bowled_by = NULL, caught_by = NULL, run_out_by = NULL, runs_scored = NULL, balls_faced = NULL
 				WHERE player_id IN ($player_id_list) AND match_team_id IN ($batting_match_team_id_list)";
 		$this->GetDataConnection()->query($sql);
 
@@ -1453,7 +1454,7 @@ class StatisticsManager extends DataManager
 		$sql = "SELECT $player_table.player_id, $player_table.player_role, $player_table.player_name, $player_table.short_url,
 		$mt.match_id, $mt.match_team_id, 
 		m.start_time, m.tournament_match_id, m.ground_id, 
-		position, how_out, dismissed_by_id, bowler_id, runs,
+		position, how_out, dismissed_by_id, bowler_id, runs, balls_faced,
 		team.team_id, team.team_name
 		FROM $batting_table INNER JOIN $mt ON $batting_table.match_team_id = $mt.match_team_id
 		INNER JOIN $match_table m ON $mt.match_id = m.match_id
@@ -1503,6 +1504,7 @@ class StatisticsManager extends DataManager
 			if ($is_extras) $dismissed = "NULL";
 
 			$runs = Sql::ProtectNumeric($row->runs, true, false);
+            $balls_faced = Sql::ProtectNumeric($row->balls_faced, true, false);
 			$ground_id = Sql::ProtectNumeric($row->ground_id, true, false);
             $tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
             $team_name = Sql::ProtectString($this->GetDataConnection(), $row->team_name);
@@ -1530,7 +1532,8 @@ class StatisticsManager extends DataManager
 					caught_by = $catcher_id,
 					run_out_by = $run_out_by_id,
 					bowled_by = $bowler_id,
-					runs_scored = $runs
+					runs_scored = $runs,
+					balls_faced = $balls_faced
 					WHERE match_team_id = $row->match_team_id
 					AND player_id = $row->player_id";
 				$update_result = $this->GetDataConnection()->query($sql);
@@ -1556,11 +1559,11 @@ class StatisticsManager extends DataManager
 					$sql = "INSERT INTO $stats_table
 					(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, 
 					 tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,  
-					 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored, catches, run_outs, player_of_match)
+					 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored, balls_faced, catches, run_outs, player_of_match)
 					VALUES
 					($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $row->start_time, 
 					 $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name,  
-					 $player_innings, $position, $how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs, $catches, $run_outs, $player_of_match)";
+					 $player_innings, $position, $how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs, $balls_faced, $catches, $run_outs, $player_of_match)";
 					$this->GetDataConnection()->query($sql);
 				}
 
@@ -1586,12 +1589,12 @@ class StatisticsManager extends DataManager
 				$sql = "INSERT INTO $stats_table
 				(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, 
 				 tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,
-				 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored)
+				 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored, balls_faced)
 				VALUES
 				($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $row->start_time, 
 				 $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name, " .
 				 $batter_ids_recorded[$row->match_team_id][$row->player_id] . ",
-				 $position, $row->how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs)";
+				 $position, $row->how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs, $balls_faced)";
 				$this->GetDataConnection()->query($sql);
 
 			}

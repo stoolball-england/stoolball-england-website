@@ -125,7 +125,7 @@ class CurrentPage extends StoolballPage
     		$data = $statistics_manager->ReadBestBattingPerformance(false);
     		foreach ($data as $performance)
     		{
-    			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"]);
+    			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"], $performance["balls_faced"]);
     			$this->player->Batting()->Add($batting);
     		}
     
@@ -316,26 +316,23 @@ class CurrentPage extends StoolballPage
  echo $this->filter_control;
 
  # Batting stats
- $catches = $this->player->GetCatches();
- $run_outs = $this->player->GetRunOuts();
- if ($this->player->TotalBattingInnings() or $catches or $run_outs)
+ if ($this->player->TotalBattingInnings())
  {
  	//echo "<h2>Batting</h2>";
 
  	# Overview table
  	$batting_table = new XhtmlTable();
  	$batting_table->SetCssClass("numeric");
- 	$batting_table->SetCaption("Batting and fielding");
+ 	$batting_table->SetCaption("Batting");
 
  	$batting_heading_row = new XhtmlRow(array('<abbr title="Innings" class="small">Inn</abbr><span class="large">Innings</span>', 
  	                                      "Not out", 
  	                                      "Runs", 
- 	                                      "Best", 
+                                          "50s", 
+                                          "100s", 
+   	                                      "Best", 
  	                                      '<abbr title="Average" class="small">Avg</abbr><span class="large">Average</span>',
- 	                                      "50s", 
- 	                                      "100s", 
- 	                                      '<abbr title="Catches" class="small">Ct</abbr><span class="large">Catches</span>',
- 	                                      "Run&#8202;-outs"));
+                                          '<abbr title="Strike rate" class="small">S/R</abbr><span class="large">Strike rate</span>'));
  	$batting_heading_row->SetIsHeader(true);
  	$batting_table->AddRow($batting_heading_row);
 
@@ -343,12 +340,12 @@ class CurrentPage extends StoolballPage
  	$this->player->TotalBattingInnings(),
  	$this->player->NotOuts(),
  	$this->player->TotalRuns(),
+    $this->player->Fifties(),
+    $this->player->Centuries(),
  	$this->player->BestBatting(),
  	is_null($this->player->BattingAverage()) ? "&#8211;" : $this->player->BattingAverage(),
- 	$this->player->Fifties(),
- 	$this->player->Centuries(),
- 	$catches,
- 	$run_outs)));
+    is_null($this->player->BattingStrikeRate()) ? "&#8211;" : $this->player->BattingStrikeRate(),
+    )));
 
  	echo $batting_table;
 
@@ -404,6 +401,26 @@ class CurrentPage extends StoolballPage
  ?>
     <span class="chart-js-template" id="wickets-chart"></span>
 <?php
+
+    # Fielding
+    $catches = $this->player->GetCatches();
+    $run_outs = $this->player->GetRunOuts();
+    if ($catches or $run_outs)
+    {    
+        $fielding_table = new XhtmlTable();
+        $fielding_table->SetCssClass("numeric");
+        $fielding_table->SetCaption("Fielding");
+    
+        $fielding_heading_row = new XhtmlRow(array('Catches',"Run-outs"));
+        $fielding_heading_row->SetIsHeader(true);
+        $fielding_table->AddRow($fielding_heading_row);
+    
+        $fielding_table->AddRow(new XhtmlRow(array($catches,$run_outs)));
+    
+        echo $fielding_table;
+    }
+
+
  echo '<p>View <a href="' . htmlentities($this->player->Team()->GetPlayersNavigateUrl(), ENT_QUOTES, "UTF-8", false) . '">player statistics for ' . htmlentities($this->player->Team()->GetName(), ENT_QUOTES, "UTF-8", false) . '</a>.</p>';
 
  # End container for structured data

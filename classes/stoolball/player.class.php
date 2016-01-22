@@ -68,10 +68,13 @@ class Player implements IHasShortUrl
 	private $all_scores;
     private $scores_out;
     private $scores_not_out;
+    private $scores_with_balls_faced;
+    private $balls_faced;
 	private $batting_best;
+    private $batting_50;
+    private $batting_100;
 	private $batting_average;
-	private $batting_50;
-	private $batting_100;
+    private $batting_strike_rate;
 	private $how_out;
 	private $score_spread;
 
@@ -359,8 +362,11 @@ class Player implements IHasShortUrl
 		$this->all_scores = array();
         $this->scores_out = array();
         $this->scores_not_out = array();
+        $this->scores_with_balls_faced = array();
+        $this->balls_faced = array();
 		$this->batting_best = null;
 		$this->batting_average = null;
+        $this->batting_strike_rate = null;
 		$this->batting_50 = 0;
 		$this->batting_100 = 0;
 		$this->how_out = array();
@@ -398,6 +404,11 @@ class Player implements IHasShortUrl
 					    $this->batting_best .= "*";
                     }
 				}
+                
+                if (!is_null($batting->GetBallsFaced())) {
+                    $this->scores_with_balls_faced[] = $batting->GetRuns();
+                    $this->balls_faced[] = $batting->GetBallsFaced(); 
+                }
 			}
 		}
 		$this->not_outs = array_key_exists(Batting::NOT_OUT, $this->how_out) ? $this->how_out[Batting::NOT_OUT] : 0;
@@ -413,6 +424,10 @@ class Player implements IHasShortUrl
 			# Work out the ranges scores are in
             $this->WorkOutScoreSpread();
 		}
+        
+        if (count($this->scores_with_balls_faced)) {
+            $this->batting_strike_rate = round((array_sum($this->scores_with_balls_faced)/array_sum($this->balls_faced))*100,2);
+        }
 
 		# Gather bowling stats
 		$this->bowling_innings = 0;
@@ -613,6 +628,16 @@ class Player implements IHasShortUrl
 		if (is_null($this->total_innings)) $this->RecalculateStatistics();
 		return $this->batting_average;
 	}
+
+    /**
+     * Gets the player's batting strike rate
+     * @return float
+     */
+    public function BattingStrikeRate()
+    {
+        if (is_null($this->total_innings)) $this->RecalculateStatistics();
+        return $this->batting_strike_rate;
+    }
 
 	/**
 	 * Gets the number of scores of 50 or above
