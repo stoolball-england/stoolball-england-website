@@ -178,6 +178,11 @@ input.year { width: 3em; }
 /* WordPress pages */
 .screenshot { margin: 1em 0; border: 1px solid #503C03; }
 
+/* Who are Stoolball England? page */
+.who { overflow: hidden; padding-left: 90px; margin-bottom: 10px; }
+.who img { float: left; margin: 3px 10px 0 -90px; border: 1px solid #ccc; border-radius: 50%; }
+.who h2 { margin: 0; }
+
 /* Re-usable box style
  * 
  * <div class="box">

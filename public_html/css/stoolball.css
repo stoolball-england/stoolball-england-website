@@ -491,11 +491,6 @@ td.out { padding-right: .9em; }
 .alignright, .screenshot { float: right; margin: 0 0 10px 10px; border: 0; }
 .alignleft { float: left; margin: 0 10px 10px 0; border: 0; }
 
-/* Who are Stoolball England? page */
-.who { overflow: hidden; padding-left: 90px; margin-bottom: 10px; }
-.who img { float: left; margin: 3px 10px 0 -90px; border: 2px solid black; border-radius: 3px; }
-.who h2 { margin: 0; }
-
 /* Manage */
 .filterForm { margin: 1em 0; }
 .pointsBox { width: 2em; }
