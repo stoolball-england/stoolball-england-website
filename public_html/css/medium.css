@@ -31,3 +31,6 @@
 .calendar .subscribe { padding: 10px 10px 20px 120px; text-decoration: underline; background: url(/images/noise-bottom.gif) repeat-x left bottom; }
 .calendar .subscribe:after { position: absolute; top: -15px; left: 10px; content: ' '; display: block; height: 88px; width: 81px; background: url(/images/sprite.4.png) no-repeat left -20px; }
 .calendar .subscribe-to { margin: 0; background: #ccc url(/images/wicket-tile.jpg); border-radius: 0 0 5px 5px; color: #000; padding: 10px 10px 10px 120px; }
+
+/* League table for a season - when it's missing, need to clear after the image */
+.season-table .box-content h2 { clear: both; }

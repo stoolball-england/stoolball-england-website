@@ -264,9 +264,6 @@ a.promo { margin: 15px 0; display: block; }
 .player-list li { width: 50%; }
 @media only screen and (min-width: 1000px) { .player-list li { width: 30%; } }
 
-/* League table for a season - when it's missing, need to clear after the image */
-.season-table .box-content h2 { clear: both; }
-
 /* In a tabbed area it's always at the end where there is padding anyway */
 .box-content .season-list ul { margin-bottom: 0;}
 
