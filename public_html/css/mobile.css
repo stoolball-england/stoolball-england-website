@@ -59,6 +59,7 @@ img { display: block; max-width: 100%; }
 
 /* Tables */
 table { border-collapse: collapse; width: 100%; margin: 1em 0; }
+table { background: url(/images/statistics/table.jpg) no-repeat right 40px; }
 thead tr { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: top; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; }
 th, td { text-align: left; padding: 2px; vertical-align: top; }
 tbody td, tbody th { border-top: 1px solid #999; border-bottom: 1px groove #999; }
@@ -269,6 +270,9 @@ body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; 
 
 /* Scorecards */
 td.batsman, td.bowler { padding-left: 0;}
+table.batting td.runs { white-space: nowrap; }
+table.batting th.balls-faced { width: 1em; } 
+table.batting span.balls-faced { font-size: .8em; }
 tr.extras th { text-align: right; font-weight: normal; vertical-align: middle; }
 tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: middle; text-align: right; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-color: #999; }
 

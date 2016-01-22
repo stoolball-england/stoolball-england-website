@@ -387,7 +387,9 @@ class MatchControl extends XhtmlElement
 		{
 			$score_header = new XhtmlCell(true, "Runs");
 			$score_header->SetCssClass("numeric");
-			$batting_headings = new XhtmlRow(array("Batsman", "How out", "Bowler", $score_header));
+            $balls_header = new XhtmlCell(true, 'Balls');
+            $balls_header->SetCssClass("numeric balls-faced");
+			$batting_headings = new XhtmlRow(array("Batsman", "How out", "Bowler", $score_header, $balls_header));
 			$batting_headings->SetIsHeader(true);
 			$batting_table->AddRow($batting_headings);
 		}
@@ -441,9 +443,12 @@ class MatchControl extends XhtmlElement
 
 			$bowled_by = new XhtmlCell(false, (is_null($batting->GetBowler()) or !$batting->GetBowler()->GetPlayerRole() == Player::PLAYER) ? "" : '<span typeof="schema:Person" about="' . htmlentities($batting->GetBowler()->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '"><a property="schema:name" rel="schema:url" href="' . htmlentities($batting->GetBowler()->GetPlayerUrl(), ENT_QUOTES, "UTF-8", false) . '">' . htmlentities($batting->GetBowler()->GetName(), ENT_QUOTES, "UTF-8", false) . '</a></span>');
 			$bowled_by->AddCssClass("bowler");
-			$row = new XhtmlRow(array($player, $how, $bowled_by, htmlentities($batting->GetRuns(), ENT_QUOTES, "UTF-8", false)));
-			$runs = $row->GetLastCell();
-			$runs->SetCssClass("numeric runs");
+            $runs = new XhtmlCell(false, htmlentities($batting->GetRuns(), ENT_QUOTES, "UTF-8", false));
+            $runs->SetCssClass("numeric runs");
+            $balls_faced = is_null($batting->GetBallsFaced()) ? "" : '<span class="balls-faced">('  . htmlentities($batting->GetBallsFaced(), ENT_QUOTES, "UTF-8", false) . ')</span>';
+            $balls = new XhtmlCell(false, $balls_faced);
+            $balls->SetCssClass("numeric");
+			$row = new XhtmlRow(array($player, $how, $bowled_by, $runs, $balls));
 			$batting_table->AddRow($row);
 		}
 
@@ -458,8 +463,8 @@ class MatchControl extends XhtmlElement
 		{
 			$this->CreateExtrasRow($batting_table, "Bonus runs", "extras", $bonus); # don't show a 0 here, only if actual runs awarded
 		}
-		$this->CreateExtrasRow($batting_table, "Total", "totals", $total);
-		$this->CreateExtrasRow($batting_table, "Wickets", "totals", $wickets);
+		$this->CreateExtrasRow($batting_table, "Total", "totals", $total, $minimal_scorecard);
+		$this->CreateExtrasRow($batting_table, "Wickets", "totals", $wickets, $minimal_scorecard);
 
 		$this->AddControl($batting_table);
 	}
@@ -470,15 +475,21 @@ class MatchControl extends XhtmlElement
 	 * @param string $label
 	 * @param string $class
 	 * @param int $value
+     * @param bool $is_minimal_scorecard
 	 * @return void
 	 */
-	private function CreateExtrasRow(XhtmlTable $table, $label, $class, $value)
+	private function CreateExtrasRow(XhtmlTable $table, $label, $class, $value, $is_minimal_scorecard=false)
 	{
 		$extras_header = new XhtmlCell(true, htmlentities($label, ENT_QUOTES, "UTF-8", false));
-		$extras_header->SetColumnSpan(4);
+		$extras_header->SetColumnSpan(3);
 		$extras_data = new XhtmlCell(false, htmlentities($value, ENT_QUOTES, "UTF-8", false));
 		$extras_data->SetCssClass("numeric runs");
-		$extras_row = new XhtmlRow(array($extras_header, $extras_data));
+        if ($is_minimal_scorecard) {
+            $extras_row = new XhtmlRow(array($extras_header, $extras_data));
+        } else {
+            $balls_column = new XhtmlCell(false, null);
+            $extras_row = new XhtmlRow(array($extras_header, $extras_data, $balls_column));
+        }
 		$extras_row->SetCssClass($class);
 		$table->AddRow($extras_row);
 	}

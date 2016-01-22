@@ -255,7 +255,7 @@ class CurrentPage extends StoolballPage
 		# Load JavaScript
 		if ($this->b_user_is_match_admin or $this->b_user_is_match_owner) $this->LoadClientScript('/scripts/match-fixture-edit-control-5.js');
 		if ($this->b_user_is_match_admin) $this->LoadClientScript('matchedit-admin-3.js', true);
-        $this->LoadClientScript('matchedit-3.js',true);
+        $this->LoadClientScript('matchedit.js',true);
 	}
 
 	public function OnPageLoad()
@@ -283,21 +283,17 @@ class CurrentPage extends StoolballPage
 		if (!$this->b_user_is_match_admin and !$this->b_user_is_match_owner)
 		{
 			/* Create instruction panel */
-			$o_panel_inner2 = new XhtmlElement('div');
-			$o_panel_inner1 = new XhtmlElement('div', $o_panel_inner2);
-			$o_panel = new XhtmlElement('div', $o_panel_inner1);
+			$o_panel = new XhtmlElement('div');
 			$o_panel->SetCssClass('panel instructionPanel');
 
-			$o_title_inner3 = new XhtmlElement('span', 'Add your result quickly:');
-			$o_title_inner2 = new XhtmlElement('span', $o_title_inner3);
-			$o_title_inner1 = new XhtmlElement('span', $o_title_inner2);
+			$o_title_inner1 = new XhtmlElement('div', 'Add your matches quickly:');
 			$o_title = new XhtmlElement('h2', $o_title_inner1);
-			$o_panel_inner2->AddControl($o_title);
+			$o_panel->AddControl($o_title);
 
 			$o_tab_tip = new XhtmlElement('ul');
 			$o_tab_tip->AddControl(new XhtmlElement('li', 'You can add runs, wickets and the winning team on the next few pages'));
 			$o_tab_tip->AddControl(new XhtmlElement('li', 'Don\'t worry if you don\'t know &#8211; fill in what you can and leave the rest blank.'));
-			$o_panel_inner2->AddControl($o_tab_tip);
+			$o_panel->AddControl($o_tab_tip);
 			echo $o_panel;
 		}
 

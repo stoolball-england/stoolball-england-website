@@ -122,8 +122,11 @@ class ScorecardEditControl extends DataEditControl
 				$key = "batRuns$i";
 				$runs = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
 
+                $key = "batBalls$i";
+                $balls = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
+
 				# Add that batting performance to the match result
-				$batting = new Batting($player, $how_out, $dismissed_by, $bowler, $runs);
+				$batting = new Batting($player, $how_out, $dismissed_by, $bowler, $runs, $balls);
 				if ($home_batting)
 				{
 					$match->Result()->HomeBatting()->Add($batting);
@@ -341,12 +344,16 @@ class ScorecardEditControl extends DataEditControl
 		$batting_table = new XhtmlTable();
 		$batting_table->SetCaption($batting_team->GetName() . "'s batting");
 		$batting_table->SetCssClass("scorecard scorecardEditor batting");
-
-		$score_header = new XhtmlCell(true, "Runs");
-		$score_header->SetCssClass("numeric");
-		$out_by_header = new XhtmlCell(true, '<span class="small">Fielder</span><span class="large">Caught/run-out by</span>');
+        
+		$out_by_header = new XhtmlCell(true, '<span class="small">Fielder</span><span class="large">Caught<span class="wrapping-hair-space"> </span>/<span class="wrapping-hair-space"> </span><span class="nowrap">run-out by</span></span>');
 		$out_by_header->SetCssClass("dismissedBy");
-		$batting_headings = new XhtmlRow(array("Batsman", "How out", $out_by_header, "Bowler", $score_header));
+        $bowler_header = new XhtmlCell(true, "Bowler");
+        $bowler_header->SetCssClass("bowler");
+        $score_header = new XhtmlCell(true, "Runs");
+        $score_header->SetCssClass("numeric");
+        $balls_header = new XhtmlCell(true, "Balls");
+        $balls_header->SetCssClass("numeric");
+		$batting_headings = new XhtmlRow(array("Batsman", "How out", $out_by_header, $bowler_header, $score_header, $balls_header));
 		$batting_headings->SetIsHeader(true);
 		$batting_table->AddRow($batting_headings);
 
@@ -422,7 +429,13 @@ class ScorecardEditControl extends DataEditControl
                 $runs->AddAttribute("min", "0");
 				$runs->AddAttribute("autocomplete", "off");
 
-				$batting_row = new XhtmlRow(array($player, $how, $out_by, $bowled_by, $runs));
+                $balls = new TextBox("batBalls$i", (is_null($batting) or $batting->GetPlayer()->GetPlayerRole() != Player::PLAYER) ? "" : $batting->GetBallsFaced(), $this->IsValidSubmit());
+                $balls->SetCssClass("numeric balls");
+                $balls->AddAttribute("type", "number");
+                $balls->AddAttribute("min", "0");
+                $balls->AddAttribute("autocomplete", "off");
+
+				$batting_row = new XhtmlRow(array($player, $how, $out_by, $bowled_by, $runs, $balls));
                 $batting_row->GetFirstCell()->SetCssClass("batsman");
                 $batting_table->AddRow($batting_row);
 			}
@@ -433,28 +446,7 @@ class ScorecardEditControl extends DataEditControl
 		$batting_table->AddRow($this->CreateExtrasRow("batNoBalls", "No balls", "extras", "numeric runs", $no_balls));
 		$batting_table->AddRow($this->CreateExtrasRow("batBonus", "Bonus or penalty runs", "extras", "numeric runs", $bonus));
 		$batting_table->AddRow($this->CreateExtrasRow("batTotal", "Total", "totals", "numeric", $total));
-
-		$wickets_header = new XhtmlCell(true, "Wickets");
-		$wickets_header->SetColumnSpan(4);
-		$wickets = new XhtmlSelect("batWickets", null, $this->IsValidSubmit());
-		$wickets->SetBlankFirst(true);
-
-		$max_wickets = $match->GetMaximumPlayersPerTeam()-2;
-		$season_dates = Season::SeasonDates($match->GetStartTime()); # working with GMT
-		if (Date::Year($season_dates[0]) != Date::Year($season_dates[1]))
-		{
-			# outdoor needs maximum-2, but indoor needs maximum-1 cos last batter can play on.
-			# if there's any chance it's indoor use maximum-1
-			$max_wickets = $match->GetMaximumPlayersPerTeam()-1;
-		}
-		for ($i = 0; $i <= $max_wickets; $i++) $wickets->AddControl(new XhtmlOption($i));
-
-		$wickets->AddControl(new XhtmlOption('all out', -1));
-		if ($this->IsValidSubmit() and !is_null($wickets_taken)) $wickets->SelectOption($wickets_taken);
-
-		$wickets_row = new XhtmlRow(array($wickets_header, $wickets));
-		$wickets_row->SetCssClass("totals");
-		$batting_table->AddRow($wickets_row);
+		$batting_table->AddRow($this->CreateWicketsRow($match, $wickets_taken));
 
 		$this->AddControl($batting_table);
 
@@ -556,10 +548,38 @@ class ScorecardEditControl extends DataEditControl
 		$extras->AddAttribute("autocomplete", "off");
 		$extras->SetCssClass($box_class);
         $extras->AddAttribute("type", "number");
-		$extras_row = new XhtmlRow(array($extras_header, $extras));
+        $balls_column = new XhtmlCell(false, null);
+		$extras_row = new XhtmlRow(array($extras_header, $extras, $balls_column));
 		$extras_row->SetCssClass($row_class);
 		return $extras_row;
 	}
+
+    private function CreateWicketsRow(Match $match, $wickets_taken) 
+    {
+        $wickets_header = new XhtmlCell(true, "Wickets");
+        $wickets_header->SetColumnSpan(4);
+        $wickets = new XhtmlSelect("batWickets", null, $this->IsValidSubmit());
+        $wickets->SetBlankFirst(true);
+
+        $max_wickets = $match->GetMaximumPlayersPerTeam()-2;
+        $season_dates = Season::SeasonDates($match->GetStartTime()); # working with GMT
+        if (Date::Year($season_dates[0]) != Date::Year($season_dates[1]))
+        {
+            # outdoor needs maximum-2, but indoor needs maximum-1 cos last batter can play on.
+            # if there's any chance it's indoor use maximum-1
+            $max_wickets = $match->GetMaximumPlayersPerTeam()-1;
+        }
+        for ($i = 0; $i <= $max_wickets; $i++) $wickets->AddControl(new XhtmlOption($i));
+
+        $wickets->AddControl(new XhtmlOption('all out', -1));
+        if ($this->IsValidSubmit() and !is_null($wickets_taken)) $wickets->SelectOption($wickets_taken);
+
+        $balls_column = new XhtmlCell(false, null);
+        $wickets_row = new XhtmlRow(array($wickets_header, $wickets, $balls_column));
+        $wickets_row->SetCssClass("totals");
+        
+        return $wickets_row;
+    }
 
 	/**
 	 * @return void
@@ -600,7 +620,9 @@ class ScorecardEditControl extends DataEditControl
 			$this->AddValidator(new RequiresOtherFieldsValidator(array("batBowledBy$i", "batHowOut$i"),"You've said who bowled to the $ordinal batsman, but they were 'not out' or didn't bat.", array(array(Batting::CAUGHT, Batting::BOWLED, Batting::CAUGHT_AND_BOWLED, Batting::RUN_OUT, Batting::BODY_BEFORE_WICKET, Batting::HIT_BALL_TWICE, Batting::RETIRED, Batting::RETIRED_HURT))));
 			$this->AddValidator(new NumericValidator("batHowOut$i", "How the $ordinal batsman was out should be a number. For example: '3' for 'bowled'."));
 			$this->AddValidator(new NumericValidator("batRuns$i", "The $ordinal batsman's runs should be in figures. For example: '50', not 'fifty'."));
+            $this->AddValidator(new NumericValidator("batBalls$i", "The $ordinal batsman's balls faced should be in figures. For example: '50', not 'fifty'."));
 			$this->AddValidator(new RequiresOtherFieldsValidator(array("batRuns$i", "batName$i"),"You've added runs for the $ordinal batsman. Please name the batsman."));
+            $this->AddValidator(new RequiresOtherFieldsValidator(array("batBalls$i", "batName$i"),"You've added balls faced for the $ordinal batsman. Please name the batsman."));
 			$this->AddValidator(new RequiresOtherFieldsValidator(array("batBowledBy$i", "batHowOut$i"),"You've added runs for the $ordinal batsman, but they were 'not out' or didn't bat.", array(array(Batting::CAUGHT, Batting::BOWLED, Batting::CAUGHT_AND_BOWLED, Batting::RUN_OUT, Batting::BODY_BEFORE_WICKET, Batting::HIT_BALL_TWICE, Batting::RETIRED, Batting::RETIRED_HURT))));
 
 			# Get ready to check for another row

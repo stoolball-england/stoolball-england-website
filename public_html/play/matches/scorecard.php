@@ -139,7 +139,7 @@ class CurrentPage extends StoolballPage
 	public function OnPrePageLoad()
 	{
 		/* @var $match Match */
-		$this->SetContentConstraint(StoolballPage::ConstrainText());
+		#$this->SetContentConstraint(StoolballPage::ConstrainText());
         $this->SetContentCssClass('scorecardPage');
         $this->SetContentCssClass('scorecardPage');
 
@@ -167,7 +167,7 @@ class CurrentPage extends StoolballPage
 			<?php
 		}
 
-        $this->LoadClientScript('matchedit-3.js',true);
+        $this->LoadClientScript('scorecard.js',true);
 	}
 
 	public function OnPageLoad()
@@ -186,23 +186,19 @@ class CurrentPage extends StoolballPage
 		if ($this->IsValid())
 		{
 			/* Create instruction panel */
-			$panel_inner2 = new XhtmlElement('div');
-			$panel_inner1 = new XhtmlElement('div', $panel_inner2);
-			$panel = new XhtmlElement('div', $panel_inner1);
+			$panel = new XhtmlElement('div');
 			$panel->SetCssClass('panel instructionPanel');
 
-			$title_inner3 = new XhtmlElement('span', 'Fill in scorecards quickly:');
-			$title_inner2 = new XhtmlElement('span', $title_inner3);
-			$title_inner1 = new XhtmlElement('span', $title_inner2);
+			$title_inner1 = new XhtmlElement('div', 'Fill in scorecards quickly:');
 			$title = new XhtmlElement('h2', $title_inner1, "large");
-			$panel_inner2->AddControl($title);
+			$panel->AddControl($title);
 
 			$tab_tip = new XhtmlElement('ul');
 			$tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> and up and down keys to move through the form', "large"));
 			$tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> key to select a player\'s name from the suggestions', "large"));
             $tab_tip->AddControl(new XhtmlElement('li', "List everyone on the batting card, even if they didn't bat, so we know who played."));
 			$tab_tip->AddControl(new XhtmlElement('li', 'Don\'t worry if you don\'t know &#8211; fill in what you can and leave the rest blank.'));
-			$panel_inner2->AddControl($tab_tip);
+			$panel->AddControl($tab_tip);
 			echo $panel;
 		}
 

@@ -177,7 +177,7 @@ class CurrentPage extends StoolballPage
 		}
 		else
 		{
-			require_once('stoolball/match-control.class.php');
+			require_once('stoolball/matches/match-control.class.php');
 			echo new MatchControl($this->GetSettings(), $this->match);
 		}
 

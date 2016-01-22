@@ -1,3 +1,5 @@
+/* Tables */
+th, td { padding: .2em .5em; }
 
 /* Start showing items designed to display in medium view. 
    Don't hide .small though because this size used to be part of .small. */

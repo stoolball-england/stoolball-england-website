@@ -173,7 +173,7 @@ class CurrentPage extends StoolballPage
 			<?php
 		}
 
-        $this->LoadClientScript('matchedit-3.js',true);
+        $this->LoadClientScript('highlights.js',true);
 	}
 
 	public function OnPageLoad()

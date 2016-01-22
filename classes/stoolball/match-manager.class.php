@@ -169,7 +169,7 @@ class MatchManager extends DataManager
 		# Select batting and bowling separately because when selecting it all together they create so many duplicate rows that
 		# it would significantly increase the amount of data sent across the wire
 		$s_sql = "SELECT mt.match_id, mt.team_role,
-		bat.player_id, bat.how_out, bat.dismissed_by_id, bat.bowler_id, bat.runs,
+		bat.player_id, bat.how_out, bat.dismissed_by_id, bat.bowler_id, bat.runs, bat.balls_faced,
 		batter.player_name AS batter_name, batter.player_role AS batter_role, batter.short_url AS batter_url,
 		dismissed_by.player_name AS dismissed_by_name, dismissed_by.player_role AS dismissed_by_role, dismissed_by.short_url AS dismissed_by_url,
 		bowler.player_name AS bowler_name, bowler.player_role AS bowler_role, bowler.short_url AS bowler_url
@@ -216,7 +216,7 @@ class MatchManager extends DataManager
 			}
 			else $bowler = null;
 
-			$batting = new Batting($batter, $row->how_out, $dismissed_by, $bowler, $row->runs);
+			$batting = new Batting($batter, $row->how_out, $dismissed_by, $bowler, $row->runs, $row->balls_faced);
 
 			if (intval($row->team_role) == TeamRole::Home())
 			{
@@ -2349,7 +2349,8 @@ class MatchManager extends DataManager
 					AND how_out " . Sql::ProtectNumeric($batting->GetHowOut(), false, true) . "
 					AND dismissed_by_id " . Sql::ProtectNumeric($player_manager->SaveOrMatchPlayer($batting->GetDismissedBy()), true, true). "
 					AND bowler_id " . Sql::ProtectNumeric($player_manager->SaveOrMatchPlayer($batting->GetBowler()),true, true) . "
-					AND runs " . Sql::ProtectNumeric($batting->GetRuns(), true, true);
+					AND runs " . Sql::ProtectNumeric($batting->GetRuns(), true, true) . "
+                    AND balls_faced " . Sql::ProtectNumeric($batting->GetBallsFaced(), true, true);
 			$result = $this->GetDataConnection()->query($sql);
 
 			if ($row = $result->fetch())
@@ -2379,6 +2380,7 @@ class MatchManager extends DataManager
 					dismissed_by_id = $dismissed_by_id,
 					bowler_id = $bowler_id,
 					runs = " . Sql::ProtectNumeric($batting->GetRuns(), true) . ",
+                    balls_faced = " . Sql::ProtectNumeric($batting->GetBallsFaced(), true) . ",
 					date_added = " . gmdate('U');
 				$batting_added = true;
 			}

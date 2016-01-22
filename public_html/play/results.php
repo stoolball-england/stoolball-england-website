@@ -211,22 +211,18 @@ class CurrentPage extends StoolballPage
 		echo '<h1>' . htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false) . '</h1>';
 
         /* Create instruction panel */
-		$o_panel_inner2 = new XhtmlElement('div');
-		$o_panel_inner1 = new XhtmlElement('div', $o_panel_inner2);
-		$o_panel = new XhtmlElement('div', $o_panel_inner1);
+		$o_panel = new XhtmlElement('div');
 		$o_panel->SetCssClass('panel instructionPanel');
 
-		$o_title_inner3 = new XhtmlElement('span', 'Add your results quickly:');
-		$o_title_inner2 = new XhtmlElement('span', $o_title_inner3);
-		$o_title_inner1 = new XhtmlElement('span', $o_title_inner2);
+		$o_title_inner1 = new XhtmlElement('div', 'Add your results quickly:');
 		$o_title = new XhtmlElement('h2', $o_title_inner1, "large");
-		$o_panel_inner2->AddControl($o_title);
+		$o_panel->AddControl($o_title);
 
 		$o_tab_tip = new XhtmlElement('ul');
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> key on your keyboard to move through the form', "large"));
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Type the first letter or number to select from a dropdown list', "large"));
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Don\'t worry if you don\'t know &#8211; fill in what you can and leave the rest blank.'));
-		$o_panel_inner2->AddControl($o_tab_tip);
+		$o_panel->AddControl($o_tab_tip);
 		echo $o_panel;
 		
 		# display the matches to edit, with some filtering and sorting for teams and seasons

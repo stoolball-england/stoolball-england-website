@@ -9,8 +9,7 @@ h2, h3, h4 { font-size: 1.2em; font-weight: normal; }
 h3, h6 { font-style: italic; }
 h5, h6 { font-size: .9em; font-weight: bold; }
 p, li, blockquote { margin: 0 0 .8em; padding: 0; }
-table { background: url(/images/statistics/table.jpg) no-repeat right 40px; }
-th, td { padding: .2em .5em; }
+thead th { line-height: 1em;}
 tbody td, tbody th { border-top: 1px #ddd solid; border-bottom: 1px #ddd groove; }
 caption { padding: 10px .4em 20px; }
 legend { color: #000; }
@@ -271,13 +270,14 @@ a.promo { margin: 15px 0; display: block; }
 .panel { background: #ccc url(/images/wicket-light-tile.jpg);margin: 1em 0 1.5em; padding: 0 1em .5em; overflow: hidden; max-width: 40em; border-radius: 5px; }
 .panel h2 {  margin: 0 -1em 10px; color: #fff; background: url(/images/tile-green.jpg) top left; }
 .panel h2 span { color: #fff; background: url(/images/noise-bottom-light.gif) repeat-x bottom left; display: block; }
-.panel h2 span span { color: #fff; background: url(/images/corner-tr.gif) no-repeat 0 -2px; }
-.panel h2 span span span { color: #fff; background: url(/images/corner-tl.gif) no-repeat 100% -2px; padding: .5em 1em 1em; }
+.panel h2 span span { color: #fff; }
+.panel h2 span span span { color: #fff; padding: .5em 1em 1em; }
 
-.instructionPanel h2 {  color: #fff; background: url(/images/tile-red.gif) top left; }
-.instructionPanel h2 span { color: #fff; background: url(/images/noise-bottom-red-light.gif) repeat-x bottom left; }
+.instructionPanel { padding: 0; }
+.instructionPanel h2 { margin: 0 0 10px; color: #fff; background: url(/images/tile-red.gif) top left; }
+.instructionPanel h2 div { padding: .5em 1em 1em; background: url(/images/noise-bottom-red-light.gif) repeat-x bottom left; }
 .instructionPanel h2 span span, .instructionPanel h2 span span span { color: #fff; }
-.instructionPanel ul, .instructionPanel .instructionContent { background-image: url(/images/panel-instruction-ball.gif); background-repeat: no-repeat; background-position: top right; padding-top: 50px; margin-top: -50px; }
+.instructionPanel ul, .instructionPanel .instructionContent { margin-top: -50px; margin-right: 1em; padding: 60px 2.5em 1em; background-image: url(/images/panel-instruction-ball.gif); background-repeat: no-repeat; background-position: top right; }
 .tab { background: url(/images/tab-key.gif) no-repeat 5px center; padding-left: 35px; }
 .instructionContent .wrapper { float:right; width: 65px; height: 20px; visibility: hidden; }
 .instructionAside { width: 250px; float: right; margin: -2em 0 0 1em; }
@@ -305,6 +305,7 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 
 .scorecardPage h1 { margin-bottom: 0; }
 .scorecardPage .validationSummary { margin: 1em 0 -1em; }
+.scorecardPage .instructionPanel { max-width: 48em; }
 .scorecardPage .audit { margin-bottom: 1em; }
 
 .TournamentEdit .playersPerTeam, .TournamentEdit .overs { margin-bottom: 10px; }
@@ -322,13 +323,16 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 .ie8 table.bowling input.player { width: 200px; }
 
 /* Scorecards */
-table.scorecardEditor { width: 40em; margin-bottom: 0; }
-table.scorecard th.dismissedBy { white-space: nowrap; padding-right:0; }
-table.scorecard td.bowler { text-align: left; }
+table.scorecardEditor { max-width: 48em; margin-bottom: 0; }
 table.scorecard input.player { width: 100%; }
+table.batting td.batsman, .batting th.dismissedBy, table.batting th.bowler { width: 20%; } 
+table.batting th.dismissedBy { padding-right:0; }
+table.batting .wrapping-hair-space { font-size: 1px; }
+table.batting .nowrap { white-space: nowrap; }
+table.batting td.runs, table.batting td.balls { width: 3em; }
+table.bowling .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
 table.bowling th.numeric { width: 5em; white-space: nowrap; } 
-table.scorecard td.runs { width: 3em; }
-table.scorecard .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
+table.bowling td.bowler { text-align: left; }
 
 tr.totals, tr.totals th { border-color: #ccc; }
 

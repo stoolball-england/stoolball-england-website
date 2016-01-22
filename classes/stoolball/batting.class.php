@@ -11,6 +11,7 @@ class Batting
 	private $dismissed_by;
 	private $bowler;
 	private $runs;
+    private $balls_faced;
 	private $match;
 	private $opposition;
 
@@ -21,15 +22,17 @@ class Batting
 	 * @param Player $dismissed_by
 	 * @param Player $bowler
 	 * @param int $runs
+     * @param int $balls_faced
 	 * @return void
 	 */
-	public function __construct(Player $player, $how_out, $dismissed_by, $bowler, $runs)
+	public function __construct(Player $player, $how_out, $dismissed_by, $bowler, $runs, $balls_faced=null)
 	{
 		$this->player = $player;
 		$this->how_out = $how_out;
 		$this->dismissed_by = $dismissed_by;
 		$this->bowler = $bowler;
 		$this->runs = $runs;
+        $this->balls_faced = $balls_faced;
 	}
 
 	/**
@@ -62,6 +65,12 @@ class Batting
 	 */
 	public function GetRuns() { return $this->runs; }
 
+    /**
+     * Gets the number of balls faced
+     * @return int
+     */
+    public function GetBallsFaced() { return $this->balls_faced; }
+    
 	/**
 	 * Sets the match in which this performance took place
 	 * @param Match $match

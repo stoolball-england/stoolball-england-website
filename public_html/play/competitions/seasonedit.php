@@ -156,20 +156,16 @@ class CurrentPage extends StoolballPage
 			}
 
 			/* Create instruction panel */
-			$panel_inner2 = new XhtmlElement('div');
-			$panel_inner1 = new XhtmlElement('div', $panel_inner2);
-			$panel = new XhtmlElement('div', $panel_inner1);
+			$panel = new XhtmlElement('div');
 			$panel->SetCssClass('panel instructionPanel');
 
-			$title_inner3 = new XhtmlElement('span', 'Tips for adding seasons');
-			$title_inner2 = new XhtmlElement('span', $title_inner3);
-			$title_inner1 = new XhtmlElement('span', $title_inner2);
+			$title_inner1 = new XhtmlElement('div', 'Tips for adding seasons');
 			$title = new XhtmlElement('h2', $title_inner1);
-			$panel_inner2->AddControl($title);
+			$panel->AddControl($title);
 
 			$tab_tip = new XhtmlElement('ul');
 			$tab_tip->AddControl(new XhtmlElement('li', "You'll be able to edit more details after you click 'Save'"));
-			$panel_inner2->AddControl($tab_tip);
+			$panel->AddControl($tab_tip);
 			echo $panel;
 		}
 		$this->edit->SetDataObject($this->season);

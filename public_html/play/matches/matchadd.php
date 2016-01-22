@@ -345,16 +345,12 @@ class CurrentPage extends StoolballPage
 		else
 		{
             /* Create instruction panel */
-			$o_panel_inner2 = new XhtmlElement('div');
-			$o_panel_inner1 = new XhtmlElement('div', $o_panel_inner2);
-			$o_panel = new XhtmlElement('div', $o_panel_inner1);
+			$o_panel = new XhtmlElement('div');
 			$o_panel->SetCssClass('panel instructionPanel large');
 
-			$o_title_inner3 = new XhtmlElement('span', 'Add your matches quickly:');
-			$o_title_inner2 = new XhtmlElement('span', $o_title_inner3);
-			$o_title_inner1 = new XhtmlElement('span', $o_title_inner2);
+			$o_title_inner1 = new XhtmlElement('div', 'Add your matches quickly:');
 			$o_title = new XhtmlElement('h2', $o_title_inner1);
-			$o_panel_inner2->AddControl($o_title);
+			$o_panel->AddControl($o_title);
 
 			$o_tab_tip = new XhtmlElement('ul');
 			$o_tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> key on your keyboard to move through the form'));
@@ -363,7 +359,7 @@ class CurrentPage extends StoolballPage
 			{
 				$o_tab_tip->AddControl(new XhtmlElement('li', 'If you\'re not sure when the match starts, leave the time blank'));
 			}
-			$o_panel_inner2->AddControl($o_tab_tip);
+			$o_panel->AddControl($o_tab_tip);
 			echo $o_panel;
 		
 			# Configure edit control
