@@ -12,7 +12,7 @@ if (isset($_GET['type']) and $_GET['type'] == MatchType::TOURNAMENT and isset($_
 # include required functions
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/match-manager.class.php');
-require_once('stoolball/match-edit-control.class.php');
+require_once('stoolball/matches/match-edit-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -78,6 +78,12 @@ class CurrentPage extends StoolballPage
 				# whether to display the fixture editor on an invalid postback
 				$this->match->SetAddedBy(AuthenticationManager::GetUser());
 			}
+            else {
+                # If user is neither admin nor owner, they won't have the team info. Get it from the $check_match so
+                # that the match title can be updated correctly with a changed result.
+                $this->match->SetHomeTeam($check_match->GetHomeTeam());
+                $this->match->SetAwayTeam($check_match->GetAwayTeam());
+            }
 		}
 
 		# Don't wan't to edit tournaments on this page, so even as admin make sure we're not trying to save one.
@@ -274,7 +280,7 @@ class CurrentPage extends StoolballPage
 		echo new XhtmlElement('h1', "$edit_or_update " . htmlentities($this->match->GetTitle(), ENT_QUOTES, "UTF-8", false) . $step);
 
 		# If result only there's room for a little help
-		if ($this->editor->GetCurrentPage() == MatchEditControl::FIXTURE and !$this->b_user_is_match_admin and !$this->b_user_is_match_owner)
+		if (!$this->b_user_is_match_admin and !$this->b_user_is_match_owner)
 		{
 			/* Create instruction panel */
 			$o_panel_inner2 = new XhtmlElement('div');

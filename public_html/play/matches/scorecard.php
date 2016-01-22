@@ -3,7 +3,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/match-manager.class.php');
-require_once('stoolball/match-edit-control.class.php');
+require_once('stoolball/matches/scorecard-edit-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -17,7 +17,7 @@ class CurrentPage extends StoolballPage
 	/**
 	 * Editor for the match
 	 *
-	 * @var MatchEditControl
+	 * @var ScorecardEditControl
 	 */
 	private $editor;
 
@@ -39,9 +39,9 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new MatchEditControl($this->GetSettings());
+		$this->editor = new ScorecardEditControl($this->GetSettings());
         if (!$this->IsPostback()) {
-            $this->editor->SetCurrentPage(MatchEditControl::FIRST_INNINGS);
+            $this->editor->SetCurrentPage(ScorecardEditControl::FIRST_INNINGS);
         }
 		$this->RegisterControlForValidation($this->editor);
 
@@ -84,14 +84,14 @@ class CurrentPage extends StoolballPage
 		{
 			switch ($this->editor->GetCurrentPage())
 			{
-				case MatchEditControl::FIRST_INNINGS:
+				case ScorecardEditControl::FIRST_INNINGS:
 
 					$this->match_manager->SaveScorecard($this->match, true, $this->SearchIndexer());
-					$this->editor->SetCurrentPage(MatchEditControl::SECOND_INNINGS);
+					$this->editor->SetCurrentPage(ScorecardEditControl::SECOND_INNINGS);
 
 					break;
 
-				case MatchEditControl::SECOND_INNINGS:
+				case ScorecardEditControl::SECOND_INNINGS:
 
 					$this->match_manager->SaveScorecard($this->match, false, $this->SearchIndexer());
                     $this->match_manager->ExpandMatchUrl($this->match);
