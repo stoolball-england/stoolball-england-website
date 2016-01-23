@@ -168,10 +168,52 @@ class CurrentPage extends StoolballPage
 
 	function OnPageLoad()
 	{
-		/*@var $match Match */
-		# display the match
-		if ($this->match->GetMatchType() == MatchType::TOURNAMENT)
-		{
+        $is_tournament = ($this->match->GetMatchType() == MatchType::TOURNAMENT);
+        if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
+        {
+            $tournament_url = ($is_tournament ? $this->match->GetNavigateUrl() : $this->match->GetTournament()->GetNavigateUrl()) . "/statistics";
+        }
+
+        if ($is_tournament)
+        {
+            ?>
+            <div class="match" typeof="schema:SportsEvent" about="<?php echo Html::Encode($this->match->GetLinkedDataUri()) ?>">
+            <?php                
+                
+            # Make sure the reader knows this is a tournament, and the player type
+            $says_tournament = (strpos(strtolower($this->match->GetTitle()), 'tournament') !== false);
+            $player_type = PlayerType::Text($this->match->GetPlayerType());
+            $says_player_type = (strpos(strtolower($this->match->GetTitle()), strtolower(rtrim($player_type, '\''))) !== false);
+    
+            $page_title = $this->match->GetTitle() . ", " . Date::BritishDate($this->match->GetStartTime());
+            if (!$says_tournament and !$says_player_type)
+            {
+                $page_title .= ' (' . $player_type . ' stoolball tournament)';
+            }
+            else if (!$says_tournament)
+            {
+                $page_title .= ' stoolball tournament';
+            }
+            else if (!$says_player_type)
+            {
+                $page_title .= ' (' . $player_type . ')';
+            }
+    
+            $heading = new XhtmlElement('h1', $page_title);
+            $heading->AddAttribute("property", "schema:name");
+            echo $heading;
+
+
+            require_once('xhtml/navigation/tabs.class.php');
+            $tabs = array('Summary' => '', 'Statistics' => $tournament_url);       
+            echo new Tabs($tabs);
+            
+            ?>
+            <div class="box tab-box">
+                <div class="dataFilter"></div>
+                <div class="box-content">
+            <?php
+
 			require_once('stoolball/tournaments/tournament-control.class.php');
 			echo new TournamentControl($this->GetSettings(), $this->match);
 		}
@@ -183,16 +225,19 @@ class CurrentPage extends StoolballPage
 
         $this->DisplayComments();
 	    $this->ShowSocial();
+
+        if ($is_tournament) {
+            ?>
+            </div>
+            </div>
+            </div>
+            <?php 
+        }
     	$this->AddSeparator();
 
 		# add/edit/delete options
 		$user_is_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES);
 		$user_is_owner = (AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
-		$is_tournament = ($this->match->GetMatchType() == MatchType::TOURNAMENT);
-        if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
-        {
-            $tournament_url = ($is_tournament ? $this->match->GetNavigateUrl() : $this->match->GetTournament()->GetNavigateUrl()) . "/statistics";
-        }
             
 		$panel = new UserEditPanel($this->GetSettings(), 'this match');
         
@@ -209,6 +254,7 @@ class CurrentPage extends StoolballPage
 
         if ($is_tournament)
         {
+            $panel->AddCssClass("with-tabs");
             if ($user_is_admin or $user_is_owner) {
                 $panel->AddLink('add or remove teams', $this->match->EditTournamentTeamsUrl());
             }
@@ -238,7 +284,7 @@ class CurrentPage extends StoolballPage
         {
             $panel->AddLink("view statistics for this tournament", $tournament_url, "small");
         }
-        else if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
+        else if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
         {
             $panel->AddLink("add player statistics now", "/play/manage/website/how-to-add-match-results/", "small");
         }
@@ -249,35 +295,42 @@ class CurrentPage extends StoolballPage
         {
             require_once('stoolball/statistics-highlight-table.class.php');
             echo new StatisticsHighlightTable($this->best_batting, $this->most_runs, $this->best_bowling, $this->most_wickets, $this->most_catches, "tournament");
-            ?>
-<div class="box statsAd large">
-    <div>
-        <div>
-            <div>
-                <div>
-                    <a href="<?php echo htmlentities($tournament_url, ENT_QUOTES, "UTF-8", false); ?>">View statistics for <span>this tournament</span> </a>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-            <?php
         }
-        else if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
+        
+        if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH)
         {
-            ?>
-<div class="box statsAd large">
-    <div>
+            if ($this->has_player_stats)
+            {
+                ?>
+    <div class="box statsAd large">
         <div>
             <div>
                 <div>
-                    <a href="/play/manage/website/how-to-add-match-results/">Add player <span>statistics now</span> </a>
+                    <div>
+                        <a href="<?php echo htmlentities($tournament_url, ENT_QUOTES, "UTF-8", false); ?>">View statistics for <span>this tournament</span> </a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-            <?php
+                <?php
+            }
+            else  
+            {
+                ?>
+    <div class="box statsAd large">
+        <div>
+            <div>
+                <div>
+                    <div>
+                        <a href="/play/manage/website/how-to-add-match-results/">Add player <span>statistics now</span> </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                <?php
+            }
         }
 	}
 

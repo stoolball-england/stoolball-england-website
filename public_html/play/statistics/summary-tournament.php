@@ -44,7 +44,7 @@ class CurrentPage extends StoolballPage
     {
         $title = "Statistics for the " . $this->tournament->GetTitle() . ", " . Date::BritishDate($this->tournament->GetStartTime());
         $this->SetPageTitle($title);
-        $this->SetContentConstraint(StoolballPage::ConstrainColumns());
+        $this->SetContentConstraint(StoolballPage::ConstrainBox());
         $this->SetContentCssClass('stats');
     }
 
@@ -52,24 +52,33 @@ class CurrentPage extends StoolballPage
     {
         echo "<h1>" . htmlentities($this->GetPageTitle(), ENT_QUOTES, "UTF-8", false) . "</h1>";
 
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => $this->tournament->GetNavigateUrl(), 'Statistics' => '');       
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+
+
         # See what stats we've got available
         require_once("_summary-data-found.php");
 
-        $tournament_page_link = "<a href=\"" . htmlentities($this->tournament->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">" . htmlentities($this->tournament->GetTitle(), ENT_QUOTES, "UTF-8", false) . " page</a>";
         if (!$has_player_stats)
         {
             echo "<p>There aren't any statistics for the " . htmlentities($this->tournament->GetTitle(), ENT_QUOTES, "UTF-8", false) . ' yet.</p>
-            <p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>' .
-            "<p>You can also view the $tournament_page_link.</p>";
+            <p>To find out how to add them, see <a href="/play/manage/website/matches-and-results-why-you-should-add-yours/">Matches and results - why you should add yours</a>.</p>';
         }
         else
         {
-            echo "<p>View the $tournament_page_link.</p>";
             require_once("_summary-controls.php");
-            echo "<p>View the $tournament_page_link.</p>";
         }
-        $this->AddSeparator();
-        $this->BuySomething();
+        ?>
+        </div>
+        </div>
+        <?php 
     }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

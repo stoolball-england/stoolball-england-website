@@ -1,11 +1,11 @@
 <?php
-require_once ('xhtml/xhtml-element.class.php');
+require_once ('xhtml/placeholder.class.php');
 require_once ('data/date.class.php');
 require_once ('stoolball/match-list-control.class.php');
 require_once ('stoolball/team-list-control.class.php');
 require_once 'stoolball/player-type.enum.php';
 
-class TournamentControl extends XhtmlElement
+class TournamentControl extends Placeholder
 {
 	/**
 	 * The tournament
@@ -26,11 +26,6 @@ class TournamentControl extends XhtmlElement
 		if ($match->GetMatchType() != MatchType::TOURNAMENT)
 			throw new Exception('No match for tournament control');
 
-		parent::XhtmlElement('div');
-		$this->SetCssClass('match');
-		$this->AddAttribute("typeof", "schema:SportsEvent");
-		$this->AddAttribute("about", $match->GetLinkedDataUri());
-
 		$this->settings = $settings;
 		$this->match = $match;
 	}
@@ -42,29 +37,7 @@ class TournamentControl extends XhtmlElement
 		/* @var $o_away Team */
 
 		$match = $this->match;
-
-		# Make sure the reader knows this is a tournament, and the player type
-		$says_tournament = (strpos(strtolower($match->GetTitle()), 'tournament') !== false);
-		$player_type = PlayerType::Text($match->GetPlayerType());
-		$says_player_type = (strpos(strtolower($match->GetTitle()), strtolower(rtrim($player_type, '\''))) !== false);
-
-		$page_title = $match->GetTitle();
-		if (!$says_tournament and !$says_player_type)
-		{
-			$page_title .= ' (' . $player_type . ' stoolball tournament)';
-		}
-		else if (!$says_tournament)
-		{
-			$page_title .= ' stoolball tournament';
-		}
-		else if (!$says_player_type)
-		{
-			$page_title .= ' (' . $player_type . ')';
-		}
-
-		$heading = new XhtmlElement('h1', $page_title);
-		$heading->AddAttribute("property", "schema:name");
-		$this->AddControl($heading);
+        $player_type = PlayerType::Text($match->GetPlayerType());
 
 		# Show time and place
 		$date = new XhtmlElement('p', 'When: ' . $match->GetStartTimeFormatted());

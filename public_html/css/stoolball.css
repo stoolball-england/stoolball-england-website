@@ -357,7 +357,7 @@ dl.decision dd { margin-left: 22px; }
 /* Stats highlight table */
 .playerSummary { background: url(/images/statistics/sprite.jpg) no-repeat; margin-top: 0; }
 .playerSummary tr {background: none; }
-.playerSummary th { padding-top: 14px; }
+.playerSummary th { line-height: 135%; padding-top: 14px; }
 .playerSummary th.scope { color: #CCC; font-style: italic; letter-spacing: 1.5px; padding-right: 7px; padding-top: 61px; text-align: right; text-transform: uppercase; }
 .playerSummary .total { text-align: center; width: 30%; } 
 .playerSummary td { vertical-align: middle; }
