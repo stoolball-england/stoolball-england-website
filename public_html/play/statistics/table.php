@@ -3,7 +3,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 
 # Check it is a valid statistic
 if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
-	"individual-scores", "most-runs", "batting-average",
+	"individual-scores", "most-runs", "batting-average", "batting-strike-rate",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
 	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings",
 	"player-performances", "player-of-match", "most-player-of-match"
@@ -57,6 +57,11 @@ class CurrentPage extends StoolballPage
                 require_once("stoolball/statistics/batting-average.class.php");
                 $this->statistic = new BattingAverage($statistics_manager);
 				break;
+
+            case "batting-strike-rate":
+                require_once("stoolball/statistics/batting-strike-rate.class.php");
+                $this->statistic = new BattingStrikeRate($statistics_manager);
+                break;
 
 			case "bowling-performances":
                 require_once("stoolball/statistics/bowling-performances.class.php");

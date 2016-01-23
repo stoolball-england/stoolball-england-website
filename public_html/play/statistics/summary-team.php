@@ -176,6 +176,7 @@ class CurrentPage extends StoolballPage
 				{
 					echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores' . $this->statistics_query . '">Individual scores</a></p>';
 					echo '<p class="statsViewAll"><a href="/play/statistics/batting-average' . $this->statistics_query . '">Batting averages</a></p>';
+                    echo '<p class="statsViewAll"><a href="/play/statistics/batting-strike-rate' . $this->statistics_query . '">Batting strike rates</a></p>';
 				}
 
 				echo "</div></div>";

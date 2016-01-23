@@ -25,6 +25,8 @@ if ($has_best_batting or $has_most_runs or $has_batting_average)
 		echo new PlayerStatisticsTable("Best batting average", "Average", $this->statistics["batting_average"]);
 		if ($has_batting_average >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/batting-average' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Batting averages &#8211; view all and filter</a></p>';
 	}
+
+    echo '<p class="statsViewAll"><a href="/play/statistics/batting-strike-rate' . htmlentities($this->statistics["querystring"], ENT_QUOTES, "UTF-8", false) . '">Batting strike rate &#8211; view all and filter</a></p>';
 }
 
 if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowling_strike_rate)

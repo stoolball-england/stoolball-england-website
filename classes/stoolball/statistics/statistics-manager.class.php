@@ -616,9 +616,10 @@ class StatisticsManager extends DataManager
 	 * @param bool $higher_is_better
 	 * @param string $qualifier_field
 	 * @param int $qualifier_minimum
+     * @param int $multiplier
 	 * @return An array of average data, or CSV download
 	 */
-	public function ReadBestPlayerAverage($divide_field, $divide_by_field, $higher_is_better = true, $qualifier_field = null, $qualifier_minimum = null)
+	public function ReadBestPlayerAverage($divide_field, $divide_by_field, $higher_is_better = true, $qualifier_field = null, $qualifier_minimum = null, $multiplier=null)
 	{
 		$players = $this->GetSettings()->GetTable("Player");
 		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
@@ -635,7 +636,7 @@ class StatisticsManager extends DataManager
 		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
 		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
 
-		$where = "WHERE $players.player_role = " . Player::PLAYER . " ";
+		$where = "WHERE $players.player_role = " . Player::PLAYER . " AND $divide_field IS NOT NULL AND $divide_by_field IS NOT NULL ";
 		$where = $this->ApplyFilters($where);
 
 		$group = "GROUP BY $players.player_id ";
@@ -666,8 +667,13 @@ class StatisticsManager extends DataManager
 						) ";
 		}
 
+        $statistic_to_select = "SUM($divide_field)/SUM($divide_by_field)"; 
+        if (!is_null($multiplier)) {
+            $statistic_to_select = "($statistic_to_select)*$multiplier";
+        }
+
 		$sql = "SELECT $players.player_id, $players.player_name, $players.short_url, $statistics.team_id, $statistics.team_name,
-		COUNT(DISTINCT $statistics.match_id) AS total_matches, SUM($divide_field)/SUM($divide_by_field) AS statistic
+		COUNT(DISTINCT $statistics.match_id) AS total_matches, $statistic_to_select AS statistic
 		$from
 		$where
 		$group
@@ -1904,8 +1910,11 @@ class StatisticsManager extends DataManager
 				# reset wickets for these players - this ensures that the number of affected rows on update
 				# tells us whether or not there was an existing record. If we update a record with the same
 				# information it already had, the number of affected rows is zero, which is the same as if
-				# there had been no record
-				$sql = "UPDATE $stats_table SET wickets = NULL, wickets_with_bowling = NULL
+				# there had been no record.
+				#
+				# BUT don't reset wickets_with_bowling column, because that'll happen for all wicket-takers in
+				# the innings but only the ones whose wickets have been updated will get the data put back in.
+				$sql = "UPDATE $stats_table SET wickets = NULL
 				WHERE player_id IN (" . implode(", ", array_keys($wickets_taken)) . ") AND match_team_id = $bowling_match_team_id";
 				$this->GetDataConnection()->query($sql);
 
