@@ -596,9 +596,7 @@ class StatisticsManager extends DataManager
 		# Optionally add a header row and download a CSV file rather than returning the data
 		if ($csv)
 		{
-			require_once("data/csv.class.php");
 			array_unshift($performances, array("Player id", "Player", "Team id", "Team", "Total matches", $this->output_as_csv[0]));
-			CSV::PublishData($performances);
 		}
 
 		$result->closeCursor();
@@ -696,9 +694,7 @@ class StatisticsManager extends DataManager
 		# Optionally add a header row and download a CSV file rather than returning the data
 		if ($csv)
 		{
-			require_once("data/csv.class.php");
 			array_unshift($performances, array("Player id", "Player", "Team id", "Team", "Total matches", $this->output_as_csv[0]));
-			CSV::PublishData($performances);
 		}
 
 		$result->closeCursor();
@@ -827,7 +823,6 @@ class StatisticsManager extends DataManager
         # Optionally add a header row and download a CSV file rather than returning the data
         if ($csv)
         {
-            require_once("data/csv.class.php");
             $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)");
             if ($with_match_details) {
                 $header_row[] = "Match";
@@ -844,7 +839,6 @@ class StatisticsManager extends DataManager
                 $header_row[] = $secondary_field->DisplayHeader();
             }
             array_unshift($performances, $header_row);
-            CSV::PublishData($performances);
         }
 
         return $performances;
@@ -951,9 +945,7 @@ class StatisticsManager extends DataManager
         # Optionally add a header row and download a CSV file rather than returning the data
         if ($csv)
         {
-            require_once("data/csv.class.php");
             array_unshift($performances, array("Player id", "Player", "Match id", "Match date (UTC)", "Match", "Runs", "How out", "Wickets", "Runs conceded", "Catches", "Run-outs"));
-            CSV::PublishData($performances);
         }
 
         return $performances;
@@ -1039,12 +1031,12 @@ class StatisticsManager extends DataManager
         # Optionally add a header row and download a CSV file rather than returning the data
         if ($csv)
         {
-            require_once("data/csv.class.php");
-            $csv_data = array("How out", "Total");
+            $csv_data = array();
+            $csv_data[] = array("How out", "Total");
             foreach ($how_out as $method => $total){
                 $csv_data[Batting::Text($method)] = $total;
             }
-            CSV::PublishData($csv_data);
+            $how_out = $csv_data;
         }
 
         return $how_out;

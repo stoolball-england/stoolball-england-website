@@ -192,7 +192,12 @@ class CurrentPage extends StoolballPage
 
         if (is_array($this->data))
         {
-          $this->paging->SetTotalResults(array_shift($this->data));
+            if ($csv) {
+                require_once("data/csv.class.php");
+                CSV::PublishData($this->data);
+            } else {
+                $this->paging->SetTotalResults(array_shift($this->data));
+            }
         }
         
         unset($statistics_manager);
