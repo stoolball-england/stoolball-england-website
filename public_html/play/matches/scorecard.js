@@ -1,12 +1,42 @@
 $(function()
 {
-	function enableHowOut() {
+	function enableBattingRow() {
 		
-		var howOut = $(this.parentNode.nextSibling.firstChild);
+		var tr = this.parentNode.parentNode;
+		
+		var howOut = $(this.parentNode.nextSibling.firstChild);		
 		if (this.value) {
 			howOut.removeAttr("disabled");
+
+			// If this batting row used, ensure next one is ready			
+			if (tr.nextSibling && !$(tr.nextSibling).hasClass("extras")) {
+				var nextBatter = $(tr.nextSibling.firstChild.firstChild);
+				nextBatter.removeAttr("disabled");
+			} else {
+				$(".add-batsman").show();
+			}
+			
 		}  else {
 			howOut.attr("disabled","disabled");
+			
+			// If this batting row not used, disable the following ones to reduce tabbing
+			if (tr.nextSibling && !$(tr.nextSibling).hasClass("extras")) {
+				disableFollowingRows(tr);
+			} else {
+				$(".add-batsman").hide();
+			}
+		}
+	}
+	
+	function disableFollowingRows(tr)
+	{
+		while(tr.nextSibling) {
+			var thisPlayer = tr.firstChild.firstChild;
+			var nextPlayer = tr.nextSibling.firstChild.firstChild;
+			if (!thisPlayer.value && !nextPlayer.value) {
+				$(nextPlayer).attr("disabled", "disabled");
+			}
+			tr = tr.nextSibling;
 		}
 	}
 
@@ -306,11 +336,28 @@ $(function()
 	
 	function enableBowling() {
 		
-		var fields = $("input[type=number]", this.parentNode.parentNode);
+		var tr = this.parentNode.parentNode;
+
+		var fields = $("input[type=number]", tr);
 		if (this.value) {
 			fields.removeAttr("disabled");
+
+			// If this over row used, ensure next one is ready			
+			if (tr.nextSibling) {
+				var nextBowler = $(tr.nextSibling.firstChild.firstChild);
+				nextBowler.removeAttr("disabled");
+			} else {
+				$(".add-over").show();
+			}
 		}  else {
 			fields.attr("disabled", "disabled");
+
+			// If this over row not used, disable the following ones to reduce tabbing
+			if (tr.nextSibling) {
+				disableFollowingRows(tr);
+			} else {
+				$(".add-over").hide();
+			}
 		}
 	}
 
@@ -318,7 +365,7 @@ $(function()
 	// .change event fires when the field is clicked in Chrome
 	// .each is used to setup the fields on page load
 
-	$(".batsman .player").keyup(enableHowOut).click(enableHowOut).change(enableHowOut).each(enableHowOut);
+	$(".batsman .player").keyup(enableBattingRow).click(enableBattingRow).change(enableBattingRow).each(enableBattingRow);
 	$("select.howOut").keyup(howOutEnableDetails).click(howOutEnableDetails).change(howOutEnableDetails).each(howOutEnableDetails);
 	
 	$(".bowler .player").keyup(enableBowling).click(enableBowling).change(enableBowling).each(enableBowling);
@@ -331,7 +378,7 @@ $(function()
 	
 	// Add batsman button
 	$("tr.extras:first th").attr("colspan", "2")
-		.before('<td colspan="2" class="add-one-container"><a href="#" class="add-one">Add a batsman</a></td>')
+		.before('<td colspan="2" class="add-one-container"><a href="#" class="add-one add-batsman">Add a batsman</a></td>')
 		.siblings().children(".add-one").click(function(e) {
 			e.preventDefault();
 			var lastRow = $(this.parentNode.parentNode.previousSibling);
@@ -339,21 +386,23 @@ $(function()
 			var batsman = parseInt($('input:first', newRow).attr("id").substring(7));
 			var replaceBatsman = function(index, value) { return value.substring(0, value.indexOf(batsman)) + (batsman+1);};
 			$('input', newRow).attr("id", replaceBatsman).attr("name", replaceBatsman).attr("value", "");
+			$("input.player", newRow).keyup(enableBattingRow).click(enableBattingRow).change(enableBattingRow).each(enableBattingRow);
 			if (typeof stoolballAutoSuggest != "undefined") $("input.player", newRow).each(stoolballAutoSuggest.enablePlayerSuggestions);
 			$("select.howOut", newRow).keyup(howOutEnableDetails).click(howOutEnableDetails).change(howOutEnableDetails).each(howOutEnableDetails);
 			$('input:first', newRow)[0].focus();
-	});
+	}).hide();
 	
 	// Add over button
-	$('<a href="#" class="add-one">Add an over</a>').insertAfter(".bowling").click(function(e) {
+	$('<a href="#" class="add-one add-over">Add an over</a>').insertAfter(".bowling").click(function(e) {
 		e.preventDefault();
 		var lastRow = $('.bowling tbody tr:last-child');
 		var newRow = lastRow.clone().insertAfter(lastRow);
 		var over = parseInt($('input:first', newRow).attr("id").substring(10));
 		var replaceOver = function(index, value) { return value.substring(0, value.indexOf(over)) + (over +1);};
 		$('input', newRow).attr("id", replaceOver).attr("name", replaceOver).attr("value", "");
+		$("input.player", newRow).keyup(enableBowling).click(enableBowling).change(enableBowling).each(enableBowling);
 		$("input.numeric", newRow).focus(suggestBowlingDefaults).keydown(replaceBowlingDefaults);
 		if (typeof stoolballAutoSuggest != "undefined") $("input.player", newRow).each(stoolballAutoSuggest.enablePlayerSuggestions);
 		$('input:first', newRow)[0].focus();
-	});
+	}).hide();
 });
