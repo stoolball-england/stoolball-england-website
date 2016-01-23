@@ -206,14 +206,13 @@ input.year { width: 3em; }
 
 /* Tabs used in Play! section.
  * .tab-box should be longer than the tabs, and can have a rounded top right corner */
-
-.tab-option { margin: 10px 1px 0 0; float: left; max-width: 300px; height: 2.5em; font-size: 1.1em; border-radius: 10px 10px 0 0; }
-.tab-active { background: #008040; color: #fff;}
+.tab-option { margin: 10px 1px 0 0; float: left; height: 2.5em; font-size: 1.1em; border-radius: 10px 10px 0 0; }
+.tab-active { background: #008040; }
 .tab-inactive { background: #503C03 url(/images/tab-inactive.gif) repeat; color: #fff;}
-.tab-active h2 { margin: 10px; color: #fff; font-size: 1em; line-height: 1.4em; }
-.tab-inactive p { margin-top: 0;}
-.tab-inactive a:link, .tab-inactive a:visited { display: block; padding: 10px; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; text-decoration: none; }
+.tab-inactive p { margin: 0; }
+.tab-active h2, .tab-inactive a:link, .tab-inactive a:visited { display: block; padding: 10px; margin: 0; font: 1em/1.4em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; text-decoration: none; }
 .tab-inactive a:hover, .tab-inactive a:focus, .tab-inactive a:active { background-image: url(/images/tab-hover.gif); border-radius: 10px 10px 0 0; }
+
 .tab-box { clear:both; border-radius: 0 5px 5px 5px; box-shadow: rgba(0,0,0,.2) 0px 0px 1px 1px inset; background: none; }
 .tab-box .dataFilter { border-radius: 0 5px 0 0; }
 .tab-box img { margin: 10px 0;} /* Identity images on pages in the Play section */

@@ -1,5 +1,5 @@
 /* Template */
-body { font-size: 100%; line-height: 120%; padding: 0; margin: 0; color: #000; background: url(/images/clouds-tile.jpg) repeat 0 0 #A8C2E3; max-width: none; }
+body { padding: 0; margin: 0; color: #000; background: url(/images/clouds-tile.jpg) repeat 0 0 #A8C2E3; max-width: none; }
 #boardRight, #sidebar, #content, #navbar a { position: relative; }
 body, p, div, table, legend, input, label, textarea, select, optgroup { font-family: Arial, Helvetica, sans-serif; }
 h1, h2, h3, h4, h5, h6, p, blockquote { max-width: 40em; line-height: 140%; }
@@ -288,7 +288,7 @@ a.promo { margin: 15px 0; display: block; }
 
 /* "You can" options panel on the right of pages */
 .supportingPanel ul { background-image: url(/images/panel-ball.gif); background-repeat: no-repeat; background-position: top right; padding-top: 60px; margin-top: -50px; }
-.with-tabs { margin-top: 6.4em;}
+.with-tabs { margin-top: 5.7em;}
 
 /* Add matches/results */
 .matchResults { margin-top: 1em; }

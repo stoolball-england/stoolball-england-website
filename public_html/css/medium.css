@@ -1,3 +1,5 @@
+body { font-size: 100%; line-height: 120%; }
+
 /* Tables */
 th, td { padding: .2em .5em; }
 
@@ -10,13 +12,11 @@ th, td { padding: .2em .5em; }
 .logo { display: block; margin: 20px 0 0; }
 
 /* Move the menu to accommodate a larger logo. */
-.menu { left: 270px; top: 38px; }
+.menu { left: 260px; top: 29px; max-width: 220px; }
+.menu > li > em, .menu > li > a:link, .menu > li > a:visited { width: 70px; padding: 5px 0; margin: 0 3px 3px 0; }
 
 /* Tabs used in Play! section. */
-
-.tab-option { min-width: 100px; font-size: 1.33em; }
-.tab-active h2 { margin: 10px 15px; }
-.tab-inactive a:link, .tab-inactive a:visited { padding: 10px 15px; }
+.tab-option { min-width: 80px; text-align: center; }
 .tab-box img { float: right; margin: 0 0 15px 15px;}
 
 /* Teams, seasons and competitions */
