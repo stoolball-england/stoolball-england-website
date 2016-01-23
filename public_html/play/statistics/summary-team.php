@@ -194,6 +194,7 @@ class CurrentPage extends StoolballPage
 					echo new PlayerStatisticsTable("Most wickets", "Wickets", $this->most_wickets, false);
 
 					if ($has_most_wickets >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets' . $this->statistics_query . '">Most wickets &#8211; view all and filter</a></p>';
+                    echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets-by-bowler-and-catcher' . $this->statistics_query . '">Most wickets by a bowling and catching combination</a></p>';
 					echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $this->statistics_query . '">Bowling performances</a></p>';
 					echo '<p class="statsViewAll"><a href="/play/statistics/bowling-average' . $this->statistics_query . '">Bowling averages</a></p>';
 					echo '<p class="statsViewAll"><a href="/play/statistics/economy-rate' . $this->statistics_query . '">Economy rates</a></p>';

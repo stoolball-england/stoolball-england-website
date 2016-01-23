@@ -65,6 +65,10 @@ th, td { text-align: left; padding: 2px; vertical-align: top; }
 tbody td, tbody th { border-top: 1px solid #999; border-bottom: 1px groove #999; }
 caption { text-align: left; font-weight: bold; padding: 6px 4px 16px; border-radius: 3px 3px 0 0; background: #008044 url(/images/noise-bottom-light.gif) repeat-x left bottom; font: 1.2em 'Trebuchet MS', Arial, Helvetica, sans-serif; color: #fff; }
 
+/* .qualifier allows for a note explaining a table header label */
+th .qualifier { display: block; font: normal .8em Arial, Helvetica, sans-serif; }
+
+
 /* Menu of sub-pages.
  *
  * Possible variants of HTML:
@@ -282,7 +286,6 @@ tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); v
 .matchResults .formControl label { display: inline; }
 
 /* Edit scorecard - full scorecard */
-table.scorecard .qualifier { display: block; font: normal .8em Arial, Helvetica, sans-serif; }
 table.scorecardEditor.bowling {margin-bottom: .5em;}
 table.scorecardEditor th.numeric, table.scorecardEditor td { text-align: center; }
 table.scorecardEditor .add-one-container { text-align: left; padding-left: 0;}

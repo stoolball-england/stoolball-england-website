@@ -5,7 +5,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
 	"individual-scores", "most-runs", "batting-average", "batting-strike-rate",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
-	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings",
+	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
 	"player-performances", "player-of-match", "most-player-of-match"
 )))
 {
@@ -72,6 +72,11 @@ class CurrentPage extends StoolballPage
                 require_once("stoolball/statistics/most-wickets.class.php");
                 $this->statistic = new MostWickets($statistics_manager);
 				break;
+                
+            case "most-wickets-by-bowler-and-catcher":
+                require_once("stoolball/statistics/most-wickets-by-bowler-and-catcher.class.php");
+                $this->statistic = new MostWicketsForBowlerAndCatcher($statistics_manager);
+                break;
 
 			case "bowling-average":
                 require_once("stoolball/statistics/bowling-average.class.php");
@@ -260,6 +265,11 @@ switch ($this->which_statistic)
         echo new PlayerPerformanceTable("Number of run-outs, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
         break;
 
+    case "most-wickets-by-bowler-and-catcher":
+        require_once('stoolball/statistics/bowler-catcher-table.class.php');
+        echo new BowlerCatcherTable($this->data, $this->paging->GetFirstResultOnPage());
+        break;
+    
     case "player-performances":
     case "player-of-match":
         require_once('stoolball/statistics/player-performance-table.class.php');

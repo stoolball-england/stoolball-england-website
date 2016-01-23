@@ -22,6 +22,7 @@ class StatisticsManager extends DataManager
 	private $filter_page = null;
     private $filter_player_of_match = false;
     private $filter_how_out = array();
+    private $swap_team_and_opposition_filters = false;
 	private $output_as_csv = null;
 
 	/**
@@ -72,8 +73,13 @@ class StatisticsManager extends DataManager
         {
             $this->ValidateNumericArray($player_ids);
             $this->filter_bowlers = $player_ids;
+            $this->swap_team_and_opposition_filters = (count($this->filter_bowlers) > 0);
         }
-        else $this->filter_bowlers = array();
+        else 
+        {
+            $this->filter_bowlers = array();
+            $this->swap_team_and_opposition_filters = false;
+        }
     }
     
 	/**
@@ -270,8 +276,9 @@ class StatisticsManager extends DataManager
 		if (count($this->filter_players)) $where .= "AND $statistics.player_id IN (" . implode(",",$this->filter_players) . ") ";
         if (count($this->filter_bowlers)) {
             $where .= "AND $statistics.bowled_by IN (" . implode(",",$this->filter_bowlers) . ") ";
-            
-            # When querying by bowler, flip team and opposition because the bowler's team is the opposition_id   
+        }
+        if ($this->swap_team_and_opposition_filters) {    
+            # When querying by the player id of a fielder, flip team and opposition because the fielder's team is the opposition_id   
             if (count($this->filter_teams)) $where .= "AND $statistics.opposition_id IN (" . implode(",",$this->filter_teams) . ") ";
             if (count($this->filter_opposition)) $where .= "AND $statistics.team_id IN (" . implode(",",$this->filter_opposition) . ") ";
         }
@@ -947,6 +954,70 @@ class StatisticsManager extends DataManager
         {
             array_unshift($performances, array("Player id", "Player", "Match id", "Match date (UTC)", "Match", "Runs", "How out", "Wickets", "Runs conceded", "Catches", "Run-outs"));
         }
+
+        return $performances;
+    }
+
+    /**
+     * Gets most successful bowler and catcher combination based on current filters
+     * @return An array of aggregate data
+     */
+    public function ReadMostWicketsForBowlerAndCatcher()
+    {
+        $this->swap_team_and_opposition_filters = true;
+        
+        $select = "SELECT bowler.player_id AS bowler_id, bowler.player_name AS bowler_name, bowler.short_url AS bowler_url,
+                   catcher.player_id AS catcher_id, catcher.player_name AS catcher_name, catcher.short_url AS catcher_url,
+                   opposition_id AS team_id, opposition_name AS team_name,
+                   COUNT(DISTINCT nsa_player_match.match_id) AS total_matches, COUNT(*) AS wickets ";
+
+        $from = $this->FromFilteredPlayerStatistics() . 
+                "INNER JOIN nsa_player AS catcher ON caught_by = catcher.player_id
+                 INNER JOIN nsa_player AS bowler ON bowled_by = bowler.player_id ";
+
+        $where = "WHERE bowled_by IS NOT NULL AND caught_by IS NOT NULL AND bowled_by != caught_by ";
+        $where = $this->ApplyFilters($where);
+
+        $group_by = "GROUP BY bowled_by, caught_by ";
+        $order_by = "ORDER BY COUNT(*) DESC, COUNT(DISTINCT nsa_player_match.match_id) ASC, bowler.player_name ASC, catcher.player_name ASC ";
+
+        $limit = $this->LimitByPage();
+        
+        $sql = "$select $from $where $group_by $order_by $limit";
+
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where, $group_by);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
+        }
+        
+        $result = $this->GetDataConnection()->query($sql);
+        $csv = is_array($this->output_as_csv);
+        while ($row = $result->fetch())
+        {
+            # Return data as an array rather than objects because when we return the full,
+            # page to dataset it's far more memory efficient
+            $performance = get_object_vars($row);
+            if ($csv) {
+                unset($performance["bowler_url"]);
+                unset($performance["catcher_url"]);
+            }
+            else {            
+                $performance["bowler_url"] = "/" . $performance["bowler_url"];
+                $performance["catcher_url"] = "/" . $performance["catcher_url"];
+            }
+            $performances[] = $performance;
+        }
+
+        # Optionally add a header row 
+        if ($csv)
+        {
+            array_unshift($performances, array("Bowler id", "Bowler", "Catcher id", "Catcher", "Team id", "Team", "Total matches", "Wickets"));
+        }
+
+        $result->closeCursor();
+
+        $this->swap_team_and_opposition_filters = false;
 
         return $performances;
     }

@@ -11,6 +11,7 @@ h5, h6 { font-size: .9em; font-weight: bold; }
 p, li, blockquote { margin: 0 0 .8em; padding: 0; }
 thead th { line-height: 1em;}
 tbody td, tbody th { border-top: 1px #ddd solid; border-bottom: 1px #ddd groove; }
+th .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
 caption { padding: 10px .4em 20px; }
 legend { color: #000; }
 h2 + table { margin-top: 0; }
@@ -330,7 +331,6 @@ table.batting th.dismissedBy { padding-right:0; }
 table.batting .wrapping-hair-space { font-size: 1px; }
 table.batting .nowrap { white-space: nowrap; }
 table.batting td.runs, table.batting td.balls { width: 3em; }
-table.bowling .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
 table.bowling th.numeric { width: 5em; white-space: nowrap; } 
 table.bowling td.bowler { text-align: left; }
 

@@ -253,7 +253,11 @@ class CurrentPage extends StoolballPage
 		"Find out who has scored the most runs overall in all stoolball matches. Filter by team, ground, date and more.", "hundreds centuries batting batsmen batters statistics");
 
 		$docs[] = new SearchItem("other", "/play/statistics/batting-average", "/play/statistics/batting-average", "Batting averages statistics",
-		"A batsman's average measures how many runs he or she typically scores before getting out. Filter by team, ground, date and more.", "average batting batsmen batters");
+		"A batsman's average measures how many runs he or she typically scores before getting out. Filter by team, ground, date and more.", "average batting batsmen batters statistics");
+
+        $docs[] = new SearchItem("other", "/play/statistics/batting-strike-rate", "/play/statistics/batting-strike-rate", "Batting strike rates",
+        "A batsman's strike rate measures how many runs he or she typically scores per 100 balls faced. Filter by team, ground, date and more.", 
+        "strike rate batting batsmen batters statistics");
 
 		$docs[] = new SearchItem("other", "/play/statistics/bowling-performances", "/play/statistics/bowling-performances", "All bowling performances",
 		"See the best wicket-taking performances in all stoolball matches. Filter by team, ground, date and more.", "bowling bowler figures statistics");
@@ -261,6 +265,10 @@ class CurrentPage extends StoolballPage
 		$docs[] = new SearchItem("other", "/play/statistics/most-wickets", "/play/statistics/most-wickets", "Most wickets",
 		"If a player is out caught, caught and bowled, bowled, body before wicket or for hitting the ball twice the wicket is credited to the bowler. Filter by team, ground, date and more."
 		, "wickets bowling figures bowler statistics");
+
+        $docs[] = new SearchItem("other", "/play/statistics/most-wickets-by-bowler-and-catcher", "/play/statistics/most-wickets-by-bowler-and-catcher", "Most wickets by a bowling and catching combination",
+        "This measures which combination of bowler and catcher has taken the most wickets. Catches taken by a bowler off their own bowling are not counted. Filter by team, ground, date and more."
+        , "wickets bowling figures bowler statistics catching catcher");
 
 		$docs[] = new SearchItem("other", "/play/statistics/bowling-average", "/play/statistics/bowling-average", "Bowling averages",
 		"A bowler's average measures how many runs he or she typically concedes before taking a wicket. Filter by team, ground, date and more.", 
@@ -278,11 +286,19 @@ class CurrentPage extends StoolballPage
 		"This measures the number of catches taken by a fielder, not how often a batsman has been caught out. Filter by team, ground, date and more.", 
 		"fielding catching catches statistics");
 
+        $docs[] = new SearchItem("other", "/play/statistics/most-catches-in-innings", "/play/statistics/most-catches-in-innings", "Most catches in an innings",
+        "This measures the number of catches taken by a fielder, not how often a batsman has been caught out. Filter by team, ground, date and more.", 
+        "fielding catching catches statistics");
+
 		$docs[] = new SearchItem("other", "/play/statistics/most-run-outs", "/play/statistics/most-run-outs", "Most run-outs",
 		"This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out. Filter by team, ground, date and more.", 
 		"run outs runouts run-outs fielding statistics");
 
-		$docs[] = new SearchItem("other", "/play/statistics/most-player-of-match", "/play/statistics/most-player-of-match", "Most player of the match nominations",
+        $docs[] = new SearchItem("other", "/play/statistics/most-run-outs-in-innings", "/play/statistics/most-run-outs-in-innings", "Most run-outs in an innings",
+        "This measures the number of run-outs completed by a fielder, not how often a batsman has been run-out. Filter by team, ground, date and more.", 
+        "run outs runouts run-outs fielding statistics");
+
+        		$docs[] = new SearchItem("other", "/play/statistics/most-player-of-match", "/play/statistics/most-player-of-match", "Most player of the match nominations",
 		"Find out who has won the most player of the match awards for their outstanding performances on the pitch. Filter by team, ground, date and more.", 
 		"man of the match mom awards batting bowling fielding catches statistics tables");
 
