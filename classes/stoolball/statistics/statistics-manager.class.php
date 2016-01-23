@@ -236,6 +236,24 @@ class StatisticsManager extends DataManager
 		$this->filter_after_date = is_numeric($timestamp) ? (int)$timestamp : null;
 	}
 
+    /**
+     * Gets a standard FROM clause with joins required for standard filters 
+     */
+    private function FromFilteredPlayerStatistics() 
+    {
+        $from = "FROM nsa_player_match ";
+        $competition_filter_active = (bool)count($this->filter_competitions);
+        if (count($this->filter_seasons) or $competition_filter_active) 
+        {
+            $from .= "INNER JOIN nsa_season_match ON nsa_player_match.match_id = nsa_season_match.match_id ";
+        }
+        if ($competition_filter_active) 
+        {
+            $from .= "INNER JOIN nsa_season ON nsa_season_match.season_id = nsa_season.season_id ";
+        }
+        return $from;
+    }
+
 	/**
 	 * Adds standard filters to the WHERE clause
 	 * @param string $where
@@ -468,15 +486,7 @@ class StatisticsManager extends DataManager
 	 */
 	public function ReadPlayerSummary()
 	{
-		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
-		$sm = $this->GetSettings()->GetTable('SeasonMatch');
-		$seasons = $this->GetSettings()->GetTable("Season");
-
-		$from = "FROM $statistics INNER JOIN nsa_team AS team ON $statistics.team_id = team.team_id ";
-
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+		$from = $this->FromFilteredPlayerStatistics() . " INNER JOIN nsa_team AS team ON nsa_player_match.team_id = team.team_id ";
 
 		$where = "";
 		$where = $this->ApplyFilters($where);
@@ -484,10 +494,10 @@ class StatisticsManager extends DataManager
 
 		$sql = "SELECT player_id, player_name, player_role, player_url,
 		team.team_id, team.team_name, team.short_url AS team_short_url,
-		COUNT($statistics.match_id) AS total_matches, MIN($statistics.match_time) AS first_played, MAX($statistics.match_time) AS last_played
+		COUNT(nsa_player_match.match_id) AS total_matches, MIN(nsa_player_match.match_time) AS first_played, MAX(nsa_player_match.match_time) AS last_played
 		$from
 		$where
-		GROUP BY $statistics.player_id
+		GROUP BY nsa_player_match.player_id
 		ORDER BY player_name ASC";
 
 		$data = array();
@@ -524,26 +534,15 @@ class StatisticsManager extends DataManager
 	 */
 	public function ReadBestPlayerAggregate($field)
 	{
-		$players = $this->GetSettings()->GetTable("Player");
-		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
-		$sm = $this->GetSettings()->GetTable('SeasonMatch');
-		$seasons = $this->GetSettings()->GetTable("Season");
-
-		$performances = array();
-
 		# Select players with best aggregate data for the field, even it they're tied at the top of the table
 		# Although $players table is not necessary here, it's actually FASTER with the join
-		$from = "FROM $players INNER JOIN $statistics ON $players.player_id = $statistics.player_id ";
+		$from = $this->FromFilteredPlayerStatistics() . "INNER JOIN nsa_player ON nsa_player.player_id = nsa_player_match.player_id ";
 
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
-
-		$where = "WHERE $players.player_role = " . Player::PLAYER . " ";
+		$where = "WHERE nsa_player.player_role = " . Player::PLAYER . " ";
 		$where = $this->ApplyFilters($where);
 
-		$group = "GROUP BY $players.player_id ";
-		$order_by = "ORDER BY SUM($field) DESC, COUNT(DISTINCT $statistics.match_id) ASC, $players.player_name ASC ";
+		$group = "GROUP BY nsa_player.player_id ";
+		$order_by = "ORDER BY SUM($field) DESC, COUNT(DISTINCT nsa_player_match.match_id) ASC, nsa_player.player_name ASC ";
 
 		if ($this->filter_max_results)
 		{
@@ -559,25 +558,23 @@ class StatisticsManager extends DataManager
 			$having = "HAVING SUM($field) > 0 ";
 		}
 
-		$sql = "SELECT $players.player_id, $players.player_name, $players.short_url, $statistics.team_id, $statistics.team_name,
-		COUNT(DISTINCT $statistics.match_id) AS total_matches, SUM($field) AS statistic
+		$limit = $this->LimitByPage();
+		
+		$sql = "SELECT nsa_player.player_id, nsa_player.player_name, nsa_player.short_url, nsa_player_match.team_id, nsa_player_match.team_name,
+		COUNT(DISTINCT nsa_player_match.match_id) AS total_matches, SUM($field) AS statistic
 		$from
 		$where
 		$group
 		$having
-		$order_by";
+		$order_by
+		$limit";
 
-		if ($this->filter_page_size and $this->filter_page)
-		{
-			# Get the total number of results on all pages
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $group $having) AS total");
-			$row = $result->fetch();
-			$performances[] = $row->total;
-
-			# Limit main query to just the current page
-			$sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
-		}
-
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where, $group, $having);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
+        }
+        
 		$result = $this->GetDataConnection()->query($sql);
 		$csv = is_array($this->output_as_csv);
 		while ($row = $result->fetch())
@@ -621,32 +618,21 @@ class StatisticsManager extends DataManager
 	 */
 	public function ReadBestPlayerAverage($divide_field, $divide_by_field, $higher_is_better = true, $qualifier_field = null, $qualifier_minimum = null, $multiplier=null)
 	{
-		$players = $this->GetSettings()->GetTable("Player");
-		$statistics = $this->GetSettings()->GetTable("PlayerMatch");
-		$sm = $this->GetSettings()->GetTable('SeasonMatch');
-		$seasons = $this->GetSettings()->GetTable("Season");
-
-		$performances = array();
-
 		# Select players with best average data for the field, even if they're tied at the top of the table
         # Although $players table is not necessary here, it's actually FASTER with the join
-		$from = "FROM $players INNER JOIN $statistics ON $players.player_id = $statistics.player_id ";
+		$from = $this->FromFilteredPlayerStatistics() . "INNER JOIN nsa_player ON nsa_player.player_id = nsa_player_match.player_id ";
 
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
-
-		$where = "WHERE $players.player_role = " . Player::PLAYER . " AND $divide_field IS NOT NULL AND $divide_by_field IS NOT NULL ";
+		$where = "WHERE nsa_player.player_role = " . Player::PLAYER . " AND $divide_field IS NOT NULL AND $divide_by_field IS NOT NULL ";
 		$where = $this->ApplyFilters($where);
 
-		$group = "GROUP BY $players.player_id ";
+		$group = "GROUP BY nsa_player.player_id ";
 
 		$having = "HAVING SUM($divide_field) IS NOT NULL AND SUM($divide_by_field) > 0 ";
 		if ($qualifier_field and $qualifier_minimum) $having .= "AND COUNT($qualifier_field) >= $qualifier_minimum ";
 
 		$order_by = "ORDER BY SUM($divide_field)/SUM($divide_by_field) ";
 		$order_by .= $higher_is_better ? "DESC" : "ASC";
-		$order_by .= ", COUNT(DISTINCT $statistics.match_id) ASC, $players.player_name ASC ";
+		$order_by .= ", COUNT(DISTINCT nsa_player_match.match_id) ASC, nsa_player.player_name ASC ";
 
 		if ($this->filter_max_results)
 		{
@@ -672,25 +658,23 @@ class StatisticsManager extends DataManager
             $statistic_to_select = "($statistic_to_select)*$multiplier";
         }
 
-		$sql = "SELECT $players.player_id, $players.player_name, $players.short_url, $statistics.team_id, $statistics.team_name,
-		COUNT(DISTINCT $statistics.match_id) AS total_matches, $statistic_to_select AS statistic
+        $limit = $this->LimitByPage();
+
+		$sql = "SELECT nsa_player.player_id, nsa_player.player_name, nsa_player.short_url, nsa_player_match.team_id, nsa_player_match.team_name,
+		COUNT(DISTINCT nsa_player_match.match_id) AS total_matches, $statistic_to_select AS statistic
 		$from
 		$where
 		$group
 		$having
-		$order_by";
+		$order_by
+		$limit";
 
-		if ($this->filter_page_size and $this->filter_page)
-		{
-			# Get the total number of results on all pages
-			$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $group $having) AS total");
-			$row = $result->fetch();
-			$performances[] = $row->total;
-
-			# Limit main query to just the current page
-			$sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
-		}
-
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where, $group, $having);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
+        }
+        
 		$result = $this->GetDataConnection()->query($sql);
 		$csv = is_array($this->output_as_csv);
 		while ($row = $result->fetch())
@@ -731,17 +715,11 @@ class StatisticsManager extends DataManager
      */
     public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $minimum_value, $exclude_extras, $with_match_details)
     {
-        $players = $this->GetSettings()->GetTable("Player");
-        $statistics = $this->GetSettings()->GetTable("PlayerMatch");
-        $sm = $this->GetSettings()->GetTable('SeasonMatch');
-        $seasons = $this->GetSettings()->GetTable("Season");
         $primary_field_name = $primary_field->FieldName();
         $primary_field_header = $primary_field->DisplayHeader();
         
-        $performances = array();
-
         $select = "SELECT player_id, player_name, player_url, team_id, team_name,
-        $primary_field_name, $statistics.match_id, match_time, opposition_id, opposition_name";
+        $primary_field_name, nsa_player_match.match_id, match_time, opposition_id, opposition_name";
         
         foreach ($secondary_fields as $secondary_field) {
              /* @var $secondary_field StatisticsField */
@@ -758,13 +736,10 @@ class StatisticsManager extends DataManager
             $select .= ", nsa_match.match_title, nsa_match.short_url AS match_short_url";
         }
                              
-        $competition_filter_active = (bool)count($this->filter_competitions);
-        $from = "FROM $statistics ";
+        $from = $this->FromFilteredPlayerStatistics();
         if ($with_match_details) {
-            $from .= "INNER JOIN nsa_match ON $statistics.match_id = nsa_match.match_id ";
+            $from .= "INNER JOIN nsa_match ON nsa_player_match.match_id = nsa_match.match_id ";
         }
-        if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-        if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
 
         $where = "WHERE $primary_field_name IS NOT NULL AND $primary_field_name >= " . Sql::ProtectNumeric($minimum_value, false, false) . " ";
         if ($exclude_extras) {
@@ -801,17 +776,13 @@ class StatisticsManager extends DataManager
             $max_results = "";
         }
 
-        $sql = "$select $from $where $max_results $order_by ";
+        $limit = $this->LimitByPage();
+        $sql = "$select $from $where $max_results $order_by $limit";
 
-        if ($this->filter_page_size and $this->filter_page)
-        {
-            # Get the total number of results on all pages
-            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $max_results) AS total");
-            $row = $result->fetch();
-            $performances[] = $row->total;
-
-            # Limit main query to just the current page
-            $sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
         }
 
         $result = $this->GetDataConnection()->query($sql);
@@ -926,43 +897,32 @@ class StatisticsManager extends DataManager
      */
     public function ReadMatchPerformances()
     {
-        $statistics = $this->GetSettings()->GetTable("PlayerMatch");
-        $sm = $this->GetSettings()->GetTable('SeasonMatch');
-        $seasons = $this->GetSettings()->GetTable("Season");
-
-        $performances = array();
-
-        $competition_filter_active = (bool)count($this->filter_competitions);
-        $from = "FROM $statistics  
-                 INNER JOIN nsa_match ON $statistics.match_id = nsa_match.match_id ";
-        if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-        if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+        $from = $this->FromFilteredPlayerStatistics() . "INNER JOIN nsa_match ON nsa_player_match.match_id = nsa_match.match_id ";
 
         $where = "WHERE player_role = " . Player::PLAYER . " ";
         $where = $this->ApplyFilters($where);
 
+        $limit = $this->LimitByPage();
+        
+        if (!$limit and $this->filter_max_results)
+        {
+            $limit = "LIMIT 0," . $this->filter_max_results;
+        }        
+
         $sql = "SELECT player_id, player_name, player_url, 
-        runs_scored, how_out, runs_conceded, wickets, catches, run_outs, $statistics.match_id, 
+        runs_scored, how_out, runs_conceded, wickets, catches, run_outs, nsa_player_match.match_id, 
         nsa_match.match_title, match_time, nsa_match.short_url AS match_short_url
         $from 
         $where
-        ORDER BY match_time DESC ";
+        ORDER BY match_time DESC 
+        $limit";
 
-        if ($this->filter_page_size and $this->filter_page)
-        {
-            # Get the total number of results on all pages
-            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where) AS total");
-            $row = $result->fetch();
-            $performances[] = $row->total;
-
-            # Limit main query to just the current page
-            $sql .= "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
         }
-        else if ($this->filter_max_results)
-        {
-            $sql .= "LIMIT 0," . $this->filter_max_results;
-        }
-        
+                
         $result = $this->GetDataConnection()->query($sql);
         $csv = is_array($this->output_as_csv);
         while ($row = $result->fetch())
@@ -999,6 +959,35 @@ class StatisticsManager extends DataManager
         return $performances;
     }
 
+    /**
+     * Returns the total results for a paged query, or null for a non-paged query
+     */
+    private function ReadTotalResultsForPagedQuery($from, $where, $group_by="", $having="") {
+            
+        if ($this->filter_page_size and $this->filter_page)
+        {
+            # Get the total number of results on all pages
+            $result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM (SELECT player_match_id $from $where $group_by $having) AS total");
+            $row = $result->fetch();
+            return $row->total;
+        }
+        return null;
+    }
+
+    /**
+     * Generates a LIMIT clause if appropriate
+     */
+    private function LimitByPage() {
+            
+        if ($this->filter_page_size and $this->filter_page)
+        {
+            # Limit main query to just the current page
+            return "LIMIT " . ($this->filter_page_size * ($this->filter_page-1)) . ", $this->filter_page_size ";
+        }
+        
+        return "";
+    }
+
    /**
      * Gets total occurrences for each type of dismissal based on current filters
      * @return An array indexed by type of dismissal, or CSV download
@@ -1006,17 +995,13 @@ class StatisticsManager extends DataManager
   
     public function ReadHowWicketsFall() {
    
-        $joins_for_filters = "";
-        $competition_filter_active = (bool)count($this->filter_competitions);
-        if (count($this->filter_seasons) or $competition_filter_active) $joins_for_filters .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-        if ($competition_filter_active) $joins_for_filters .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+        $from = $this->FromFilteredPlayerStatistics();
 
         $where = "WHERE how_out IS NOT NULL ";
         $where = $this->ApplyFilters($where);
    
         $sql = "SELECT how_out, COUNT(how_out) AS total
-                FROM nsa_player_match 
-                $joins_for_filters
+                $from
                 $where
                 GROUP BY how_out";
 
@@ -1078,10 +1063,7 @@ class StatisticsManager extends DataManager
 		$sm = $this->GetSettings()->GetTable('SeasonMatch');
 		$seasons = $this->GetSettings()->GetTable("Season");
 
-		$from = "FROM $statistics ";
-		$competition_filter_active = (bool)count($this->filter_competitions);
-		if (count($this->filter_seasons) or $competition_filter_active) $from .= "INNER JOIN $sm ON $statistics.match_id = $sm.match_id ";
-		if ($competition_filter_active) $from .= "INNER JOIN $seasons ON $sm.season_id = $seasons.season_id ";
+		$from = $this->FromFilteredPlayerStatistics();
 
 		$where = "";
 		$where = $this->ApplyFilters($where);
