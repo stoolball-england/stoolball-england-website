@@ -571,7 +571,7 @@ class StoolballWordPressPlugin
         $search->DeleteFromIndexById("post" . $post_id);
 
         $item = new SearchItem("post", $post_id, get_permalink($post_id), $post->post_title);
-        $item->ContentDate($post->post_date);
+        $item->ContentDate(new DateTime($post->post_date));
         $item->FullText($post->post_content);
         $adapter = new BlogPostSearchAdapter($item);
         $search->Index($adapter->GetSearchableItem());
