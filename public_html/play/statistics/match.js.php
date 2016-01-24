@@ -98,15 +98,15 @@ class CurrentPage extends Page
     }
 
 
-    private function WriteCumulativeOverTotals(array $overs, $pad_to) {
+    private function WriteCumulativeOverTotals(array $overs, $total_overs) {
         $current_value = 0;
-        for ($i = 0; $i < $pad_to; $i++) {
+        for ($i = 0; $i < $total_overs; $i++) {
             if (array_key_exists($i, $overs)) {
                 $over = $overs[$i];
                 /* @var $over Over */
                 $current_value += $over->GetRunsInOver();
+                echo "," .  $current_value;
             }
-            echo "," .  $current_value;
         }
     }
 }
