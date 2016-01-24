@@ -1,9 +1,9 @@
 <?php
-require_once('xhtml/xhtml-element.class.php');
+require_once('xhtml/placeholder.class.php');
 require_once('data/date.class.php');
 require_once('stoolball/match.class.php');
 
-class MatchControl extends XhtmlElement
+class MatchControl extends Placeholder
 {
 	/**
 	 * The match to display
@@ -21,10 +21,6 @@ class MatchControl extends XhtmlElement
 
 	public function __construct(SiteSettings $o_settings, Match $o_match)
 	{
-		parent::XhtmlElement('div');
-		$this->SetCssClass('match vevent');
-		$this->AddAttribute("typeof", "schema:SportsEvent");
-		$this->AddAttribute("about", $o_match->GetLinkedDataUri());
 		$this->o_settings = $o_settings;
 		$this->o_match = $o_match;
 	}
@@ -34,16 +30,6 @@ class MatchControl extends XhtmlElement
 		/* @var $o_home Team */
 		/* @var $o_away Team */
 		/* @var $o_tourney Match */
-
-		$o_title = new XhtmlElement('h1', htmlentities($this->o_match->GetTitle(), ENT_QUOTES, "UTF-8", false));
-		$o_title->AddAttribute("property", "schema:name");
-		$this->AddControl($o_title);
-
-		# hCalendar
-		$o_title->SetCssClass('summary');
-		$o_title_meta = new XhtmlElement('span', ' (stoolball)');
-		$o_title_meta->SetCssClass('metadata');
-		$o_title->AddControl($o_title_meta);
 
 		# Date and tournament
 		
@@ -158,6 +144,28 @@ class MatchControl extends XhtmlElement
 			if (!is_null($season_list_xhtml)) $hcal_desc->AddControl($season_list_xhtml);
 		}
 
+        # Who
+        $o_home = $this->o_match->GetHomeTeam();
+        $o_away = $this->o_match->GetAwayTeam();
+        $has_home = $o_home instanceof Team;
+        $has_away = $o_away instanceof Team; 
+        if ($has_home or $has_away) {
+            $who = new XhtmlElement("p", "Who: ");
+            
+            if ($has_home) {
+                $who->AddControl($this->CreateTeamLink($o_home));
+            }
+            if ($has_home and $has_away) {
+                $who->AddControl(" and ");
+            }
+            if ($has_away) {
+                $who->AddControl($this->CreateTeamLink($o_away));
+            }
+            
+            $this->AddControl($who);
+        }        
+
+        # When
 		$this->AddControl($o_date_para);
 
 		# Ground
@@ -179,8 +187,6 @@ class MatchControl extends XhtmlElement
 
 		# Add result
 		$o_result = $this->o_match->Result();
-		$o_home = $this->o_match->GetHomeTeam();
-		$o_away = $this->o_match->GetAwayTeam();
 		$b_result_known = (!$o_result->GetResultType() == MatchResult::UNKNOWN);
 		$b_batting_order_known = !is_null($this->o_match->Result()->GetHomeBattedFirst());
 
@@ -329,6 +335,18 @@ class MatchControl extends XhtmlElement
 		$o_hcal_para->AddControl($o_hcal_url);
 	}
 
+    private function CreateTeamLink(Team $team) {
+        
+        $span = new XhtmlElement('span');
+        $span->AddAttribute("typeof", "schema:SportsTeam");
+        $span->AddAttribute("about", $team->GetLinkedDataUri());
+        $link = new XhtmlElement('a', Html::Encode($team->GetName()));
+        $link->AddAttribute("property", "schema:name");
+        $link->AddAttribute('href', $team->GetNavigateUrl());
+        $link->AddAttribute("rel", "schema:url");
+        $span->AddControl($link);
+        return $span;
+    }  
 	/**
 	 * Creates a scorecard with as much data as is available
 	 * @param Match $match

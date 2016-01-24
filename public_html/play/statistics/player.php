@@ -201,7 +201,7 @@ class CurrentPage extends StoolballPage
 		$this->LoadClientScript("/scripts/lib/jquery-ui-1.8.11.custom.min.js");
 		$this->LoadClientScript("/play/statistics/statistics-filter.js");
         $this->LoadClientScript("/scripts/lib/chart.min.js");
-        $this->LoadClientScript("/scripts/chart.js");
+        $this->LoadClientScript("/scripts/chart.js?v=2");
         $this->LoadClientScript("/scripts/lib/Chart.StackedBar.js");
         $this->LoadClientScript("/play/statistics/player.js");
 		?>

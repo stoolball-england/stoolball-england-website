@@ -275,7 +275,6 @@ body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; 
 span.balls-faced:before {content: '(';}
 span.balls-faced { font-size: .8em; }
 span.balls-faced:after {content: ')';}
-td.batsman, td.bowler { padding-left: 0;}
 table.batting td.runs { white-space: nowrap; }
 table.batting th.balls-faced { width: 1em; } 
 tr.extras th { text-align: right; font-weight: normal; vertical-align: middle; }
@@ -285,6 +284,7 @@ tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); v
 .matchResults .formControl label { display: inline; }
 
 /* Edit scorecard - full scorecard */
+table.scorecardEditor td.batsman, table.scorecardEditor td.bowler { padding-left: 0;}
 table.scorecardEditor.bowling {margin-bottom: .5em;}
 table.scorecardEditor th.numeric, table.scorecardEditor td { text-align: center; }
 table.scorecardEditor .add-one-container { text-align: left; padding-left: 0;}
@@ -326,11 +326,14 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 .chart-bar{ margin-top: 36px;}
 
 .chart-title { margin-bottom: 0; text-align: center; }
+.line-chart-title { margin-bottom: 1em; text-align: left; }
+.chart-js:first-child .line-chart-title { margin-top: 0; }
+
 .chart-subtitle { margin-top: 0; font-size: .9em; }
 
-.chart-axis-x { text-align: center; margin-top: -5px;}
+.chart-axis-x { text-align: center; margin-top: -5px; max-width: none;}
 
-.chart-legend { margin: .5em 0; padding: 0; display: block; text-align: center; }
+.content .chart-legend { margin: .5em 0; padding: 0; display: block; text-align: center; max-width: none; }
 .chart-legend li { list-style: none; padding: 0; margin: 0; }
 .chart-legend li:before { content: ' '; display: inline-block; width: 10px; height: 10px; border: 1px solid #eee; }
 .chart-legend .chart-colour-1:before { background: #7FAA84; }

@@ -255,16 +255,16 @@ class CurrentPage extends StoolballPage
 </div>
 	<?php */?>
 
-	<div class="playerStats large">
+	<div class="large">
 	<h2 class="aural">Player statistics for this season</h2>
 	<?php
 	require_once('stoolball/statistics-highlight-table.class.php');
 	echo new StatisticsHighlightTable($this->best_batting, $this->most_runs, $this->best_bowling, $this->most_wickets, $this->most_catches, $this->highlight_label);
 	?>
-	<p class="more">
+	<p class="playerSummaryMore">
 	See all <a href="/play/statistics/">statistics</a>
 	</p>
-	<p>
+	<p class="playerSummaryNudge">
 	Done better? Read how to <a href="/play/manage/website/">add your results</a>
 	</p>
 	</div>

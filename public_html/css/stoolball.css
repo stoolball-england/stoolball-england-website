@@ -194,18 +194,10 @@ fieldset.formPart .formControl { margin-top: 0; }
 .audience .more { margin-top: -20px; border-top: 1px solid #aaa; padding: 5px 0 0; margin-right: 55px; overflow: visible; }
 .home .manage .more { margin-right: 70px; }
 .home .history .more { margin-right: 40px; }
-.audience .more a, .home .playerStats p a { padding-right: 12px; background: url(/images/sprite.4.png) no-repeat right -786px; }
+.audience .more a { padding-right: 12px; background: url(/images/sprite.4.png) no-repeat right -786px; }
 
 .volunteer { clear: left; } /* for older webkit, used on ipad */
 .volunteer h2, .volunteer p { display: inline; padding-right: 5px; }
-
-.home .playerStats { width: 185px; margin: .3em 0 1em; }
-.home .playerStats h2, .home .playerStats table { margin: 0; }
-.home .playerStats img { display: block; }
-.home .playerStats li { font-size: .9em; }
-.home .playerStats p { padding: .5em 0 0 .5em; }
-.home .playerStats p.more { margin: 0; padding: .2em 0 .2em .5em; border-bottom: 1px groove #aaa;}
-.ie8 .playerStats p.more { border-bottom-color: #ddd;}
 
 /* Play */
 .tiles-intro { max-width: none; }
@@ -355,7 +347,7 @@ div.match table.overs td.numeric { width: 18%; }
 dl.decision dd { margin-left: 22px; }
 
 /* Stats highlight table */
-.playerSummary { background: url(/images/statistics/sprite.jpg) no-repeat; margin-top: 0; }
+.playerSummary { background: url(/images/statistics/player-summary.jpg) no-repeat; margin-top: 0; }
 .playerSummary tr {background: none; }
 .playerSummary th { line-height: 135%; padding-top: 14px; }
 .playerSummary th.scope { color: #CCC; font-style: italic; letter-spacing: 1.5px; padding-right: 7px; padding-top: 61px; text-align: right; text-transform: uppercase; }
@@ -365,6 +357,11 @@ dl.decision dd { margin-left: 22px; }
 .playerSummary li { list-style: none; margin: 0 0 5px; padding-left: 0; }
 .playerSummary .stat { text-align: center; font-size: .8em; }
 .playerSummary .stat .stat { font-weight: bold; font-size: 1.2em; display: block; }
+p.playerSummaryMore { margin: -1em 0 0; padding: .2em 0 .2em .5em; border-bottom: 1px groove #aaa;}
+.ie8 p.playerSummaryMore { border-bottom-color: #ddd;}
+p.playerSummaryNudge { padding: .5em 0 0 .5em; }
+.playerSummaryMore a, .playerSummaryNudge a { padding-right: 12px; background: url(/images/sprite.4.png) no-repeat right -786px; }
+
 
 /* Equipment agents */
 .contact { width: 49%; display: inline-block; vertical-align: top; }
@@ -471,12 +468,6 @@ li.articleListItem .more-link { margin-top: 0; }
 .statsColumn table.stats td.date { white-space: nowrap; }
 .statsColumn .numeric { width: 15%; }
 .statsGroup .chart { margin-top: 16px; }
-
-.statsAd { background: #ccc url(/images/wicket-tile.jpg);}
-.statsAd div div div div { padding: 10px 7px 10px 13px; } 
-.statsAd a:link, .statsAd a:visited { display: block; text-decoration: none; color: #503C03; font: bold 1.2em/20px 'Trebuchet MS',Arial,Helvetica,sans-serif; padding-bottom: 78px; background: url(/images/statistics/sprite.jpg) no-repeat -185px bottom; }
-.statsAd a:hover, .statsAd a:focus, .statsAd a:active { text-decoration: underline; }
-.statsAd span { white-space: nowrap; padding-right: 10px; background: url(/images/sprite.4.png) no-repeat right -782px; }
 
 /* Stats - accomodate not out* in scores */
 td.out { padding-right: .9em; }

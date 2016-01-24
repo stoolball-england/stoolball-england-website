@@ -158,7 +158,11 @@ class CurrentPage extends StoolballPage
 	{
 		$this->SetOpenGraphType("sport");
 		$match_or_tournament = ($this->match->GetMatchType() == MatchType::TOURNAMENT) ? 'tournament' : 'match';
-		$this->SetPageTitle($this->match->GetTitle() . ' - ' . $this->match->GetStartTimeFormatted() . ' - stoolball ' . $match_or_tournament);
+        $match_title = $this->match->GetTitle();
+        if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) {
+            $match_title .= " in the " . $this->match->GetTournament()->GetTitle();
+        } 
+		$this->SetPageTitle($match_title . ' - ' . $this->match->GetStartTimeFormatted() . ' - stoolball ' . $match_or_tournament);
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 
         require_once("search/match-search-adapter.class.php");
@@ -169,23 +173,25 @@ class CurrentPage extends StoolballPage
 	function OnPageLoad()
 	{
         $is_tournament = ($this->match->GetMatchType() == MatchType::TOURNAMENT);
-        if ($this->match->GetMatchType() == MatchType::TOURNAMENT or $this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
-        {
-            $tournament_url = ($is_tournament ? $this->match->GetNavigateUrl() : $this->match->GetTournament()->GetNavigateUrl()) . "/statistics";
-        }
+
+        $class = $is_tournament ? "match" : "match vevent";
+        ?>
+        <div class="$class" typeof="schema:SportsEvent" about="<?php echo Html::Encode($this->match->GetLinkedDataUri()) ?>">
+        <?php                                
+
+        require_once('xhtml/navigation/tabs.class.php');
+        $tabs = array('Summary' => '');       
 
         if ($is_tournament)
         {
-            ?>
-            <div class="match" typeof="schema:SportsEvent" about="<?php echo Html::Encode($this->match->GetLinkedDataUri()) ?>">
-            <?php                
-                
+            $tabs['Tournament statistics'] = $this->match->GetNavigateUrl() . '/statistics';
+            
             # Make sure the reader knows this is a tournament, and the player type
             $says_tournament = (strpos(strtolower($this->match->GetTitle()), 'tournament') !== false);
             $player_type = PlayerType::Text($this->match->GetPlayerType());
             $says_player_type = (strpos(strtolower($this->match->GetTitle()), strtolower(rtrim($player_type, '\''))) !== false);
     
-            $page_title = $this->match->GetTitle() . ", " . Date::BritishDate($this->match->GetStartTime());
+            $page_title = $this->match->GetTitle() . ", " . Date::BritishDate($this->match->GetStartTime(), false);
             if (!$says_tournament and !$says_player_type)
             {
                 $page_title .= ' (' . $player_type . ' stoolball tournament)';
@@ -202,37 +208,63 @@ class CurrentPage extends StoolballPage
             $heading = new XhtmlElement('h1', $page_title);
             $heading->AddAttribute("property", "schema:name");
             echo $heading;
-
-
-            require_once('xhtml/navigation/tabs.class.php');
-            $tabs = array('Summary' => '', 'Statistics' => $tournament_url);       
-            echo new Tabs($tabs);
-            
-            ?>
-            <div class="box tab-box">
-                <div class="dataFilter"></div>
-                <div class="box-content">
-            <?php
-
-			require_once('stoolball/tournaments/tournament-control.class.php');
-			echo new TournamentControl($this->GetSettings(), $this->match);
 		}
 		else
 		{
-			require_once('stoolball/matches/match-control.class.php');
-			echo new MatchControl($this->GetSettings(), $this->match);
+		    if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) {
+                $tabs['Match statistics'] = $this->match->GetNavigateUrl() . '/statistics';
+                $tabs['Tournament statistics'] = $this->match->GetTournament()->GetNavigateUrl() . '/statistics';
+                
+                $page_title = $this->match->GetTitle() . " in the " . $this->match->GetTournament()->GetTitle();
+                
+            } else {
+                $tabs['Statistics'] = $this->match->GetNavigateUrl() . '/statistics';
+                
+                $page_title = $this->match->GetTitle();
+            }
+
+            $o_title = new XhtmlElement('h1', Html::Encode($page_title));
+            $o_title->AddAttribute("property", "schema:name");
+    
+            # hCalendar
+            $o_title->SetCssClass('summary');
+            $o_title_meta = new XhtmlElement('span', ' (stoolball)');
+            $o_title_meta->SetCssClass('metadata');
+            $o_title->AddControl($o_title_meta);
+
+            if ($this->match->GetMatchType() !== MatchType::TOURNAMENT_MATCH) {
+                $o_title->AddControl(", " . Date::BritishDate($this->match->GetStartTime(), false));
+            }
+            
+            echo $o_title;
 		}
+        
+        echo new Tabs($tabs);
+        
+        ?>
+        <div class="box tab-box">
+            <div class="dataFilter"></div>
+            <div class="box-content">
+        <?php
+
+        if ($is_tournament)
+        {
+            require_once('stoolball/tournaments/tournament-control.class.php');
+            echo new TournamentControl($this->GetSettings(), $this->match);            
+        }
+        else {
+            require_once('stoolball/matches/match-control.class.php');
+            echo new MatchControl($this->GetSettings(), $this->match);            
+        }
 
         $this->DisplayComments();
 	    $this->ShowSocial();
 
-        if ($is_tournament) {
             ?>
             </div>
-            </div>
-            </div>
-            <?php 
-        }
+        </div>
+        </div>
+        <?php
     	$this->AddSeparator();
 
 		# add/edit/delete options
@@ -240,7 +272,7 @@ class CurrentPage extends StoolballPage
 		$user_is_owner = (AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
             
 		$panel = new UserEditPanel($this->GetSettings(), 'this match');
-        
+        $panel->AddCssClass("with-tabs");
 		
 		if ($user_is_admin or $user_is_owner)
 		{
@@ -280,57 +312,15 @@ class CurrentPage extends StoolballPage
             $link_text = $is_tournament ? 'tournament' : 'match';
 			$panel->AddLink("add $link_text to your calendar", $this->match->GetCalendarNavigateUrl());
 		}
-        if ($this->has_player_stats)
-        {
-            $panel->AddLink("view statistics for this tournament", $tournament_url, "small");
-        }
-        else if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH) 
-        {
-            $panel->AddLink("add player statistics now", "/play/manage/website/how-to-add-match-results/", "small");
-        }
 		echo $panel;
 
 
         if ($this->has_player_stats)
         {
+            $tournament = $is_tournament ? $this->match : $this->match->GetTournament();
             require_once('stoolball/statistics-highlight-table.class.php');
             echo new StatisticsHighlightTable($this->best_batting, $this->most_runs, $this->best_bowling, $this->most_wickets, $this->most_catches, "tournament");
-        }
-        
-        if ($this->match->GetMatchType() == MatchType::TOURNAMENT_MATCH)
-        {
-            if ($this->has_player_stats)
-            {
-                ?>
-    <div class="box statsAd large">
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <a href="<?php echo htmlentities($tournament_url, ENT_QUOTES, "UTF-8", false); ?>">View statistics for <span>this tournament</span> </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-                <?php
-            }
-            else  
-            {
-                ?>
-    <div class="box statsAd large">
-        <div>
-            <div>
-                <div>
-                    <div>
-                        <a href="/play/manage/website/how-to-add-match-results/">Add player <span>statistics now</span> </a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-                <?php
-            }
+            echo '<p class="playerSummaryMore"><a href="' . $tournament->GetNavigateUrl() . '/statistics">Tournament statistics</a></p>';
         }
 	}
 

@@ -96,7 +96,7 @@ class CurrentPage extends StoolballPage
         
         
         $this->LoadClientScript("/scripts/lib/chart.min.js");
-        $this->LoadClientScript("/scripts/chart.js");
+        $this->LoadClientScript("/scripts/chart.js?v=2");
         $this->LoadClientScript("/scripts/lib/Chart.StackedBar.js");
         $this->LoadClientScript("team.js", true);
         ?><!--[if lte IE 8]><script src="/scripts/lib/excanvas.compiled.js"></script><![endif]--><?php

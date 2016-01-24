@@ -1,13 +1,19 @@
 var stoolballCharts =  (function (){
+	"use strict";
+	
+    var colours = ["#7FAA84","#008044","#002b17","#503C03","#9a854b","#e7d197"];
+    var similarColours = [0,1,2,3,4,5];
+    var contrastingColours = [1,3];
 
-	function addColours(data, propertyName) {
-	        
-	    var colours = ["#7FAA84","#008044","#002b17","#503C03","#9a854b","#e7d197"];
-	    while (colours.length < data.length) {
-	    	colours = colours.concat(colours.slice(0));
+	function addColours(data, propertyName, allowedColours) {
+	    
+	    // Make a copy of the colours array, and expand it if needed so that there are at least as many colours as datasets
+	    var dataColours = allowedColours.slice(0);
+	    while (dataColours.length < data.length) {
+	    	dataColours = dataColours.concat(dataColours.slice(0));
 	    }
 		for (var i = 0; i < data.length; i++) {
-			data[i][propertyName] = colours[i];
+			data[i][propertyName] = colours[allowedColours[i]];
 		} 	    
 	    return data;
 	}
@@ -47,7 +53,7 @@ var stoolballCharts =  (function (){
 		var canvas = createCanvas();    
 	    if (!canvas) return ;
 	     
-		addColours(data, "color");
+		addColours(data, "color", similarColours);
 		removeZeroDatasets(data);
 	    
 	    var total = 0;
@@ -83,7 +89,7 @@ var stoolballCharts =  (function (){
 		var canvas = document.createElement("canvas");
 	    if (!canvas.getContext) return ;
 	    	    
-	    addColours(data.datasets, "fillColor");
+	    addColours(data.datasets, "fillColor", similarColours);
 
 	    var total = 0;
 	    for (var i = 0; i < data.datasets.length; i++) {
@@ -115,6 +121,38 @@ var stoolballCharts =  (function (){
         }
 	}
 	
+	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, width, height){
+	    
+		var canvas = document.createElement("canvas");
+	    if (!canvas.getContext) return ;
+	    	    
+	    addColours(data.datasets, "strokeColor", contrastingColours);
+	    addColours(data.datasets, "pointColor", contrastingColours);
+
+	    elementId = "#" + elementId;
+	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-line");
+
+	    $('<h2 class="chart-title line-chart-title">').appendTo(element).text(title);	    
+	    $('<p class="chart-axis-y">').appendTo(element).text(yAxisLabel);
+
+		canvas.setAttribute('width', width);
+	    canvas.setAttribute('height', height);
+	    $(canvas).appendTo(element);
+		new Chart(canvas.getContext("2d")).Line(data, 
+			{
+				responsive: true,
+				datasetFill: false,
+				pointDot: false
+			});
+	    
+	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
+	        
+	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
+	    for (var i = 0; i < data.datasets.length; i++) {
+	        $("<li>").addClass("chart-colour-" + (contrastingColours[i]+1)).text(" " + data.datasets[i].label).appendTo(legend);
+        }
+	}
+	
 	var pieOptions = {
 		animateRotate: false,
 		animateScale: true,
@@ -128,6 +166,7 @@ var stoolballCharts =  (function (){
 	return {
 		countValues: countValues, 
 		displayPieChart: displayPieChart, 
-		displayStackedBar: displayStackedBar
+		displayStackedBar: displayStackedBar,
+		displayLine: displayLine
 	};
 })();
