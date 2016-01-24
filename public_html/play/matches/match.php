@@ -168,6 +168,8 @@ class CurrentPage extends StoolballPage
         require_once("search/match-search-adapter.class.php");
         $adapter = new MatchSearchAdapter($this->match);    
 		$this->SetPageDescription($adapter->GetSearchDescription());
+        
+        $this->LoadClientScript("match.js", true);
 	}
 
 	function OnPageLoad()
