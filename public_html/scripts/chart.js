@@ -121,13 +121,69 @@ var stoolballCharts =  (function (){
         }
 	}
 	
-	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, width, height){
+	function displayBar(elementId, data, title, yAxisLabel, xAxisLabel, width, height, barColours, tooltipTemplate, max){
+	    
+	    // IE 8 doesn't support bar charts, even with the polyfill used for pie charts
+		var canvas = document.createElement("canvas");
+	    if (!canvas.getContext) return ;
+	    	    
+	    addColours(data.datasets, "fillColor", barColours);
+
+	    var total = 0;
+	    for (var i = 0; i < data.datasets.length; i++) {
+	    	data.datasets[i].total = 0;
+	    	
+	        for (var j = 0; j < data.datasets[i].data.length; j++){
+    	        total += data.datasets[i].data[j];
+    	        data.datasets[i].total += data.datasets[i].data[j];
+    	    }
+	    }
+		
+	    elementId = "#" + elementId;
+	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-bar");
+
+	    if (title) {
+	    $('<h2 class="chart-title">').appendTo(element).text(title);
+	    }	    
+	    $('<p class="chart-axis-y">').appendTo(element).text(yAxisLabel);
+
+		canvas.setAttribute('width', width);
+	    canvas.setAttribute('height', height);
+	    $(canvas).appendTo(element);
+	    
+	    var stepWidth = 1, scaleSteps = max;
+	    if (max > 10) {
+	    	stepWidth = 2;
+	    }
+	    if (max > 20) {
+	    	stepWidth = 3;
+	    }
+	   	scaleSteps = Math.ceil(scaleSteps /stepWidth);
+	    
+		new Chart(canvas.getContext("2d")).Bar(data, {
+			responsive:true, 
+			tooltipTemplate: tooltipTemplate,
+			scaleOverride: true,
+    		scaleStartValue: 0,
+		    scaleStepWidth: stepWidth,
+			scaleSteps: scaleSteps
+		});
+	    
+	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
+	        
+	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
+	    for (var i = 0; i < data.datasets.length; i++) {
+	        $("<li>").addClass("chart-colour-" + (barColours[i]+1)).text(" " + data.datasets[i].label + " (" + data.datasets[i].total + " runs)").appendTo(legend);
+        }
+	}
+	
+	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, width, height, lineColours, tooltipTemplate) {
 	    
 		var canvas = document.createElement("canvas");
 	    if (!canvas.getContext) return ;
 	    	    
-	    addColours(data.datasets, "strokeColor", contrastingColours);
-	    addColours(data.datasets, "pointColor", contrastingColours);
+	    addColours(data.datasets, "strokeColor", lineColours);
+	    addColours(data.datasets, "pointColor", lineColours);
 
 	    elementId = "#" + elementId;
 	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-line");
@@ -142,14 +198,15 @@ var stoolballCharts =  (function (){
 			{
 				responsive: true,
 				datasetFill: false,
-				pointDot: false
+				pointDot: false,
+				multiTooltipTemplate: tooltipTemplate
 			});
 	    
 	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
 	        
 	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
 	    for (var i = 0; i < data.datasets.length; i++) {
-	        $("<li>").addClass("chart-colour-" + (contrastingColours[i]+1)).text(" " + data.datasets[i].label).appendTo(legend);
+	        $("<li>").addClass("chart-colour-" + (lineColours[i]+1)).text(" " + data.datasets[i].label).appendTo(legend);
         }
 	}
 	
@@ -166,6 +223,7 @@ var stoolballCharts =  (function (){
 	return {
 		countValues: countValues, 
 		displayPieChart: displayPieChart, 
+		displayBar: displayBar,
 		displayStackedBar: displayStackedBar,
 		displayLine: displayLine
 	};

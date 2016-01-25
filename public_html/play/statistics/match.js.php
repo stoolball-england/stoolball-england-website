@@ -37,20 +37,8 @@ class CurrentPage extends Page
     "worm": {
         "labels": [
             <?php
-            # Get number of overs in match, going on the bowling data rather than the official match length because 
-            # a match may be cut short for light or extended for a friendly.
-            $home_overs = $this->match->Result()->HomeOvers()->GetCount();
-            $away_overs = $this->match->Result()->AwayOvers()->GetCount();
-            $overs = $home_overs;
-            if ($away_overs > $home_overs) {
-                $overs = $away_overs;
-            }
-            for ($i = 0; $i <= $overs; $i++) {
-                echo '"' . $i . '"';
-                if ($i < $overs) {
-                    echo ",";
-                }
-            }
+            $overs = $this->HowManyOversInTheMatch();
+            echo $this->BuildOversLabels(0, $overs);
             ?>        
         ],
         "datasets": [
@@ -59,29 +47,73 @@ class CurrentPage extends Page
         if ($home_batted_first === true || is_null($home_batted_first)) {
             ?>
             {
-                "label": "<?php $this->WriteCumulativeOverTotalsLabel($this->match->GetHomeTeam()->GetName(), $this->match->Result()->GetHomeBattedFirst() === true) ?>",
-                "data": [0<?php $this->WriteCumulativeOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetHomeTeam()->GetName(), $home_batted_first === true) ?>",
+                "data": [0<?php echo $this->BuildCumulativeOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
             },
             {
-                "label": "<?php $this->WriteCumulativeOverTotalsLabel($this->match->GetAwayTeam()->GetName(), $this->match->Result()->GetHomeBattedFirst() === false) ?>",
-                "data": [0<?php echo $this->WriteCumulativeOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetAwayTeam()->GetName(), $home_batted_first === false) ?>",
+                "data": [0<?php echo $this->BuildCumulativeOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
             }      
             <?php
         } else {
             ?>
             {
-                "label": "<?php $this->WriteCumulativeOverTotalsLabel($this->match->GetAwayTeam()->GetName(), $this->match->Result()->GetHomeBattedFirst() === false) ?>",
-                "data": [0<?php echo $this->WriteCumulativeOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetAwayTeam()->GetName(), $home_batted_first === false) ?>",
+                "data": [0<?php echo $this->BuildCumulativeOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
             },      
             {
-                "label": "<?php $this->WriteCumulativeOverTotalsLabel($this->match->GetHomeTeam()->GetName(), $this->match->Result()->GetHomeBattedFirst() === true) ?>",
-                "data": [0<?php $this->WriteCumulativeOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetHomeTeam()->GetName(), $home_batted_first === true) ?>",
+                "data": [0<?php echo $this->BuildCumulativeOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
             }
             <?php
         }
-        
-        
         ?>]    
+    },
+    "manhattanFirstInnings": {
+        "labels": [
+            <?php
+            $overs = $this->HowManyOversInTheMatch();
+            echo $this->BuildOversLabels(1, $overs);
+            ?>        
+        ],
+        "datasets": [
+        <?php if ($home_batted_first === true || is_null($home_batted_first)) { ?>
+            {
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetHomeTeam()->GetName(), $home_batted_first === true) ?>",
+                "data": [<?php echo $this->BuildOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
+            }      
+            <?php
+        } else {
+            ?>
+            {
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetAwayTeam()->GetName(), $home_batted_first === false) ?>",
+                "data": [<?php echo $this->BuildOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
+            }      
+        <?php } ?>
+        ]
+    },
+    "manhattanSecondInnings": {
+        "labels": [
+            <?php
+            $overs = $this->HowManyOversInTheMatch();
+            echo $this->BuildOversLabels(1, $overs);
+            ?>        
+        ],
+        "datasets": [
+        <?php if ($home_batted_first === false) { ?>
+            {
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetHomeTeam()->GetName(), $home_batted_first === true) ?>",
+                "data": [<?php echo $this->BuildOverTotals($this->match->Result()->AwayOvers()->GetItems(), $overs) ?>]
+            }      
+            <?php
+        } else {
+            ?>
+            {
+                "label": "<?php echo $this->BuildTeamNameLabel($this->match->GetAwayTeam()->GetName(), $home_batted_first === false) ?>",
+                "data": [<?php echo $this->BuildOverTotals($this->match->Result()->HomeOvers()->GetItems(), $overs) ?>]
+            }      
+        <?php } ?>
+        ]
     }
     <?php } ?>
 }
@@ -89,25 +121,65 @@ class CurrentPage extends Page
         exit();
  	}
     
-    private function WriteCumulativeOverTotalsLabel($team_name, $batting_first) {
+    private function HowManyOversInTheMatch() {
+        # Get number of overs in match, going on the bowling data rather than the official match length because 
+        # a match may be cut short for light or extended for a friendly.
+        $home_overs = $this->match->Result()->HomeOvers()->GetCount();
+        $away_overs = $this->match->Result()->AwayOvers()->GetCount();
+        $overs = $home_overs;
+        if ($away_overs > $home_overs) {
+            $overs = $away_overs;
+        }
+        return $overs;
+    }
+
+    private function BuildOversLabels($starting_from, $overs) {
+        $labels = "";
+        for ($i = $starting_from; $i <= $overs; $i++) {
+            $labels .= '"' . $i . '"';
+            if ($i < $overs) {
+                $labels .= ",";
+            }
+        }
+        return $labels;
+    }
+
+    private function BuildTeamNameLabel($team_name, $batting_first) {
         $label = str_replace('\\', '', $team_name);
         if ($batting_first) {
             $label .= " (batting first)";
         }
-        echo $label;
+        return $label;
     }
 
 
-    private function WriteCumulativeOverTotals(array $overs, $total_overs) {
-        $current_value = 0;
+    private function BuildCumulativeOverTotals(array $overs, $total_overs) {
+        $total = 0;
+        $data = "";
         for ($i = 0; $i < $total_overs; $i++) {
             if (array_key_exists($i, $overs)) {
                 $over = $overs[$i];
                 /* @var $over Over */
-                $current_value += $over->GetRunsInOver();
-                echo "," .  $current_value;
+                $total += $over->GetRunsInOver();
+                $data .= "," .  $total;
             }
         }
+        return $data;
+    }
+
+    private function BuildOverTotals(array $overs, $total_overs) {
+        $data = "";
+        for ($i = 0; $i < $total_overs; $i++) {
+            if (array_key_exists($i, $overs)) {
+                $over = $overs[$i];
+                /* @var $over Over */
+                if ($data) {
+                    $data .= ",";
+                }
+                $data .= $over->GetRunsInOver();
+            }
+        }
+        return $data;
     }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

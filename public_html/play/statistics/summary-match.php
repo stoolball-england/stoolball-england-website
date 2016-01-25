@@ -63,6 +63,9 @@ class CurrentPage extends StoolballPage
             $this->LoadClientScript("/scripts/lib/chart.min.js");
             $this->LoadClientScript("/scripts/chart.js?v=2");
             $this->LoadClientScript("/play/statistics/match.js");
+            ?>
+            <!--[if lte IE 8]><script src="/scripts/lib/excanvas.compiled.js"></script><![endif]-->
+            <?php
         }
     }
 
@@ -101,6 +104,15 @@ class CurrentPage extends StoolballPage
         {
             ?>
             <div class="chart-js-template" id="worm-chart"></div>
+            <div class="statsColumns manhattan">
+            <h2>Scores in each over</h2>
+                <div class="statsColumn">
+                    <div class="chart-js-template" id="manhattan-chart-first-innings"></div>
+                </div>
+                <div class="statsColumn">
+                    <div class="chart-js-template" id="manhattan-chart-second-innings"></div>
+                </div>
+            </div>
             <?php
         }
         ?>
