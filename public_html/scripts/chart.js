@@ -1,7 +1,7 @@
 var stoolballCharts =  (function (){
 	"use strict";
 	
-    var colours = ["#7FAA84","#008044","#002b17","#503C03","#9a854b","#e7d197"];
+    var allColours = ["#7FAA84","#008044","#002b17","#503C03","#9a854b","#e7d197"];
     var similarColours = [0,1,2,3,4,5];
     var contrastingColours = [1,3];
 
@@ -13,18 +13,11 @@ var stoolballCharts =  (function (){
 	    	dataColours = dataColours.concat(dataColours.slice(0));
 	    }
 		for (var i = 0; i < data.length; i++) {
-			data[i][propertyName] = colours[allowedColours[i]];
+			data[i][propertyName] = allColours[allowedColours[i]];
 		} 	    
 	    return data;
 	}
-	
-	function countValues(data) {
-		var value = 0;
-		for (var i = 0; i < data.length; i++) {
-			value += data[i].value;
-		}
-		return value;
-	}
+
 	
 	function createCanvas() {
 		var canvas = document.createElement("canvas");
@@ -48,42 +41,44 @@ var stoolballCharts =  (function (){
 		}
 	}
 	
-	function displayPieChart(elementId, data, title, itemText, itemsText, width, className) {
+	function displayPieChart(elementId, data, title, itemText, itemsText, width, className, chartOptions) {
 	    
-		var canvas = createCanvas();    
+		var canvas = createCanvas();
 	    if (!canvas) return ;
+	    canvas.setAttribute('width', width);
+	    canvas.setAttribute('height', width);
 	     
 		addColours(data, "color", similarColours);
 		removeZeroDatasets(data);
-	    
-	    var total = 0;
-	    for (var i = 0; i < data.length; i++) {
-	        total += data[i].value;
-	    }
+	    	    
+		for (var i = 0; i < data.length; i++) {
+			data[i].label += " (" + data[i].value + ")";
+		}
+
+	    var total = calculateTotal(data);
 	    var subtitle = "Showing " + total +  " " +  ((total === 1) ? itemText : itemsText);
-	    
-	    elementId = "#" + elementId;
-	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-pie");
-	    if (className) element.addClass(className);
 
-		// Use the add class method because IE 8 doesn't display the element when the class is typed as part of the JQuery selector
-	    $('<h2>').addClass("chart-title").appendTo(element).text(title);	
-	    $('<p class="chart-subtitle">').appendTo(element).text(subtitle);      
+	    var element = prepareTargetElement(elementId, ["chart-pie", className]);
+	    element.append(createTitle(title));	    
+		element.append(createSubTitle(subtitle));      
+	    element.append(canvas);
+	    element.append(createLegend(data, similarColours));
+
+
+		var pieDefaults = {
+			animateRotate: false,
+			animateScale: true,
+			animationSteps: 50,
+			animationEasing: "easeOutExpo", 
+			segmentStrokeColor: "#EEE", 
+			segmentStrokeWidth: 1,
+			responsive: true
+		};
 	
-	    canvas.setAttribute('width', width);
-	    canvas.setAttribute('height', width);
-	    $(canvas).appendTo(element);
-	    new Chart(canvas.getContext("2d")).Pie(data, pieOptions);
-
-	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
-	    for (var i = 0; i < data.length; i++) {
-	        if (data[i].value > 0) {
-	          $("<li>").addClass("chart-colour-" + (i+1)).text(" " + data[i].label + " (" + data[i].value + ")").appendTo(legend);
-	        }
-	    }
+		new Chart(canvas.getContext("2d")).Pie(data, $.extend(pieDefaults, chartOptions));
 	}
-	
-	function displayStackedBar(elementId, data, title, yAxisLabel, xAxisLabel, width, height){
+		
+	function displayStackedBar(elementId, data, title, xAxisLabel, yAxisLabelSingular, yAxisLabelPlural, chartOptions){
 	    
 	    // IE 8 doesn't support bar charts, even with the polyfill used for pie charts
 		var canvas = document.createElement("canvas");
@@ -91,37 +86,22 @@ var stoolballCharts =  (function (){
 	    	    
 	    addColours(data.datasets, "fillColor", similarColours);
 
-	    var total = 0;
-	    for (var i = 0; i < data.datasets.length; i++) {
-	    	data.datasets[i].total = 0;
-	    	
-	        for (var j = 0; j < data.datasets[i].data.length; j++){
-    	        total += data.datasets[i].data[j];
-    	        data.datasets[i].total += data.datasets[i].data[j];	
-	        }
-	    }
-		yAxisLabel = yAxisLabel + " (" + total + ")";
+	    var total = calculateTotals(data.datasets);
+	    addTotalsToLabels(data.datasets, yAxisLabelSingular, yAxisLabelPlural);
+		yAxisLabelPlural = yAxisLabelPlural + " (" + total + ")";
 		
-	    elementId = "#" + elementId;
-	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-bar");
+	    var element = prepareTargetElement(elementId, ["chart-bar"]);
+	    element.append(createTitle(title));    
+	    element.append(createYAxisLabel(yAxisLabelPlural));
+	    element.append(canvas);
+	    element.append(createXAxisLabel(xAxisLabel));	        
+	    element.append(createLegend(data.datasets, similarColours));
 
-	    $('<h2 class="chart-title">').appendTo(element).text(title);	    
-	    $('<p class="chart-axis-y">').appendTo(element).text(yAxisLabel);
-
-		canvas.setAttribute('width', width);
-	    canvas.setAttribute('height', height);
-	    $(canvas).appendTo(element);
-		new Chart(canvas.getContext("2d")).StackedBar(data, {responsive:true});
-	    
-	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
-	        
-	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
-	    for (var i = 0; i < data.datasets.length; i++) {
-	        $("<li>").addClass("chart-colour-" + (i+1)).text(" " + data.datasets[i].label + " (" + data.datasets[i].total + ")").appendTo(legend);
-        }
+		var stackedBarDefaults = { responsive:true };
+		new Chart(canvas.getContext("2d")).StackedBar(data, $.extend(stackedBarDefaults, chartOptions));	    
 	}
 	
-	function displayBar(elementId, data, title, yAxisLabel, xAxisLabel, width, height, barColours, tooltipTemplate, max){
+	function displayBar(elementId, data, title, xAxisLabel, yAxisLabelSingular, yAxisLabelPlural, barColours, max, chartOptions){
 	    
 	    // IE 8 doesn't support bar charts, even with the polyfill used for pie charts
 		var canvas = document.createElement("canvas");
@@ -129,55 +109,31 @@ var stoolballCharts =  (function (){
 	    	    
 	    addColours(data.datasets, "fillColor", barColours);
 
-	    var total = 0;
-	    for (var i = 0; i < data.datasets.length; i++) {
-	    	data.datasets[i].total = 0;
-	    	
-	        for (var j = 0; j < data.datasets[i].data.length; j++){
-    	        total += data.datasets[i].data[j];
-    	        data.datasets[i].total += data.datasets[i].data[j];
-    	    }
-	    }
+	    calculateTotals(data.datasets);
+	    addTotalsToLabels(data.datasets, yAxisLabelSingular, yAxisLabelPlural);
 		
-	    elementId = "#" + elementId;
-	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-bar");
+	    var element = prepareTargetElement(elementId, ["chart-bar"]);
+	    element.append(createTitle(title));	    
+	    element.append(createYAxisLabel(yAxisLabelPlural));
+	    element.append(canvas);
+	    element.append(createXAxisLabel(xAxisLabel));	        	        
+	    element.append(createLegend(data.datasets, barColours));
 
-	    if (title) {
-	    $('<h2 class="chart-title">').appendTo(element).text(title);
-	    }	    
-	    $('<p class="chart-axis-y">').appendTo(element).text(yAxisLabel);
-
-		canvas.setAttribute('width', width);
-	    canvas.setAttribute('height', height);
-	    $(canvas).appendTo(element);
+	    var stepWidth = (Math.floor(max/10)+1);
+	   	var scaleSteps = Math.ceil(max /stepWidth);
 	    
-	    var stepWidth = 1, scaleSteps = max;
-	    if (max > 10) {
-	    	stepWidth = 2;
-	    }
-	    if (max > 20) {
-	    	stepWidth = 3;
-	    }
-	   	scaleSteps = Math.ceil(scaleSteps /stepWidth);
-	    
-		new Chart(canvas.getContext("2d")).Bar(data, {
+	    var barDefaults = {
 			responsive:true, 
-			tooltipTemplate: tooltipTemplate,
 			scaleOverride: true,
     		scaleStartValue: 0,
 		    scaleStepWidth: stepWidth,
 			scaleSteps: scaleSteps
-		});
+		};
 	    
-	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
-	        
-	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
-	    for (var i = 0; i < data.datasets.length; i++) {
-	        $("<li>").addClass("chart-colour-" + (barColours[i]+1)).text(" " + data.datasets[i].label + " (" + data.datasets[i].total + " runs)").appendTo(legend);
-        }
+		new Chart(canvas.getContext("2d")).Bar(data, $.extend(barDefaults, chartOptions));	    
 	}
 	
-	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, width, height, lineColours, tooltipTemplate) {
+	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, lineColours, chartOptions) {
 	    
 		var canvas = document.createElement("canvas");
 	    if (!canvas.getContext) return ;
@@ -185,43 +141,98 @@ var stoolballCharts =  (function (){
 	    addColours(data.datasets, "strokeColor", lineColours);
 	    addColours(data.datasets, "pointColor", lineColours);
 
-	    elementId = "#" + elementId;
-	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js").addClass("chart-line");
+	    var element = prepareTargetElement(elementId, ["chart-line"]);
+	    element.append(createTitle(title, ["line-chart-title"]));		    
+	    element.append(createYAxisLabel(yAxisLabel));
+	    element.append(canvas);
+	    element.append(createXAxisLabel(xAxisLabel));	        
+	    element.append(createLegend(data.datasets, lineColours));
 
-	    $('<h2 class="chart-title line-chart-title">').appendTo(element).text(title);	    
-	    $('<p class="chart-axis-y">').appendTo(element).text(yAxisLabel);
-
-		canvas.setAttribute('width', width);
-	    canvas.setAttribute('height', height);
-	    $(canvas).appendTo(element);
-		new Chart(canvas.getContext("2d")).Line(data, 
-			{
-				responsive: true,
-				datasetFill: false,
-				pointDot: false,
-				multiTooltipTemplate: tooltipTemplate
-			});
-	    
-	    $('<p class="chart-axis-x">').appendTo(element).text(xAxisLabel);
-	        
-	    var legend = $('<ul class="chart-legend horizontal">').appendTo(element);
-	    for (var i = 0; i < data.datasets.length; i++) {
-	        $("<li>").addClass("chart-colour-" + (lineColours[i]+1)).text(" " + data.datasets[i].label).appendTo(legend);
-        }
+		var lineDefaults = {
+			responsive: true,
+			datasetFill: false,
+			pointDot: false
+		};
+		new Chart(canvas.getContext("2d")).Line(data, $.extend(lineDefaults, chartOptions));
 	}
 	
-	var pieOptions = {
-		animateRotate: false,
-		animateScale: true,
-		animationSteps: 50,
-		animationEasing: "easeOutExpo", 
-		segmentStrokeColor: "#EEE", 
-		segmentStrokeWidth: 1,
-		responsive: true
-	};
+	function prepareTargetElement(elementId, classesToApply) {
+	    elementId = "#" + elementId;
+	    var element = $(elementId).removeClass("chart-js-template").addClass("chart-js");
+	    element = applyClasses(element, classesToApply); 
+		return element;
+	}
 	
+	function calculateTotal(data) {
+		var total = 0;
+		for (var i = 0; i < data.length; i++) {
+			total += data[i].value;
+		}
+		return total;
+	}
+
+	function calculateTotals(datasets) {
+	    var total = 0;
+	    for (var i = 0; i < datasets.length; i++) {
+	    	datasets[i].total = 0;
+	    	
+	        for (var j = 0; j < datasets[i].data.length; j++){
+    	        total += datasets[i].data[j];
+    	        datasets[i].total += datasets[i].data[j];
+    	    }
+	    }
+	    return total;
+	}
+	
+	function addTotalsToLabels(datasets, totalLabelSingular, totalLabelPlural) {
+	    for (var i = 0; i < datasets.length; i++) {
+	    	datasets[i].label += " (" + datasets[i].total + " " + (datasets[i].total == 1 ? totalLabelSingular.toLowerCase() : totalLabelPlural.toLowerCase()) + ")";
+	    }
+	}
+	
+	function createTitle(title, classesToApply) {
+		var h2 = null;
+		if (title) {
+	    		// Use the add class method because IE 8 doesn't display the element when the class is typed as part of the JQuery selector
+			h2 = $('<h2>').text(title).addClass("chart-title");
+	    }
+	    h2 = applyClasses(h2, classesToApply);
+    	return h2;
+	}
+	
+	function createSubTitle(subtitle) {
+		return $('<p class="chart-subtitle">').text(subtitle);
+	}
+	
+	function createXAxisLabel(label) {
+	    return $('<p class="chart-axis-x">').text(label);
+	}
+
+	function createYAxisLabel(label) {
+	    return $('<p class="chart-axis-y">').text(label);
+	}
+	
+	function createLegend(datasets, colours) {
+	    var legend = $('<ul class="chart-legend horizontal">');
+	    for (var i = 0; i < datasets.length; i++) {
+	        $("<li>").addClass("chart-colour-" + (colours[i]+1)).text(" " + datasets[i].label).appendTo(legend);
+        }
+        return legend;
+	}
+	
+	function applyClasses(element, classesToApply) {
+	    if (element && classesToApply) {
+		    for (var i = 0; i < classesToApply.length; i++) {
+		    	if (classesToApply[i]) {
+		    		element.addClass(classesToApply[i]);
+		    	}
+	    	}
+	    }
+	    return element;
+	}
+		
 	return {
-		countValues: countValues, 
+		calculateTotal: calculateTotal, 
 		displayPieChart: displayPieChart, 
 		displayBar: displayBar,
 		displayStackedBar: displayStackedBar,

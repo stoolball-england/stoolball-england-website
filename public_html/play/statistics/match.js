@@ -17,15 +17,15 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 
 		$.getJSON(path, function(data) {
 	
-			stoolballCharts.displayLine("worm-chart", data.worm,  "Total scores after each over for both teams", "Runs", "Overs", 400, 200, [1,3], "<%=value%> runs scored");
+			stoolballCharts.displayLine("worm-chart", data.worm,  "Total scores after each over for both teams", "Runs", "Overs", [1,3], { multiTooltipTemplate: "<%=value%> runs scored" });
 			
 			var firstInnings = data.manhattanFirstInnings.datasets[0].data;
 			var secondInnings = data.manhattanSecondInnings.datasets[0].data;
 			var allOvers = firstInnings.concat(secondInnings);
 			var max = Math.max.apply(null, allOvers);
 			
-			stoolballCharts.displayBar("manhattan-chart-first-innings", data.manhattanFirstInnings,  "", "Runs", "Overs", 400, 200, [1], "<%= value %> runs scored in over <%=label%>", max);
-			stoolballCharts.displayBar("manhattan-chart-second-innings", data.manhattanSecondInnings,  "", "Runs", "Overs", 400, 200, [3], "<%= value %> runs scored in over <%=label%>", max);
+			stoolballCharts.displayBar("manhattan-chart-first-innings", data.manhattanFirstInnings,  "", "Overs", "Run", "Runs", [1], max, { tooltipTemplate: "<%= value %> runs scored in over <%=label%>"});
+			stoolballCharts.displayBar("manhattan-chart-second-innings", data.manhattanSecondInnings,  "", "Overs", "Run", "Runs", [3], max, { tooltipTemplate: "<%= value %> runs scored in over <%=label%>"});
 		});		
 	});
 }

@@ -12,7 +12,7 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 		
 		$.getJSON(path, function(data) {
 	
-			stoolballCharts.displayStackedBar("score-spread-chart", data.scoreSpread,  "Range of batting scores", "Innings", "Scores", 400, 200);
+			stoolballCharts.displayStackedBar("score-spread-chart", data.scoreSpread,  "Range of batting scores", "Scores", "Innings", "Innings");
 			
 			// Show pie charts for results
 			stoolballCharts.displayPieChart("dismissals-chart", data.dismissals, "How this player gets out", "innings", "innings",  200);

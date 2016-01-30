@@ -19,15 +19,15 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 			stoolballCharts.displayPieChart("all-results-chart", data.all, "All results" + scope, "match", "matches", 200);
 			
 			// Show separate charts only if there is data for both, and if it's a summer season (winter seasons are all in one place)
-			var homeMatchCount = stoolballCharts.countValues(data.home);
-			var awayMatchCount = stoolballCharts.countValues(data.away);
+			var homeMatchCount = stoolballCharts.calculateTotal(data.home);
+			var awayMatchCount = stoolballCharts.calculateTotal(data.away);
 			if (homeMatchCount && awayMatchCount && (!scope || scope.indexOf("/") === -1))
 			{
 			    stoolballCharts.displayPieChart("home-results-chart", data.home, "Home results" + scope, "match", "matches", 200);
 			    stoolballCharts.displayPieChart("away-results-chart", data.away, "Away results" + scope, "match", "matches", 200);
 			}
 
-			stoolballCharts.displayStackedBar("opponents-chart", data.opponents, "Results against all opponents", "Matches", "Opponent (matches played)", 400, 300);			
+			stoolballCharts.displayStackedBar("opponents-chart", data.opponents, "Results against all opponents", "Opponent (matches played)", "Matches", "Matches");			
 		});		
 	});
 }
