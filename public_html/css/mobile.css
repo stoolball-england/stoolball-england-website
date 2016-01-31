@@ -279,6 +279,7 @@ table.batting td.runs { white-space: nowrap; }
 table.batting th.balls-faced { width: 1em; } 
 tr.extras th { text-align: right; font-weight: normal; vertical-align: middle; }
 tr.totals, tr.totals th { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: middle; text-align: right; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; border-color: #999; }
+table.overs .numeric { width: 10%; }
 
 /* Edit scorecard - results control */
 .matchResults .formControl label { display: inline; }

@@ -591,6 +591,8 @@ class MatchControl extends Placeholder
 			$overs_table->SetCaption(htmlentities($bowling_team->GetName() . "'s bowling, over-by-over", ENT_QUOTES, "UTF-8", false));
 			$overs_table->SetCssClass("scorecard bowling overs");
 
+            $balls_header = new XhtmlCell(true, "Balls");
+            $balls_header->SetCssClass("numeric");
             $wides_header = new XhtmlCell(true, "Wides");
             $wides_header->SetCssClass("numeric");
 			$no_balls_header = new XhtmlCell(true, "No balls");
@@ -599,7 +601,7 @@ class MatchControl extends Placeholder
 			$runs_in_over_header->SetCssClass("numeric");
 			$total_header = new XhtmlCell(true, "Total");
 			$total_header->SetCssClass("numeric");
-			$overs_headings = new XhtmlRow(array("Bowler", $wides_header, $no_balls_header, $runs_in_over_header, $total_header));
+			$overs_headings = new XhtmlRow(array("Bowler", $balls_header, $wides_header, $no_balls_header, $runs_in_over_header, $total_header));
 			$overs_headings->SetIsHeader(true);
 			$overs_table->AddRow($overs_headings);
 
@@ -614,6 +616,8 @@ class MatchControl extends Placeholder
 				$player->AddCssClass("bowler");
 				$player->AddAttribute("typeof", "schema:Person");
 				$player->AddAttribute("about", $bowling->GetPlayer()->GetLinkedDataUri());
+                $balls_data = new XhtmlCell(false, htmlentities($bowling->GetBalls(), ENT_QUOTES, "UTF-8", false));
+                $balls_data->SetCssClass("numeric");
 				$wides_data = new XhtmlCell(false, htmlentities($bowling->GetWides(), ENT_QUOTES, "UTF-8", false));
 				$wides_data->SetCssClass("numeric");
                 $no_balls_data = new XhtmlCell(false, htmlentities($bowling->GetNoBalls(), ENT_QUOTES, "UTF-8", false));
@@ -623,7 +627,7 @@ class MatchControl extends Placeholder
 				$total += $bowling->GetRunsInOver();
 				$total_data = new XhtmlCell(false, htmlentities($total, ENT_QUOTES, "UTF-8", false));
 				$total_data->SetCssClass("numeric");
-				$bowling_row = new XhtmlRow(array($player, $wides_data, $no_balls_data, $runs_in_over_data, $total_data));
+				$bowling_row = new XhtmlRow(array($player, $balls_data, $wides_data, $no_balls_data, $runs_in_over_data, $total_data));
 				$bowling_row->GetFirstCell()->SetCssClass("bowler");
 				$overs_table->AddRow($bowling_row);
 			}
