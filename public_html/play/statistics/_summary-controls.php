@@ -13,6 +13,13 @@ if ($has_best_batting or $has_most_runs or $has_batting_average)
 		echo $best_batting;
 
 		if ($has_best_batting >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores' . $statistics_query . '">Individual scores &#8211; view all and filter</a></p>';
+        
+        if (preg_match("/^\/lewes[0-9]*\/statistics/", $_SERVER["REQUEST_URI"]) === 1) {
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-40' . $statistics_query . '">Most scores of 40 or more &#8211; view all and filter</a></p>';
+        } else {
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-100' . $statistics_query . '">Most scores of 100 or more &#8211; view all and filter</a></p>';
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-50' . $statistics_query . '">Most scores of 50 or more &#8211; view all and filter</a></p>';
+        }
 	}
 
 	if ($has_most_runs)

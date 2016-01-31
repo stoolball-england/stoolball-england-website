@@ -2,12 +2,13 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 # Check it is a valid statistic
-if (!in_array(preg_replace("/[^a-z-]/", "", $_GET["statistic"]), array(
+$sanitised = preg_replace("/[^a-z0-9-]/", "", $_GET["statistic"]);
+if (!in_array($sanitised, array(
 	"individual-scores", "most-runs", "batting-average", "batting-strike-rate",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
 	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
 	"player-performances", "player-of-match", "most-player-of-match"
-)))
+)) and !(preg_match("/^most-scores-of-[0-9]+$/", $sanitised) === 1))
 {
 	require_once("../../wp-content/themes/stoolball/404.php");
 	exit();
@@ -35,7 +36,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# Sanitise the name of the requested statistic
-		$this->which_statistic = preg_replace("/[^a-z-]/", "", $_GET["statistic"]);
+		$this->which_statistic = preg_replace("/[^a-z0-9-]/", "", $_GET["statistic"]);
 
 		# Set up statistics manager
 		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
@@ -127,6 +128,16 @@ class CurrentPage extends StoolballPage
                 require_once("stoolball/statistics/most-player-of-match.class.php");
                 $this->statistic = new MostPlayerOfTheMatch($statistics_manager);
 				break;
+                
+            default:
+                $matches = array();
+                $is_match = preg_match("/^most-scores-of-([0-9]+)$/", $this->which_statistic, $matches);
+                if ($is_match === 1) {
+                    $match_scores_of = $matches[1];
+                    require_once("stoolball/statistics/most-scores-of.class.php");
+                    $this->statistic = new MostScoresOf($match_scores_of, $statistics_manager);
+                }
+                break;
 		}
 
         # Is this a request for CSV data?

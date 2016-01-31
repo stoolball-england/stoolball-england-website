@@ -29,32 +29,44 @@ class PlayerStatisticsTable extends XhtmlTable
 
 		parent::XhtmlTable();
 
-		# Create the table header
-		$this->SetCaption($caption);
-		$this->SetCssClass('statsOverall');
-		$position = new XhtmlCell(true, "#");
-		$position->SetCssClass("position");
-		$player = new XhtmlCell(true, "Player");
-		$player->SetCssClass("player");
-		if ($display_team)
-		{
-			$team = new XhtmlCell(true, "Team");
-			$team->SetCssClass("team");
-		}
-		$matches = new XhtmlCell(true, "Matches");
-		$matches->SetCssClass("numeric");
-		$aggregate = new XhtmlCell(true, $column_heading);
-		$aggregate->SetCssClass("numeric");
-		if ($display_team)
-		{
-			$header = new XhtmlRow(array($position, $player, $team, $matches, $aggregate));
-		}
-		else
-		{
-			$header = new XhtmlRow(array($position, $player, $matches, $aggregate));
-		}
-		$header->SetIsHeader(true);
-		$this->AddRow($header);
+        if (count($data) > 0) 
+        {
+            $performance = $data[0];
+
+    		# Create the table header
+    		$this->SetCaption($caption);
+    		$this->SetCssClass('statsOverall');
+
+            $columns = array();
+    		$position = new XhtmlCell(true, "#");
+    		$position->SetCssClass("position");
+            $columns[] = $position;
+            
+    		$player = new XhtmlCell(true, "Player");
+    		$player->SetCssClass("player");
+            $columns[] = $player;
+            
+    		if ($display_team)
+    		{
+    			$team = new XhtmlCell(true, "Team");
+    			$team->SetCssClass("team");
+                $columns[] = $team;
+    		}
+            
+            if (array_key_exists("total_matches", $performance)) {
+                $matches = new XhtmlCell(true, "Matches");
+                $matches->SetCssClass("numeric");
+                $columns[] = $matches;
+            }
+
+    		$aggregate = new XhtmlCell(true, $column_heading);
+    		$aggregate->SetCssClass("numeric");
+            $columns[] = $aggregate;
+
+			$header = new XhtmlRow($columns);
+    		$header->SetIsHeader(true);
+    		$this->AddRow($header);
+        }
 	}
 
 	public function OnPreRender()
@@ -78,29 +90,37 @@ class PlayerStatisticsTable extends XhtmlTable
     			}
     			$i++;
     
+                $fields = array();
+                
     			$position = new XhtmlCell(false, $pos);
     			$position->SetCssClass("position");
+                $fields[] = $position;
+                
     			$player = new XhtmlCell(false, '<a property="schema:name" rel="schema:url" href="' . $performance["player_url"] . '">' . $performance["player_name"] . "</a>");
     			$player->SetCssClass("player");
     			$player->AddAttribute("typeof", "schema:Person");
     			$player->AddAttribute("about", "http://www.stoolball.org.uk/id/player" . $performance["player_url"]);
+                $fields[] = $player;
+                
     			if ($this->display_team)
     			{
     				$team = new XhtmlCell(false, $performance["team_name"]);
     				$team->SetCssClass("team");
+                    $fields[] = $team;
     			}
-    			$matches = new XhtmlCell(false, $performance["total_matches"]);
-    			$matches->SetCssClass("numeric");
+                
+                if (array_key_exists("total_matches", $performance)) {
+        			$matches = new XhtmlCell(false, $performance["total_matches"]);
+        			$matches->SetCssClass("numeric");
+                    $fields[] = $matches;
+                }
+                
     			$aggregate = new XhtmlCell(false, $current_value);
     			$aggregate->SetCssClass("numeric");
-    			if ($this->display_team)
-    			{
-    				$row = new XhtmlRow(array($position, $player, $team, $matches, $aggregate));
-    			}
-    			else
-    			{
-    				$row = new XhtmlRow(array($position, $player, $matches, $aggregate));
-    			}
+                $fields[] = $aggregate;
+
+				$row = new XhtmlRow($fields);
+
     			$this->AddRow($row);
     		}
 		}

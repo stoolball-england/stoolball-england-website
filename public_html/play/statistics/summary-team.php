@@ -175,7 +175,9 @@ class CurrentPage extends StoolballPage
 				if ($has_most_runs)
 				{
 					echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores' . $this->statistics_query . '">Individual scores</a></p>';
-					echo '<p class="statsViewAll"><a href="/play/statistics/batting-average' . $this->statistics_query . '">Batting averages</a></p>';
+			        echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-100' . $this->statistics_query . '">Most scores of 100 or more</a></p>';
+                    echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-50' . $this->statistics_query . '">Most scores of 50 or more</a></p>';
+                	echo '<p class="statsViewAll"><a href="/play/statistics/batting-average' . $this->statistics_query . '">Batting averages</a></p>';
                     echo '<p class="statsViewAll"><a href="/play/statistics/batting-strike-rate' . $this->statistics_query . '">Batting strike rates</a></p>';
 				}
 

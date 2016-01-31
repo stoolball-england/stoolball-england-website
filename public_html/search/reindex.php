@@ -252,6 +252,12 @@ class CurrentPage extends StoolballPage
 		$docs[] = new SearchItem("other", "/play/statistics/most-runs", "/play/statistics/most-runs", "Most runs",
 		"Find out who has scored the most runs overall in all stoolball matches. Filter by team, ground, date and more.", "hundreds centuries batting batsmen batters statistics");
 
+        $docs[] = new SearchItem("other", "/play/statistics/most-scores-of-100", "/play/statistics/most-scores-of-100", "Most scores of 100 or more",
+        "Find out who has scored the most hundreds in all stoolball matches. Filter by team, ground, date and more.", "fifties hundreds centuries batting batsmen batters statistics");
+
+        $docs[] = new SearchItem("other", "/play/statistics/most-scores-of-50", "/play/statistics/most-scores-of-50", "Most scores of 100 or more",
+        "Find out who has scored the most fifties in all stoolball matches. Filter by team, ground, date and more.", "fifties hundreds centuries batting batsmen batters statistics");
+        
 		$docs[] = new SearchItem("other", "/play/statistics/batting-average", "/play/statistics/batting-average", "Batting averages statistics",
 		"A batsman's average measures how many runs he or she typically scores before getting out. Filter by team, ground, date and more.", "average batting batsmen batters statistics");
 

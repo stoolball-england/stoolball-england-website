@@ -611,6 +611,68 @@ class StatisticsManager extends DataManager
 		return $performances;
 	}
 
+
+    /**
+     * Gets best player aggregate data based on current filters
+     * @param string $field
+     * @param int $minimum_qualifying_value
+     * @return An array of aggregate data, or CSV download
+     */
+    public function ReadBestAggregateOfQualifyingPerformances($field, $minimum_qualifying_value)
+    {
+        # Select players with best aggregate data for the field, even it they're tied at the top of the table
+        # Although $players table is not necessary here, it's actually FASTER with the join
+        $from = $this->FromFilteredPlayerStatistics() . "INNER JOIN nsa_player ON nsa_player.player_id = nsa_player_match.player_id ";
+
+        $where = "WHERE nsa_player.player_role = " . Player::PLAYER . " AND $field >= $minimum_qualifying_value ";
+        $where = $this->ApplyFilters($where);
+
+        $group = "GROUP BY nsa_player.player_id ";
+        $order_by = "ORDER BY COUNT($field) DESC, nsa_player.player_name ASC ";
+
+        $limit = $this->LimitByPage();
+        
+        $sql = "SELECT nsa_player.player_id, nsa_player.player_name, nsa_player.short_url, nsa_player_match.team_id, nsa_player_match.team_name,
+        COUNT($field) AS statistic
+        $from
+        $where
+        $group
+        $order_by
+        $limit";
+
+        $performances = array();
+        $total_results = $this->ReadTotalResultsForPagedQuery($from, $where, $group);
+        if (!is_null($total_results)) {
+            $performances[] = $total_results;
+        }
+        
+        $result = $this->GetDataConnection()->query($sql);
+        $csv = is_array($this->output_as_csv);
+        while ($row = $result->fetch())
+        {
+            # Return data as an array rather than objects because when we return the full,
+            # page to dataset it's far more memory efficient
+            $performance["player_id"] = $row->player_id;
+            $performance["player_name"] = $row->player_name;
+            if (!$csv) $performance["player_url"] = "/" . $row->short_url;
+            $performance["team_id"] = $row->team_id;
+            $performance["team_name"] = $row->team_name;
+
+            $performance["statistic"] = $row->statistic;
+
+            $performances[] = $performance;
+        }
+
+        # Optionally add a header row and download a CSV file rather than returning the data
+        if ($csv)
+        {
+            array_unshift($performances, array("Player id", "Player", "Team id", "Team", $this->output_as_csv[0]));
+        }
+
+        $result->closeCursor();
+
+        return $performances;
+    }
 	/**
 	 * Gets best player average data based on current filters
 	 * @param string $divide_field
