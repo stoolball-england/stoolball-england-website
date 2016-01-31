@@ -255,7 +255,7 @@ class CurrentPage extends StoolballPage
         $docs[] = new SearchItem("other", "/play/statistics/most-scores-of-100", "/play/statistics/most-scores-of-100", "Most scores of 100 or more",
         "Find out who has scored the most hundreds in all stoolball matches. Filter by team, ground, date and more.", "fifties hundreds centuries batting batsmen batters statistics");
 
-        $docs[] = new SearchItem("other", "/play/statistics/most-scores-of-50", "/play/statistics/most-scores-of-50", "Most scores of 100 or more",
+        $docs[] = new SearchItem("other", "/play/statistics/most-scores-of-50", "/play/statistics/most-scores-of-50", "Most scores of 50 or more",
         "Find out who has scored the most fifties in all stoolball matches. Filter by team, ground, date and more.", "fifties hundreds centuries batting batsmen batters statistics");
         
 		$docs[] = new SearchItem("other", "/play/statistics/batting-average", "/play/statistics/batting-average", "Batting averages statistics",
