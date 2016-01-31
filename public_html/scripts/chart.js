@@ -3,7 +3,7 @@ var stoolballCharts =  (function (){
 	
     var allColours = ["#7FAA84","#008044","#002b17","#503C03","#9a854b","#e7d197"];
     var similarColours = [0,1,2,3,4,5];
-    var contrastingColours = [1,3];
+    var contrastingColours = [3,1,2];
 
 	function addColours(data, propertyName, allowedColours) {
 	    
@@ -133,20 +133,20 @@ var stoolballCharts =  (function (){
 		new Chart(canvas.getContext("2d")).Bar(data, $.extend(barDefaults, chartOptions));	    
 	}
 	
-	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, lineColours, chartOptions) {
+	function displayLine(elementId, data, title, yAxisLabel, xAxisLabel, chartOptions) {
 	    
 		var canvas = document.createElement("canvas");
 	    if (!canvas.getContext) return ;
 	    	    
-	    addColours(data.datasets, "strokeColor", lineColours);
-	    addColours(data.datasets, "pointColor", lineColours);
+	    addColours(data.datasets, "strokeColor", contrastingColours);
+	    addColours(data.datasets, "pointColor", contrastingColours);
 
 	    var element = prepareTargetElement(elementId, ["chart-line"]);
 	    element.append(createTitle(title, ["line-chart-title"]));		    
 	    element.append(createYAxisLabel(yAxisLabel));
 	    element.append(canvas);
 	    element.append(createXAxisLabel(xAxisLabel));	        
-	    element.append(createLegend(data.datasets, lineColours));
+	    element.append(createLegend(data.datasets, contrastingColours));
 
 		var lineDefaults = {
 			responsive: true,

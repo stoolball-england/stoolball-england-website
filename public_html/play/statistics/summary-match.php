@@ -103,7 +103,14 @@ class CurrentPage extends StoolballPage
         else
         {
             ?>
+            <div class="statsColumns">
+                <div class="statsColumn">
             <div class="chart-js-template" id="worm-chart"></div>
+            </div>
+                <div class="statsColumn">
+            <div class="chart-js-template" id="run-rate-chart"></div>
+            </div>
+            </div>
             <div class="statsColumns manhattan">
             <h2>Scores in each over</h2>
                 <div class="statsColumn">

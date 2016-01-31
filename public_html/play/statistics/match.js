@@ -17,7 +17,8 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 
 		$.getJSON(path, function(data) {
 	
-			stoolballCharts.displayLine("worm-chart", data.worm,  "Total scores after each over for both teams", "Runs", "Overs", [1,3], { multiTooltipTemplate: "<%=value%> runs scored" });
+			stoolballCharts.displayLine("worm-chart", data.worm,  "Total score after each over", "Runs", "Overs", { multiTooltipTemplate: "<%=value%> runs scored" });
+			stoolballCharts.displayLine("run-rate-chart", data.runRate,  "Run rate after each over", "Runs per over", "Overs", { multiTooltipTemplate: "<%=value%> runs per over" });
 			
 			var firstInnings = data.manhattanFirstInnings.datasets[0].data;
 			var secondInnings = data.manhattanSecondInnings.datasets[0].data;
