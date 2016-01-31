@@ -59,7 +59,7 @@ var stoolballCharts =  (function (){
 	    var subtitle = "Showing " + total +  " " +  ((total === 1) ? itemText : itemsText);
 
 	    var element = prepareTargetElement(elementId, ["chart-pie", className]);
-	    element.append(createTitle(title));	    
+	    element.append(createTitle(title, ["pie-chart-title"]));	    
 		element.append(createSubTitle(subtitle));      
 	    element.append(canvas);
 	    element.append(createLegend(data, similarColours));
@@ -148,10 +148,27 @@ var stoolballCharts =  (function (){
 	    element.append(createXAxisLabel(xAxisLabel));	        
 	    element.append(createLegend(data.datasets, contrastingColours));
 
+		var max = 0;
+		for (var i = 0; i < data.datasets.length; i++) {
+			for (var j = 0; j < data.datasets[i].data.length; j++) {
+				var value = data.datasets[i].data[j];
+				if (!isNaN(value) && value > max) {
+					max = value;
+				}
+			}
+		}
+		
+	    var stepWidth = (Math.floor(max/10)+1);
+	   	var scaleSteps = Math.ceil(max /stepWidth);
+
 		var lineDefaults = {
 			responsive: true,
 			datasetFill: false,
-			pointDot: false
+			pointDot: false,
+			scaleOverride: true,
+    		scaleStartValue: 0,
+		    scaleStepWidth: stepWidth,
+			scaleSteps: scaleSteps
 		};
 		new Chart(canvas.getContext("2d")).Line(data, $.extend(lineDefaults, chartOptions));
 	}

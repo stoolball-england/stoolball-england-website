@@ -751,18 +751,25 @@ class StatisticsManager extends DataManager
         
         $where = $this->ApplyFilters($where);
 
-        $order_by = "ORDER BY $primary_field_name DESC";
         
-        foreach ($secondary_fields as $secondary_field) {
+        $order_by = "";
+        $order_by_fields = array_merge(array($primary_field), $secondary_fields);
+        
+        foreach ($order_by_fields as $sort_field) {
              /* @var $secondary_field StatisticsField */
             
-            if (is_null($secondary_field->SortAscending()))
+            if (is_null($sort_field->SortAscending()))
             {
                 continue;
             } 
             
-            $order_by .= ", " . $secondary_field->FieldName();
-            $order_by .= ($secondary_field->SortAscending() ? " ASC" : " DESC");
+            if ($order_by) {
+                $order_by .= ", ";
+            } else {
+                $order_by = "ORDER BY ";
+            }
+            $order_by .= $sort_field->FieldName();
+            $order_by .= ($sort_field->SortAscending() ? " ASC" : " DESC");
         }
          
         if ($this->filter_max_results)
@@ -854,27 +861,35 @@ class StatisticsManager extends DataManager
 	/**
 	 * Gets best batting performances based on current filters
 	 * @param $exclude_extras bool
+     * @param bool $sort_by_date Default is to sort by highest first
 	 * @return An array of Batting performances, or CSV download
 	 */
-	public function ReadBestBattingPerformance($exclude_extras = true)
+	public function ReadBestBattingPerformance($exclude_extras = true, $sort_by_date=false)
 	{
 	    require_once("statistics-field.class.php");
         require_once("stoolball/batting.class.php");
         
-        $runs_scored = new StatisticsField("runs_scored", "Runs", true, null);
-        $how_out = new StatisticsField("how_out", "How out", true, function($value) {
+        $runs_scored = new StatisticsField("runs_scored", "Runs", $sort_by_date ? null : false, null);
+        $how_out = new StatisticsField("how_out", "How out", $sort_by_date ? null : true, function($value) {
             return Batting::Text($value);
         });
         $balls_faced = new StatisticsField("balls_faced", "Balls faced", null, null);
+        $secondary_fields = array($how_out, $balls_faced);
         
-        return $this->ReadBestFiguresInAMatch($runs_scored, array($how_out, $balls_faced), 0, $exclude_extras, false);
+        if ($sort_by_date) {
+            $match_time = new StatisticsField("match_time", "", true, null);
+            $secondary_fields[] = $match_time;
+        }
+        
+        return $this->ReadBestFiguresInAMatch($runs_scored, $secondary_fields, 0, $exclude_extras, false);
 	}
 
 	/**
 	 * Gets best bowling performances based on current filters
-	 * @return An array of Bowling performances, or CSV download
+     * @param bool $sort_by_date Default is to sort by highest first
+     * 	 * @return An array of Bowling performances, or CSV download
 	 */
-	public function ReadBestBowlingPerformance()
+	public function ReadBestBowlingPerformance($sort_by_date=false)
 	{
 		# NOTE: Don't check for runs_conceded IS NOT NULL in this stat, because 5/NULL is still better than 4/20
         # Wickets, even if 0, means the player bowled in the match, so check it is not null.
@@ -882,13 +897,19 @@ class StatisticsManager extends DataManager
 		        
         require_once("statistics-field.class.php");
         
-        $wickets = new StatisticsField("wickets", "Wickets", true, null);
-        $has_runs_conceded = new StatisticsField("has_runs_conceded", "", false, null);
-        $runs_conceded = new StatisticsField("runs_conceded", "Runs", true, null);
+        $wickets = new StatisticsField("wickets", "Wickets", $sort_by_date ? null : false, null);
+        $has_runs_conceded = new StatisticsField("has_runs_conceded", "", $sort_by_date ? null : false, null);
+        $runs_conceded = new StatisticsField("runs_conceded", "Runs", $sort_by_date ? null : true, null);
         $overs = new StatisticsField("overs", "Overs", null, null);
         $maidens = new StatisticsField("maidens", "Maidens", null, null);
+        $secondary_fields = array($has_runs_conceded, $runs_conceded, $overs, $maidens);
         
-        return $this->ReadBestFiguresInAMatch($wickets, array($has_runs_conceded, $runs_conceded, $overs, $maidens), 0, true, false);
+        if ($sort_by_date) {
+            $match_time = new StatisticsField("match_time", "", true, null);
+            $secondary_fields[] = $match_time;
+        }
+        
+        return $this->ReadBestFiguresInAMatch($wickets, $secondary_fields, 0, true, false);
 	}
 
 	

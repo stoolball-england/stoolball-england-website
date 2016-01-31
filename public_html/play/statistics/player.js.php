@@ -57,12 +57,27 @@ class CurrentPage extends Page
 		# Now get the statistics for the player
 		$this->player = new Player($this->GetSettings());
 
-		$data = $statistics_manager->ReadBestBattingPerformance(false);
+		$data = $statistics_manager->ReadBestBattingPerformance(false, true);
 		foreach ($data as $performance)
 		{
 			$batting = new Batting($this->player, $performance["how_out"], null, null, $performance["runs_scored"]);
+            $match = new Match($this->GetSettings());
+            $match->SetStartTime($performance["match_time"]);
+            $batting->SetMatch($match);
 			$this->player->Batting()->Add($batting);
 		}
+        $data = $statistics_manager->ReadBestBowlingPerformance(true);
+        foreach ($data as $performance)
+        {
+            $bowling = new Bowling($this->player);
+            $bowling->SetWickets($performance["wickets"]);
+            $bowling->SetRunsConceded($performance["runs_conceded"]);
+            $bowling->SetOvers($performance["overs"]);
+            $match = new Match($this->GetSettings());
+            $match->SetStartTime($performance["match_time"]);
+            $bowling->SetMatch($match);
+            $this->player->Bowling()->Add($bowling);
+        }
        
         $statistics_manager->FilterByPlayer(null);
         $statistics_manager->FilterByBowler($filter_by_player);
@@ -127,7 +142,27 @@ class CurrentPage extends Page
             }
         ]
     },
-    <?php } ?>
+    <?php } 
+    
+    if ($this->player->Batting()->GetCount()) {
+        ?>
+        "battingForm": {
+            "labels": [<?php echo $this->BuildBattingTimeline($this->player->Batting()->GetItems()); ?>],
+            "datasets": [
+                {
+                    "label": "Scores",
+                    "data": [<?php echo $this->BuildScoresData($this->player->Batting()->GetItems()); ?>]
+                },
+                {
+                    "label": "Average",
+                    "data": [<?php echo $this->BuildBattingAverageData($this->player->Batting()->GetItems()); ?>]
+                }
+            ]
+        },                    
+        <?php 
+    }
+
+    ?>
     "dismissals": [
         <?php
         $how_out = $this->player->HowOut();
@@ -145,6 +180,25 @@ class CurrentPage extends Page
         }
         ?>        
     ],
+    <?php
+       if ($this->player->Bowling()->GetCount()) {
+        ?>
+        "bowlingForm": {
+            "labels": [<?php echo $this->BuildBowlingTimeline($this->player->Bowling()->GetItems()); ?>],
+            "datasets": [
+                {
+                    "label": "Economy",
+                    "data": [<?php echo $this->BuildEconomyData($this->player->Bowling()->GetItems()); ?>]
+                },
+                {
+                    "label": "Average",
+                    "data": [<?php echo $this->BuildBowlingAverageData($this->player->Bowling()->GetItems()); ?>]
+                }
+            ]
+        },                    
+        <?php 
+    }
+    ?>
     "wickets": [
         <?php
         $how_out = $this->player->GetHowWicketsTaken();
@@ -164,6 +218,130 @@ class CurrentPage extends Page
         <?php
         exit();
  	}
+
+    private function BuildBattingTimeline(array $batting) {
+        $data = "";
+        foreach ($batting as $performance) {
+            /* @var $performance Batting */
+            if (strlen($data)) {
+                $data .= ",";
+            }
+            $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
+        }
+        return $data;
+    }
+
+    private function BuildScoresData(array $batting) {
+        $data = "";
+        foreach ($batting as $performance) {
+            /* @var $performance Batting */
+            if (strlen($data)) {
+                $data .= ",";
+            }
+            $data .= $performance->GetRuns();
+        }
+        return $data;
+    }
+    
+    private function BuildBattingAverageData(array $batting) {
+        $runs = 0;
+        $dismissals = 0;
+        $not_out = array(Batting::NOT_OUT, Batting::RETIRED, Batting::RETIRED_HURT);
+        $data = "";
+        foreach ($batting as $performance) {
+            /* @var $performance Batting */
+            $how_out = $performance->GetHowOut();
+            if ($how_out == Batting::DID_NOT_BAT) {
+                continue;
+            }
+            
+            $runs += $performance->GetRuns();
+            if (!in_array($how_out, $not_out)) {
+                $dismissals++;
+            }
+
+            if (strlen($data)) {
+                $data .= ",";
+            }
+            if ($dismissals > 0)
+            {
+                $data .= round($runs/$dismissals,2);
+            }
+            else {
+                $data .= "null";
+            }
+        }
+        return $data;
+    }
+        
+    private function BuildBowlingTimeline(array $bowling) {
+        $data = "";
+        foreach ($bowling as $performance) {
+            /* @var $performance Bowling */
+            if (is_null($performance->GetRunsConceded())) {
+                continue;
+            }
+            
+            if (strlen($data)) {
+                $data .= ",";
+            }
+            $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
+        }
+        return $data;
+    }
+
+    private function BuildEconomyData(array $bowling) {
+        $data = "";
+        $balls_bowled = 0;
+        $runs_conceded = 0;
+        foreach ($bowling as $performance) {
+            /* @var $performance Bowling */
+            
+            if (is_null($performance->GetRunsConceded())) {
+                continue;
+            }
+            
+            if (strlen($data)) {
+                $data .= ",";
+            }
+
+            if (is_null($performance->GetOvers())) {
+                $data .= "null";
+            } else {            
+                $runs_conceded += $performance->GetRunsConceded();
+                $balls_bowled += StoolballStatistics::OversToBalls($performance->GetOvers());
+                $data .= StoolballStatistics::BowlingEconomy(StoolballStatistics::BallsToOvers($balls_bowled), $runs_conceded);
+            }
+        }
+        return $data;
+    }
+    
+    private function BuildBowlingAverageData(array $bowling) {
+        $data = "";
+        $wickets = 0;
+        $runs_conceded = 0;
+        foreach ($bowling as $performance) {
+            /* @var $performance Bowling */
+            
+            if (is_null($performance->GetRunsConceded())) {
+                continue;
+            }
+            
+            if (strlen($data)) {
+                $data .= ",";
+            }
+
+            $runs_conceded += $performance->GetRunsConceded();
+            $wickets += $performance->GetWickets();
+            
+            if ($wickets > 0) {
+                $data .= StoolballStatistics::BowlingAverage($runs_conceded, $wickets);
+            } else {
+                $data .= "null";
+            }
+        }
+        return $data;
+    }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
 ?>

@@ -325,9 +325,9 @@ table.league .withdrawn .resultCount { text-align: center; font: normal .8em 'Tr
 .chart-pie { text-align: center; max-width: 300px; }
 .chart-bar{ margin-top: 36px;}
 
-.chart-title { margin-bottom: 0; text-align: center; }
-.line-chart-title { margin-bottom: 1em; text-align: left; }
+.chart-title { margin-bottom: 1em; }
 .chart-js:first-child .line-chart-title { margin-top: 0; }
+.pie-chart-title { margin-bottom: 0; text-align: center; }
 
 .chart-subtitle { margin-top: 0; font-size: .9em; }
 

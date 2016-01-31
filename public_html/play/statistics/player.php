@@ -355,6 +355,7 @@ class CurrentPage extends StoolballPage
  	}
     ?>
     <span class="chart-js-template" id="score-spread-chart"></span>
+    <span class="chart-js-template" id="batting-form-chart"></span>
     <span class="chart-js-template" id="dismissals-chart"></span>
     <?php
      }
@@ -399,6 +400,7 @@ class CurrentPage extends StoolballPage
  	echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $querystring . '">Bowling performances &#8211; view all and filter</a></p>';
  }
  ?>
+    <span class="chart-js-template" id="bowling-form-chart"></span>
     <span class="chart-js-template" id="wickets-chart"></span>
 <?php
 
