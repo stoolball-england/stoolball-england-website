@@ -18,6 +18,8 @@ class CurrentPage extends Page
 	 * @var StatisticsFilterControl
 	 */
 	private $filter_control;
+    
+    private $max_x_axis_scale_points = 35;
 
 	public function OnPageInit()
 	{
@@ -69,6 +71,11 @@ class CurrentPage extends Page
         $data = $statistics_manager->ReadBestBowlingPerformance(true);
         foreach ($data as $performance)
         {
+            # Not useful for either average or economy
+            if (is_null($performance["runs_conceded"])) {
+                continue;
+            }
+            
             $bowling = new Bowling($this->player);
             $bowling->SetWickets($performance["wickets"]);
             $bowling->SetRunsConceded($performance["runs_conceded"]);
@@ -221,54 +228,89 @@ class CurrentPage extends Page
 
     private function BuildBattingTimeline(array $batting) {
         $data = "";
-        foreach ($batting as $performance) {
+        
+        $total_performances = count($batting);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+        
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $batting[$i];
             /* @var $performance Batting */
-            if (strlen($data)) {
-                $data .= ",";
+            if (!$show_every_second_performance or ($i%2===0))
+            {            
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+                $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
             }
-            $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
         }
         return $data;
     }
 
     private function BuildScoresData(array $batting) {
         $data = "";
-        foreach ($batting as $performance) {
+
+        $total_performances = count($batting);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+        
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $batting[$i];
             /* @var $performance Batting */
-            if (strlen($data)) {
-                $data .= ",";
+
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+                $data .= $performance->GetRuns();
             }
-            $data .= $performance->GetRuns();
         }
         return $data;
     }
     
     private function BuildBattingAverageData(array $batting) {
+    
+        # Exclude performances that aren't relevant
+        $batting_to_average = array();
+        foreach ($batting as $performance) {
+            if ($performance->GetHowOut() !== Batting::DID_NOT_BAT) {
+                $batting_to_average[] = $performance;
+            }
+        }
+    
         $runs = 0;
         $dismissals = 0;
         $not_out = array(Batting::NOT_OUT, Batting::RETIRED, Batting::RETIRED_HURT);
         $data = "";
-        foreach ($batting as $performance) {
+
+        $total_performances = count($batting_to_average);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+        
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $batting_to_average[$i];
             /* @var $performance Batting */
-            $how_out = $performance->GetHowOut();
-            if ($how_out == Batting::DID_NOT_BAT) {
-                continue;
-            }
-            
+
+            # Always count the data for every performance            
             $runs += $performance->GetRuns();
+            $how_out = $performance->GetHowOut();
+            
             if (!in_array($how_out, $not_out)) {
                 $dismissals++;
             }
 
-            if (strlen($data)) {
-                $data .= ",";
-            }
-            if ($dismissals > 0)
-            {
-                $data .= round($runs/$dismissals,2);
-            }
-            else {
-                $data .= "null";
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+                if ($dismissals > 0)
+                {
+                    $data .= round($runs/$dismissals,2);
+                }
+                else {
+                    $data .= "null";
+                }
             }
         }
         return $data;
@@ -276,16 +318,20 @@ class CurrentPage extends Page
         
     private function BuildBowlingTimeline(array $bowling) {
         $data = "";
-        foreach ($bowling as $performance) {
+        
+        $total_performances = count($bowling);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+        
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $bowling[$i];
             /* @var $performance Bowling */
-            if (is_null($performance->GetRunsConceded())) {
-                continue;
+            if (!$show_every_second_performance or ($i%2===0))
+            {            
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+                $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
             }
-            
-            if (strlen($data)) {
-                $data .= ",";
-            }
-            $data .= '"' . Date::BritishDate($performance->GetMatch()->GetStartTime(), false, false, true) . '"';
         }
         return $data;
     }
@@ -294,23 +340,32 @@ class CurrentPage extends Page
         $data = "";
         $balls_bowled = 0;
         $runs_conceded = 0;
-        foreach ($bowling as $performance) {
-            /* @var $performance Bowling */
-            
-            if (is_null($performance->GetRunsConceded())) {
-                continue;
-            }
-            
-            if (strlen($data)) {
-                $data .= ",";
-            }
 
-            if (is_null($performance->GetOvers())) {
-                $data .= "null";
-            } else {            
+        $total_performances = count($bowling);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $bowling[$i];
+            /* @var $performance Bowling */
+
+            # Always count the data for every performance            
+            if (!is_null($performance->GetOvers())) {
                 $runs_conceded += $performance->GetRunsConceded();
                 $balls_bowled += StoolballStatistics::OversToBalls($performance->GetOvers());
-                $data .= StoolballStatistics::BowlingEconomy(StoolballStatistics::BallsToOvers($balls_bowled), $runs_conceded);
+            }
+                            
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+    
+                if (is_null($performance->GetOvers())) {
+                    $data .= "null";
+                } else {            
+                    $data .= StoolballStatistics::BowlingEconomy(StoolballStatistics::BallsToOvers($balls_bowled), $runs_conceded);
+                }
             }
         }
         return $data;
@@ -320,24 +375,30 @@ class CurrentPage extends Page
         $data = "";
         $wickets = 0;
         $runs_conceded = 0;
-        foreach ($bowling as $performance) {
+
+        $total_performances = count($bowling);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $bowling[$i];
             /* @var $performance Bowling */
             
-            if (is_null($performance->GetRunsConceded())) {
-                continue;
-            }
-            
-            if (strlen($data)) {
-                $data .= ",";
-            }
-
+            # Always count the data for every performance            
             $runs_conceded += $performance->GetRunsConceded();
             $wickets += $performance->GetWickets();
             
-            if ($wickets > 0) {
-                $data .= StoolballStatistics::BowlingAverage($runs_conceded, $wickets);
-            } else {
-                $data .= "null";
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+    
+                if ($wickets > 0) {
+                    $data .= StoolballStatistics::BowlingAverage($runs_conceded, $wickets);
+                } else {
+                    $data .= "null";
+                }
             }
         }
         return $data;

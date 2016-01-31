@@ -24,6 +24,9 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 				stoolballCharts.displayLine("bowling-form-chart", data.bowlingForm, "Bowling form", "Runs", "Time", {
 					multiTooltipTemplate: "<%=value%> <%if (value==1){%>run<%}else{%>runs<%}%>" 
 				});
+				console.log(data.bowlingForm.labels.length);
+				console.log(data.bowlingForm.datasets[0].data.length);
+				console.log(data.bowlingForm.datasets[1].data.length);
 			}
 			
 			// Show pie charts for results
