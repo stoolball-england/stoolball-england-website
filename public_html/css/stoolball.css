@@ -516,7 +516,7 @@ tr.unavailable { opacity: .5; }
 
 /* Subscription options */
 .rss { font-size: .85em; }
-.social { clear: both; }
+.social { margin-top: 1em; clear: both; }
 .twitter-follow-button { }
 .twitter-share-button { float: left; margin: 2px 0 0; }
 

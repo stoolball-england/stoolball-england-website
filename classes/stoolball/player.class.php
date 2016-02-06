@@ -865,10 +865,12 @@ class Player implements IHasShortUrl
 	{
 		return new ShortUrlFormat($settings->GetTable('Player'), 'short_url', array('player_id'), array('GetId'),
 		array(
-		'{0}' => '/play/statistics/player.php?player={0}',
+		'{0}' => '/play/statistics/player-batting.php?player={0}',
+        '{0}/bowling' => '/play/statistics/player-bowling.php?player={0}',
 		'{0}/edit' => '/play/statistics/playeredit.php?item={0}',
 		'{0}/delete' => '/play/statistics/playerdelete.php?item={0}',
-		'{0}.json' => "/play/statistics/player.js.php?player={0}"
+        '{0}/batting.json' => "/play/statistics/player-batting.js.php?player={0}",
+		'{0}/bowling.json' => "/play/statistics/player-bowling.js.php?player={0}"
 		));
 	}
 
