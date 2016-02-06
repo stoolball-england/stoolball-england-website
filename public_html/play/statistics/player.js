@@ -7,7 +7,7 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 		if (path.substring(path.length -1) === "/"){
 			path = path.substring(0, path.length -1);
 		}  
-		path += ".json";
+		path += ".json?v=2";
 		path += document.location.search;
 		
 		$.getJSON(path, function(data) {
@@ -15,20 +15,23 @@ if (typeof jQuery != 'undefined' && typeof stoolballCharts != "undefined") {
 			stoolballCharts.displayStackedBar("score-spread-chart", data.scoreSpread,  "Range of batting scores", "Scores", "Innings", "Innings");
 
 			if (data.battingForm.labels.length > 1) {
-				stoolballCharts.displayLine("batting-form-chart", data.battingForm, "Batting form", "Runs", "Time", {
+				stoolballCharts.displayLine("batting-form-chart", data.battingForm, "Batting form (higher is better)", "Runs", "Time", {
 					multiTooltipTemplate: "<%=value%> <%if (value==1){%>run<%}else{%>runs<%}%>" 
 				});
 			}
 						
-			if (data.bowlingForm.labels.length > 1) {
-				stoolballCharts.displayLine("bowling-form-chart", data.bowlingForm, "Bowling form", "Runs", "Time", {
+			if (data.economy.labels.length > 1) {
+				stoolballCharts.displayLine("economy-chart", data.economy, "Bowling form – economy (lower is better)", "Runs conceded per over", "Time", {
 					multiTooltipTemplate: "<%=value%> <%if (value==1){%>run<%}else{%>runs<%}%>" 
 				});
-				console.log(data.bowlingForm.labels.length);
-				console.log(data.bowlingForm.datasets[0].data.length);
-				console.log(data.bowlingForm.datasets[1].data.length);
 			}
 			
+			if (data.bowlingAverage.labels.length > 1) {
+				stoolballCharts.displayLine("bowling-average-chart", data.bowlingAverage, "Bowling form – average (lower is better)", "Runs conceded per wicket", "Time", {
+					multiTooltipTemplate: "<%=value%> <%if (value==1){%>run<%}else{%>runs<%}%>" 
+				});
+			}
+
 			// Show pie charts for results
 			stoolballCharts.displayPieChart("dismissals-chart", data.dismissals, "How this player gets out", "innings", "innings",  200);
 			

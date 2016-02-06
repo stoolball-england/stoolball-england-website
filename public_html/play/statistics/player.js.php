@@ -190,15 +190,28 @@ class CurrentPage extends Page
     <?php
        if ($this->player->Bowling()->GetCount()) {
         ?>
-        "bowlingForm": {
+        "economy": {
             "labels": [<?php echo $this->BuildBowlingTimeline($this->player->Bowling()->GetItems()); ?>],
             "datasets": [
                 {
-                    "label": "Economy",
-                    "data": [<?php echo $this->BuildEconomyData($this->player->Bowling()->GetItems()); ?>]
+                    "label": "Economy in each match",
+                    "data": [<?php echo $this->BuildMatchEconomyData($this->player->Bowling()->GetItems()); ?>]
                 },
                 {
-                    "label": "Average",
+                    "label": "Economy overall",
+                    "data": [<?php echo $this->BuildEconomyData($this->player->Bowling()->GetItems()); ?>]
+                }
+            ]
+        },                    
+        "bowlingAverage": {
+            "labels": [<?php echo $this->BuildBowlingTimeline($this->player->Bowling()->GetItems()); ?>],
+            "datasets": [
+                {
+                    "label": "Average in each match",
+                    "data": [<?php echo $this->BuildMatchBowlingAverageData($this->player->Bowling()->GetItems()); ?>]
+                },
+                {
+                    "label": "Average overall",
                     "data": [<?php echo $this->BuildBowlingAverageData($this->player->Bowling()->GetItems()); ?>]
                 }
             ]
@@ -336,6 +349,33 @@ class CurrentPage extends Page
         return $data;
     }
 
+    private function BuildMatchEconomyData(array $bowling) {
+        $data = "";
+
+        $total_performances = count($bowling);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $bowling[$i];
+            /* @var $performance Bowling */
+
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+    
+                if (is_null($performance->GetOvers()) or $performance->GetWickets() === 0) {
+                    $data .= "null";
+                } else {            
+                    $data .= StoolballStatistics::BowlingEconomy($performance->GetOvers(), $performance->GetRunsConceded());
+                }
+            }
+        }
+        return $data;
+    }
+
     private function BuildEconomyData(array $bowling) {
         $data = "";
         $balls_bowled = 0;
@@ -398,6 +438,33 @@ class CurrentPage extends Page
                     $data .= StoolballStatistics::BowlingAverage($runs_conceded, $wickets);
                 } else {
                     $data .= "null";
+                }
+            }
+        }
+        return $data;
+    }
+
+    private function BuildMatchBowlingAverageData(array $bowling) {
+        $data = "";
+
+        $total_performances = count($bowling);
+        $show_every_second_performance = ($total_performances > $this->max_x_axis_scale_points);
+
+        for ($i = 0; $i < $total_performances; $i++) {
+            $performance = $bowling[$i];
+            /* @var $performance Bowling */
+            
+            # Sample the performances plotted to prevent the scale getting too cluttered
+            if (!$show_every_second_performance or ($i%2===0))
+            {                                  
+                if (strlen($data)) {
+                    $data .= ",";
+                }
+    
+                if (is_null($performance->GetRunsConceded()) or $performance->GetWickets() === 0) {
+                    $data .= "null";
+                } else {
+                    $data .= StoolballStatistics::BowlingAverage($performance->GetRunsConceded(), $performance->GetWickets());
                 }
             }
         }

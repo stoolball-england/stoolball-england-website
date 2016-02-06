@@ -203,7 +203,7 @@ class CurrentPage extends StoolballPage
         $this->LoadClientScript("/scripts/lib/chart.min.js");
         $this->LoadClientScript("/scripts/chart.js?v=2");
         $this->LoadClientScript("/scripts/lib/Chart.StackedBar.js");
-        $this->LoadClientScript("/play/statistics/player.js");
+        $this->LoadClientScript("/play/statistics/player.js?v=2");
 		?>
 <link rel="stylesheet" href="/css/custom-theme/jquery-ui-1.8.11.custom.css" media="screen" />
 <!--[if lte IE 8]><script src="/scripts/lib/excanvas.compiled.js"></script><![endif]-->
@@ -400,7 +400,8 @@ class CurrentPage extends StoolballPage
  	echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $querystring . '">Bowling performances &#8211; view all and filter</a></p>';
  }
  ?>
-    <span class="chart-js-template" id="bowling-form-chart"></span>
+    <span class="chart-js-template" id="economy-chart"></span>
+    <span class="chart-js-template" id="bowling-average-chart"></span>
     <span class="chart-js-template" id="wickets-chart"></span>
 <?php
 
