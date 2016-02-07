@@ -36,3 +36,6 @@ th, td { padding: .2em .5em; }
 
 /* League table for a season - when it's missing, need to clear after the image */
 .season-table .box-content h2 { clear: both; }
+
+/* Forms */
+.buttonGroup .primary { font-size: 1em; }

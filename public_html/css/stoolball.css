@@ -139,8 +139,6 @@ label.checkBox { clear: left; display: block; }
 input.checkBox { margin-right: .5em; }
 .dateControl label { margin: 0 1em; }
 div.buttonGroup { clear: both; padding: .5em 0; }
-.legacy-form div.buttonGroup input { margin-left: 1em; }
-.legacy-form div.buttonGroup { text-align: right; }
 textarea { min-height: 7em; height: 10em; }
 body div.buttonGroupTop { padding-bottom: 0; }
 fieldset.formPart { border: 0; margin: 0; padding: 0; }
@@ -296,9 +294,10 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 
 .MatchFixtureEdit { margin-bottom: 0; clear: left; }
 
+/* Edit scorecards */
 .scorecardPage h1 { margin-bottom: 0; }
 .scorecardPage .validationSummary { margin: 1em 0 -1em; }
-.scorecardPage .instructionPanel { max-width: 48em; }
+.scorecardPage .instructionPanel, .scorecardPage .buttonGroup { max-width: 48em; }
 .scorecardPage .audit { margin-bottom: 1em; }
 
 .TournamentEdit .playersPerTeam, .TournamentEdit .overs { margin-bottom: 10px; }
