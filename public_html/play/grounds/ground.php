@@ -274,7 +274,6 @@ class CurrentPage extends StoolballPage
 			$o_user->AddLink("edit this ground", $this->ground->GetEditGroundUrl());
 			$o_user->AddLink("delete this ground", $this->ground->GetDeleteGroundUrl());
 		}
-		$o_user->AddLink('add this ground to your address book', 'http://www.technorati.com/contacts/' . $_SERVER['HTTP_HOST'] . $this->ground->GetNavigateUrl());
 		
 		echo $o_user;
 
