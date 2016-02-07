@@ -15,10 +15,10 @@ if ($has_best_batting or $has_most_runs or $has_batting_average)
 		if ($has_best_batting >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/individual-scores' . $statistics_query . '">Individual scores &#8211; view all and filter</a></p>';
         
         if (preg_match("/^\/lewes[0-9]*\/statistics/", $_SERVER["REQUEST_URI"]) === 1) {
-            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-40' . $statistics_query . '">Most scores of 40 or more &#8211; view all and filter</a></p>';
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-40' . $statistics_query . '">Most scores of 40 or more</a></p>';
         } else {
-            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-100' . $statistics_query . '">Most scores of 100 or more &#8211; view all and filter</a></p>';
-            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-50' . $statistics_query . '">Most scores of 50 or more &#8211; view all and filter</a></p>';
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-100' . $statistics_query . '">Most scores of 100 or more</a></p>';
+            echo '<p class="statsViewAll"><a href="/play/statistics/most-scores-of-50' . $statistics_query . '">Most scores of 50 or more</a></p>';
         }
 	}
 
@@ -34,7 +34,7 @@ if ($has_best_batting or $has_most_runs or $has_batting_average)
 		if ($has_batting_average >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/batting-average' . $statistics_query . '">Batting averages &#8211; view all and filter</a></p>';
 	}
 
-    echo '<p class="statsViewAll"><a href="/play/statistics/batting-strike-rate' . $statistics_query . '">Batting strike rate &#8211; view all and filter</a></p>';
+    echo '<p class="statsViewAll"><a href="/play/statistics/batting-strike-rate' . $statistics_query . '">Batting strike rate</a></p>';
 }
 
 if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowling_strike_rate)
@@ -56,7 +56,8 @@ if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowli
 	{
 		echo new PlayerStatisticsTable("Most wickets", "Wickets", $this->statistics["most_wickets"]);
 		if ($has_most_wickets >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets' . $statistics_query . '">Most wickets &#8211; view all and filter</a></p>';
-        echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets-by-bowler-and-catcher' . $statistics_query . '">Most wickets by a bowling and catching combination &#8211; view all and filter</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-5-wickets' . $statistics_query . '">Most times taking 5 wickets in an innings</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets-by-bowler-and-catcher' . $statistics_query . '">Most wickets by a bowling and catching combination</a></p>';
 	}
 
 	if ($has_bowling_average)
@@ -86,14 +87,14 @@ if ($has_catch_stats or $has_run_outs)
 	{
 		echo new PlayerStatisticsTable("Most catches", "Catches", $this->statistics["most_catches"]);
 		if ($has_catch_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-catches' . $statistics_query . '">Most catches &#8211; view all and filter</a></p>';
-        echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . $statistics_query . '">Most catches in an innings &#8211; view all and filter</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . $statistics_query . '">Most catches in an innings</a></p>';
 	}
 
 	if ($has_run_outs)
 	{
 		echo new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->statistics["most_run_outs"]);
 		if ($has_run_outs >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs' . $statistics_query . '">Most run-outs &#8211; view all and filter</a></p>';
-        echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . $statistics_query . '">Most run-outs in an innings &#8211; view all and filter</a></p>';
+        echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . $statistics_query . '">Most run-outs in an innings</a></p>';
 	}
 }
 
@@ -102,12 +103,12 @@ if ($has_player_of_match_stats)
 {
 
 	echo new PlayerStatisticsTable("Most player of the match nominations", "Nominations", $this->statistics["most_player_of_match"]);
-    echo '<p class="statsViewAll"><a href="/play/statistics/player-performances' . $statistics_query . '">Player performances &#8211; view all and filter</a></p>';
-	echo '<p class="statsViewAll"><a href="/play/statistics/player-of-match' . $statistics_query . '">Player of the match nominations &#8211; view all and filter</a></p>';
 	if ($has_player_of_match_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-player-of-match' . $statistics_query . '">Most player of the match nominations &#8211; view all and filter</a></p>';
+    echo '<p class="statsViewAll"><a href="/play/statistics/player-of-match' . $statistics_query . '">Player of the match nominations</a></p>';
+    echo '<p class="statsViewAll"><a href="/play/statistics/player-performances' . $statistics_query . '">Player performances</a></p>';
 }
 else {
-	echo '<p><a href="/play/statistics/player-performances' . $statistics_query . '">Player performances &#8211; view all and filter</a></p>';
+	echo '<p><a href="/play/statistics/player-performances' . $statistics_query . '">Player performances</a></p>';
     
 }
 ?>

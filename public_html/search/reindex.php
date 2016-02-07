@@ -272,6 +272,10 @@ class CurrentPage extends StoolballPage
 		"If a player is out caught, caught and bowled, bowled, body before wicket or for hitting the ball twice the wicket is credited to the bowler. Filter by team, ground, date and more."
 		, "wickets bowling figures bowler statistics");
 
+        $docs[] = new SearchItem("other", "/play/statistics/most-5-wickets", "/play/statistics/most-5-wickets", "Most times taking 5 wickets in an innings",
+        "If a player is out caught, caught and bowled, bowled, body before wicket or for hitting the ball twice the wicket is credited to the bowler. Filter by team, ground, date and more."
+        , "five wicket wickets haul bowling figures bowler statistics");
+
         $docs[] = new SearchItem("other", "/play/statistics/most-wickets-by-bowler-and-catcher", "/play/statistics/most-wickets-by-bowler-and-catcher", "Most wickets by a bowling and catching combination",
         "This measures which combination of bowler and catcher has taken the most wickets. Catches taken by a bowler off their own bowling are not counted. Filter by team, ground, date and more."
         , "wickets bowling figures bowler statistics catching catcher");

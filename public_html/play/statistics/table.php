@@ -8,7 +8,8 @@ if (!in_array($sanitised, array(
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
 	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
 	"player-performances", "player-of-match", "most-player-of-match"
-)) and !(preg_match("/^most-scores-of-[0-9]+$/", $sanitised) === 1))
+)) and !(preg_match("/^most-scores-of-[0-9]+$/", $sanitised) === 1)
+   and !(preg_match("/^most-[0-9][0-9]?-wickets$/", $sanitised) === 1))
 {
 	require_once("../../wp-content/themes/stoolball/404.php");
 	exit();
@@ -136,6 +137,13 @@ class CurrentPage extends StoolballPage
                     $match_scores_of = $matches[1];
                     require_once("stoolball/statistics/most-scores-of.class.php");
                     $this->statistic = new MostScoresOf($match_scores_of, $statistics_manager);
+                }
+
+                $is_match = preg_match("/^most-([0-9][0-9]?)-wickets$/", $this->which_statistic, $matches);
+                if ($is_match === 1) {
+                    $how_many_wickets = $matches[1];
+                    require_once("stoolball/statistics/most-wicket-hauls-of.class.php");
+                    $this->statistic = new \Stoolball\Statistics\MostWicketHaulsOf($how_many_wickets, $statistics_manager);
                 }
                 break;
 		}
