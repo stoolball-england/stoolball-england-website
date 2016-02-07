@@ -31,7 +31,7 @@ class MostRunOutsInAnInnings extends Statistic {
         $runouts = new StatisticsField("run_outs", "Run-outs", false, null);
         $player_name = new StatisticsField("player_name", null, true, null);
 
-        return $this->statistics_data_source->ReadBestFiguresInAMatch($runouts, array($player_name), 2, true, true);        
+        return $this->statistics_data_source->ReadBestFiguresInAMatch($runouts, array($player_name), 2, true);        
     }
 }
 ?>

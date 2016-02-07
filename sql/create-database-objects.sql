@@ -332,7 +332,11 @@ CREATE TABLE IF NOT EXISTS `nsa_player_match` (
   `player_url` VARCHAR(200) NULL DEFAULT NULL,
   `match_id` INT(5) UNSIGNED NOT NULL,
   `match_team_id` INT(5) UNSIGNED NULL DEFAULT NULL,
+  `match_type` INT(1) UNSIGNED NULL DEFAULT NULL,
+  `match_player_type` INT(1) UNSIGNED NULL DEFAULT NULL,
   `match_time` INT(10) UNSIGNED NULL DEFAULT NULL,
+  `match_title` VARCHAR(200) NULL DEFAULT NULL,
+  `match_url` VARCHAR(100) NULL DEFAULT NULL,
   `tournament_id` INT(5) UNSIGNED NULL DEFAULT NULL,
   `ground_id` INT(5) UNSIGNED NULL DEFAULT NULL,
   `team_id` INT(5) UNSIGNED NULL DEFAULT NULL,
@@ -384,7 +388,9 @@ CREATE TABLE IF NOT EXISTS `nsa_player_match` (
   INDEX `run_outs` (`run_outs` ASC),
   INDEX `bowled_by` (`bowled_by` ASC),
   INDEX `player_of_match` (`player_of_match` ASC),
-  INDEX `tournament_id` (`tournament_id` ASC))
+  INDEX `tournament_id` (`tournament_id` ASC),
+  INDEX `match_type` (`match_type` ASC),
+  INDEX `match_player_type` (`match_player_type` ASC))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8
 COMMENT = 'Derived statistics about players\' performances';

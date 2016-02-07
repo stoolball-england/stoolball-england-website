@@ -31,7 +31,7 @@ class MostCatchesInAnInnings extends Statistic {
         $catches = new StatisticsField("catches", "Catches", false, null);
         $player_name = new StatisticsField("player_name", null, true, null);
 
-        return $this->statistics_data_source->ReadBestFiguresInAMatch($catches, array($player_name), 3, true, true);        
+        return $this->statistics_data_source->ReadBestFiguresInAMatch($catches, array($player_name), 3, true);        
     }
 }
 ?>

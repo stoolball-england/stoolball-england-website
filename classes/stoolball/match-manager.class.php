@@ -1275,11 +1275,16 @@ class MatchManager extends DataManager
 	        # Update the main match record
 			$s_sql = 'UPDATE nsa_match SET ';
 
+            $updated_type = "";
+            $updated_title = "";
+            
 			if ($b_user_is_match_admin)
 			{
-				$s_sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", " .
-				'custom_title' . Sql::ProtectBool($o_match->GetUseCustomTitle(), false, true) . ', ' .
-				'match_type = ' . Sql::ProtectNumeric($o_match->GetMatchType()) . ', ';
+                $updated_type = 'match_type = ' . Sql::ProtectNumeric($o_match->GetMatchType()) . ', ';
+			    $updated_title = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) .  ", ";
+				
+				$s_sql .= $updated_type . $updated_title .
+        				'custom_title' . Sql::ProtectBool($o_match->GetUseCustomTitle(), false, true) . ', ';
 			}
 			else
 			{
@@ -1292,13 +1297,17 @@ class MatchManager extends DataManager
 				{
 					$o_match->SetUseCustomTitle($o_row->custom_title);
 				}
-				if (!$o_match->GetUseCustomTitle()) $s_sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
+				if (!$o_match->GetUseCustomTitle()) {
+				    $updated_title = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
+                    $s_sql .= $updated_title;
+                }
 			}
 
+            $player_type = Sql::ProtectNumeric($this->WorkOutPlayerType($o_match), true, false);
 			$ground_id = Sql::ProtectNumeric($i_ground, true);
 			$start_time = Sql::ProtectNumeric($o_match->GetStartTime());
 
-			$s_sql .= 'player_type_id = ' . Sql::ProtectNumeric($this->WorkOutPlayerType($o_match), true, false) . ', 
+			$s_sql .= 'player_type_id = ' . $player_type . ', 
 			qualification = ' . Sql::ProtectNumeric($o_match->GetQualificationType(), false, false) . ', 
 			tournament_match_id = ' . Sql::ProtectNumeric($i_tournament, true) . ', ' .
 			'ground_id = ' . $ground_id . ', ' .
@@ -1314,7 +1323,10 @@ class MatchManager extends DataManager
 
 			# Update fields which are cached in the player statistics table
 			$sql = "UPDATE $statistics SET
+			$updated_type
+			match_player_type = $player_type,
 			match_time = $start_time,
+			$updated_title
 			ground_id = $ground_id
 			WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
 			$this->GetDataConnection()->query($sql);
@@ -1433,11 +1445,16 @@ class MatchManager extends DataManager
             $new_short_url = $url_manager->EnsureShortUrl($match, true);
         }
 
-        # Save the URL for the match
+        # Save the URL for the match, and copy to match statistics
         $sql = "UPDATE nsa_match SET
                 short_url = " . Sql::ProtectString($this->GetDataConnection(), $match->GetShortUrl()) . "
                 WHERE match_id = " . Sql::ProtectNumeric($match->GetId());
         $this->LoggedQuery($sql);
+
+        $sql = "UPDATE nsa_player_match SET
+                match_url = " . Sql::ProtectString($this->GetDataConnection(), $match->GetShortUrl()) . "
+                WHERE match_id = " . Sql::ProtectNumeric($match->GetId());
+        $this->GetDataConnection()->query($sql);
 
         # Regenerate short URLs, but check whether manager exists because might've been denied permission above
         # and in that same case we do NOT want to regenerate short URLs
@@ -2063,8 +2080,12 @@ class MatchManager extends DataManager
 
 		# Update the main match record
         # All changes to master data are logged from here, because this method can be called from the public interface
+        $match_title_sql = "";
         $sql = 'UPDATE ' . $this->o_settings->GetTable('Match') . ' SET ';
-		if (!$o_match->GetUseCustomTitle()) $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
+		if (!$o_match->GetUseCustomTitle()) {
+		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
+		    $sql .= $match_title_sql . ", ";
+        }
 		$sql .= 'home_bat_first = ' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true) . ', ' .
 			'home_runs = ' . Sql::ProtectNumeric($i_home_runs, true) . ', ' .
 			'home_wickets = ' . Sql::ProtectNumeric($o_match->Result()->GetHomeWickets(), true) . ', ' .
@@ -2077,6 +2098,12 @@ class MatchManager extends DataManager
 			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
 
 		$this->LoggedQuery($sql);
+        
+        # Copy updated title to statistics
+        if ($match_title_sql) {
+            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
+            $this->GetDataConnection()->query($sql);        
+        }
 
 		# Match data has changed so notify moderator
 		$this->QueueForNotification($o_match->GetId(), false);
@@ -2181,7 +2208,10 @@ class MatchManager extends DataManager
 		# Update the main match record
         # All changes to master data from here are logged, because this method can be called from the public interface
         $sql = 'UPDATE ' . $s_match . ' SET ';
-		if (!$o_match->GetUseCustomTitle()) $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
+		if (!$o_match->GetUseCustomTitle()) {
+		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
+            $sql .= $match_title_sql . ", ";
+        }
 		$sql .= 'match_result_id = ' . Sql::ProtectNumeric($i_result, true) . ', 
 			update_search = 1,  
             date_changed = ' . gmdate('U') . ", 
@@ -2189,6 +2219,12 @@ class MatchManager extends DataManager
 			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
 
 		$this->LoggedQuery($sql);
+		
+        # Copy updated title to statistics
+        if ($match_title_sql) {
+            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
+            $this->GetDataConnection()->query($sql);        
+        }
 
 		# Match data has changed so notify moderator
 		$this->QueueForNotification($o_match->GetId(), false);
@@ -2654,7 +2690,10 @@ class MatchManager extends DataManager
 		# Update the main match record
         # All changes from here to master data are logged, because this method can be called from the public interface
   		$sql = "UPDATE $s_match SET ";
-		if (!$o_match->GetUseCustomTitle()) $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
+		if (!$o_match->GetUseCustomTitle()) {
+		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
+            $sql .= $match_title_sql . ", ";
+        }
 		$sql .= 'match_result_id = ' . Sql::ProtectNumeric($i_result, true) . ",
 			player_of_match_id = " . Sql::ProtectNumeric($player_of_match, true) . ', ' .
 			"player_of_match_home_id = " . Sql::ProtectNumeric($player_of_match_home, true) . ', ' .
@@ -2665,6 +2704,12 @@ class MatchManager extends DataManager
 			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
 
 		$this->LoggedQuery($sql);
+        
+        # Copy updated title to statistics
+        if ($match_title_sql) {
+            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
+            $this->GetDataConnection()->query($sql);        
+        }
 
 		# Save IDs of players affected by any change
 		if (count($affected_players))

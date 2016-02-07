@@ -775,16 +775,15 @@ class StatisticsManager extends DataManager
      * Gets best performances in a match based on the specified fields and any current filters
      * @param int $minimum_value
      * @param bool $exclude_extras
-     * @param bool $with_match_details
      * @return An array of performances, or CSV download
      */
-    public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $minimum_value, $exclude_extras, $with_match_details)
+    public function ReadBestFiguresInAMatch(StatisticsField $primary_field, array $secondary_fields, $minimum_value, $exclude_extras)
     {
         $primary_field_name = $primary_field->FieldName();
         $primary_field_header = $primary_field->DisplayHeader();
         
         $select = "SELECT player_id, player_name, player_url, team_id, team_name,
-        $primary_field_name, nsa_player_match.match_id, match_time, opposition_id, opposition_name";
+        $primary_field_name, nsa_player_match.match_id, match_time, match_title, match_url, opposition_id, opposition_name";
         
         foreach ($secondary_fields as $secondary_field) {
              /* @var $secondary_field StatisticsField */
@@ -797,14 +796,7 @@ class StatisticsManager extends DataManager
             $select .= ", " . $secondary_field->FieldName();
         }
 
-        if ($with_match_details) {
-            $select .= ", nsa_match.match_title, nsa_match.short_url AS match_short_url";
-        }
-                             
         $from = $this->FromFilteredPlayerStatistics();
-        if ($with_match_details) {
-            $from .= "INNER JOIN nsa_match ON nsa_player_match.match_id = nsa_match.match_id ";
-        }
 
         $where = "WHERE $primary_field_name IS NOT NULL AND $primary_field_name >= " . Sql::ProtectNumeric($minimum_value, false, false) . " ";
         if ($exclude_extras) {
@@ -874,10 +866,8 @@ class StatisticsManager extends DataManager
 
             $performance["match_id"] = $row->match_id;
             $performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
-            if ($with_match_details) {
-                $performance["match_title"] = $row->match_title;
-                if (!$csv) $performance["match_url"] = "/" . $row->match_short_url;
-            }
+            $performance["match_title"] = $row->match_title;
+            if (!$csv) $performance["match_url"] = "/" . $row->match_url;
             
             $performance[$primary_field_name] = $row->$primary_field_name;
             
@@ -899,11 +889,7 @@ class StatisticsManager extends DataManager
         # Optionally add a header row and download a CSV file rather than returning the data
         if ($csv)
         {
-            $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)");
-            if ($with_match_details) {
-                $header_row[] = "Match";
-            }
-            $header_row[] = $primary_field_header;
+            $header_row = array("Player id", "Player", "Team id", "Team", "Opposition id", "Opposition", "Match id", "Match date (UTC)", "Match", $primary_field_header);
             foreach ($secondary_fields as $secondary_field) {
                 /* @var $secondary_field StatisticsField */
 
@@ -943,7 +929,7 @@ class StatisticsManager extends DataManager
             $secondary_fields[] = $match_time;
         }
         
-        return $this->ReadBestFiguresInAMatch($runs_scored, $secondary_fields, 0, $exclude_extras, false);
+        return $this->ReadBestFiguresInAMatch($runs_scored, $secondary_fields, 0, $exclude_extras);
 	}
 
 	/**
@@ -971,7 +957,7 @@ class StatisticsManager extends DataManager
             $secondary_fields[] = $match_time;
         }
         
-        return $this->ReadBestFiguresInAMatch($wickets, $secondary_fields, 0, true, false);
+        return $this->ReadBestFiguresInAMatch($wickets, $secondary_fields, 0, true);
 	}
 
 	
@@ -981,7 +967,7 @@ class StatisticsManager extends DataManager
      */
     public function ReadMatchPerformances()
     {
-        $from = $this->FromFilteredPlayerStatistics() . "INNER JOIN nsa_match ON nsa_player_match.match_id = nsa_match.match_id ";
+        $from = $this->FromFilteredPlayerStatistics();
 
         $where = "WHERE player_role = " . Player::PLAYER . " ";
         $where = $this->ApplyFilters($where);
@@ -993,9 +979,8 @@ class StatisticsManager extends DataManager
             $limit = "LIMIT 0," . $this->filter_max_results;
         }        
 
-        $sql = "SELECT player_id, player_name, player_url, 
-        runs_scored, how_out, runs_conceded, wickets, catches, run_outs, nsa_player_match.match_id, 
-        nsa_match.match_title, match_time, nsa_match.short_url AS match_short_url
+        $sql = "SELECT player_id, player_name, player_url, match_id, match_title, match_time, match_url,
+        runs_scored, how_out, runs_conceded, wickets, catches, run_outs
         $from 
         $where
         ORDER BY match_time DESC 
@@ -1020,7 +1005,7 @@ class StatisticsManager extends DataManager
             $performance["match_id"] = $row->match_id;
             $performance["match_time"] = $csv ? Date::Microformat($row->match_time) : $row->match_time;
             $performance["match_title"] = $row->match_title;
-            if (!$csv) $performance["match_url"] = "/" . $row->match_short_url;
+            if (!$csv) $performance["match_url"] = "/" . $row->match_url;
 
             $performance["runs_scored"] = $row->runs_scored;
             $performance["how_out"] = $csv ? Batting::Text($row->how_out) : $row->how_out;
@@ -1349,7 +1334,8 @@ class StatisticsManager extends DataManager
 		$s_sql = "UPDATE $statistics SET player_of_match = 0 WHERE player_of_match = 1 AND match_id = " . Sql::ProtectNumeric($match_id);
 		$this->GetDataConnection()->query($s_sql);
 
-		$s_sql = "SELECT $s_match.match_id, $s_match.start_time, $s_match.ground_id, player_of_match_id, player_of_match_home_id, player_of_match_away_id,
+		$s_sql = "SELECT $s_match.match_id, $s_match.start_time, $s_match.ground_id, $s_match.match_type, $s_match.player_type_id, $s_match.match_title, $s_match.short_url AS match_url, 
+		    player_of_match_id, player_of_match_home_id, player_of_match_away_id,
 			home_link.match_team_id as home_match_team_id, home_link.team_id as home_team_id,
 			away_link.match_team_id as away_match_team_id, away_link.team_id as away_team_id,
 			home_team.team_name AS home_team_name, away_team.team_name AS away_team_name,
@@ -1387,17 +1373,20 @@ class StatisticsManager extends DataManager
                 $opposition_name = $row->home_team_name;
 			}
 			$this->AddPlayerOfMatchToStatistics($row->player_of_match_id, $row->player_role, $row->player_name, $row->short_url, $match_team_id, 
-			                                    $row->match_id, $row->ground_id, $row->start_time, $row->team_id, $team_name, $opposition_id, $opposition_name);
+			                                    $row->match_id, $row->match_type, $row->player_type_id, $row->match_title, $row->match_url,
+			                                    $row->ground_id, $row->start_time, $row->team_id, $team_name, $opposition_id, $opposition_name);
 		}
 		if (!is_null($row->player_of_match_home_id))
 		{
 			$this->AddPlayerOfMatchToStatistics($row->player_of_match_home_id, $row->player_role_home, $row->player_name_home, $row->player_url_home, $row->home_match_team_id, 
-			                                    $row->match_id, $row->ground_id, $row->start_time, $row->home_team_id, $row->home_team_name, $row->away_team_id, $row->away_team_name);
+			                                    $row->match_id, $row->match_type, $row->player_type_id, $row->match_title, $row->match_url,
+			                                    $row->ground_id, $row->start_time, $row->home_team_id, $row->home_team_name, $row->away_team_id, $row->away_team_name);
 		}
 		if (!is_null($row->player_of_match_away_id))
 		{
 			$this->AddPlayerOfMatchToStatistics($row->player_of_match_away_id, $row->player_role_away, $row->player_name_away, $row->player_url_away, $row->away_match_team_id, 
-		                                        $row->match_id, $row->ground_id, $row->start_time, $row->away_team_id, $row->away_team_name, $row->home_team_id, $row->home_team_name);
+		                                        $row->match_id, $row->match_type, $row->player_type_id, $row->match_title, $row->match_url,
+		                                        $row->ground_id, $row->start_time, $row->away_team_id, $row->away_team_name, $row->home_team_id, $row->home_team_name);
 		}
 	}
 
@@ -1410,11 +1399,9 @@ class StatisticsManager extends DataManager
 	 * @param int $match_time
 	 * @param int $opposition_id
 	 */
-	private function AddPlayerOfMatchToStatistics($player_id, $player_role, $player_name, $player_url, $match_team_id, $match_id, $ground_id, $match_time, $team_id, $team_name, $opposition_id, $opposition_name)
+	private function AddPlayerOfMatchToStatistics($player_id, $player_role, $player_name, $player_url, $match_team_id, $match_id, $match_type, $match_player_type, $match_title, $match_url, $ground_id, $match_time, $team_id, $team_name, $opposition_id, $opposition_name)
 	{
-		$statistics = $this->GetSettings()->GetTable('PlayerMatch');
-
-		$sql = "SELECT player_match_id FROM $statistics
+		$sql = "SELECT player_match_id FROM nsa_player_match
 				WHERE match_team_id = " . Sql::ProtectNumeric($match_team_id, false, false) . "
 				AND player_id = " . Sql::ProtectNumeric($player_id, false, false) . "
 				AND (player_innings IS NULL OR player_innings = 1)";
@@ -1422,18 +1409,22 @@ class StatisticsManager extends DataManager
 		$data_row = $data->fetch();
 		if ($data_row)
 		{
-			$sql = "UPDATE $statistics SET player_of_match = 1 WHERE player_match_id = $data_row->player_match_id";
+			$sql = "UPDATE nsa_player_match SET player_of_match = 1 WHERE player_match_id = $data_row->player_match_id";
 			$this->GetDataConnection()->query($sql);
 		}
 		else
 		{
-			$sql = "INSERT INTO $statistics SET
+			$sql = "INSERT INTO nsa_player_match SET
 					player_id = " . Sql::ProtectNumeric($player_id, false, false) . ",
                     player_role = " . Sql::ProtectNumeric($player_role, false, false) . ",
                     player_name = " . Sql::ProtectString($this->GetDataConnection(), $player_name) . ",
                     player_url = " . Sql::ProtectString($this->GetDataConnection(), $player_url) . ",
 					match_team_id = " . Sql::ProtectNumeric($match_team_id, false, false) . ",
 					match_id = " . Sql::ProtectNumeric($match_id, false, false) . ",
+                    match_type = " . Sql::ProtectNumeric($match_type, false, false) . ",
+                    match_player_type = " . Sql::ProtectNumeric($match_player_type, false, false) . ",
+                    match_title = " . Sql::ProtectString($this->GetDataConnection(), $match_title) . ",
+                    match_url = " . Sql::ProtectString($this->GetDataConnection(), $match_url) . ",
 					ground_id = " . Sql::ProtectNumeric($ground_id, true, false) . ",
 					match_time = " . Sql::ProtectNumeric($match_time, false, false) . ",
                     team_id = " . Sql::ProtectNumeric($team_id, true, false) . ",
@@ -1587,7 +1578,7 @@ class StatisticsManager extends DataManager
 		# Now generate batting figures based on the data entered
 		$sql = "SELECT $player_table.player_id, $player_table.player_role, $player_table.player_name, $player_table.short_url,
 		$mt.match_id, $mt.match_team_id, 
-		m.start_time, m.tournament_match_id, m.ground_id, 
+		m.start_time, m.tournament_match_id, m.ground_id, m.match_type, m.player_type_id, m.match_title, m.short_url AS match_url, 
 		position, how_out, dismissed_by_id, bowler_id, runs, balls_faced,
 		team.team_id, team.team_name
 		FROM $batting_table INNER JOIN $mt ON $batting_table.match_team_id = $mt.match_team_id
@@ -1640,6 +1631,10 @@ class StatisticsManager extends DataManager
 			$runs = Sql::ProtectNumeric($row->runs, true, false);
             $balls_faced = Sql::ProtectNumeric($row->balls_faced, true, false);
 			$ground_id = Sql::ProtectNumeric($row->ground_id, true, false);
+            $match_type_id = Sql::ProtectNumeric($row->match_type, true, false);
+            $match_player_type_id = Sql::ProtectNumeric($row->player_type_id, true, false);
+            $match_title = Sql::ProtectString($this->GetDataConnection(), $row->match_title);
+            $match_url = Sql::ProtectString($this->GetDataConnection(), $row->match_url);
             $tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
             $team_name = Sql::ProtectString($this->GetDataConnection(), $row->team_name);
             $player_name = Sql::ProtectString($this->GetDataConnection(), $row->player_name);
@@ -1691,12 +1686,12 @@ class StatisticsManager extends DataManager
 
 					# this is the first record of the player playing in the match. Everyone is a fielder, so set fielding statistics to defaults as well.
 					$sql = "INSERT INTO $stats_table
-					(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, 
-					 tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,  
+					(player_id, player_role, player_name, player_url, match_id, match_team_id, match_type, match_player_type, 
+					 match_time, match_title, match_url, tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,  
 					 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored, balls_faced, catches, run_outs, player_of_match)
 					VALUES
-					($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $row->start_time, 
-					 $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name,  
+					($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $match_type_id, $match_player_type_id, 
+					 $row->start_time, $match_title, $match_url, $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name,  
 					 $player_innings, $position, $how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs, $balls_faced, $catches, $run_outs, $player_of_match)";
 					$this->GetDataConnection()->query($sql);
 				}
@@ -1721,12 +1716,12 @@ class StatisticsManager extends DataManager
 				$position = ($row->position == 2) ? 1 : $row->position;
 
 				$sql = "INSERT INTO $stats_table
-				(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, 
-				 tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,
+				(player_id, player_role, player_name, player_url, match_id, match_team_id, match_type, match_player_type, 
+				 match_time, match_title, match_url, tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name,
 				 player_innings, batting_position, how_out, dismissed, caught_by, run_out_by, bowled_by, runs_scored, balls_faced)
 				VALUES
-				($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $row->start_time, 
-				 $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name, " .
+				($row->player_id, $row->player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $match_type_id, $match_player_type_id,
+				 $row->start_time, $match_title, $match_url, $tournament_id, $ground_id, $row->team_id, $team_name, $opposition_id, $opposition_name, " .
 				 $batter_ids_recorded[$row->match_team_id][$row->player_id] . ",
 				 $position, $row->how_out, $dismissed, $catcher_id, $run_out_by_id, $bowler_id, $runs, $balls_faced)";
 				$this->GetDataConnection()->query($sql);
@@ -1762,7 +1757,8 @@ class StatisticsManager extends DataManager
 		foreach ($bowling_match_team_ids as $bowling_match_team_id)
 		{
 			# get the match_team_id for the batting that goes with this bowling
-			$sql = "SELECT m.match_id, m.start_time, m.tournament_match_id, m.ground_id, match_team_id
+			$sql = "SELECT m.match_id, m.match_type, m.player_type_id, m.start_time, m.match_title, m.short_url AS match_url, 
+			m.tournament_match_id, m.ground_id, match_team_id
 			FROM $mt INNER JOIN $match_table m ON $mt.match_id = m.match_id
 			WHERE m.match_id = (SELECT match_id FROM $mt WHERE match_team_id = $bowling_match_team_id)
 			AND match_team_id != $bowling_match_team_id
@@ -1770,7 +1766,11 @@ class StatisticsManager extends DataManager
 			$result = $this->GetDataConnection()->query($sql);
 			$row = $result->fetch();
 			$match_id = $row->match_id;
-			$match_time = Sql::ProtectNumeric($row->start_time, true, false);
+			$match_type = Sql::ProtectNumeric($row->match_type, true, false);
+            $match_player_type = Sql::ProtectNumeric($row->player_type_id, true, false);
+            $match_time = Sql::ProtectNumeric($row->start_time, true, false);
+            $match_title = Sql::ProtectString($this->GetDataConnection(), $row->match_title);
+            $match_url = Sql::ProtectString($this->GetDataConnection(), $row->match_url);
             $tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
 			$ground_id = Sql::ProtectNumeric($row->ground_id, true, false);
 			$batting_match_team_id = $row->match_team_id;
@@ -1835,11 +1835,13 @@ class StatisticsManager extends DataManager
 					
                     # Now insert the record. They are fielding, so we can set run outs to 0 as well.
 					$sql = "INSERT INTO $stats_table
-							(player_id, player_role, player_name, player_url, match_id, match_team_id, 
-							 match_time, tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name, catches, run_outs, player_of_match)
+							(player_id, player_role, player_name, player_url, match_id, match_team_id, match_type, match_player_type, 
+							 match_time, match_title, match_url, tournament_id, ground_id, 
+							 team_id, team_name, opposition_id, opposition_name, catches, run_outs, player_of_match)
 							VALUES
-							($caught_by_id, $player_role, $player_name, $player_url, $match_id, $bowling_match_team_id, 
-							 $match_time, $tournament_id, $ground_id, $team_id, $team_name, $opposition_id, $opposition_name, $catches, 0, 0)";
+							($caught_by_id, $player_role, $player_name, $player_url, $match_id, $bowling_match_team_id, $match_type, $match_player_type, 
+							 $match_time, $match_title, $match_url, $tournament_id, $ground_id, 
+							 $team_id, $team_name, $opposition_id, $opposition_name, $catches, 0, 0)";
 
 					$this->GetDataConnection()->query($sql);
 				}
@@ -1920,7 +1922,7 @@ class StatisticsManager extends DataManager
 
 		# Now generate bowling figures based on the data entered
 		$sql = "SELECT nsa_player.player_id, nsa_player.player_role, nsa_player.player_name, nsa_player.short_url, 
-		$mt.match_id, $mt.match_team_id, m.start_time, m.tournament_match_id, m.ground_id,
+		$mt.match_id, $mt.match_team_id, m.match_type, m.player_type_id, m.start_time, m.match_title, m.short_url AS match_url, m.tournament_match_id, m.ground_id,
 		MIN(position) AS first_over, SUM(runs_in_over) AS runs_conceded, SUM(balls_bowled) AS balls_total,
 		CONCAT(FLOOR(SUM(balls_bowled)/8), '.', FLOOR(SUM(balls_bowled) MOD 8)) AS overs, SUM(balls_bowled)/8 AS overs_decimal,
 		(SELECT COUNT(bowling_id) FROM $bowling_table AS maiden_overs WHERE runs_in_over = 0 AND balls_bowled >= 8 AND maiden_overs.match_team_id = $bowling_table.match_team_id AND maiden_overs.player_id = $bowling_table.player_id) AS maidens
@@ -1964,8 +1966,12 @@ class StatisticsManager extends DataManager
                 $player_name = Sql::ProtectString($this->GetDataConnection(), $row->player_name);
                 $player_url = Sql::ProtectString($this->GetDataConnection(), $row->short_url);
 				
+                $match_type = Sql::ProtectNumeric($row->match_type, true, false);
+                $match_player_type = Sql::ProtectNumeric($row->player_type_id, true, false);
 				$match_time = Sql::ProtectNumeric($row->start_time, true, false);
-				$tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
+				$match_title = Sql::ProtectString($this->GetDataConnection(), $row->match_title);
+                $match_url = Sql::ProtectString($this->GetDataConnection(), $row->match_url);
+                $tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
                 $ground_id = Sql::ProtectNumeric($row->ground_id, true, false);
                 
                 $teams_in_match = $team_data[$row->match_id];
@@ -1978,12 +1984,14 @@ class StatisticsManager extends DataManager
                 $opposition_name = Sql::ProtectString($this->GetDataConnection(), $players_team["team_name"]);
                 
 				$sql = "INSERT INTO $stats_table
-					(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, tournament_id, ground_id, 
-					 team_id, team_name, opposition_id, opposition_name, first_over, balls_bowled, overs, overs_decimal, maidens, 
-					 runs_conceded, has_runs_conceded, wickets, wickets_with_bowling, catches, run_outs, player_of_match)
+					(player_id, player_role, player_name, player_url, match_id, match_team_id, match_type, match_player_type, match_time, 
+					 match_title, match_url, tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name, 
+					 first_over, balls_bowled, overs, overs_decimal, maidens, runs_conceded, has_runs_conceded, wickets, wickets_with_bowling, 
+					 catches, run_outs, player_of_match)
 					VALUES
-					($row->player_id, $player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $match_time, $tournament_id, $ground_id, 
-					 $team_id, $team_name, $opposition_id, $opposition_name, $row->first_over, $balls_bowled, $overs, $overs_decimal, $maidens, 
+					($row->player_id, $player_role, $player_name, $player_url, $row->match_id, $row->match_team_id, $match_type, $match_player_type, $match_time, 
+					 $match_title, $match_url, $tournament_id, $ground_id, $team_id, $team_name, $opposition_id, $opposition_name, 
+					 $row->first_over, $balls_bowled, $overs, $overs_decimal, $maidens, 
 					 $runs_conceded, $has_runs_conceded, 0, 0, 0, 0, 0)";
 
 					$this->GetDataConnection()->query($sql);
@@ -1998,7 +2006,8 @@ class StatisticsManager extends DataManager
 		foreach ($bowling_match_team_ids as $bowling_match_team_id)
 		{
 			# get the match_team_id for the batting that goes with this bowling
-			$sql = "SELECT m.match_id, m.start_time, m.tournament_match_id, m.ground_id, match_team_id, team_id
+			$sql = "SELECT m.match_id, m.match_type, m.player_type_id, m.start_time, m.match_title, m.short_url AS match_url, 
+			m.tournament_match_id, m.ground_id, match_team_id, team_id
 			FROM $mt INNER JOIN $match_table m ON $mt.match_id = m.match_id
 			WHERE m.match_id = (SELECT match_id FROM $mt WHERE match_team_id = $bowling_match_team_id)
 			AND match_team_id != $bowling_match_team_id
@@ -2007,7 +2016,11 @@ class StatisticsManager extends DataManager
 			$row = $result->fetch();
 			$match_id = $row->match_id;
 			$batting_match_team_id = $row->match_team_id;
+            $match_type = Sql::ProtectNumeric($row->match_type, true, false);
+            $match_player_type = Sql::ProtectNumeric($row->player_type_id, true, false);
 			$match_time = Sql::ProtectNumeric($row->start_time, true, false);
+            $match_title = Sql::ProtectString($this->GetDataConnection(), $row->match_title);
+            $match_url = Sql::ProtectString($this->GetDataConnection(), $row->match_url);
 			$tournament_id = Sql::ProtectNumeric($row->tournament_match_id, true, false);
             $ground_id = Sql::ProtectNumeric($row->ground_id, true, false);
 			$opposition_id = Sql::ProtectNumeric($row->team_id, true, false);
@@ -2072,11 +2085,13 @@ class StatisticsManager extends DataManager
                         $opposition_name = Sql::ProtectString($this->GetDataConnection(), $teams_in_match[$batting_match_team_id]["team_name"]);
                         						
 						$sql = "INSERT INTO $stats_table
-								(player_id, player_role, player_name, player_url, match_id, match_team_id, match_time, tournament_id, ground_id, 
-								 team_id, team_name, opposition_id, opposition_name, has_runs_conceded, wickets, catches, run_outs, player_of_match)
+								(player_id, player_role, player_name, player_url, match_id, match_team_id, match_type, match_player_type, match_time, 
+								 match_title, match_url, tournament_id, ground_id, team_id, team_name, opposition_id, opposition_name, 
+								 has_runs_conceded, wickets, catches, run_outs, player_of_match)
 								VALUES
-								($bowler_id, $player_role, $player_name, $player_url, $match_id, $bowling_match_team_id, $match_time, $tournament_id, $ground_id, 
-								 $team_id, $team_name, $opposition_id, $opposition_name, 0, $wickets, 0, 0, 0)";
+								($bowler_id, $player_role, $player_name, $player_url, $match_id, $bowling_match_team_id, $match_type, $match_player_type, $match_time, 
+								 $match_title, $match_url, $tournament_id, $ground_id, $team_id, $team_name, $opposition_id, $opposition_name, 
+								 0, $wickets, 0, 0, 0)";
 						$this->GetDataConnection()->query($sql);
 					}
 
