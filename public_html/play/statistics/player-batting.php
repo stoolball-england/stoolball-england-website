@@ -84,8 +84,12 @@ class CurrentPage extends StoolballPage
     
     		# Apply filters common to all statistics
     		$this->filter_control = new StatisticsFilterControl();
-    
-    		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
+            
+            $filter_match_type = StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
+            $this->filter_control->SupportMatchTypeFilter($filter_match_type);
+            $this->filter .= $filter_match_type[2];
+            
+            $filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
     		$this->filter_control->SupportOppositionFilter($filter_opposition);
     		$this->filter .= $filter_opposition[2];
     

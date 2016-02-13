@@ -39,6 +39,9 @@ class CurrentPage extends Page
 		$statistics_manager->FilterByPlayer($filter_by_player);
 
 		# Apply filters common to all statistics
+        $filter_match_type = StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
+        $this->filter .= $filter_match_type[2];
+            
 		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
 		$this->filter .= $filter_opposition[2];
 
