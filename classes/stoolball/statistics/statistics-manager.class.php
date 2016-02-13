@@ -979,7 +979,8 @@ class StatisticsManager extends DataManager
             $limit = "LIMIT 0," . $this->filter_max_results;
         }        
 
-        $sql = "SELECT player_id, player_name, player_url, match_id, match_title, match_time, match_url,
+        # Note: specify table for match_id to avoid ambiguous column when a season filter is applied
+        $sql = "SELECT player_id, player_name, player_url, nsa_player_match.match_id, match_title, match_time, match_url,
         runs_scored, how_out, runs_conceded, wickets, catches, run_outs
         $from 
         $where
