@@ -28,6 +28,7 @@ Zend
 tiny_mce
 wp-includes
 wp-admin
+vendor
 
 public_html/index.php
 public_html/license.txt
