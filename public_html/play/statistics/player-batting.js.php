@@ -12,8 +12,7 @@ class CurrentPage extends Page
 	 * @var Player
 	 */
 	private $player;
-	
-	private $filter;
+
 	/**
 	 * @var StatisticsFilterControl
 	 */
@@ -39,26 +38,14 @@ class CurrentPage extends Page
 		$statistics_manager->FilterByPlayer($filter_by_player);
 
 		# Apply filters common to all statistics
-        $filter_match_type = StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
-        $this->filter .= $filter_match_type[2];
-            
-		$filter_opposition = StatisticsFilter::SupportOppositionFilter($statistics_manager);
-		$this->filter .= $filter_opposition[2];
-
-		$filter_competition = StatisticsFilter::SupportCompetitionFilter($statistics_manager);
-		$this->filter .= $filter_competition[2];
-
-		$this->filter .= StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-		$filter_ground = StatisticsFilter::SupportGroundFilter($statistics_manager);
-		$this->filter .= $filter_ground[2];
-
-		$filter_date = StatisticsFilter::SupportDateFilter($statistics_manager);
-		$this->filter .= $filter_date[2];
-
-		$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-		$this->filter .= $filter_batting_position[2];
-
+        StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
+		StatisticsFilter::SupportOppositionFilter($statistics_manager);
+		StatisticsFilter::SupportCompetitionFilter($statistics_manager);
+		StatisticsFilter::ApplySeasonFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+		StatisticsFilter::SupportGroundFilter($statistics_manager);
+		StatisticsFilter::SupportDateFilter($statistics_manager);
+		StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+		
 		# Now get the statistics for the player
 		$this->player = new Player($this->GetSettings());
 
