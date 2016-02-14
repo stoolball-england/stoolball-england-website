@@ -160,6 +160,80 @@ class StatisticsFilter
 		return $filter_data;
 	}
 
+    /**
+     * Get the match types available for filtering, and if match type parameter is in the query string apply the match type filter
+     * @param StatisticsManager $statistics_manager
+     * @return Array containing match types, current match type id, and text for filter description
+     */
+    public static function SupportMatchTypeFilter(StatisticsManager $statistics_manager)
+    {
+        require_once("stoolball/match-type.enum.php");
+        $match_types = array(MatchType::CUP, MatchType::FRIENDLY, MatchType::LEAGUE, MatchType::TOURNAMENT_MATCH);
+        $filter_data = array($match_types, null, "");
+
+        if (isset($_GET['match-type']) and is_numeric($_GET['match-type']))
+        {
+            if (in_array($_GET['match-type'], $match_types))
+            {
+                $statistics_manager->FilterByMatchType(array((int)$_GET['match-type']));
+                $filter_data[1] = (int)$_GET['match-type'];
+                $filter_data[2] = "in " . MatchType::Text((int)$_GET['match-type']) . "es ";
+            }
+        }
+        return $filter_data;
+    }
+    
+
+    /**
+     * Get the player types available for filtering, and if a player type parameter is in the query string apply player type filter
+     * @param StatisticsManager $statistics_manager
+     * @return Array containing player types, current player type id, and text for filter description
+     */
+    public static function SupportPlayerTypeFilter(StatisticsManager $statistics_manager)
+    {
+        require_once("stoolball/player-type.enum.php");
+        $player_types = array(PlayerType::LADIES, PlayerType::MIXED, PlayerType::GIRLS, PlayerType::JUNIOR_MIXED);
+        $filter_data = array($player_types, null, "");
+
+        if (isset($_GET['player-type']) and is_numeric($_GET['player-type']))
+        {
+            if (in_array($_GET['player-type'], $player_types))
+            {
+                $statistics_manager->FilterByPlayerType(array((int)$_GET['player-type']));
+                $filter_data[1] = (int)$_GET['player-type'];
+                $filter_data[2] .= "in " . strtolower(PlayerType::Text((int)$_GET['player-type'])) . " matches ";
+            }
+        }
+        return $filter_data;
+    }
+    
+    /**
+     * Combines the descriptions for type filters into a single plain English phrase
+     */
+    public static function CombineMatchTypeDescriptions($description) {
+        $description = str_replace("ladies ", "ladies’ ", $description);
+        $description = str_replace("girls ", "girls’ ", $description);
+        $description = StatisticsFilter::KeepOnlyFirstOccurrenceInString($description, "in ");
+        $description = StatisticsFilter::KeepOnlyLastOccurrenceInString($description, "matches ");
+        return $description;
+    } 
+    
+    private static function KeepOnlyFirstOccurrenceInString($subject, $substring){
+        if (substr_count($subject, $substring) > 1) {
+            $after_first = strpos($subject, $substring)+strlen($substring);
+            $subject = substr($subject, 0, $after_first) . str_replace($substring, "", substr($subject, $after_first));
+        }
+        return $subject;
+    }
+
+    private static function KeepOnlyLastOccurrenceInString($subject, $substring){
+        if (substr_count($subject, $substring) > 1) {
+            $before_last = strrpos($subject, $substring);
+            $subject = str_replace($substring, "", substr($subject, 0, $before_last)) . substr($subject, $before_last);
+        }
+        return $subject;
+    }
+
 	/**
 	 * Gets the competitions available for filtering, and if the competition parameter is in the query string apply competition filter
 	 * @param StatisticsManager $statistics_manager

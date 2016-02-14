@@ -14,7 +14,7 @@ class IndividualScores extends Statistic {
     public function __construct(StatisticsManager $statistics_data_source) {
         $this->statistics_data_source = $statistics_data_source;
         parent::SetUrlSegment("individual-scores");
-        parent::SetTitle("All individual scores");
+        parent::SetTitle("Highest individual scores");
         parent::SetDescription("See the highest scores by individuals in a single stoolball innings.");
         parent::SetSupportsFilterByPlayer(true);
         parent::SetSupportsFilterByBattingPosition(true);

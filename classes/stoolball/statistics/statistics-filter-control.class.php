@@ -9,6 +9,8 @@ require_once("xhtml/forms/xhtml-select.class.php");
  */
 class StatisticsFilterControl extends XhtmlForm
 {
+    private $match_type_filter;
+    private $player_type_filter;
 	private $team_filter;
 	private $opposition_filter;
 	private $ground_filter;
@@ -25,6 +27,24 @@ class StatisticsFilterControl extends XhtmlForm
 		parent::XhtmlForm();
 		$this->AddAttribute("method", "get");
 	}
+
+    /**
+     * Set the available match types, and the selected match type, from StatisticsFilter
+     * @param mixed[] $match_type_filter
+     */
+    public function SupportMatchTypeFilter($match_type_filter)
+    {
+        $this->match_type_filter = is_array($match_type_filter) ? $match_type_filter : null;
+    }
+
+    /**
+     * Set the available player types, and the selected player type, from StatisticsFilter
+     * @param mixed[] $player_type_filter
+     */
+    public function SupportPlayerTypeFilter($player_type_filter)
+    {
+        $this->player_type_filter = is_array($player_type_filter) ? $player_type_filter : null;
+    }
 
 	/**
 	 * Set the available teams, and the selected team, from StatisticsFilter
@@ -101,6 +121,53 @@ class StatisticsFilterControl extends XhtmlForm
 		$filter .= (isset($_GET["filter"]) and $_GET["filter"] == "1") ? 1 : 0;
 		$filter  .= '" />';
 		$this->AddControl($filter);
+
+        
+        $type_filters = array();
+        
+        # Support player type filter
+        if (is_array($this->player_type_filter))
+        {
+            require_once("stoolball/player-type.enum.php");
+            $player_type_list = new XhtmlSelect("player-type");
+            $blank = new XhtmlOption("any players", "");
+            $player_type_list->AddControl($blank);
+            foreach ($this->player_type_filter[0] as $player_type)
+            {
+                $player_type_list->AddControl(new XhtmlOption(strtolower(PlayerType::Text($player_type)), $player_type, $player_type === $this->player_type_filter[1]));
+            }
+            $label = new XhtmlElement("label", "Type of players", "aural");
+            $label->AddAttribute("for", $player_type_list->GetXhtmlId());
+            $type_filters[] = $label;
+            $type_filters[] = $player_type_list;
+        }
+        
+        # Support match type filter
+        if (is_array($this->match_type_filter))
+        {
+            require_once("stoolball/match-type.enum.php");
+            $match_type_list = new XhtmlSelect("match-type");
+            $blank = new XhtmlOption("any match", "");
+            $match_type_list->AddControl($blank);
+            foreach ($this->match_type_filter[0] as $match_type)
+            {
+                $match_type_list->AddControl(new XhtmlOption(str_replace(" match", "", MatchType::Text($match_type)), $match_type, $match_type === $this->match_type_filter[1]));
+            }
+            $label = new XhtmlElement("label", "Type of competition", "aural");
+            $label->AddAttribute("for", $match_type_list->GetXhtmlId());
+            $type_filters[] = $label;
+            $type_filters[] = $match_type_list;
+        }
+        
+        if (count($type_filters)) {
+            $type = new XhtmlElement("fieldset", new XhtmlElement("legend", "Match type", "formLabel"), "formPart");
+            $controls = new XhtmlElement("div", null, "formControl");
+            foreach($type_filters as $control) {
+                $controls->AddControl($control);
+            }
+            $type->AddControl($controls);
+            $this->AddControl($type);
+        }
 
 		# Support team filter
 		if (is_array($this->team_filter))

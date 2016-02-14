@@ -246,7 +246,7 @@ class CurrentPage extends StoolballPage
 
 		$docs[] = new SearchItem("other", "/you/personal.php", "/you/personal.php", "More about you", "Tell others where you're from, who you are and what you like.");
 
-		$docs[] = new SearchItem("other", "play/statistics/individual-scores", "/play/statistics/individual-scores", "All individual scores",
+		$docs[] = new SearchItem("other", "play/statistics/individual-scores", "/play/statistics/individual-scores", "Highest individual scores",
 		"See the highest scores by individuals in a single stoolball innings. Filter by team, ground, date and more.", "hundreds centuries batting batsmen batters statistics");
 
 		$docs[] = new SearchItem("other", "/play/statistics/most-runs", "/play/statistics/most-runs", "Most runs",

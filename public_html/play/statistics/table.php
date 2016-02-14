@@ -163,6 +163,29 @@ class CurrentPage extends StoolballPage
         # Apply filters common to all statistics
         $this->filter_control = new StatisticsFilterControl();
 
+        if ($this->statistic->SupportsFilterByBattingPosition()) {
+            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+            $this->filter .= $filter_batting_position[2];
+        }
+
+        $match_type_filter_description = "";
+        
+        # If player filter applied, no point filtering by player type because they're associated with a team of one player type.
+        # There is the edge case of a ladies team playing in a mixed match, but it would be more confusing than useful to offer it.
+        if (!isset($_GET['player']))
+        {
+            $filter_player_type = StatisticsFilter::SupportPlayerTypeFilter($statistics_manager);
+            $this->filter_control->SupportPlayerTypeFilter($filter_player_type);
+            $match_type_filter_description .= $filter_player_type[2];
+        }
+        
+        $filter_match_type = StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
+        $this->filter_control->SupportMatchTypeFilter($filter_match_type);
+        $match_type_filter_description .= $filter_match_type[2];
+        
+        $this->filter .= StatisticsFilter::CombineMatchTypeDescriptions($match_type_filter_description);
+        
         # If player filter applied, no point filtering by team. Check for player filter is stricter than this
         # but this is good enough. If this applies, but the player filter isn't applied, it's because someone
         # is playing with the query string, so that's tough.
@@ -193,12 +216,6 @@ class CurrentPage extends StoolballPage
         $this->filter .= $filter_date[2];
 
         $this->filter .= StatisticsFilter::ApplyTournamentFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-        if ($this->statistic->SupportsFilterByBattingPosition()) {
-            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-            $this->filter .= $filter_batting_position[2];
-        }
 
         # Configure paging of results
         if (!$csv and $this->statistic->SupportsPagedResults()) {

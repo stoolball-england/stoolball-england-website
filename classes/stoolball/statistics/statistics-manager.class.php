@@ -15,6 +15,8 @@ class StatisticsManager extends DataManager
 	private $filter_grounds = array();
 	private $filter_batting_position = array();
     private $filter_tournaments = array();
+    private $filter_match_type = array();
+    private $filter_player_type = array();
 	private $filter_max_results = false;
 	private $filter_before_date = null;
 	private $filter_after_date = null;
@@ -186,6 +188,37 @@ class StatisticsManager extends DataManager
         }
         else $this->filter_tournaments = array();
     }
+    
+    /**
+     * Limits supporting queries to returning only statistics for matches where the match type is in supplied array of ids
+     *
+     * @param int[] $match_type_ids
+     */
+    public function FilterByMatchType($match_type_ids)
+    {
+        if (is_array($match_type_ids))
+        {
+            $this->ValidateNumericArray($match_type_ids);
+            $this->filter_match_type = $match_type_ids;
+        }
+        else $this->filter_match_type = array();
+    }
+    
+        
+    /**
+     * Limits supporting queries to returning only statistics for matches where the player type is in supplied array of ids
+     *
+     * @param int[] $player_type_ids
+     */
+    public function FilterByPlayerType($player_type_ids)
+    {
+        if (is_array($player_type_ids))
+        {
+            $this->ValidateNumericArray($player_type_ids);
+            $this->filter_player_type = $player_type_ids;
+        }
+        else $this->filter_player_type = array();
+    }
 
     /**
      * Limits supporting queries to consider only statistics where the player was nominated player of the match
@@ -289,6 +322,8 @@ class StatisticsManager extends DataManager
 		if (count($this->filter_seasons)) $where .= "AND $sm.season_id IN (" . implode(",",$this->filter_seasons) . ") ";
 		if (count($this->filter_competitions)) $where .= "AND $seasons.competition_id IN (" . implode(",",$this->filter_competitions) . ") ";
 		if (count($this->filter_grounds)) $where .= "AND $statistics.ground_id IN (" . implode(",",$this->filter_grounds) . ") ";
+        if (count($this->filter_match_type)) $where .= "AND $statistics.match_type IN (" . implode(",",$this->filter_match_type) . ") ";
+        if (count($this->filter_player_type)) $where .= "AND $statistics.match_player_type IN (" . implode(",",$this->filter_player_type) . ") ";
 		if (count($this->filter_batting_position)) $where .= "AND $statistics.batting_position IN (" . implode(",",$this->filter_batting_position) . ") ";
         if (count($this->filter_tournaments)) $where .= "AND $statistics.tournament_id IN (" . implode(",",$this->filter_tournaments) . ") ";
 	    if (count($this->filter_how_out)) $where .= "AND $statistics.how_out IN (" . implode(",", $this->filter_how_out) . ") ";
@@ -979,7 +1014,8 @@ class StatisticsManager extends DataManager
             $limit = "LIMIT 0," . $this->filter_max_results;
         }        
 
-        $sql = "SELECT player_id, player_name, player_url, match_id, match_title, match_time, match_url,
+        # Note: specify table for match_id to avoid ambiguous column when a season filter is applied
+        $sql = "SELECT player_id, player_name, player_url, nsa_player_match.match_id, match_title, match_time, match_url,
         runs_scored, how_out, runs_conceded, wickets, catches, run_outs
         $from 
         $where
