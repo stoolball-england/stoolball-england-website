@@ -163,6 +163,11 @@ class CurrentPage extends StoolballPage
         # Apply filters common to all statistics
         $this->filter_control = new StatisticsFilterControl();
 
+        if ($this->statistic->SupportsFilterByBattingPosition()) {
+            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+            $this->filter .= $filter_batting_position[2];
+        }
 
         $match_type_filter_description = "";
         
@@ -211,12 +216,6 @@ class CurrentPage extends StoolballPage
         $this->filter .= $filter_date[2];
 
         $this->filter .= StatisticsFilter::ApplyTournamentFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
-
-        if ($this->statistic->SupportsFilterByBattingPosition()) {
-            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-            $this->filter .= $filter_batting_position[2];
-        }
 
         # Configure paging of results
         if (!$csv and $this->statistic->SupportsPagedResults()) {

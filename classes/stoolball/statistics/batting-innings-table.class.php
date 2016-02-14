@@ -31,7 +31,7 @@ class BattingInningsTable extends XhtmlTable
 		parent::XhtmlTable();
 
 		# Create the table header
-		$this->SetCaption(is_null($max_results) ? "All individual scores, highest first" : "Highest individual scores");
+		$this->SetCaption("Highest individual scores");
 		$this->SetCssClass('statsOverall');
 		$position = new XhtmlCell(true, "#");
 		$position->SetCssClass("position");

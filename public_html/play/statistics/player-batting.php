@@ -85,6 +85,10 @@ class CurrentPage extends StoolballPage
     		# Apply filters common to all statistics
     		$this->filter_control = new StatisticsFilterControl();
             
+            $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+            $this->filter_control->SupportBattingPositionFilter($filter_batting_position);
+            $this->filter .= $filter_batting_position[2];
+    
             $filter_match_type = StatisticsFilter::SupportMatchTypeFilter($statistics_manager);
             $this->filter_control->SupportMatchTypeFilter($filter_match_type);
             $this->filter .= $filter_match_type[2];
@@ -107,10 +111,6 @@ class CurrentPage extends StoolballPage
     		if (!is_null($filter_date[0])) $this->filter_control->SupportAfterDateFilter($filter_date[0]);
     		if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
     		$this->filter .= $filter_date[2];
-    
-    		$filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
-    		$this->filter_control->SupportBattingPositionFilter($filter_batting_position);
-    		$this->filter .= $filter_batting_position[2];
     
     		# Now get the statistics for the player
     		$data = $statistics_manager->ReadPlayerSummary();
