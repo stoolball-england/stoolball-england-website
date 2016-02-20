@@ -2086,8 +2086,7 @@ class MatchManager extends DataManager
 		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
 		    $sql .= $match_title_sql . ", ";
         }
-		$sql .= 'home_bat_first = ' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true) . ', ' .
-			'home_runs = ' . Sql::ProtectNumeric($i_home_runs, true) . ', ' .
+		$sql .= 'home_runs = ' . Sql::ProtectNumeric($i_home_runs, true) . ', ' .
 			'home_wickets = ' . Sql::ProtectNumeric($o_match->Result()->GetHomeWickets(), true) . ', ' .
 			'away_runs = ' . Sql::ProtectNumeric($i_away_runs, true) . ', ' .
 			'away_wickets = ' . Sql::ProtectNumeric($o_match->Result()->GetAwayWickets(), true) . ', ' .
@@ -2098,6 +2097,8 @@ class MatchManager extends DataManager
 			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
 
 		$this->LoggedQuery($sql);
+        
+        $this->SaveWhoBattedFirst($o_match);
         
         # Copy updated title to statistics
         if ($match_title_sql) {
@@ -2120,12 +2121,12 @@ class MatchManager extends DataManager
 		if (!$o_match->GetId()) return;
 
 		# build query
-		$s_match = $this->GetSettings()->GetTable('Match');
-
+        $match_id = Sql::ProtectNumeric($o_match->GetId());
+		
 		# Check whether anything's changed and don't re-save if not
-		$s_sql = 'SELECT match_id FROM ' . $s_match . ' ';
+		$s_sql = 'SELECT match_id FROM nsa_match ';
 		$s_where = $this->SqlAddCondition('', 'home_bat_first' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true, true));
-		$s_where = $this->SqlAddCondition($s_where, 'match_id = ' . Sql::ProtectNumeric($o_match->GetId()));
+		$s_where = $this->SqlAddCondition($s_where, 'match_id = ' . $match_id);
 		$s_sql = $this->SqlAddWhereClause($s_sql, $s_where);
 
 		$o_result = $this->GetDataConnection()->query($s_sql);
@@ -2138,13 +2139,20 @@ class MatchManager extends DataManager
 		# All changes to master data from here are logged, because this method can be called from the public interface
 		
 		# Update the main match record
-		$sql = 'UPDATE ' . $s_match . ' SET ' .
-			'home_bat_first = ' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true) . ', ' .
+		$batting_first = 'home_bat_first = ' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true);
+        
+		$sql = 'UPDATE nsa_match SET ' .
+			$batting_first . ', ' .
 			'date_changed = ' . gmdate('U') . ", 
             modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ' ' . 
-			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
+			'WHERE match_id = ' . $match_id;
 
 		$this->LoggedQuery($sql);
+        
+        # Copy updated value to statistics
+        $sql = "UPDATE nsa_player_match SET $batting_first WHERE match_id = " . $match_id;
+        $this->GetDataConnection()->query($sql);        
+        
 
 		# Match data has changed so notify moderator
 		$this->QueueForNotification($o_match->GetId(), false);
