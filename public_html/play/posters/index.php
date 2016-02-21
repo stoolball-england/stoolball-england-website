@@ -9,13 +9,14 @@ class CurrentPage extends StoolballPage
 	{
 	    $this->SetPageTitle('Create a poster');
         ?>
-         <link href='https://fonts.googleapis.com/css?family=Oswald|Alegreya+Sans:800,500' rel='stylesheet' type='text/css'>
+         <link href='https://fonts.googleapis.com/css?family=Alegreya+Sans:800,500' rel='stylesheet' type='text/css'>
+         <script src="//use.edgefonts.net/league-gothic.js"></script>
          <style>
             #preview { border: 1px solid #555; float: left; margin: 1em 0 ; position:relative; }
-            #preview-title { position: absolute; top: 25px; left: 30px; width: 340px; font: normal 55px 'Oswald'; color: #fff;margin: 0; }
-            #preview-teaser { position: absolute; top: 270px; left: 230px; font: normal 40px/1.2em 'Oswald'; color: #fff; width: 140px; margin: 0; }
-            #preview-name { position: absolute; top: 460px; left: 30px; width: 340px; font: 800 20px 'Alegreya Sans'; color: #fff; margin: 0; }
-            #preview-details { position: absolute; top: 485px; left: 30px; width: 340px; font: 500 12px 'Alegreya Sans'; color: #fff;  margin: 0; }
+            #preview-title { position: absolute; top: 30px; left: 47px; width: 300px; font: normal 67px 'league-gothic'; color: #fff;margin: 0; }
+            #preview-teaser { position: absolute; top: 255px; left: 249px; font: normal 45px/1.15em 'league-gothic'; color: #fff; width: 120px; margin: 0; }
+            #preview-name { position: absolute; top: 462px; left: 47px; width: 320px; font: 800 19px 'Alegreya Sans'; color: #fff; margin: 0; }
+            #preview-details { position: absolute; top: 485px; left: 47px; width: 320px; font: 500 10.3px 'Alegreya Sans'; color: #fff;  margin: 0; }
             
             form.poster { width: 250px; float: left; padding: 0 30px; }
             form.poster label { font-weight: bold; margin: 1em 0 .5em; }

@@ -59,7 +59,7 @@ $pdf->AddPage();
 
 $pdf->Image('connie.jpg', 0, 0, 210, 297, 'JPG', '', '', false);
 
-$pdf->SetFont('Tandelle', '', 110, '', true);
+$pdf->SetFont('league-gothic', '', 100, '', true);
 #$pdf->SetFont('Oswald', '', 70, '', true);
 $title = strip_tags($_POST['title']);
 $html = <<<EOD
@@ -68,10 +68,10 @@ EOD;
 $pdf->writeHTMLCell(200, 200, 20, 35, $html, 0, 1, 0, true, '', true);
 
 
-$pdf->SetFont('Tandelle', '', 90, '', true);
+$pdf->SetFont('league-gothic', '', 70, '', true);
 $teaser = strip_tags($_POST['teaser']);
 $html = <<<EOD
-<div  style="color:#fff;margin:0;line-height:85em"><p>$teaser</p></div>
+<div  style="color:#fff;margin:0;line-height:80em"><p>$teaser</p></div>
 EOD;
 $pdf->writeHTMLCell(80, 200, 130, 75, $html, 0, 1, 0, true, '', true);
 
