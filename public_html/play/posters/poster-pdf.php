@@ -43,9 +43,6 @@ $pdf->setPrintHeader(false);
 $pdf->setPrintFooter(false);
 
 
-// set default monospaced font
-$pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-
 // set margins
 $pdf->SetMargins(0,0,0);
 
@@ -56,30 +53,46 @@ $pdf->SetAutoPageBreak(false, 0);
 // set default font subsetting mode
 $pdf->setFontSubsetting(true);
 
-// Set font
-// dejavusans is a UTF-8 Unicode font, if you only need to
-// print standard ASCII chars, you can use core fonts like
-// helvetica or times to reduce file size.
-$pdf->SetFont('dejavusans', '', 14, '', true);
-
 // Add a page
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
 
-$pdf->Image('images/background.jpg', 0, 0, 210, 297, 'JPG', '', '', false);
+$pdf->Image('connie.jpg', 0, 0, 210, 297, 'JPG', '', '', false);
 
+$pdf->SetFont('Tandelle', '', 110, '', true);
+#$pdf->SetFont('Oswald', '', 70, '', true);
+$title = strip_tags($_POST['title']);
+$html = <<<EOD
+<h1 style="color:#fff;margin:0;line-height:1em">$title</h1>
+EOD;
+$pdf->writeHTMLCell(200, 200, 20, 35, $html, 0, 1, 0, true, '', true);
+
+
+$pdf->SetFont('Tandelle', '', 90, '', true);
+$teaser = strip_tags($_POST['teaser']);
+$html = <<<EOD
+<div  style="color:#fff;margin:0;line-height:85em"><p>$teaser</p></div>
+EOD;
+$pdf->writeHTMLCell(80, 200, 130, 75, $html, 0, 1, 0, true, '', true);
+
+
+$pdf->Rect(10, 237, 190, 50, 'F', '', array(59,118,210));
 
 // Set some content to print
+$pdf->SetFont('AlegreyaSans-ExtraBold', '', 25, '', true);
+$name = strip_tags($_POST['name']);
 $html = <<<EOD
-<div style="color:#fff">
-<h1 style="margin:0">Anytown Stoolball Club</h1>
-<p style="margin:0">Tuesdays and Thursdays from May to August</p>
-<p style="margin:0">Call Jo Bloggs on 01234 567890 or email jo.bloggs@example.org</p>
-</div>
+<h2 style="color:#fff;margin:0;line-height:1em">$name</h2>
 EOD;
+$pdf->writeHTMLCell(200, 100, 20, 247, $html, 0, 1, 0, true, '', true);
 
-// Print text using writeHTMLCell()
-$pdf->writeHTMLCell(200, 100, 20, 235, $html, 0, 1, 0, true, '', true);
+$pdf->SetFont('AlegreyaSans-Regular', '', 16, '', true);
+$details = nl2br(strip_tags($_POST['details']));
+$html = <<<EOD
+<p style="color:#fff;margin:0;line-height:20em;">$details</p>
+EOD;
+$pdf->writeHTMLCell(175, 100, 20, 253, $html, 0, 1, 0, true, '', true);
+
 
 // ---------------------------------------------------------
 
