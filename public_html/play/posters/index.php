@@ -22,14 +22,14 @@ class CurrentPage extends StoolballPage
         <h1>Create a poster</h1>
         <p>Create a professional poster to promote your league, club or tournament. Simply fill in your details and click 'Download poster'.</p>
         <div id="poster-preview">
-        <img src="connie-preview.jpg" alt="Poster preview: A female player in blue and yellow celebrates a catch" width="100%" />
+        <img src="./designs/connie-preview.jpg" alt="Poster preview: A female player in blue and yellow celebrates a catch" width="100%" />
         <p id="preview-title" role="presentation"></p>
         <p id="preview-slogan" role="presentation"></p>
         <p id="preview-name" role="presentation"></p>
         <p id="preview-details" role="presentation"></p>
         </div>
         
-        <form method="post" action="poster-pdf.php" class="poster">
+        <form method="post" action="./download/" class="poster">
             <label for="title">Title</label>
             <input type="text" name="title" id="title" value="Play stoolball" maxlength="18" />
             
