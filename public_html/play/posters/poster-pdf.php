@@ -61,7 +61,7 @@ $pdf->Image('connie.jpg', 0, 0, 210, 297, 'JPG', '', '', false);
 
 $pdf->SetFont('league-gothic', '', 100, '', true);
 #$pdf->SetFont('Oswald', '', 70, '', true);
-$title = strip_tags($_POST['title']);
+$title = htmlspecialchars($_POST['title']);
 $html = <<<EOD
 <h1 style="color:#fff;margin:0;line-height:1em">$title</h1>
 EOD;
@@ -69,9 +69,9 @@ $pdf->writeHTMLCell(200, 200, 20, 35, $html, 0, 1, 0, true, '', true);
 
 
 $pdf->SetFont('league-gothic', '', 70, '', true);
-$teaser = strip_tags($_POST['teaser']);
+$slogan = htmlspecialchars($_POST['slogan']);
 $html = <<<EOD
-<div  style="color:#fff;margin:0;line-height:80em"><p>$teaser</p></div>
+<div  style="color:#fff;margin:0;line-height:80em"><p>$slogan</p></div>
 EOD;
 $pdf->writeHTMLCell(80, 200, 130, 75, $html, 0, 1, 0, true, '', true);
 
@@ -80,14 +80,14 @@ $pdf->Rect(10, 237, 190, 50, 'F', '', array(59,118,210));
 
 // Set some content to print
 $pdf->SetFont('AlegreyaSans-ExtraBold', '', 25, '', true);
-$name = strip_tags($_POST['name']);
+$name = htmlspecialchars($_POST['name']);
 $html = <<<EOD
 <h2 style="color:#fff;margin:0;line-height:1em">$name</h2>
 EOD;
 $pdf->writeHTMLCell(200, 100, 20, 247, $html, 0, 1, 0, true, '', true);
 
 $pdf->SetFont('AlegreyaSans-Regular', '', 16, '', true);
-$details = nl2br(strip_tags($_POST['details']));
+$details = nl2br(htmlspecialchars($_POST['details']));
 $html = <<<EOD
 <p style="color:#fff;margin:0;line-height:20em;">$details</p>
 EOD;
