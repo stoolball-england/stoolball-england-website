@@ -27,5 +27,12 @@ if (typeof(jQuery)!=='undefined') {
 		$("#preview-slogan").fitText(.25, { minFontSize: 30, maxFontSize: 45 });
 		$("#preview-name").fitText(1.69);
 		$("#preview-details").fitText(3.1);
+		
+		// Wire up Google Analytics event tracking
+		if (typeof(_gaq) !== 'undefined') {
+			$('#download').click(function() {
+				_trackEvent('pdf', 'download', 'poster', 1);
+			});
+		}
 	});
 }

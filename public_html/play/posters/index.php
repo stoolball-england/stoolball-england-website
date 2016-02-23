@@ -48,7 +48,7 @@ Call Jo Bloggs on 01234 567890 or email jo.bloggs@example.org
             </textarea>
             
             <div class="buttonGroup">
-            <input type="submit" value="Download poster" class="primary" />
+            <input type="submit" value="Download poster" class="primary" id="download" />
             </div>
         </form>
         
