@@ -21,28 +21,21 @@ class CurrentPage extends StoolballPage
 ?>
         <h1>Create a poster</h1>
         <p>Create a professional poster to promote your league, club or tournament. Simply fill in your details and click 'Download poster'.</p>
-        <div id="poster-preview" data-design="0" class="connie">
-        <img src="./designs/connie-preview.jpg" alt="Poster preview: A female player in blue and yellow celebrates a catch" width="100%" />
-        <p id="preview-title" role="presentation"></p>
-        <p id="preview-slogan" role="presentation"></p>
-        <p id="preview-name" role="presentation"></p>
-        <p id="preview-details" role="presentation"></p>
-        </div>
         
         <form method="post" action="./download/" class="poster">
             <input type="hidden" name="design" id="design" value="connie" />
             
             <label for="title">Title</label>
-            <input type="text" name="title" id="title" value="Play stoolball" maxlength="18" />
+            <input type="text" name="title" id="title" value="Play stoolball" />
             
             <label for="slogan">Slogan</label>
-            <input type="text" name="slogan" id="slogan" value="Fast, fun family sport" maxlength="27" />
+            <input type="text" name="slogan" id="slogan" value="Fast, fun family sport" />
             
             <label for="name">League, club or tournament</label>
-            <input type="text" name="name" id="name" value="Anytown Stoolball Club" maxlength="40" />
+            <input type="text" name="name" id="name" value="Anytown Stoolball Club" />
             
             <label for="details">Details <span class="hint">(When, where and who to contact)</span></label>
-            <textarea name="details" id="details" maxlength="300">
+            <textarea name="details" id="details">
 Tuesdays from May to August
 Anytown Recreation Ground
 

@@ -1,6 +1,63 @@
 if (typeof(jQuery)!=='undefined') {
 	$(function(){
 		
+		// Define the available designs
+		var designs = [];
+		designs.push({
+			id: "connie",
+			preview: "./designs/connie-preview.jpg",
+			alt: "A female player in blue and yellow celebrates a catch",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 80,
+			maxLengthDetails: 300
+		});
+		designs.push({
+			id: "connie-this-girl-can",
+			preview: "./designs/connie-this-girl-can-preview.jpg",
+			alt: "A female player in blue and yellow celebrates a catch. Also features 'This Girl Can' branding.",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 50,
+			maxLengthDetails: 300
+		});
+		
+		// Provide a way to update the preview with a new design
+		function showPreviewOfDesign(designIndex, withFade) {
+
+			var preview = $("#poster-preview");
+			preview.fadeTo(withFade ? 300 : 0, 0.1, function(){
+				var design = designs[designIndex];
+				preview.removeClass().addClass(design.id);
+				preview.data("design", designIndex);
+				
+				// Update the design id to submit
+				$("#design").val(design.id);
+				
+				// Update the image
+				$("img", preview).attr("src", design.preview).attr("alt", "Poster preview: " + design.alt);
+				
+				// Update the maxlengths on the data entry fields
+				$("#title").attr("maxlength", design.maxLengthTitle);
+				$("#slogan").attr("maxlength", design.maxLengthSlogan);
+				$("#name").attr("maxlength", design.maxLengthName);
+				$("#details").attr("maxlength", design.maxLengthDetails);				
+				
+			
+			}).fadeTo(withFade ? 300 : 0, 1);
+		}
+
+		// By default, show a preview of the first design
+		$('<div id="poster-preview">' +
+		      '<img width="100%" />' +
+		      '<p id="preview-title"></p>' +
+		      '<p id="preview-slogan"></p>' +
+		      '<p id="preview-name"></p>' +
+		      '<p id="preview-details"></p>' +
+	       '</div>').insertBefore("form.poster");
+		showPreviewOfDesign(0, false);
+		
+		// Wire up dynamic updating of the preview, starting with reflecting text as it's typed
 		function wireUpPreview(fieldSelector, previewSelector){
 			var field = $(fieldSelector);
 			function updatePreview() {
@@ -28,35 +85,7 @@ if (typeof(jQuery)!=='undefined') {
 		$("#preview-name").fitText(1.69);
 		$("#preview-details").fitText(3.1);
 		
-		// Wire up Google Analytics event tracking
-		if (typeof(_gaq) !== 'undefined') {
-			$('#download').click(function() {
-				_trackEvent('pdf', 'download', 'poster', 1);
-			});
-		}
-		
-		// Cycle through designs
-		var designs = [];
-		designs.push({
-			id: "connie",
-			preview: "./designs/connie-preview.jpg",
-			alt: "A female player in blue and yellow celebrates a catch",
-			maxLengthTitle: 18,
-			maxLengthSlogan: 27,
-			maxLengthName: 80,
-			maxLengthDetails: 300
-		});
-		designs.push({
-			id: "connie-this-girl-can",
-			preview: "./designs/connie-this-girl-can-preview.jpg",
-			alt: "A female player in blue and yellow celebrates a catch. Also features 'This Girl Can' branding.",
-			maxLengthTitle: 18,
-			maxLengthSlogan: 27,
-			maxLengthName: 50,
-			maxLengthDetails: 300
-		});
-		
-		
+		// Buttons to cycle through designs
 		var nav = $("<nav>").insertBefore("#poster-preview").wrap("<div>");
 		nav.append($('<a href="#" class="action-button back">Previous design</a>').click(function(e){
 			e.preventDefault();
@@ -69,7 +98,7 @@ if (typeof(jQuery)!=='undefined') {
 				currentDesignId = designs.length -1;
 			}
 
-			showNextDesign(currentDesignId);
+			showPreviewOfDesign(currentDesignId, true);
 		}));
 		
 		nav.append($('<a href="#" class="action-button forward">Next design</a>').click(function(e){
@@ -83,31 +112,14 @@ if (typeof(jQuery)!=='undefined') {
 				currentDesignId = 0;
 			}
 
-			showNextDesign(currentDesignId);
+			showPreviewOfDesign(currentDesignId, true);
 		}));
 		
-		function showNextDesign(designIndex) {
-
-			var preview = $("#poster-preview");
-			preview.fadeTo(300, 0.1, function(){
-				var design = designs[designIndex];
-				preview.removeClass().addClass(design.id);
-				preview.data("design", designIndex);
-				
-				// Update the design id to submit
-				$("#design").val(design.id);
-				
-				// Update the image
-				$("img", preview).attr("src", design.preview).attr("alt", "Poster preview: " + design.alt);
-				
-				// Update the maxlengths on the data entry fields
-				$("#title").attr("maxlength", design.maxLengthTitle);
-				$("#slogan").attr("maxlength", design.maxLengthSlogan);
-				$("#name").attr("maxlength", design.maxLengthName);
-				$("#details").attr("maxlength", design.maxLengthDetails);				
-				
-			
-			}).fadeTo(300, 1);
+		// Wire up Google Analytics event tracking
+		if (typeof(_gaq) !== 'undefined') {
+			$('#download').click(function() {
+				_trackEvent('pdf', 'download', 'poster', 1);
+			});
 		}
 	});
 }
