@@ -9,7 +9,8 @@ class CurrentPage extends StoolballPage
 	{
 	    $this->SetPageTitle('Create a poster');
         ?>
-        <link href='https://fonts.googleapis.com/css?family=Alegreya+Sans:800,500' rel='stylesheet' type='text/css' />
+        <link href="designs/posters.css" rel="stylesheet" type="text/css" />
+        <link href='https://fonts.googleapis.com/css?family=Alegreya+Sans:800,500,500italic' rel='stylesheet' type='text/css' />
         <script src="//use.edgefonts.net/league-gothic.js"></script>
         <?php
         $this->LoadClientScript('https://cdnjs.cloudflare.com/ajax/libs/FitText.js/1.2.0/jquery.fittext.min.js');

@@ -1,0 +1,27 @@
+
+/* Create a poster 
+   Poster previews are 400x567px
+ */
+#poster-preview { position:relative; margin: 1em 0; max-width: 400px; outline: 1px solid #ccc; overflow: hidden; }
+
+/* height is (pixels/567)*100 
+   width is (pixels/400)*100 */
+#poster-preview p { position: absolute; margin: 0; color: #fff; }  
+.connie #preview-title, .connie-this-girl-can #preview-title { top: 5.29%; left: 10%; width: 80%; font: normal 67px 'league-gothic'; }
+.connie #preview-slogan, .connie-this-girl-can #preview-slogan { top: 44.97%; left: 62.25%; width: 30%; font: normal 45px/1.15em 'league-gothic'; }
+.connie #preview-name, .connie-this-girl-can #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
+.connie-this-girl-can #preview-name { width: 52%; }
+.connie #preview-details, .connie-this-girl-can #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
+
+.ashurst #preview-title { top: 5.29%; left: 9%; width: 82%; font: normal 70px 'league-gothic'; color: #173050; text-align: center; }
+.ashurst #preview-slogan { top: 23%; left: 9%; width: 82%; font: italic 500 37px/1.15em 'Alegreya Sans'; text-align: center; color: #335147; }
+.ashurst #preview-name { top: 74%; left: 9%; width: 82%; font: 800 23px 'Alegreya Sans'; text-align: center; }
+.ashurst #preview-details { top: 82%; left: 9%; width: 82%; font: 500 12px 'Alegreya Sans'; text-align: center; }
+
+
+form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
+form.poster label { font-weight: bold; margin: 1em 0 .5em; }
+form.poster input[type='text'], form.poster textarea { border-radius: 5px; padding: 5px; border: 1px solid #ccc; font-size: 1.2em; }
+form.poster textarea { height: 10em; }
+form.poster .hint { font-weight: normal; display: block;}
+form.poster .buttonGroup { margin-top: 0; } 

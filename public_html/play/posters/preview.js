@@ -4,13 +4,46 @@ if (typeof(jQuery)!=='undefined') {
 		// Define the available designs
 		var designs = [];
 		designs.push({
+			id: "ashurst",
+			preview: "./designs/ashurst-preview.jpg",
+			alt: "A young male player bowling to an older male",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 50,
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 70,
+			fontSizeMultiplierSlogan: .9,
+			fontSizeMinSlogan: 20,
+			fontSizeMaxSlogan: 37,
+			fontSizeMultiplierName: 1.425,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 2.75,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+		designs.push({
 			id: "connie",
 			preview: "./designs/connie-preview.jpg",
 			alt: "A female player in blue and yellow celebrates a catch",
 			maxLengthTitle: 18,
 			maxLengthSlogan: 27,
 			maxLengthName: 80,
-			maxLengthDetails: 300
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 67,
+			fontSizeMultiplierSlogan: .25,
+			fontSizeMinSlogan: 30,
+			fontSizeMaxSlogan: 45,
+			fontSizeMultiplierName: 1.69,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
 		});
 		designs.push({
 			id: "connie-this-girl-can",
@@ -19,7 +52,19 @@ if (typeof(jQuery)!=='undefined') {
 			maxLengthTitle: 18,
 			maxLengthSlogan: 27,
 			maxLengthName: 50,
-			maxLengthDetails: 300
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 67,
+			fontSizeMultiplierSlogan: .25,
+			fontSizeMinSlogan: 30,
+			fontSizeMaxSlogan: 45,
+			fontSizeMultiplierName: 1.1,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
 		});
 		
 		// Provide a way to update the preview with a new design
@@ -43,8 +88,30 @@ if (typeof(jQuery)!=='undefined') {
 				$("#name").attr("maxlength", design.maxLengthName);
 				$("#details").attr("maxlength", design.maxLengthDetails);				
 				
+				// Responsive text size
+				responsiveTextSize("#preview-title", design.fontSizeMultiplierTitle, design.fontSizeMinTitle, design.fontSizeMaxTitle);
+				responsiveTextSize("#preview-slogan", design.fontSizeMultiplierSlogan, design.fontSizeMinSlogan, design.fontSizeMaxSlogan);
+				responsiveTextSize("#preview-name", design.fontSizeMultiplierName, design.fontSizeMinName, design.fontSizeMaxName);
+				responsiveTextSize("#preview-details", design.fontSizeMultiplierDetails, design.fontSizeMinDetails, design.fontSizeMaxDetails);
 			
 			}).fadeTo(withFade ? 300 : 0, 1);
+		}
+		
+		function responsiveTextSize(elementSelector, multiplier, minimumSize, maximumSize) {
+			
+			if (minimumSize || maximumSize) {
+				var options = {};
+				if (minimumSize) {
+					options.minFontSize = minimumSize;
+				}
+				if (maximumSize) {
+					options.maxFontSize = maximumSize;
+				}
+				$(elementSelector).fitText(multiplier, options);
+			} 
+			else {
+				$(elementSelector).fitText(multiplier);
+			}
 		}
 
 		// By default, show a preview of the first design
@@ -78,12 +145,6 @@ if (typeof(jQuery)!=='undefined') {
 		wireUpPreview("#slogan", "#preview-slogan");
 		wireUpPreview("#name", "#preview-name");
 		wireUpPreview("#details", "#preview-details");
-		
-		// Responsive text size
-		$("#preview-title").fitText(.44, { minFontSize: 40, maxFontSize: 67 });
-		$("#preview-slogan").fitText(.25, { minFontSize: 30, maxFontSize: 45 });
-		$("#preview-name").fitText(1.69);
-		$("#preview-details").fitText(3.1);
 		
 		// Buttons to cycle through designs
 		var nav = $("<nav>").insertBefore("#poster-preview").wrap("<div>");
