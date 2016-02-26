@@ -43,7 +43,7 @@ if (typeof(jQuery)!=='undefined') {
 			alt: "A female player in blue and yellow celebrates a catch",
 			maxLengthTitle: 18,
 			maxLengthSlogan: 27,
-			maxLengthName: 40,
+			maxLengthName: 80,
 			maxLengthDetails: 300
 		});
 		designs.push({
@@ -52,7 +52,7 @@ if (typeof(jQuery)!=='undefined') {
 			alt: "A female player in blue and yellow celebrates a catch. Also features 'This Girl Can' branding.",
 			maxLengthTitle: 18,
 			maxLengthSlogan: 27,
-			maxLengthName: 25,
+			maxLengthName: 50,
 			maxLengthDetails: 300
 		});
 		

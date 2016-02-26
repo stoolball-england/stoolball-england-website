@@ -8,6 +8,13 @@ date_default_timezone_set('Europe/London');
 require_once('tcpdf-config.php');
 require_once($_SERVER['DOCUMENT_ROOT'] . '/../vendor/tecnickcom/tcpdf/tcpdf.php');
 
+// Validate the requested design
+$design = $_POST["design"];
+if (!preg_match("/^[a-z0-9-]+$/", $design) or !file_exists("../designs/$design.class.php") or !file_exists("../designs/$design.jpg")) {
+    http_response_code(400);
+    exit();
+} 
+
 /* create new PDF document
  * Page orientation (P=portrait, L=landscape)
  * Document unit of measure [pt=point, mm=millimeter, cm=centimeter, in=inch].
@@ -30,44 +37,27 @@ $pdf->AddPage();
 
 function sanitisePostedData($field, $maxlength) {
     if (isset($_POST[$field])) {
-        $value = trim($_POST[$field]);
+        $value = $_POST[$field];
         $value = mb_strimwidth($value, 0, $maxlength, '', "UTF-8");
         return htmlspecialchars($value);
     }
     else return '';
 }
 
-function buildHTML($element, $text, $line_height=0) {
-    $line_height = (int)$line_height;
-    if ($line_height) {
-        $line_height = $line_height . 'em';
-    }
-    $html = <<<EOD
-<$element style="line-height:$line_height">$text</h1>
-EOD;
-return $html;
-}
-
-// Add the background image, and draw a box for the text 
-$pdf->Image('../designs/connie.jpg', 10, 10, 190, 277, 'JPG', '', '', false);
-$pdf->SetTextColor(255,255,255);
-
+// Sanitise the submitted data, and trim to the longest length allowed by any design
+// (because maxlength is not applied as you switch designs, so it can be longer than the poster is designed for)
 $title = sanitisePostedData('title', 18);
-$pdf->SetTitle($title);
-$pdf->SetFont('league-gothic', '', 100, '', true);
-$pdf->writeHTMLCell(200, 200, 18, 35, buildHTML('h1', $title), 0, 1, 0);
-
 $slogan = sanitisePostedData('slogan', 27);
-$pdf->SetFont('league-gothic', '', 70, '', true);
-$pdf->writeHTMLCell(80, 200, 130, 135, buildHTML('p', $slogan, 80), 0, 1, 0);
-
-$name = sanitisePostedData('name', 40);
-$pdf->SetFont('AlegreyaSans-ExtraBold', '', 25, '', true);
-$pdf->writeHTMLCell(200, 100, 18, 248, buildHTML('h2', $name), 0, 1, 0);
-
+$name = sanitisePostedData('name', 80);
 $details = nl2br(sanitisePostedData('details', 300));
-$pdf->SetFont('AlegreyaSans-Regular', '', 16, '', true);
-$pdf->writeHTMLCell(175, 100, 18, 254, buildHTML('p', $details, 20), 0, 1, 0);
+
+// Add the title and background image 
+$pdf->SetTitle($title);
+$pdf->Image("../designs/$design.jpg", 10, 10, 190, 277, 'JPG', '', '', false);
+
+// Pass the data to the specific poster design to update $pdf
+require_once("../designs/$design.class.php");
+$poster = new PosterDesign($pdf, $title, $slogan, $name, $details);
 
 // Close and output PDF document
 $pdf->Output('stoolball-poster.pdf', 'I');
