@@ -378,7 +378,7 @@ $(function()
 	
 	// Add batsman button
 	$("tr.extras:first th").attr("colspan", "2")
-		.before('<td colspan="2" class="add-one-container"><a href="#" class="add-one add-batsman">Add a batsman</a></td>')
+		.before('<td colspan="2" class="add-one-container"><a href="#" class="action-button add-one add-batsman">Add a batsman</a></td>')
 		.siblings().children(".add-one").click(function(e) {
 			e.preventDefault();
 			var lastRow = $(this.parentNode.parentNode.previousSibling);
@@ -393,7 +393,7 @@ $(function()
 	}).hide();
 	
 	// Add over button
-	$('<a href="#" class="add-one add-over">Add an over</a>').insertAfter(".bowling").click(function(e) {
+	$('<a href="#" class="action-button add-one add-over">Add an over</a>').insertAfter(".bowling").click(function(e) {
 		e.preventDefault();
 		var lastRow = $('.bowling tbody tr:last-child');
 		var newRow = lastRow.clone().insertAfter(lastRow);

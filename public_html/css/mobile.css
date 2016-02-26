@@ -134,14 +134,27 @@ input.year { width: 3em; }
 .buttonGroup { position: relative; margin: 1em 0 0 ; padding: .5em 0 0; }
 
 .buttonGroup .primary { display: block; font: normal 1.3em 'Trebuchet MS', Arial, Helvetica, sans-serif; margin: 0; padding: 10px; background: #008044; color: #fff; text-decoration: none; text-align: center; box-shadow: 0px 0px 9px 2px rgba(0, 0, 0, 0.2) inset; border: none; border-radius: 5px; }
-.buttonGroup .primary:hover, .form .primary:focus { cursor: pointer; background: #00a000; }
+.buttonGroup .primary:hover, .form .primary:focus { cursor: pointer; background: #008800; }
 .buttonGroup .primary:active { position:relative; top:1px; }
 .buttonGroup .cancel { position: absolute; right: 0; bottom: 0; }
 
-/*  Button to add one more item in a list */
-.add-one:before { content: '+'; padding: 3px; font-weight: bold; font-size: 15px; line-height: 9px; vertical-align: baseline; position: relative; top: 1px; background: #00aa00; border-radius: 34px; margin-right: 6px; display: inline-block; }
-.add-one:link, .add-one:visited { display: inline-block; border-radius: 5px; padding: 2px 10px 2px 7px; background: #008044; color: #fff; text-decoration: none; border: 1px solid #999; font-size: .8em; }
-.add-one:hover, .add-one:focus, .add-one:active { background: #008800;}
+/* Link presented as a button which is an important action, but not the primary action on the page
+ * The button incorporates a Unicode icon, added by an additional specific class which customises an .action-button.
+ * 
+ * <a href="#" class="action-button specific-class" />
+ * 
+ */
+.action-button:before, .action-button:after { display: inline-block; line-height: 9px; padding: 3px; position: relative; vertical-align: baseline; text-align: center; border-radius: 34px; font-weight: bold; background: #00aa00; }
+.action-button:link, .action-button:visited { display: inline-block; font-size: .8em; padding: 2px 10px 2px 7px; border-radius: 5px; background: #008044; color: #fff; text-decoration: none; }
+.action-button:hover, .action-button:focus, .action-button:active { background: #008800;}
+
+/* .action-button to add one more item in a list */
+.add-one:before { content: '+'; font-size: 15px; margin: 2px 6px 0 0; }
+
+/* .action-buttons to navigate to the next and previous items in a sequence */
+.back { margin-right: 5px; }
+.back:before { content: '◄'; font-size: 10px; margin: -1px 6px 0 0; }
+.forward:after { content: '►'; font-size: 10px; margin: -1px 0 0 6px; }
 
 
 /* Rules of stoolball */
@@ -371,10 +384,11 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
 /* height is (pixels/567)*100 
    width is (pixels/400)*100 */
 #poster-preview p { position: absolute; margin: 0; color: #fff; }  
-#preview-title { top: 5.29%; left: 10%; width: 80%; font: normal 67px 'league-gothic'; }
-#preview-slogan { top: 44.97%; left: 62.25%; width: 30%; font: normal 45px/1.15em 'league-gothic'; }
-#preview-name { top: 81.48%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
-#preview-details { top: 85.54%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
+.connie #preview-title, .connie-this-girl-can #preview-title { top: 5.29%; left: 10%; width: 80%; font: normal 67px 'league-gothic'; }
+.connie #preview-slogan, .connie-this-girl-can #preview-slogan { top: 44.97%; left: 62.25%; width: 30%; font: normal 45px/1.15em 'league-gothic'; }
+.connie #preview-name, .connie-this-girl-can #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
+.connie-this-girl-can #preview-name { width: 52%; }
+.connie #preview-details, .connie-this-girl-can #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
 
 form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
 form.poster label { font-weight: bold; margin: 1em 0 .5em; }
