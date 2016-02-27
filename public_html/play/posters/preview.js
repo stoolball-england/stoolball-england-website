@@ -123,6 +123,21 @@ if (typeof(jQuery)!=='undefined') {
 			fontSizeMinDetails: null,
 			fontSizeMaxDetails: null
 		});
+		designs.push({
+			id: "long-shots",
+			preview: "./designs/long-shots-preview.jpg",
+			alt: "A female batter with the caption 'Sometimes the long shots are worth it' and 'This Girl Can' branding.",
+			maxLengthTitle: 0,
+			maxLengthSlogan: 0,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierName: 1.69,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
 						
 		// Provide a way to update the preview with a new design
 		function showPreviewOfDesign(designIndex, withFade) {

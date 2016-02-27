@@ -24,6 +24,9 @@
 .ashurst #preview-name { top: 74%; left: 9%; width: 82%; font: 800 23px 'Alegreya Sans'; text-align: center; }
 .ashurst #preview-details { top: 82%; left: 9%; width: 82%; font: 500 12px 'Alegreya Sans'; text-align: center; }
 
+.long-shots #preview-name { top: 82%; left: 11%; width: 78%; font: 800 19px 'Alegreya Sans'; }
+.long-shots #preview-details { top: 86%; left: 11%; width: 78%; font: 500 10.3px 'Alegreya Sans'; }
+
 form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
 form.poster label { font-weight: bold; margin: 1em 0 .5em; }
 form.poster input[type='text'], form.poster textarea { border-radius: 5px; padding: 5px; border: 1px solid #ccc; font-size: 1.2em; }
