@@ -371,10 +371,10 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
 /* height is (pixels/567)*100 
    width is (pixels/400)*100 */
 #poster-preview p { position: absolute; margin: 0; color: #fff; }  
-#preview-title { top: 5.29%; left: 11.75%; width: 80%; font: normal 67px 'league-gothic'; }
+#preview-title { top: 5.29%; left: 10%; width: 80%; font: normal 67px 'league-gothic'; }
 #preview-slogan { top: 44.97%; left: 62.25%; width: 30%; font: normal 45px/1.15em 'league-gothic'; }
-#preview-name { top: 81.48%; left: 11.75%; width: 80%; font: 800 19px 'Alegreya Sans'; }
-#preview-details { top: 85.54%; left: 11.75%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
+#preview-name { top: 81.48%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
+#preview-details { top: 85.54%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
 
 form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
 form.poster label { font-weight: bold; margin: 1em 0 .5em; }

@@ -49,14 +49,13 @@ return $html;
 }
 
 // Add the background image, and draw a box for the text 
-$pdf->Image('../designs/connie.jpg', 0, 0, 210, 297, 'JPG', '', '', false);
-$pdf->Rect(10, 237, 190, 50, 'F', '', array(59,118,210));
+$pdf->Image('../designs/connie.jpg', 10, 10, 190, 277, 'JPG', '', '', false);
 $pdf->SetTextColor(255,255,255);
 
 $title = sanitisePostedData('title', 18);
 $pdf->SetTitle($title);
 $pdf->SetFont('league-gothic', '', 100, '', true);
-$pdf->writeHTMLCell(200, 200, 20, 35, buildHTML('h1', $title), 0, 1, 0);
+$pdf->writeHTMLCell(200, 200, 18, 35, buildHTML('h1', $title), 0, 1, 0);
 
 $slogan = sanitisePostedData('slogan', 27);
 $pdf->SetFont('league-gothic', '', 70, '', true);
@@ -64,11 +63,11 @@ $pdf->writeHTMLCell(80, 200, 130, 135, buildHTML('p', $slogan, 80), 0, 1, 0);
 
 $name = sanitisePostedData('name', 40);
 $pdf->SetFont('AlegreyaSans-ExtraBold', '', 25, '', true);
-$pdf->writeHTMLCell(200, 100, 20, 247, buildHTML('h2', $name), 0, 1, 0);
+$pdf->writeHTMLCell(200, 100, 18, 248, buildHTML('h2', $name), 0, 1, 0);
 
 $details = nl2br(sanitisePostedData('details', 300));
 $pdf->SetFont('AlegreyaSans-Regular', '', 16, '', true);
-$pdf->writeHTMLCell(175, 100, 20, 253, buildHTML('p', $details, 20), 0, 1, 0);
+$pdf->writeHTMLCell(175, 100, 18, 254, buildHTML('p', $details, 20), 0, 1, 0);
 
 // Close and output PDF document
 $pdf->Output('stoolball-poster.pdf', 'I');
