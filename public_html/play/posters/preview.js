@@ -108,7 +108,22 @@ if (typeof(jQuery)!=='undefined') {
 			fontSizeMinDetails: null,
 			fontSizeMaxDetails: null
 		});
-				
+		designs.push({
+			id: "georgie",
+			preview: "./designs/georgie-preview.jpg",
+			alt: "A female player fielding a ball with the caption 'I don't accept boundaries' and 'This Girl Can' branding.",
+			maxLengthTitle: 0,
+			maxLengthSlogan: 0,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierName: 1.69,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+						
 		// Provide a way to update the preview with a new design
 		function showPreviewOfDesign(designIndex, withFade) {
 
@@ -125,10 +140,10 @@ if (typeof(jQuery)!=='undefined') {
 				$("img", preview).attr("src", design.preview).attr("alt", "Poster preview: " + design.alt);
 				
 				// Update the maxlengths on the data entry fields
-				$("#title").attr("maxlength", design.maxLengthTitle);
-				$("#slogan").attr("maxlength", design.maxLengthSlogan);
-				$("#name").attr("maxlength", design.maxLengthName);
-				$("#details").attr("maxlength", design.maxLengthDetails);				
+				maxLengthOrDisabled("#title", design.maxLengthTitle);
+				maxLengthOrDisabled("#slogan", design.maxLengthSlogan);
+				maxLengthOrDisabled("#name", design.maxLengthName);
+				maxLengthOrDisabled("#details", design.maxLengthDetails);
 				
 				// Responsive text size
 				responsiveTextSize("#preview-title", design.fontSizeMultiplierTitle, design.fontSizeMinTitle, design.fontSizeMaxTitle);
@@ -137,6 +152,14 @@ if (typeof(jQuery)!=='undefined') {
 				responsiveTextSize("#preview-details", design.fontSizeMultiplierDetails, design.fontSizeMinDetails, design.fontSizeMaxDetails);
 			
 			}).fadeTo(withFade ? 300 : 0, 1);
+		}
+		
+		function maxLengthOrDisabled(elementSelector, maxlength) {
+			if (maxlength) {
+				$(elementSelector).attr("maxlength", maxlength).removeAttr("disabled");
+			} else {
+				$(elementSelector).attr("disabled", "disabled");
+			}
 		}
 		
 		function responsiveTextSize(elementSelector, multiplier, minimumSize, maximumSize) {
@@ -151,7 +174,7 @@ if (typeof(jQuery)!=='undefined') {
 				}
 				$(elementSelector).fitText(multiplier, options);
 			} 
-			else {
+			else if (multiplier) {
 				$(elementSelector).fitText(multiplier);
 			}
 		}
