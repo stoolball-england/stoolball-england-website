@@ -224,5 +224,8 @@ if (typeof(jQuery)!=='undefined') {
 				_trackEvent('pdf', 'download', 'poster', 1);
 			});
 		}
+		
+		// Preload previews
+		$.each(designs,function(){(new Image).src=this.preview;});
 	});
 }
