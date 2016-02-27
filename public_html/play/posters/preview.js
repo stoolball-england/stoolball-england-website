@@ -4,6 +4,48 @@ if (typeof(jQuery)!=='undefined') {
 		// Define the available designs
 		var designs = [];
 		designs.push({
+			id: "maria-this-girl-can",
+			preview: "./designs/maria-this-girl-can-preview.jpg",
+			alt: "A female player with a bat at the wicket, laughing. Also features 'This Girl Can' branding.",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 70,
+			fontSizeMultiplierSlogan: .9,
+			fontSizeMinSlogan: 20,
+			fontSizeMaxSlogan: 37,
+			fontSizeMultiplierName: 1.1,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+		designs.push({
+			id: "maria",
+			preview: "./designs/maria-preview.jpg",
+			alt: "A female player with a bat at the wicket, laughing",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 70,
+			fontSizeMultiplierSlogan: .9,
+			fontSizeMinSlogan: 20,
+			fontSizeMaxSlogan: 37,
+			fontSizeMultiplierName: 1.69,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+		designs.push({
 			id: "ashurst",
 			preview: "./designs/ashurst-preview.jpg",
 			alt: "A young male player bowling to an older male",
@@ -21,27 +63,6 @@ if (typeof(jQuery)!=='undefined') {
 			fontSizeMinName: null,
 			fontSizeMaxName: null,
 			fontSizeMultiplierDetails: 2.75,
-			fontSizeMinDetails: null,
-			fontSizeMaxDetails: null
-		});
-		designs.push({
-			id: "connie",
-			preview: "./designs/connie-preview.jpg",
-			alt: "A female player in blue and yellow celebrates a catch",
-			maxLengthTitle: 18,
-			maxLengthSlogan: 27,
-			maxLengthName: 80,
-			maxLengthDetails: 300,
-			fontSizeMultiplierTitle: .44,
-			fontSizeMinTitle: 40,
-			fontSizeMaxTitle: 67,
-			fontSizeMultiplierSlogan: .25,
-			fontSizeMinSlogan: 30,
-			fontSizeMaxSlogan: 45,
-			fontSizeMultiplierName: 1.69,
-			fontSizeMinName: null,
-			fontSizeMaxName: null,
-			fontSizeMultiplierDetails: 3.1,
 			fontSizeMinDetails: null,
 			fontSizeMaxDetails: null
 		});
@@ -66,7 +87,28 @@ if (typeof(jQuery)!=='undefined') {
 			fontSizeMinDetails: null,
 			fontSizeMaxDetails: null
 		});
-		
+		designs.push({
+			id: "connie",
+			preview: "./designs/connie-preview.jpg",
+			alt: "A female player in blue and yellow celebrates a catch",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .44,
+			fontSizeMinTitle: 40,
+			fontSizeMaxTitle: 67,
+			fontSizeMultiplierSlogan: .25,
+			fontSizeMinSlogan: 30,
+			fontSizeMaxSlogan: 45,
+			fontSizeMultiplierName: 1.69,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+				
 		// Provide a way to update the preview with a new design
 		function showPreviewOfDesign(designIndex, withFade) {
 

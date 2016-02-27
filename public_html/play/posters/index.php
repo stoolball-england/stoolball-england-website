@@ -36,12 +36,10 @@ class CurrentPage extends StoolballPage
             <input type="text" name="name" id="name" value="Anytown Stoolball Club" />
             
             <label for="details">Details <span class="hint">(When, where and who to contact)</span></label>
-            <textarea name="details" id="details">
-Tuesdays from May to August
+            <textarea name="details" id="details">Tuesdays from May to August
 Anytown Recreation Ground
 
-Call Jo Bloggs on 01234 567890 or email jo.bloggs@example.org
-            </textarea>
+Call Jo Bloggs on 01234 567890 or email jo.bloggs@example.org</textarea>
             
             <div class="buttonGroup">
             <input type="submit" value="Download poster" class="primary" id="download" />

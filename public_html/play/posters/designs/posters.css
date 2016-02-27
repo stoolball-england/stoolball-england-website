@@ -13,6 +13,12 @@
 .connie-this-girl-can #preview-name { width: 52%; }
 .connie #preview-details, .connie-this-girl-can #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
 
+.maria #preview-title, .maria-this-girl-can #preview-title { top: 5.29%; left: 9%; width: 82%; font: normal 70px 'league-gothic'; color: #fff; text-align: center; text-shadow: 1px 1px 0 #000; }
+.maria #preview-slogan, .maria-this-girl-can #preview-slogan { top: 21%; left: 9%; width: 82%; font: italic 500 37px/1.15em 'Alegreya Sans'; text-align: center; color: #fff; text-shadow: 1px 1px 0 #000; }
+.maria #preview-name, .maria-this-girl-can #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
+.maria-this-girl-can #preview-name { width: 52%; }
+.maria #preview-details, .maria-this-girl-can #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
+
 .ashurst #preview-title { top: 5.29%; left: 9%; width: 82%; font: normal 70px 'league-gothic'; color: #173050; text-align: center; }
 .ashurst #preview-slogan { top: 23%; left: 9%; width: 82%; font: italic 500 37px/1.15em 'Alegreya Sans'; text-align: center; color: #335147; }
 .ashurst #preview-name { top: 74%; left: 9%; width: 82%; font: 800 23px 'Alegreya Sans'; text-align: center; }
