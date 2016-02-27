@@ -39,3 +39,13 @@ th, td { padding: .2em .5em; }
 
 /* Forms */
 .buttonGroup .primary { font-size: 1em; }
+
+/* Create a poster 
+   width is % of 800px .content 
+ */
+#poster-preview { float: left; width: 50%; }
+form.poster { float: left; width: 46%; padding: 0 2%; }
+
+/* Twitter/Facebook buttons below content */
+.social { margin-top: 1em; clear: both; }
+
