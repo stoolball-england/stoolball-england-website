@@ -27,6 +27,12 @@
 .long-shots #preview-name { top: 82%; left: 11%; width: 78%; font: 800 19px 'Alegreya Sans'; }
 .long-shots #preview-details { top: 86%; left: 11%; width: 78%; font: 500 10.3px 'Alegreya Sans'; }
 
+.male-batsman #preview-title{ top: 5.29%; left: 10%; width: 80%; font: normal 67px 'league-gothic'; text-shadow: 1px 1px 0 #000; }
+.male-batsman #preview-slogan { top: 29%; left: 67%; width: 25%; font: italic normal 39px/1.15em 'Alegreya Sans'; text-shadow: 1px 1px 0 #000; }
+.male-batsman #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
+.male-batsman #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
+
+
 form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
 form.poster label { font-weight: bold; margin: 1em 0 .5em; }
 form.poster input[type='text'], form.poster textarea { border-radius: 5px; padding: 5px; border: 1px solid #ccc; font-size: 1.2em; }
