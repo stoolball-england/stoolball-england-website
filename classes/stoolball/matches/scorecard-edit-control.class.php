@@ -452,7 +452,7 @@ class ScorecardEditControl extends DataEditControl
 
 		$bowling_table = new XhtmlTable();
 		$bowling_table->SetCaption($bowling_team->GetName() . "'s bowling, over-by-over");
-		$bowling_table->SetCssClass("scorecard scorecardEditor bowling");
+		$bowling_table->SetCssClass("scorecard scorecardEditor bowling-scorecard bowling");
 
 		$over_header = new XhtmlCell(true, 'Balls bowled <span class="qualifier">(excluding extras)</span>');
 		$over_header->SetCssClass("numeric balls");

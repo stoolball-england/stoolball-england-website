@@ -193,7 +193,9 @@ class CurrentPage extends StoolballPage
 				if ($has_most_wickets)
 				{
 					# Show top bowlers
-					echo new PlayerStatisticsTable("Most wickets", "Wickets", $this->most_wickets, false);
+					$table = new PlayerStatisticsTable("Most wickets", "Wickets", $this->most_wickets, false);
+                    $table->SetCssClass($table->GetCssClass() . " bowling");
+                    echo $table;
 
 					if ($has_most_wickets >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets' . $this->statistics_query . '">Most wickets &#8211; view all and filter</a></p>';
                     echo '<p class="statsViewAll"><a href="/play/statistics/most-5-wickets' . $this->statistics_query . '">Most times taking 5 wickets in an innings</a></p>';
@@ -223,7 +225,9 @@ class CurrentPage extends StoolballPage
 				if ($has_catch_stats)
 				{
 					# Show top catchers
-					echo new PlayerStatisticsTable("Most catches", "Catches", $this->most_catches, false);
+					$table = new PlayerStatisticsTable("Most catches", "Catches", $this->most_catches, false);
+                    $table->SetCssClass($table->GetCssClass() . " bowling");
+                    echo $table;
 					if ($has_catch_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-catches' . $this->statistics_query . '">Most catches &#8211; view all and filter</a></p>';
                     echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . $this->statistics_query . '">Most catches in an innings &#8211; view all and filter</a></p>';
 				}
@@ -232,7 +236,9 @@ class CurrentPage extends StoolballPage
 
 				if ($has_run_outs)
 				{
-					echo new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->most_run_outs, false);
+					$table = new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->most_run_outs, false);
+                    $table->SetCssClass($table->GetCssClass() . " bowling");
+                    echo $table;
 					if ($has_run_outs >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs' . $this->statistics_query . '">Most run-outs &#8211; view all and filter</a></p>';
                     echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . $this->statistics_query . '">Most run-outs in an innings &#8211; view all and filter</a></p>';
 				}

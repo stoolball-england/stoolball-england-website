@@ -32,7 +32,7 @@ class BowlingPerformanceTable extends XhtmlTable
 
 		# Create the table header
 		$this->SetCaption(is_null($max_results) ? "All bowling performances, best first" : "Best bowling performances");
-		$this->SetCssClass('statsOverall');
+		$this->SetCssClass('statsOverall bowling');
 		$position = new XhtmlCell(true, "#");
 		$position->SetCssClass("position");
 		$player = new XhtmlCell(true, "Player");

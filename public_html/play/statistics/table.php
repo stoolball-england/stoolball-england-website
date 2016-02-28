@@ -293,12 +293,16 @@ switch ($this->which_statistic)
 
     case "most-catches-in-innings":
         require_once('stoolball/statistics/player-performance-table.class.php');
-        echo new PlayerPerformanceTable("Number of catches, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        $table = new PlayerPerformanceTable("Number of catches, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        $table->SetCssClass($table->GetCssClass() . " " . $this->statistic->CssClass());
+        echo $table;
         break;
 
     case "most-run-outs-in-innings":
         require_once('stoolball/statistics/player-performance-table.class.php');
-        echo new PlayerPerformanceTable("Number of run-outs, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        $table = new PlayerPerformanceTable("Number of run-outs, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
+        $table->SetCssClass($table->GetCssClass() . " " . $this->statistic->CssClass());
+        echo $table;
         break;
 
     case "most-wickets-by-bowler-and-catcher":
@@ -315,7 +319,9 @@ switch ($this->which_statistic)
 	default:
 		require_once('stoolball/statistics/player-statistics-table.class.php');
         $headers = $this->statistic->ColumnHeaders();
-		echo new PlayerStatisticsTable($this->statistic->Title(), $headers[0], $this->data, true, $this->paging->GetFirstResultOnPage());
+		$table = new PlayerStatisticsTable($this->statistic->Title(), $headers[0], $this->data, true, $this->paging->GetFirstResultOnPage());
+        $table->SetCssClass($table->GetCssClass() . " " . $this->statistic->CssClass());
+        echo $table;
 		break;
 }
 

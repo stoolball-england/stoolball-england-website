@@ -21,6 +21,7 @@ class MostRunOutsInAnInnings extends Statistic {
         parent::SetSupportsPagedResults(true);
         parent::SetItemTypeSingular("innings");
         parent::SetItemTypePlural("innings");
+        parent::SetCssClass("bowling");
     }
             
     /**

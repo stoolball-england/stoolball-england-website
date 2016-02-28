@@ -20,6 +20,7 @@ class MostWicketsForBowlerAndCatcher extends Statistic {
         parent::SetSupportsPagedResults(true);
         parent::SetItemTypeSingular("combination");
         parent::SetItemTypePlural("combinations");
+        parent::SetCssClass("bowling");
     }
             
     /**

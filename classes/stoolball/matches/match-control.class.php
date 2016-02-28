@@ -529,7 +529,7 @@ class MatchControl extends Placeholder
 		{
 			$bowling_table = new XhtmlTable();
 			$bowling_table->SetCaption(htmlentities($bowling_team->GetName() . "'s bowlers", ENT_QUOTES, "UTF-8", false));
-			$bowling_table->SetCssClass("scorecard");
+			$bowling_table->SetCssClass("bowling scorecard");
 
 			$over_header = new XhtmlCell(true, '<abbr title="Overs" class="small">Ov</abbr><span class="large">Overs</span>');
 			$over_header->SetCssClass("numeric");
@@ -589,7 +589,7 @@ class MatchControl extends Placeholder
 		{
 			$overs_table = new XhtmlTable();
 			$overs_table->SetCaption(htmlentities($bowling_team->GetName() . "'s bowling, over-by-over", ENT_QUOTES, "UTF-8", false));
-			$overs_table->SetCssClass("scorecard bowling overs");
+			$overs_table->SetCssClass("scorecard bowling-scorecard bowling overs");
 
             $balls_header = new XhtmlCell(true, "Balls");
             $balls_header->SetCssClass("numeric");

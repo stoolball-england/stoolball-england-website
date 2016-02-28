@@ -24,6 +24,7 @@ class MostWicketHaulsOf extends \Statistic {
         parent::SetSupportsPagedResults(true);
         parent::SetItemTypeSingular("player");
         parent::SetItemTypePlural("players");
+        parent::SetCssClass("bowling");
     }
             
     /**

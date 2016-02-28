@@ -14,6 +14,7 @@ abstract class Statistic
     private $supports_filter_by_batting_postition = false;
     private $supports_paged_results = true;
     private $column_headers = array();
+    private $css_class = "";
     
     /**
      * Sets the URL segment which identifies this statistic
@@ -152,6 +153,20 @@ abstract class Statistic
      */
     public function ItemTypePlural() {
         return $this->item_type_plural;
+    }
+    
+    /**
+     * Sets the CSS class to apply when the statistic is displayed
+     */
+    protected function SetCssClass($css_class) {
+        $this->css_class = (string)$css_class;
+    }
+    
+    /**
+     * Gets the CSS class to apply when the statistic is displayed
+     */
+    public function CssClass() {
+        return $this->css_class;
     }
     
     /**

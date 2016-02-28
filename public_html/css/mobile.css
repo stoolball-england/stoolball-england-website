@@ -59,7 +59,8 @@ img { display: block; max-width: 100%; }
 
 /* Tables */
 table { border-collapse: collapse; width: 100%; margin: 1em 0; }
-table { background: url(/images/statistics/table.jpg) no-repeat right 40px; }
+table { background: url(/images/statistics/batsman-outline.png) no-repeat right 40px; }
+table.bowling { background-image: url(/images/statistics/bowler-outline.png); }
 thead tr { background: #eee url(/images/wicket-light-tile.jpg); vertical-align: top; font-family: 'Trebuchet MS', Arial, Helvetica, sans-serif; }
 th, td { text-align: left; padding: 2px; vertical-align: top; }
 tbody td, tbody th { border-top: 1px solid #999; border-bottom: 1px groove #999; }
@@ -195,7 +196,6 @@ input.year { width: 3em; }
 
 .box-content > h2:first-child { margin-top: 0;}
 
-.box-content table { background: none;}
 .box-content tr { border: 1px solid #BBB;}
 .box-content thead tr { border-top: none; }
 .box-content td, .box-content th { border-color: #BBB; }
@@ -282,7 +282,7 @@ table.overs .numeric { width: 10%; }
 
 /* Edit scorecard - full scorecard */
 table.scorecardEditor td.batsman, table.scorecardEditor td.bowler { padding-left: 0;}
-table.scorecardEditor.bowling {margin-bottom: .5em;}
+table.scorecardEditor.bowling-scorecard {margin-bottom: .5em;}
 table.scorecardEditor th.numeric, table.scorecardEditor td { text-align: center; }
 table.scorecardEditor .add-one-container { text-align: left; padding-left: 0;}
 
@@ -307,6 +307,7 @@ table.numeric th, table.numeric td, .numeric { text-align: right; }
 table.numeric .nonNumeric { text-align: left; }
 
 /* League table */
+table.league { background: none;}
 table.league .resultCount { width: 10%; text-align: center; white-space: nowrap; }
 table.league .runs { white-space: normal; }
 table.league .withdrawn { background-image: url(/images/wicket-tile.jpg); }

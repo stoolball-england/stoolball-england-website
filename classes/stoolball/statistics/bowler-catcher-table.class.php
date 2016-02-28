@@ -17,6 +17,7 @@ class BowlerCatcherTable extends XhtmlTable
         $this->first_result = (int)$first_result;
 
         parent::XhtmlTable();
+        $this->SetCssClass("bowling");
 
         if (count($performance_data) > 0) 
         {

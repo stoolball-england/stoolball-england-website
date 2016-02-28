@@ -23,6 +23,7 @@ We only include people who have bowled in at least three matches, and we ignore 
         parent::SetSupportsPagedResults(true);
         parent::SetItemTypeSingular("player");
         parent::SetItemTypePlural("players");
+        parent::SetCssClass("bowling");
     }
             
     /**

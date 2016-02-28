@@ -369,8 +369,8 @@ $(function()
 	$("select.howOut").keyup(howOutEnableDetails).click(howOutEnableDetails).change(howOutEnableDetails).each(howOutEnableDetails);
 	
 	$(".bowler .player").keyup(enableBowling).click(enableBowling).change(enableBowling).each(enableBowling);
-	$("input.numeric", ".scorecardPage table.bowling").focus(suggestBowlingDefaults).keydown(replaceBowlingDefaults);
-	$("input.player", ".scorecardPage table.bowling").focus(suggestDefaultBowler);
+	$("input.numeric", ".scorecardPage table.bowling-scorecard").focus(suggestBowlingDefaults).keydown(replaceBowlingDefaults);
+	$("input.player", ".scorecardPage table.bowling-scorecard").focus(suggestDefaultBowler);
 
 	// Select first field
 	$("select, input[type='text']:not(:disabled)")[0].focus();
@@ -393,9 +393,9 @@ $(function()
 	}).hide();
 	
 	// Add over button
-	$('<a href="#" class="action-button add-one add-over">Add an over</a>').insertAfter(".bowling").click(function(e) {
+	$('<a href="#" class="action-button add-one add-over">Add an over</a>').insertAfter(".bowling-scorecard").click(function(e) {
 		e.preventDefault();
-		var lastRow = $('.bowling tbody tr:last-child');
+		var lastRow = $('.bowling-scorecard tbody tr:last-child');
 		var newRow = lastRow.clone().insertAfter(lastRow);
 		var over = parseInt($('input:first', newRow).attr("id").substring(10));
 		var replaceOver = function(index, value) { return value.substring(0, value.indexOf(over)) + (over +1);};

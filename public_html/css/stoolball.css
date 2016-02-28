@@ -253,7 +253,7 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 /* editing matches - IE can't size controls correctly */
 .ie8 table.batting td { padding-left: 0; padding-right: 0; }
 .ie8 table.batting input.player { width: 130px; }
-.ie8 table.bowling input.player { width: 200px; }
+.ie8 table.bowling-scorecard input.player { width: 200px; }
 
 /* Scorecards */
 table.scorecardEditor { max-width: 48em; margin-bottom: 0; }
@@ -263,8 +263,8 @@ table.batting th.dismissedBy { padding-right:0; }
 table.batting .wrapping-hair-space { font-size: 1px; }
 table.batting .nowrap { white-space: nowrap; }
 table.batting td.runs, table.batting td.balls { width: 3em; }
-table.bowling th.numeric { width: 5em; white-space: nowrap; } 
-table.bowling td.bowler { text-align: left; }
+table.bowlingbowling-scorecard th.numeric { width: 5em; white-space: nowrap; } 
+table.bowlingbowling-scorecard td.bowler { text-align: left; }
 
 tr.totals, tr.totals th { border-color: #ccc; }
 

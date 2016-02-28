@@ -46,7 +46,7 @@ if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowli
 	{
 		require_once('stoolball/statistics/bowling-performance-table.class.php');
 		$best_bowling = new BowlingPerformanceTable($this->statistics["best_bowling"], true, 1, 10);
-		$best_bowling->SetCssClass("stats");
+		$best_bowling->SetCssClass("stats bowling");
 		echo $best_bowling;
 
 		if ($has_best_bowling >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/bowling-performances' . $statistics_query . '">Bowling performances &#8211; view all and filter</a></p>';
@@ -54,7 +54,9 @@ if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowli
 
 	if ($has_most_wickets)
 	{
-		echo new PlayerStatisticsTable("Most wickets", "Wickets", $this->statistics["most_wickets"]);
+		$table = new PlayerStatisticsTable("Most wickets", "Wickets", $this->statistics["most_wickets"]);
+		$table->SetCssClass("bowling");
+        echo $table;
 		if ($has_most_wickets >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets' . $statistics_query . '">Most wickets &#8211; view all and filter</a></p>';
         echo '<p class="statsViewAll"><a href="/play/statistics/most-5-wickets' . $statistics_query . '">Most times taking 5 wickets in an innings</a></p>';
         echo '<p class="statsViewAll"><a href="/play/statistics/most-wickets-by-bowler-and-catcher' . $statistics_query . '">Most wickets by a bowling and catching combination</a></p>';
@@ -62,19 +64,25 @@ if ($has_best_bowling or $has_most_wickets or $has_bowling_average or $has_bowli
 
 	if ($has_bowling_average)
 	{
-		echo new PlayerStatisticsTable("Best bowling average", "Average", $this->statistics["bowling_average"]);
+		$table = new PlayerStatisticsTable("Best bowling average", "Average", $this->statistics["bowling_average"]);
+        $table->SetCssClass("bowling");
+        echo $table;
 		if ($has_bowling_average >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/bowling-average' . $statistics_query . '">Bowling averages &#8211; view all and filter</a></p>';
 	}
 
 	if ($has_bowling_economy)
 	{
-		echo new PlayerStatisticsTable("Best economy rate", "Economy rate", $this->statistics["bowling_economy"]);
-		if ($has_bowling_economy >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/economy-rate' . $statistics_query . '">Economy rates &#8211; view all and filter</a></p>';
+		$table = new PlayerStatisticsTable("Best economy rate", "Economy rate", $this->statistics["bowling_economy"]);
+        $table->SetCssClass("bowling");
+        echo $table;
+				if ($has_bowling_economy >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/economy-rate' . $statistics_query . '">Economy rates &#8211; view all and filter</a></p>';
 	}
 
 	if ($has_bowling_strike_rate)
 	{
-		echo new PlayerStatisticsTable("Best bowling strike rate", "Strike rate", $this->statistics["bowling_strike_rate"]);
+		$table = new PlayerStatisticsTable("Best bowling strike rate", "Strike rate", $this->statistics["bowling_strike_rate"]);
+        $table->SetCssClass("bowling");
+        echo $table;
 		if ($has_bowling_strike_rate >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/bowling-strike-rate' . $statistics_query . '">Bowling strike rates &#8211; view all and filter</a></p>';
 	}
 }
@@ -85,14 +93,18 @@ if ($has_catch_stats or $has_run_outs)
 
 	if ($has_catch_stats)
 	{
-		echo new PlayerStatisticsTable("Most catches", "Catches", $this->statistics["most_catches"]);
+		$table = new PlayerStatisticsTable("Most catches", "Catches", $this->statistics["most_catches"]);
+        $table->SetCssClass("bowling");
+        echo $table;
 		if ($has_catch_stats >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-catches' . $statistics_query . '">Most catches &#8211; view all and filter</a></p>';
         echo '<p class="statsViewAll"><a href="/play/statistics/most-catches-in-innings' . $statistics_query . '">Most catches in an innings</a></p>';
 	}
 
 	if ($has_run_outs)
 	{
-		echo new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->statistics["most_run_outs"]);
+		$table = new PlayerStatisticsTable("Most run-outs", "Run-outs", $this->statistics["most_run_outs"]);
+        $table->SetCssClass("bowling");
+        echo $table;
 		if ($has_run_outs >= 10) echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs' . $statistics_query . '">Most run-outs &#8211; view all and filter</a></p>';
         echo '<p class="statsViewAll"><a href="/play/statistics/most-run-outs-in-innings' . $statistics_query . '">Most run-outs in an innings</a></p>';
 	}
