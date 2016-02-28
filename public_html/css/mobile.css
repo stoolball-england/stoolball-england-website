@@ -46,6 +46,7 @@ p { margin: .5em 0 1em; } /* 6px and 12px margin */
 
 ul, ol { margin: 0; padding: 0 0 0 16px; }
 ol { margin-left: 9px; }
+li { margin: 0 0 .8em; padding: 0; }
 dt { font-weight: bold; }
 dd { margin: .5em 0 1em; }
 
@@ -246,9 +247,10 @@ input.year { width: 3em; }
 .dataFilter .following-filter { clear: both; border-top: 1px solid #CCC; margin-top: 0; padding: 10px 0 0; } 
 
 /* Lists of matches */
-.matchPlayed { opacity: 0.7; }
+.match-list li { margin: 0 0 .5em; }
+.matchPlayed { opacity: 0.8; }
 .matchNext { font-weight: bold; }
-#board .tournament-detail { font-size: 1em; margin: 0; padding: 0; background: none; }
+.match-list .match-detail { font-size: 1em; margin: 0; padding: 0; background: none; }
 .spaces-left { white-space: nowrap; }
 
 /* Lists of seasons and players */

@@ -8,7 +8,7 @@ h1 { margin-top: 0; }
 h2, h3, h4 { font-size: 1.2em; font-weight: normal; }
 h3, h6 { font-style: italic; }
 h5, h6 { font-size: .9em; font-weight: bold; }
-p, li, blockquote { margin: 0 0 .8em; padding: 0; }
+p, blockquote { margin: 0 0 .8em; padding: 0; }
 thead th { line-height: 1em;}
 tbody td, tbody th { border-top: 1px #ddd solid; border-bottom: 1px #ddd groove; }
 th .qualifier { font: normal .7em Arial, Helvetica, sans-serif; }  
@@ -93,6 +93,8 @@ div.nav p { display: block; }
 #sidebar ul li { list-style: none; background: url(/images/sprite.4.png) no-repeat -181px -167px; padding-left: 12px; position: relative; }
 #sidebar p { padding-left: 12px; background: url(/images/sprite.4.png) no-repeat -181px -167px; }
 #sidebar h2 { margin-top: 1.5em; font-size: 1.5em; line-height:1em; font-family: 'Passion One', sans-serif; }
+#sidebar .match-list p:before { content: ' – '}
+#sidebar .match-list p { display: inline; padding: 0; font-size: 1em; background: none; }
 
 /* Authentication */
 .SignUpForm .buttonGroup { text-align: left; }

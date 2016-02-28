@@ -16,6 +16,7 @@ class MatchListControl extends XhtmlElement
 	public function __construct($matches=null)
 	{
 		parent::XhtmlElement('ul');
+        $this->SetCssClass("match-list");
 		$this->matches = (is_array($matches)) ? $matches : array();
 	}
 
@@ -77,31 +78,17 @@ class MatchListControl extends XhtmlElement
 				$li->AddControl(' (' . htmlentities(MatchType::Text($match->GetMatchType()), ENT_QUOTES, "UTF-8", false) . ')');
 			}
 
-            # For tournaments, add extra detail
-            if ($match->GetMatchType() === MatchType::TOURNAMENT)
-            { 
-                $tournament = new XhtmlElement("p", null, "tournament-detail");
-                $li->AddControl($tournament);
-            }
+            $match_detail = new XhtmlElement("p", null, "match-detail");
+            $li->AddControl($match_detail);
             
             # Add match date
             if ($match->GetStartTime())
 			{        
 		        $date = $this->CreateStartDate($match);
-            	switch ($match->GetMatchType())
-                {
-                    case MatchType::TOURNAMENT_MATCH:
-                        $date->AddCssClass('metadata');
-                        $li->AddControl($date);
-                        break;
-                    case MatchType::TOURNAMENT:
-                        $tournament->AddControl($date);
-                        break;
-                    default:
-                        $li->AddControl(' &#8211; ');
-                        $li->AddControl($date);
-                        break;
-				}
+            	if ($match->GetMatchType() == MatchType::TOURNAMENT_MATCH) {
+                    $date->AddCssClass('metadata');
+    			}
+                $match_detail->AddControl($date);
 			}
 
             # More tournament info
@@ -110,23 +97,23 @@ class MatchListControl extends XhtmlElement
                 $fullstop = false;
                 if ($match->GetQualificationType() === MatchQualification::OPEN_TOURNAMENT)
                 {
-                    $tournament->AddControl(". ");
+                    $match_detail->AddControl(". ");
                     $fullstop = true;
-                    $tournament->AddControl("Open. ");
+                    $match_detail->AddControl("Open. ");
                 }  
                 else if ($match->GetQualificationType() === MatchQualification::CLOSED_TOURNAMENT)
                 {
-                    $tournament->AddControl(". ");
+                    $match_detail->AddControl(". ");
                     $fullstop = true;
-                    $tournament->AddControl("Invited teams only. ");
+                    $match_detail->AddControl("Invited teams only. ");
                 }
                 
                 if ($match->GetSpacesLeftInTournament() and $match->GetQualificationType() !== MatchQualification::CLOSED_TOURNAMENT) {
                     if (!$fullstop) {
-                        $tournament->AddControl(". ");
+                        $match_detail->AddControl(". ");
                         $fullstop = true;
                     }
-                    $tournament->AddControl('<strong class="spaces-left">' . $match->GetSpacesLeftInTournament() . " spaces.</strong> ");
+                    $match_detail->AddControl('<strong class="spaces-left">' . $match->GetSpacesLeftInTournament() . " spaces.</strong> ");
                 }
             }
             
