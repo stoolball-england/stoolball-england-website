@@ -272,7 +272,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetLinkedDataUri()
 	{
-		return "http://www.stoolball.org.uk/id/team/" . $this->GetShortUrl();
+		return "https://www.stoolball.org.uk/id/team/" . $this->GetShortUrl();
 	}
 
 	/**
