@@ -68,7 +68,6 @@ caption { text-align: left; font-weight: bold; padding: 6px 4px 16px; border-rad
 /* .qualifier allows for a note explaining a table header label */
 th .qualifier { display: block; font: normal .8em Arial, Helvetica, sans-serif; }
 
-
 /* Menu of sub-pages.
  *
  * Possible variants of HTML:
@@ -87,6 +86,16 @@ ul.nav a:visited h2 { color: #008044; }
 ul.surrey.nav { margin: 0; padding: 0;}
 ul.surrey li { display: inline-block; padding: 1em; border-radius: 5px; background: #008044; margin: 0 1em 1em 0; }
 ul.surrey a:link, ul.surrey a:visited { color: #fff; }
+
+/* Box of content with a header */
+.panel { background: #ccc url(/images/wicket-light-tile.jpg);margin: 1em 0 1.5em; padding: 0 1em .5em; overflow: hidden; max-width: 40em; border-radius: 5px; }
+.panel h2 {  margin: 0 -1em 10px; color: #fff; background: url(/images/tile-green.jpg) top left; }
+.panel h2 span { color: #fff; background: url(/images/noise-bottom-light.gif) repeat-x bottom left; display: block; }
+.panel h2 span span { color: #fff; }
+.panel h2 span span span { color: #fff; padding: .5em 1em 1em; }
+
+/* action buttons inside .panel */
+.panelHide { float: right; }
 
 /* Microformats */
 .metadata { display: none; }
@@ -123,9 +132,6 @@ select { max-width: 100%; }
 
 /* Common field contents */
 input.year { width: 3em; }
-
-/* action buttons inside panel */
-.panelHide { float: right; }
 
 /* Last modified by... */
 .audit { margin: 0; font-size: .7em; max-width: none; color: #555; padding-top: 1em; }

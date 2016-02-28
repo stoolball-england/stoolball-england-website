@@ -429,7 +429,7 @@ class MatchFixtureEditControl extends DataEditControl
 			$o_title_inner_1 = new XhtmlElement('span', htmlentities($s_heading, ENT_QUOTES, "UTF-8", false));
 			$o_title_inner_2 = new XhtmlElement('span', $o_title_inner_1);
 			$o_title_inner_3 = new XhtmlElement('span', $o_title_inner_2);
-			$o_match_box->AddControl(new XhtmlElement('h2', $o_title_inner_3, "large"));
+			$o_match_box->AddControl(new XhtmlElement('h2', $o_title_inner_3, "medium large"));
 		}
 
 		# Offer choice of season if appropriate

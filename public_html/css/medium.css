@@ -37,8 +37,59 @@ th, td { padding: .2em .5em; }
 /* League table for a season - when it's missing, need to clear after the image */
 .season-table .box-content h2 { clear: both; }
 
-/* Forms */
+/* Forms 
+   .legacy-form indicates a style which has been limited to old .formPart-style forms
+ */
+fieldset { overflow: hidden; }
+optgroup { font-style: normal; padding: .5em 0 0; margin: .5em 0 0; border-top: 1px solid #99f; }
+.legacy-form label { margin: 0; }
+.formPart { float: left; width: 100%; margin: .2em 0; }
+.formPart .formLabel { float: left; width: 24%; vertical-align: top; }
+.formPart .formControl { float: right; width: 74%; vertical-align: top; }
+.formPart fieldset.formControl { border: 0; padding: 0; margin: 0; }
+.formPart input.formControl { width: 73.6%; }
+.formPart table { float: right; width: 74%; vertical-align: top; }
+.formPart .formControl table { float: none; width: 100%; vertical-align: top; }
+.formPart .formControl .mceToolbar { width: auto; }
+.formPart td.action { width: 10%; }
+label.checkBox { clear: left; display: block; }
+.legacy-form label.checkBox { margin: .5em 0 .5em 25.3%;  }
+input.checkBox { margin-right: .5em; }
+.dateControl label { margin: 0 1em; }
+div.buttonGroup { clear: both; padding: .5em 0; }
 .buttonGroup .primary { font-size: 1em; }
+textarea { min-height: 7em; height: 10em; }
+body div.buttonGroupTop { padding-bottom: 0; }
+fieldset.formPart { border: 0; margin: 0; padding: 0; }
+legend.formLabel { font-weight: normal; padding: 0; margin: 0; }
+.deleteButtons { margin-top: 1.5em; }
+
+/* Standard width for any text field which accepts a date. Initial use is on statistics filter. */
+input.date { width: 9em; }
+
+/* action buttons inside panel */
+.actions { clear: both; margin: 0; padding-top: 10px; } 
+
+/* Non-standard, but reliable way to target Webkit. IE8 needs same fix, so this may need to become the rule rather than the exception */ 
+@media screen and (-webkit-min-device-pixel-ratio:0){
+fieldset.formPart .formControl { margin-top: 0; }
+}
+
+/* Two fields on one line, both within .formControl:
+	<div class="formPart twoFields">
+		<label class="formLabel" />
+		<div class="formControl">
+			<input class="firstField" />
+			<label><input /></label>
+		</div>
+	</div>
+ */
+.twoFields { text-align: right; white-space: nowrap; }
+.twoFields .firstField { float: left; }
+.twoFields label { float: right; }
+.twoFields label input { margin-left: 5px; }
+
+.text-placeholder {color: #888; }
 
 /* Create a poster 
    width is % of 800px .content 
