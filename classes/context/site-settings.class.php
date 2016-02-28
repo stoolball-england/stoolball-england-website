@@ -265,20 +265,6 @@ abstract class SiteSettings
         return array();
     }
     
-    /**
-     * Get key which might potentially be used to decrypt old sign-in cookies until 1 Feb 2016, the latest date an old-method could expire
-     */
-    public function GetOldAutoSignInCookieKey() {
-        return '';
-    }
-
-    /**
-     * Get salt which might potentially be used to decrypt old sign-in cookies until 1 Feb 2016, the latest date an old-method could expire
-     */
-    public function GetOldAutoSignInCookieSalt() {
-        return '';
-    }
-
 	/**
 	 * Gets the hostname to connect to the site database
 	 *

@@ -911,22 +911,16 @@ class AuthenticationManager extends DataManager
 
         # If they're trying to sign out, don't sign them back in again
         if (isset($_GET['action']) and $_GET['action'] == 'signout') return;
-
-        # Approach to this feature has changed. Try new approach, and fall back to old.
-        # Note: Last cookies from old approach will expire 1 Feb 2016, when this code can be deleted.
-        if (!$this->TryNewAutoSignIn()) {
-            $this->TryOldAutoSignIn();
-        }
     }
   
     /**
      * Signs in using an up-to-date auto-sign-in cookie if one is found
      * @return bool true if the cookie is found, false otherwise
      */
-    private function TryNewAutoSignIn()
+    private function TryAutoSignIn()
     {      
         if ($this->auto_sign_in instanceof IAutoSignIn) {
-            $user_id = $this->auto_sign_in->TryNewAutoSignIn();
+            $user_id = $this->auto_sign_in->TryAutoSignIn();
             if (!is_null($user_id)) {
                 $user = $this->ReadDataForValidUser($user_id);
                 $this->SignInValidUser($user, true);
@@ -936,25 +930,7 @@ class AuthenticationManager extends DataManager
         
         return false;
     }
-    
-    /**
-     * Signs in using the old auto-sign-in cookie if one is found
-     * @return bool true if the cookie is found, false otherwise
-     */
-    private function TryOldAutoSignIn()
-    {
-        if ($this->auto_sign_in instanceof IAutoSignIn) {
-            $user = $this->auto_sign_in->TryOldAutoSignIn();
-            if ($user instanceof User) {
-                $this->SignIn($user->GetEmail(), $user->GetPassword(), true, true);
-                return true;
-            }
-            return true;
-        }
-
-        return false;
-    }
-    
+        
 	/**
 	 * Gets the current user of the website
 	 *

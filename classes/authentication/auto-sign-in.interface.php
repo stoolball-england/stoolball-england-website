@@ -13,12 +13,6 @@ interface IAutoSignIn {
      * Gets the id of a user using an up-to-date auto-sign-in cookie if one is found
      * @return int User id if the cookie is found, null otherwise
      */
-    function TryNewAutoSignIn();
-    
-    /**
-     * Gets a user using the old auto-sign-in cookie if one is found
-     * @return User if the cookie is found, null otherwise
-     */
-    function TryOldAutoSignIn();
+    function TryAutoSignIn();
 }
 ?>

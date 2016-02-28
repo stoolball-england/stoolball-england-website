@@ -13,19 +13,13 @@ class MySqlAutoSignIn implements IAutoSignIn {
      * @var MySqlConnection
      */
     private $connection;
-    private $old_cookie_key;
-    private $old_cookie_salt;
     
     /**
      * Creates a new instance of MySqlAutoSignIn
      * @param MySqlConnection $connection
-     * @param string $old_cookie_key
-     * @param string $old_cookie_salt
      */
-    public function __construct(MySqlConnection $connection, $old_cookie_key, $old_cookie_salt) {
+    public function __construct(MySqlConnection $connection) {
         $this->connection = $connection;
-        $this->old_cookie_key = $old_cookie_key;
-        $this->old_cookie_salt = $old_cookie_salt;
     }
     
     /**
@@ -194,7 +188,7 @@ class MySqlAutoSignIn implements IAutoSignIn {
      * Gets the id of a user using an up-to-date auto-sign-in cookie if one is found
      * @return int User id if the cookie is found, null otherwise
      */
-    public function TryNewAutoSignIn()
+    public function TryAutoSignIn()
     {      
         if (isset($_COOKIE['user']) and is_string($_COOKIE['user']) and $_COOKIE['user'])
         {
@@ -218,60 +212,6 @@ class MySqlAutoSignIn implements IAutoSignIn {
         }        
         
         return null;
-    }
- 
-        
-    /**
-     * Gets a user using the old auto-sign-in cookie if one is found
-     * @return User if the cookie is found, null otherwise
-     */
-    public function TryOldAutoSignIn()
-    {
-        # Try to read encrypted cookie
-        if (isset($_COOKIE['user_3uNGNNLT']) and $_COOKIE['user_3uNGNNLT'])
-        {
-            # In wp-settings.php WordPress runs add_magic_quotes() over every value in $_COOKIE. Need to undo that
-            # otherwise it's not the value we put there and, when we decrypt the wrong value, it's gibberish
-            if (SiteContext::IsWordPress()) $_COOKIE['user_3uNGNNLT'] = stripslashes($_COOKIE['user_3uNGNNLT']);
-
-            $user = $this->DecryptOldAutoSignInCookie($_COOKIE['user_3uNGNNLT']);
-            if ($user->GetEmail() and $user->GetPassword())
-            {
-                return $user;
-            }
-        }
-        return null;
-    }
-    
-    /**
-     * Extracts data encrypted in cookie
-     *
-     * @param string $encrypted_cookie
-     * @return User
-     */
-    private function DecryptOldAutoSignInCookie($encrypted_cookie)
-    {
-        $iv = mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB), MCRYPT_RAND);
-        $decrypted_text = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $this->old_cookie_key, $encrypted_cookie, MCRYPT_MODE_ECB, $iv);
-        $len = strlen($decrypted_text);
-
-        $user = new User();
-
-        $pos = strpos($decrypted_text, $this->old_cookie_salt);
-        if ($pos)
-        {
-            # Get username
-            $user->SetEmail(substr($decrypted_text, 0, $pos));
-
-            # Get password hash
-            $pos = $pos+strlen($this->old_cookie_salt);
-            if ($len >= $pos+32) # 32 is length of an MD5 hash
-            {
-                $user->SetPassword(substr($decrypted_text, $pos, 32));
-            }
-        }
-
-        return $user;
     }
 }
 ?>

@@ -183,7 +183,7 @@ class Page
         require_once('authentication/authentication-manager.class.php');
 		require_once('authentication/mysql-auto-sign-in.class.php');
 		$this->o_authentication = new AuthenticationManager($this->settings, $this->GetDataConnection(), $i_permission_required);
-        $this->o_authentication->SetAutoSignInProvider(new MySqlAutoSignIn($this->GetDataConnection(), $this->GetSettings()->GetOldAutoSignInCookieKey(), $this->GetSettings()->GetOldAutoSignInCookieSalt()));
+        $this->o_authentication->SetAutoSignInProvider(new MySqlAutoSignIn($this->GetDataConnection()));
 
 		# check for remembered sign-in
 		$this->o_authentication->SignInIfRemembered();
