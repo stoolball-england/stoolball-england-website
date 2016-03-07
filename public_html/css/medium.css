@@ -9,10 +9,10 @@ th, td { padding: .2em .5em; }
 
 /* increase the size of the logo */
 .logo-small { display: none; }
-.logo { display: block; margin: 20px 0 0; }
+.logo { display: block; margin: 24px 0 0; }
 
 /* Move the menu to accommodate a larger logo. */
-.menu { left: 260px; top: 29px; max-width: 220px; }
+.menu { left: 260px; top: 33px; max-width: 220px; }
 .menu > li > em, .menu > li > a:link, .menu > li > a:visited { width: 70px; padding: 5px 0; margin: 0 3px 3px 0; }
 
 /* Tabs used in Play! section. */
