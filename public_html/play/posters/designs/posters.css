@@ -32,6 +32,10 @@
 .male-batsman #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; }
 .male-batsman #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; }
 
+.school-games #preview-title{ top: 5.29%; left: 10%; width: 80%; font: normal 60px 'Bubblegum Sans'; text-shadow: 1px 1px 0 #000; text-align: center; }
+.school-games #preview-slogan { top: 20%; left: 49%; width: 44%; font: normal 31px/1.15em 'Bubblegum Sans'; text-shadow: 1px 1px 0 #000; color: #f7dc66; text-align: center;}
+.school-games #preview-name { top: 82%; left: 10%; width: 80%; font: 800 19px 'Alegreya Sans'; color: #000; }
+.school-games #preview-details { top: 86%; left: 10%; width: 80%; font: 500 10.3px 'Alegreya Sans'; color: #000; }
 
 form.poster { padding: 0 9px 0 0; margin-bottom: 2em; }
 form.poster label { font-weight: bold; margin: 1em 0 .5em; }

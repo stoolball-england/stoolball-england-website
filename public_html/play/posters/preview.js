@@ -139,6 +139,27 @@ if (typeof(jQuery)!=='undefined') {
 			fontSizeMaxDetails: null
 		});
 		designs.push({
+			id: "school-games",
+			preview: "./designs/school-games-preview.jpg",
+			alt: "A girl batting at the wicket, wearing a School Games t-shirt.",
+			maxLengthTitle: 18,
+			maxLengthSlogan: 27,
+			maxLengthName: 80,
+			maxLengthDetails: 300,
+			fontSizeMultiplierTitle: .53,
+			fontSizeMinTitle: 20,
+			fontSizeMaxTitle: 60,
+			fontSizeMultiplierSlogan: .56,
+			fontSizeMinSlogan: 10,
+			fontSizeMaxSlogan: 31,
+			fontSizeMultiplierName: 1.7,
+			fontSizeMinName: null,
+			fontSizeMaxName: null,
+			fontSizeMultiplierDetails: 3.1,
+			fontSizeMinDetails: null,
+			fontSizeMaxDetails: null
+		});
+		designs.push({
 			id: "connie",
 			preview: "./designs/connie-preview.jpg",
 			alt: "A female player in blue and yellow celebrates a catch",
