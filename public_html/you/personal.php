@@ -61,7 +61,6 @@ class PersonalInfoPage extends StoolballPage
 			$user->SetOccupation(trim($_POST['occupation']));
 			$user->SetInterests(trim($_POST['interests']));
 			$user->SetLocation(trim($_POST['location']));
-			$user->SetSignature(trim($_POST['signature']));
 
 			$authentication_manager = $this->GetAuthenticationManager();
 			$authentication_manager->SavePersonalInfo($user);
