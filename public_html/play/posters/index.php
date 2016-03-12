@@ -30,7 +30,7 @@ class CurrentPage extends StoolballPage
             <input type="text" name="title" id="title" value="Play stoolball" />
             
             <label for="slogan">Slogan</label>
-            <input type="text" name="slogan" id="slogan" value="Fast, fun family sport" />
+            <input type="text" name="slogan" id="slogan" value="Fast, fun family game" />
             
             <label for="name">League, club or tournament</label>
             <input type="text" name="name" id="name" value="Anytown Stoolball Club" />

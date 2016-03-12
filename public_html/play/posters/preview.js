@@ -143,7 +143,7 @@ if (typeof(jQuery)!=='undefined') {
 			preview: "./designs/school-games-preview.jpg",
 			alt: "A girl batting at the wicket, wearing a School Games t-shirt.",
 			maxLengthTitle: 18,
-			maxLengthSlogan: 27,
+			maxLengthSlogan: 32,
 			maxLengthName: 80,
 			maxLengthDetails: 300,
 			fontSizeMultiplierTitle: .53,
