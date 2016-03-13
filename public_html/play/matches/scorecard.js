@@ -405,4 +405,8 @@ $(function()
 		if (typeof stoolballAutoSuggest != "undefined") $("input.player", newRow).each(stoolballAutoSuggest.enablePlayerSuggestions);
 		$('input:first', newRow)[0].focus();
 	}).hide();
+	
+	$("form.ScorecardEdit").submit(function(){
+		$("input.batsman:disabled", this).val('').removeAttr("disabled");	
+	});
 });

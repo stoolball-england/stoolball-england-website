@@ -395,7 +395,7 @@ class ScorecardEditControl extends DataEditControl
 				$player = new TextBox("batName$i", (is_null($batting) or !$batting->GetPlayer()->GetPlayerRole() == Player::PLAYER) ? "" : $batting->GetPlayer()->GetName(), $this->IsValidSubmit());
 				$player->SetMaxLength(100);
 				$player->AddAttribute("autocomplete", "off");
-				$player->AddCssClass("player team" . $batting_team->GetId());
+				$player->AddCssClass("player batsman team" . $batting_team->GetId());
 
 				$how = new XhtmlSelect("batHowOut$i", null, $this->IsValidSubmit());
 				$how->SetCssClass("howOut");
