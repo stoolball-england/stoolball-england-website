@@ -2080,11 +2080,9 @@ class MatchManager extends DataManager
 
 		# Update the main match record
         # All changes to master data are logged from here, because this method can be called from the public interface
-        $match_title_sql = "";
         $sql = 'UPDATE ' . $this->o_settings->GetTable('Match') . ' SET ';
 		if (!$o_match->GetUseCustomTitle()) {
-		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
-		    $sql .= $match_title_sql . ", ";
+		    $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
         }
 		$sql .= 'home_runs = ' . Sql::ProtectNumeric($i_home_runs, true) . ', ' .
 			'home_wickets = ' . Sql::ProtectNumeric($o_match->Result()->GetHomeWickets(), true) . ', ' .
@@ -2100,11 +2098,11 @@ class MatchManager extends DataManager
         
         $this->SaveWhoBattedFirst($o_match);
         
-        # Copy updated title to statistics
-        if ($match_title_sql) {
-            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
-            $this->GetDataConnection()->query($sql);        
-        }
+        # Copy updated data to statistics
+        require_once('stoolball/statistics/statistics-manager.class.php');
+        $statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
+        $statistics_manager->UpdateMatchDataInStatistics($this, $o_match->GetId());
+        unset($statistics_manager);
 
 		# Match data has changed so notify moderator
 		$this->QueueForNotification($o_match->GetId(), false);
@@ -2217,8 +2215,7 @@ class MatchManager extends DataManager
         # All changes to master data from here are logged, because this method can be called from the public interface
         $sql = 'UPDATE ' . $s_match . ' SET ';
 		if (!$o_match->GetUseCustomTitle()) {
-		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
-            $sql .= $match_title_sql . ", ";
+            $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
         }
 		$sql .= 'match_result_id = ' . Sql::ProtectNumeric($i_result, true) . ', 
 			update_search = 1,  
@@ -2228,12 +2225,12 @@ class MatchManager extends DataManager
 
 		$this->LoggedQuery($sql);
 		
-        # Copy updated title to statistics
-        if ($match_title_sql) {
-            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
-            $this->GetDataConnection()->query($sql);        
-        }
-
+        # Copy updated data to statistics
+        require_once('stoolball/statistics/statistics-manager.class.php');
+        $statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
+        $statistics_manager->UpdateMatchDataInStatistics($this, $o_match->GetId());
+        unset($statistics_manager);
+  
 		# Match data has changed so notify moderator
 		$this->QueueForNotification($o_match->GetId(), false);
 	}
@@ -2699,8 +2696,7 @@ class MatchManager extends DataManager
         # All changes from here to master data are logged, because this method can be called from the public interface
   		$sql = "UPDATE $s_match SET ";
 		if (!$o_match->GetUseCustomTitle()) {
-		    $match_title_sql = "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle());
-            $sql .= $match_title_sql . ", ";
+            $sql .= "match_title = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetTitle()) . ", ";
         }
 		$sql .= 'match_result_id = ' . Sql::ProtectNumeric($i_result, true) . ",
 			player_of_match_id = " . Sql::ProtectNumeric($player_of_match, true) . ', ' .
@@ -2713,22 +2709,19 @@ class MatchManager extends DataManager
 
 		$this->LoggedQuery($sql);
         
-        # Copy updated title to statistics
-        if ($match_title_sql) {
-            $sql = "UPDATE nsa_player_match SET $match_title_sql WHERE match_id = " . Sql::ProtectNumeric($o_match->GetId());
-            $this->GetDataConnection()->query($sql);        
-        }
+        # Copy updated match to statistics
+        require_once('stoolball/statistics/statistics-manager.class.php');
+        $statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
+        $statistics_manager->UpdateMatchDataInStatistics($this, $o_match->GetId());    
 
 		# Save IDs of players affected by any change
 		if (count($affected_players))
 		{
-			require_once('stoolball/statistics/statistics-manager.class.php');
-			$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
 			$statistics_manager->UpdatePlayerOfTheMatchStatistics($o_match->GetId());
 			$statistics_manager->DeleteObsoleteStatistics($o_match->GetId());
 			$statistics_manager->UpdatePlayerStatistics($affected_players);
-			unset($statistics_manager);
 		}
+        unset($statistics_manager);
 
 
 		# Match data has changed so notify moderator
