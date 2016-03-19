@@ -45,6 +45,8 @@ class CurrentPage extends Page
         StatisticsFilter::SupportGroundFilter($statistics_manager);
 		StatisticsFilter::SupportDateFilter($statistics_manager);
 		StatisticsFilter::SupportBattingPositionFilter($statistics_manager);
+        StatisticsFilter::SupportInningsFilter($statistics_manager);
+        StatisticsFilter::SupportMatchResultFilter($statistics_manager);
 		
         # Now get the statistics for the player
 		$this->player = new Player($this->GetSettings());

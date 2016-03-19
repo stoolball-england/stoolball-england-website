@@ -18,6 +18,8 @@ class StatisticsFilterControl extends XhtmlForm
 	private $batting_position_filter;
 	private $after_date_filter;
 	private $before_date_filter;
+    private $innings_filter;
+    private $match_result_filter;
 
 	/**
 	 * Creates a new StatisticsFilterControl
@@ -108,6 +110,25 @@ class StatisticsFilterControl extends XhtmlForm
 	{
 		$this->before_date_filter = (int)$date_filter_applied;
 	}
+    
+    /**
+     * Set the innings applied as a filter
+     * @param int $innings_filter_applied
+     */
+    public function SupportInningsFilter($innings_filter_applied)
+    {
+        $this->innings_filter = $innings_filter_applied;
+    }
+    
+    
+    /**
+     * Set the match result applied as a filter
+     * @param int $match_result_filter_applied
+     */
+    public function SupportMatchResultFilter($match_result_filter_applied)
+    {
+        $this->match_result_filter = $match_result_filter_applied;
+    }
 
 	/**
 	 * Build the form
@@ -240,6 +261,16 @@ class StatisticsFilterControl extends XhtmlForm
 			</div>';
 		$this->AddControl($date_fields);
 
+        # Support innings filter
+        $innings_list = new XhtmlSelect("innings");
+        $innings_list->AddControl(new XhtmlOption("either innings", ""));
+        $innings_list->AddControl(new XhtmlOption("first innings", 1, 1 == $this->innings_filter));
+        $innings_list->AddControl(new XhtmlOption("second innings", 2, 2 == $this->innings_filter));
+        $this->AddControl('<div class="formPart">
+        <label for="innings" class="formLabel">Innings</label>
+        <div class="formControl">' . $innings_list . '</div>' .
+        '</div>');
+        
 		# Support batting position filter
 		if (is_array($this->batting_position_filter))
 		{
@@ -254,7 +285,18 @@ class StatisticsFilterControl extends XhtmlForm
 			<label for="batpos" class="formLabel">Batting at</label>
 			<div class="formControl">' . $batting_position_list . '</div>' .
 			'</div>');
-		}
+		}        
+
+        # Support match result filter
+        $result_list = new XhtmlSelect("result");
+        $result_list->AddControl(new XhtmlOption("any result", ""));
+        $result_list->AddControl(new XhtmlOption("win", 1, 1 === $this->match_result_filter));
+        $result_list->AddControl(new XhtmlOption("tie", 0, 0 === $this->match_result_filter));
+        $result_list->AddControl(new XhtmlOption("lose", -1, -1 === $this->match_result_filter));
+        $this->AddControl('<div class="formPart">
+        <label for="result" class="formLabel">Match result</label>
+        <div class="formControl">' . $result_list . '</div>' .
+        '</div>');
 
 		# Preserve the player filter if applied
 		if (isset($_GET["player"]) and is_numeric($_GET["player"]))

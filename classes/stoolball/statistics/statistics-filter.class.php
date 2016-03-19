@@ -334,4 +334,62 @@ class StatisticsFilter
 		}
 		return $filter_data;
 	}
+    
+    /**
+     * If the innings parameter is in the query string apply the innings filter
+     * @param StatisticsManager $statistics_manager
+     */
+    public static function SupportInningsFilter(StatisticsManager $statistics_manager)
+    {
+        $filter_data = array(array(1,2), null, "");
+
+        if (isset($_GET['innings']) and is_numeric($_GET['innings']))
+        {
+            if (in_array($_GET['innings'], $filter_data[0]))
+            {
+                $filter_data[1] = (int)$_GET['innings'];
+                $statistics_manager->FilterByInnings($filter_data[1]);
+                if ($filter_data[1] === 1)
+                {
+                    $filter_data[2] = "in the first innings ";
+                }
+                else
+                {
+                    $filter_data[2] = "in the second innings ";
+                }
+            }
+        }
+        return $filter_data;
+    }
+    
+    /**
+     * If the match result parameter is in the query string apply the match result filter
+     * @param StatisticsManager $statistics_manager
+     */
+    public static function SupportMatchResultFilter(StatisticsManager $statistics_manager)
+    {
+        $filter_data = array(array(-1,0,1), null, "");
+
+        if (isset($_GET['result']) and is_numeric($_GET['result']))
+        {
+            if (in_array($_GET['result'], $filter_data[0]))
+            {
+                $filter_data[1] = (int)$_GET['result'];
+                $statistics_manager->FilterByMatchResult($filter_data[1]);
+                if ($filter_data[1] === -1)
+                {
+                    $filter_data[2] = "to lose a match ";
+                }
+                else if ($filter_data[1] === 0)
+                {
+                    $filter_data[2] = "to tie a match ";
+                }
+                else
+                {
+                    $filter_data[2] = "to win a match ";
+                }
+            }
+        }
+        return $filter_data;
+    }
 }

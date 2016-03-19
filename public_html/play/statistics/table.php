@@ -217,6 +217,14 @@ class CurrentPage extends StoolballPage
 
         $this->filter .= StatisticsFilter::ApplyTournamentFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
 
+        $filter_innings = StatisticsFilter::SupportInningsFilter($statistics_manager);
+        $this->filter_control->SupportInningsFilter($filter_innings[1]);
+        $this->filter .= $filter_innings[2];
+
+        $filter_won_match = StatisticsFilter::SupportMatchResultFilter($statistics_manager);
+        $this->filter_control->SupportMatchResultFilter($filter_won_match[1]);
+        $this->filter .= $filter_won_match[2];
+
         # Configure paging of results
         if (!$csv and $this->statistic->SupportsPagedResults()) {
             require_once('data/paged-results.class.php');

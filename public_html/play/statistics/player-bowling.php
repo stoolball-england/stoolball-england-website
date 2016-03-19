@@ -108,6 +108,14 @@ class CurrentPage extends StoolballPage
     		if (!is_null($filter_date[1])) $this->filter_control->SupportBeforeDateFilter($filter_date[1]);
     		$this->filter .= $filter_date[2];
     
+            $filter_innings = StatisticsFilter::SupportInningsFilter($statistics_manager);
+            $this->filter_control->SupportInningsFilter($filter_innings[1]);
+            $this->filter .= $filter_innings[2];
+    
+            $filter_won_match = StatisticsFilter::SupportMatchResultFilter($statistics_manager);
+            $this->filter_control->SupportMatchResultFilter($filter_won_match[1]);
+            $this->filter .= $filter_won_match[2];
+    
     		# Now get the statistics for the player
     		$data = $statistics_manager->ReadPlayerSummary();
     		if (count($data))

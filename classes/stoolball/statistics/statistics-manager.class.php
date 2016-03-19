@@ -23,6 +23,8 @@ class StatisticsManager extends DataManager
 	private $filter_page_size = null;
 	private $filter_page = null;
 	private $filter_player_of_match = false;
+    private $filter_batting_first = null;
+    private $filter_won_match = null;
 	private $filter_how_out = array();
 	private $swap_team_and_opposition_filters = false;
 	private $output_as_csv = null;
@@ -239,6 +241,21 @@ class StatisticsManager extends DataManager
 			$this->filter_player_type = array();
 	}
 
+    /**
+     * Limits supporting queries to returning only statistics where the match result for the player matches the filter
+     *
+     * @param int $won_match 1 for a win, 0 for a tie, -1 for a loss
+     */
+    public function FilterByMatchResult($won_match)
+    {
+        if ($won_match >= -1 and $won_match <= 1) {
+            $this->filter_won_match = (int)$won_match;
+        }
+        else {
+            $this->filter_won_match = null;
+        }
+    }
+
 	/**
 	 * Limits supporting queries to consider only statistics where the player was
 	 * nominated player of the match
@@ -249,6 +266,24 @@ class StatisticsManager extends DataManager
 	{
 		$this->filter_player_of_match = (bool)$apply_filter;
 	}
+
+    /**
+     * Limits supporting queries to consider only statistics from one innings in the match
+     * @param int $batting_innings
+     * @return void
+     */
+    public function FilterByInnings($batting_innings)
+    {
+        if ($batting_innings == 1) {
+            $this->filter_batting_first = 1; 
+        }
+        else if ($batting_innings == 2) {
+            $this->filter_batting_first = 0; 
+        }
+        else {
+            $this->filter_batting_first = null; 
+        }
+    }
 
 	/**
 	 * Limits supporting queries to returning only performances where players were
@@ -327,10 +362,8 @@ class StatisticsManager extends DataManager
 		$sm = $this->GetSettings()->GetTable('SeasonMatch');
 		$seasons = $this->GetSettings()->GetTable("Season");
 
-		if ($this->filter_player_of_match)
-			$where .= "AND $statistics.player_of_match = 1 ";
-		if (count($this->filter_players))
-			$where .= "AND $statistics.player_id IN (" . implode(",", $this->filter_players) . ") ";
+		if ($this->filter_player_of_match) $where .= "AND $statistics.player_of_match = 1 ";
+		if (count($this->filter_players)) $where .= "AND $statistics.player_id IN (" . implode(",", $this->filter_players) . ") ";
 		if (count($this->filter_bowlers))
 		{
 			$where .= "AND $statistics.bowled_by IN (" . implode(",", $this->filter_bowlers) . ") ";
@@ -339,39 +372,27 @@ class StatisticsManager extends DataManager
 		{
 			# When querying by the player id of a fielder, flip team and opposition because
 			# the fielder's team is the opposition_id
-			if (count($this->filter_teams))
-				$where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_teams) . ") ";
-			if (count($this->filter_opposition))
-				$where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_opposition) . ") ";
+			if (count($this->filter_teams)) $where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_teams) . ") ";
+			if (count($this->filter_opposition)) $where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_opposition) . ") ";
 		}
 		else
 		{
-			if (count($this->filter_teams))
-				$where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_teams) . ") ";
-			if (count($this->filter_opposition))
-				$where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_opposition) . ") ";
+			if (count($this->filter_teams)) $where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_teams) . ") ";
+			if (count($this->filter_opposition)) $where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_opposition) . ") ";
 		}
-		if (count($this->filter_seasons))
-			$where .= "AND $sm.season_id IN (" . implode(",", $this->filter_seasons) . ") ";
-		if (count($this->filter_competitions))
-			$where .= "AND $seasons.competition_id IN (" . implode(",", $this->filter_competitions) . ") ";
-		if (count($this->filter_grounds))
-			$where .= "AND $statistics.ground_id IN (" . implode(",", $this->filter_grounds) . ") ";
-		if (count($this->filter_match_type))
-			$where .= "AND $statistics.match_type IN (" . implode(",", $this->filter_match_type) . ") ";
-		if (count($this->filter_player_type))
-			$where .= "AND $statistics.match_player_type IN (" . implode(",", $this->filter_player_type) . ") ";
-		if (count($this->filter_batting_position))
-			$where .= "AND $statistics.batting_position IN (" . implode(",", $this->filter_batting_position) . ") ";
-		if (count($this->filter_tournaments))
-			$where .= "AND $statistics.tournament_id IN (" . implode(",", $this->filter_tournaments) . ") ";
-		if (count($this->filter_how_out))
-			$where .= "AND $statistics.how_out IN (" . implode(",", $this->filter_how_out) . ") ";
-		if (!is_null($this->filter_after_date))
-			$where .= "AND $statistics.match_time >= " . $this->filter_after_date . " ";
-		if (!is_null($this->filter_before_date))
-			$where .= "AND $statistics.match_time <= " . $this->filter_before_date . " ";
-
+		if (count($this->filter_seasons)) $where .= "AND $sm.season_id IN (" . implode(",", $this->filter_seasons) . ") ";
+		if (count($this->filter_competitions)) $where .= "AND $seasons.competition_id IN (" . implode(",", $this->filter_competitions) . ") ";
+		if (count($this->filter_grounds)) $where .= "AND $statistics.ground_id IN (" . implode(",", $this->filter_grounds) . ") ";
+		if (count($this->filter_match_type)) $where .= "AND $statistics.match_type IN (" . implode(",", $this->filter_match_type) . ") ";
+		if (count($this->filter_player_type)) $where .= "AND $statistics.match_player_type IN (" . implode(",", $this->filter_player_type) . ") ";
+		if (count($this->filter_batting_position)) $where .= "AND $statistics.batting_position IN (" . implode(",", $this->filter_batting_position) . ") ";
+		if (count($this->filter_tournaments)) $where .= "AND $statistics.tournament_id IN (" . implode(",", $this->filter_tournaments) . ") ";
+		if (count($this->filter_how_out)) $where .= "AND $statistics.how_out IN (" . implode(",", $this->filter_how_out) . ") ";
+		if (!is_null($this->filter_after_date)) $where .= "AND $statistics.match_time >= " . $this->filter_after_date . " ";
+		if (!is_null($this->filter_before_date)) $where .= "AND $statistics.match_time <= " . $this->filter_before_date . " ";
+        if (!is_null($this->filter_batting_first)) $where .= "AND $statistics.batting_first = " . $this->filter_batting_first . " ";
+        if (!is_null($this->filter_won_match)) $where .= "AND $statistics.won_match = " . $this->filter_won_match . " ";
+        		
 		return $where;
 	}
 
@@ -1560,6 +1581,7 @@ class StatisticsManager extends DataManager
 		$result = $this->GetDataConnection()->query($s_sql);
 		$row = $result->fetch();
 
+        $batting_first = null;
 		if (!is_null($row->player_of_match_id))
 		{
 			# There is an edge case where this could be wrong. If both sides in the match are
@@ -1567,7 +1589,6 @@ class StatisticsManager extends DataManager
 			# and the same player played for both sides, we don't record which side the
 			# player of the match award
 			# was for. Pretty unlikely though!
-			$batting_first = null;
 			if ($row->match_result_id == MatchResult::TIE) {
 			    $won_match = 0;
 			}
