@@ -12,7 +12,7 @@ class Competition extends Collection implements IHasShortUrl
 	var $o_settings;
 	var $i_id;
 	var $s_name;
-	var $s_contact;
+	private $contact;
 	private $s_website;
 	private $player_type;
 	private $s_intro;
@@ -154,14 +154,40 @@ class Competition extends Collection implements IHasShortUrl
 	* @param string $s_input
 	* @desc Sets the contact details for the competition - eg a name and address
 	*/
-	function SetContact($s_input) { $this->s_contact = trim((string)$s_input); }
+	function SetContact($s_input) { $this->contact = trim((string)$s_input); }
 
 	/**
 	* @return string
 	* @desc Gets the contact details for the competition - eg a name and address
 	*/
-	function GetContact() { return $this->s_contact; }
+	function GetContact() { return $this->contact; }
 
+    /**
+     * Gets the main phone number for the team
+     */
+    public function GetContactPhone()
+    {
+        # There isn't actually a main phone number, so try to get the first one
+        $matches = array();
+        if (!preg_match("/[0-9 ]{11,13}/", $this->contact, $matches)) return "";
+        return trim($matches[0]);
+    }
+
+    /**
+     * Gets the main e-mail address for the team
+     */
+    public function GetContactEmail()
+    {
+        # There isn't actually a main e-mail address, so try to get the first one
+
+        # From http://regexlib.com/REDetails.aspx?regexp_id=328
+        $email_pattern = "/((\"[^\"\f\n\r\t\v\b]+\")|([\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+(\.[\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+)*))@((\[(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))\])|(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))|((([A-Za-z0-9\-])+\.)+[A-Za-z\-]+))/";
+
+        $matches = array();
+        if (!preg_match($email_pattern, $this->contact, $matches)) return "";
+        return $matches[0];
+    }
+    
 	/**
 	* @return void
 	* @param string $s_input

@@ -327,13 +327,13 @@ class CurrentPage extends StoolballPage
         if (!$this->is_one_time_team)
         { 
     
-    		# Prompt for more contact information
-    		if (!$s_contact and !$s_website)
+    		# Prompt for more contact information, unless it's a repreaentative team when we don't expect it
+    		if (!$s_contact and !$s_website and $team->GetTeamType() !== Team::REPRESENTATIVE)
     		{
     			if ($team->GetPrivateContact())
     			{
     				?>
-    <p>We can contact this team, but we don't have permission to publish their details. If you'd like to play for them, <a href="/contact">contact us</a> and we'll pass your details on.</p>
+    <p>We may be able to contact this team, but we don't have permission to publish their details. If you'd like to play for them, <a href="/contact">contact us</a> and we'll pass your details on.</p>
     				<?php
     			}
     			else
