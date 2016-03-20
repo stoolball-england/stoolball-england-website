@@ -9,7 +9,8 @@ require_once 'stoolball/statistics/over.class.php';
  */
 class MatchResult
 {
-	private $i_id;
+    private $toss_won_by;
+    private $i_id;
 	private $b_home_batted_first;
 	private $i_home_runs;
 	private $i_away_runs;
@@ -42,7 +43,20 @@ class MatchResult
 		$this->away_overs = new Collection(null, "Over");
 		$this->away_bowling_figures = new Collection(null, "Bowling");
 	}
+    
+    /**
+     * @return void
+     * @param TeamRole $team_role
+     * @desc Sets whether the home or away team won the toss
+     */
+    public function SetTossWonBy($team_role) { $this->toss_won_by = is_null($team_role) ? null : (int)$team_role; }
 
+    /**
+     * @return TeamRole
+     * @desc Gets whether the home or away team won the toss
+     */
+    public function GetTossWonBy() { return $this->toss_won_by; }
+    
 	/**
 	 * Sets the numeric identifer for the type of result
 	 *

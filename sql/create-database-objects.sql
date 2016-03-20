@@ -235,6 +235,8 @@ CREATE TABLE IF NOT EXISTS `nsa_match` (
   `tournament_spaces` TINYINT(3) NULL DEFAULT NULL,
   `start_time` INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `start_time_known` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
+  `won_toss` TINYINT(1) NULL DEFAULT NULL,
+
   `home_bat_first` TINYINT(1) UNSIGNED NULL DEFAULT NULL,
   `home_runs` INT(5) UNSIGNED NULL DEFAULT NULL,
   `home_wickets` INT(3) NULL DEFAULT NULL,

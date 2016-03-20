@@ -115,26 +115,26 @@ class Match implements IHasShortUrl
 	 * @param Team $o_input
 	 * @desc Sets the home team for the Match
 	 */
-	function SetHomeTeam(Team $o_input) { $this->o_home_team = $o_input; }
+	public function SetHomeTeam(Team $o_input) { $this->o_home_team = $o_input; }
 
 	/**
 	 * @return Team
 	 * @desc Gets the home team
 	 */
-	function GetHomeTeam() { return $this->o_home_team; }
+	public function GetHomeTeam() { return $this->o_home_team; }
 
 	/**
 	 * @return void
 	 * @param Team $o_input
 	 * @desc Sets the away team for the Match
 	 */
-	function SetAwayTeam(Team $o_input) { $this->a_away_teams[0] = $o_input; }
+	public function SetAwayTeam(Team $o_input) { $this->a_away_teams[0] = $o_input; }
 
 	/**
 	 * @return Team
 	 * @desc Gets the away team
 	 */
-	function GetAwayTeam() { return isset($this->a_away_teams[0]) ? $this->a_away_teams[0] : null; }
+	public function GetAwayTeam() { return isset($this->a_away_teams[0]) ? $this->a_away_teams[0] : null; }       
 
 	/**
 	 * @return int

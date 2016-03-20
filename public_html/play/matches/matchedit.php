@@ -122,6 +122,7 @@ class CurrentPage extends StoolballPage
 
 			# Save the result
 			$this->match_manager->SaveIfPlayed($this->match);
+            $this->match_manager->SaveWhoWonTheToss($this->match);
 			$this->match_manager->SaveWhoBattedFirst($this->match);
                
 			# If match didn't happen or the teams aren't known yet, save and finish, otherwise go to next page

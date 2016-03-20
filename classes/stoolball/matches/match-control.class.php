@@ -188,6 +188,7 @@ class MatchControl extends Placeholder
 		# Add result
 		$o_result = $this->o_match->Result();
 		$b_result_known = (!$o_result->GetResultType() == MatchResult::UNKNOWN);
+        $toss_known = !is_null($this->o_match->Result()->GetTossWonBy());
 		$b_batting_order_known = !is_null($this->o_match->Result()->GetHomeBattedFirst());
 
 		$has_scorecard_data = ($o_result->HomeBatting()->GetCount() or
@@ -213,6 +214,17 @@ class MatchControl extends Placeholder
 			if ($has_scorecard_data) $result_header->AddCssClass("hasScorecard");
 			$this->AddControl($result_header);
 		}
+        
+        if ($toss_known) {
+            $toss_team = $this->o_match->Result()->GetTossWonBy() === TeamRole::Home() ? $this->o_match->GetHomeTeam() : $this->o_match->GetAwayTeam();
+            $toss_text = $toss_team->GetName() . " won the toss";
+            if ($b_batting_order_known) {
+                $chose_to = (($this->o_match->Result()->GetTossWonBy() === TeamRole::Home()) == $this->o_match->Result()->GetHomeBattedFirst()) ? "bat" : "bowl";
+                $toss_text .= " and chose to " . $chose_to;
+            }
+            $this->AddControl("<p>" . Html::Encode($toss_text) . '.</p>');
+            
+        }
 
 		# If at least one player recorded, create a container for the schema.org metadata
 		if ($has_scorecard_data or $has_player_of_match or $has_player_of_match_home or $has_player_of_match_away)

@@ -101,7 +101,7 @@ class MatchManager extends DataManager
 
 		$s_sql = "SELECT $s_match.match_id, $s_match.match_title, $s_match.custom_title, $s_match.ground_id, $s_match.start_time, $s_match.start_time_known, $s_match.added_by, 
 		$s_match.match_type, $s_match.player_type_id, $s_match.tournament_match_id, $s_match.max_tournament_teams, $s_match.short_url, $s_match.home_runs, $s_match.home_wickets, 
-		$s_match.away_runs, $s_match.away_wickets, $s_match.match_result_id, $s_match.home_bat_first, $s_match.match_notes, $s_match.qualification, 
+		$s_match.away_runs, $s_match.away_wickets, $s_match.match_result_id, $s_match.won_toss, $s_match.home_bat_first, $s_match.match_notes, $s_match.qualification, 
 		$s_match.players_per_team, $s_match.overs AS overs_per_innings, $s_match.update_search, $s_match.date_changed, $s_match.modified_by_id, 
 		home_team.team_id AS home_team_id, home_team.team_name AS home_team_name, home_team.short_url AS home_short_url,
 		away_team.team_id AS away_team_id, away_team.team_name AS away_team_name, away_team.short_url AS away_short_url,
@@ -895,68 +895,69 @@ class MatchManager extends DataManager
 	/**
 	 * Helper to build basic info about a match from raw data
 	 *
-	 * @param Match $o_match
-	 * @param DataRow $o_row
+	 * @param Match $match
+	 * @param DataRow $row
 	 */
-	private function BuildMatchSummary(Match $o_match, $o_row)
+	private function BuildMatchSummary(Match $match, $row)
 	{
-		$o_match->SetId($o_row->match_id);
-		if (isset($o_row->start_time)) $o_match->SetStartTime($o_row->start_time);
-		if (isset($o_row->start_time_known)) $o_match->SetIsStartTimeKnown($o_row->start_time_known);
-		if (isset($o_row->match_type)) $o_match->SetMatchType($o_row->match_type);
-		if (isset($o_row->player_type_id)) $o_match->SetPlayerType($o_row->player_type_id);
-        if (isset($o_row->qualification)) $o_match->SetQualificationType($o_row->qualification);
-		if (isset($o_row->players_per_team)) $o_match->SetMaximumPlayersPerTeam($o_row->players_per_team);
-        if (isset($o_row->max_tournament_teams)) $o_match->SetMaximumTeamsInTournament($o_row->max_tournament_teams);
-        if (isset($o_row->tournament_spaces)) $o_match->SetSpacesLeftInTournament($o_row->tournament_spaces);
-		if (isset($o_row->overs_per_innings)) $o_match->SetOvers($o_row->overs_per_innings);
-		if (isset($o_row->match_title)) $o_match->SetTitle($o_row->match_title);
-		if (isset($o_row->custom_title)) $o_match->SetUseCustomTitle($o_row->custom_title);
-		if (isset($o_row->home_bat_first) and !is_null($o_row->home_bat_first)) $o_match->Result()->SetHomeBattedFirst($o_row->home_bat_first);
-		if (isset($o_row->home_runs)) $o_match->Result()->SetHomeRuns($o_row->home_runs);
-		if (isset($o_row->home_wickets)) $o_match->Result()->SetHomeWickets($o_row->home_wickets);
-		if (isset($o_row->away_runs)) $o_match->Result()->SetAwayRuns($o_row->away_runs);
-		if (isset($o_row->away_wickets)) $o_match->Result()->SetAwayWickets($o_row->away_wickets);
-		if (isset($o_row->home_points)) $o_match->Result()->SetHomePoints($o_row->home_points);
-		if (isset($o_row->away_points)) $o_match->Result()->SetAwayPoints($o_row->away_points);
-		if (isset($o_row->player_of_match_id))
+		$match->SetId($row->match_id);
+		if (isset($row->start_time)) $match->SetStartTime($row->start_time);
+		if (isset($row->start_time_known)) $match->SetIsStartTimeKnown($row->start_time_known);
+		if (isset($row->match_type)) $match->SetMatchType($row->match_type);
+		if (isset($row->player_type_id)) $match->SetPlayerType($row->player_type_id);
+        if (isset($row->qualification)) $match->SetQualificationType($row->qualification);
+		if (isset($row->players_per_team)) $match->SetMaximumPlayersPerTeam($row->players_per_team);
+        if (isset($row->max_tournament_teams)) $match->SetMaximumTeamsInTournament($row->max_tournament_teams);
+        if (isset($row->tournament_spaces)) $match->SetSpacesLeftInTournament($row->tournament_spaces);
+		if (isset($row->overs_per_innings)) $match->SetOvers($row->overs_per_innings);
+		if (isset($row->match_title)) $match->SetTitle($row->match_title);
+		if (isset($row->custom_title)) $match->SetUseCustomTitle($row->custom_title);
+		if (isset($row->home_bat_first) and !is_null($row->home_bat_first)) $match->Result()->SetHomeBattedFirst($row->home_bat_first);
+        if (isset($row->won_toss) and !is_null($row->won_toss)) $match->Result()->SetTossWonBy($row->won_toss);
+		if (isset($row->home_runs)) $match->Result()->SetHomeRuns($row->home_runs);
+		if (isset($row->home_wickets)) $match->Result()->SetHomeWickets($row->home_wickets);
+		if (isset($row->away_runs)) $match->Result()->SetAwayRuns($row->away_runs);
+		if (isset($row->away_wickets)) $match->Result()->SetAwayWickets($row->away_wickets);
+		if (isset($row->home_points)) $match->Result()->SetHomePoints($row->home_points);
+		if (isset($row->away_points)) $match->Result()->SetAwayPoints($row->away_points);
+		if (isset($row->player_of_match_id))
 		{
 			$player = new Player($this->GetSettings());
-			$player->SetId($o_row->player_of_match_id);
-			$player->SetName($o_row->player_of_match);
-			$player->SetShortUrl($o_row->player_of_match_url);
-			$player->Team()->SetId($o_row->player_of_match_team_id);
-			$o_match->Result()->SetPlayerOfTheMatch($player);
+			$player->SetId($row->player_of_match_id);
+			$player->SetName($row->player_of_match);
+			$player->SetShortUrl($row->player_of_match_url);
+			$player->Team()->SetId($row->player_of_match_team_id);
+			$match->Result()->SetPlayerOfTheMatch($player);
 		}
-		if (isset($o_row->player_of_match_home_id))
+		if (isset($row->player_of_match_home_id))
 		{
 			$player = new Player($this->GetSettings());
-			$player->SetId($o_row->player_of_match_home_id);
-			$player->SetName($o_row->player_of_match_home);
-			$player->SetShortUrl($o_row->player_of_match_home_url);
-			$player->Team()->SetId($o_row->player_of_match_home_team_id);
-			$o_match->Result()->SetPlayerOfTheMatchHome($player);
+			$player->SetId($row->player_of_match_home_id);
+			$player->SetName($row->player_of_match_home);
+			$player->SetShortUrl($row->player_of_match_home_url);
+			$player->Team()->SetId($row->player_of_match_home_team_id);
+			$match->Result()->SetPlayerOfTheMatchHome($player);
 		}
-		if (isset($o_row->player_of_match_away_id))
+		if (isset($row->player_of_match_away_id))
 		{
 			$player = new Player($this->GetSettings());
-			$player->SetId($o_row->player_of_match_away_id);
-			$player->SetName($o_row->player_of_match_away);
-			$player->SetShortUrl($o_row->player_of_match_away_url);
-			$player->Team()->SetId($o_row->player_of_match_away_team_id);
-			$o_match->Result()->SetPlayerOfTheMatchAway($player);
+			$player->SetId($row->player_of_match_away_id);
+			$player->SetName($row->player_of_match_away);
+			$player->SetShortUrl($row->player_of_match_away_url);
+			$player->Team()->SetId($row->player_of_match_away_team_id);
+			$match->Result()->SetPlayerOfTheMatchAway($player);
 		}
-		if (isset($o_row->match_notes)) $o_match->SetNotes($o_row->match_notes);
-		if (isset($o_row->short_url)) $o_match->SetShortUrl($o_row->short_url);
-        if (isset($o_row->update_search) and $o_row->update_search == 1) $o_match->SetSearchUpdateRequired();
-		if (isset($o_row->added_by) and is_numeric($o_row->added_by))
+		if (isset($row->match_notes)) $match->SetNotes($row->match_notes);
+		if (isset($row->short_url)) $match->SetShortUrl($row->short_url);
+        if (isset($row->update_search) and $row->update_search == 1) $match->SetSearchUpdateRequired();
+		if (isset($row->added_by) and is_numeric($row->added_by))
 		{
-			$o_match->SetAddedBy(new User($o_row->added_by));
+			$match->SetAddedBy(new User($row->added_by));
 		}
-		if (isset($o_row->match_result_id)) $o_match->Result()->SetResultType($o_row->match_result_id);
-        if (isset($o_row->date_changed))
+		if (isset($row->match_result_id)) $match->Result()->SetResultType($row->match_result_id);
+        if (isset($row->date_changed))
         {
-            $o_match->SetLastAudit(new AuditData($o_row->modified_by_id, $o_row->known_as, $o_row->date_changed));
+            $match->SetLastAudit(new AuditData($row->modified_by_id, $row->known_as, $row->date_changed));
         }
 	}
 
@@ -2108,22 +2109,63 @@ class MatchManager extends DataManager
 		$this->QueueForNotification($o_match->GetId(), false);
 	}
 
+    /**
+     * @return void
+     * @param Match $match
+     * @desc Saves who won the toss in the supplied Match to the database
+     */
+    public function SaveWhoWonTheToss(Match $match)
+    {
+        # To add a result there must always already be a match to update
+        if (!$match->GetId()) return;
+
+        # build query
+        $match_id = Sql::ProtectNumeric($match->GetId());
+        
+        # Check whether anything's changed and don't re-save if not
+        $sql = 'SELECT match_id FROM nsa_match ';
+        $where = $this->SqlAddCondition('', 'won_toss' . Sql::ProtectNumeric($match->Result()->GetTossWonBy(), true, true));
+        $where = $this->SqlAddCondition($where, 'match_id = ' . $match_id);
+        $sql = $this->SqlAddWhereClause($sql, $where);
+
+        $result = $this->GetDataConnection()->query($sql);
+
+        if ($result->fetch())
+        {
+            return;
+        }
+
+        # All changes to master data from here are logged, because this method can be called from the public interface
+        
+        # Update the main match record
+        $sql = 'UPDATE nsa_match SET ' .
+            'won_toss = ' . Sql::ProtectNumeric($match->Result()->GetTossWonBy(), true);
+            'date_changed = ' . gmdate('U') . ", 
+            modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ' ' . 
+            'WHERE match_id = ' . $match_id;
+
+        $this->LoggedQuery($sql);
+        
+        # Match data has changed so notify moderator
+        $this->QueueForNotification($match->GetId(), false);
+    }
+
 	/**
 	 * @return void
-	 * @param Match $o_match
+	 * @param Match $match
 	 * @desc Saves who batted first in the supplied Match to the database
 	 */
-	public function SaveWhoBattedFirst(Match $o_match)
+	public function SaveWhoBattedFirst(Match $match)
 	{
 		# To add a result there must always already be a match to update
-		if (!$o_match->GetId()) return;
+		if (!$match->GetId()) return;
 
 		# build query
-        $match_id = Sql::ProtectNumeric($o_match->GetId());
+        $match_id = Sql::ProtectNumeric($match->GetId());
 		
 		# Check whether anything's changed and don't re-save if not
 		$s_sql = 'SELECT match_id FROM nsa_match ';
-		$s_where = $this->SqlAddCondition('', 'home_bat_first' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true, true));
+		$s_where = $this->SqlAddCondition('', 'home_bat_first' . Sql::ProtectBool($match->Result()->GetHomeBattedFirst(), true, true));
 		$s_where = $this->SqlAddCondition($s_where, 'match_id = ' . $match_id);
 		$s_sql = $this->SqlAddWhereClause($s_sql, $s_where);
 
@@ -2137,7 +2179,7 @@ class MatchManager extends DataManager
 		# All changes to master data from here are logged, because this method can be called from the public interface
 		
 		# Update the main match record
-		$batting_first = 'home_bat_first = ' . Sql::ProtectBool($o_match->Result()->GetHomeBattedFirst(), true);
+		$batting_first = 'home_bat_first = ' . Sql::ProtectBool($match->Result()->GetHomeBattedFirst(), true);
         
 		$sql = 'UPDATE nsa_match SET ' .
 			$batting_first . ', ' .
@@ -2153,7 +2195,7 @@ class MatchManager extends DataManager
         
 
 		# Match data has changed so notify moderator
-		$this->QueueForNotification($o_match->GetId(), false);
+		$this->QueueForNotification($match->GetId(), false);
 	}
 
 	/**

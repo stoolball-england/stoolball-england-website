@@ -116,26 +116,33 @@ class MatchEditControl extends DataEditControl
 		$match = $this->fixture_editor->GetDataObject(); # use fixture anyway even if empty because it's easier than checking at this stage if user is match owner
 		$match->SetId($this->GetDataObjectId()); # use id from result because it's always there
 		
+        # Get who won the toss
+        $key = $this->GetNamingPrefix() . 'Toss';
+        if (isset($_POST[$key]))
+        {
+            $toss = $_POST[$key];
+            if ($toss == TeamRole::Home() or $toss == TeamRole::Away())
+            {
+                $match->Result()->SetTossWonBy($toss);
+            }
+        }
+		
 		# Get who batted first
-		$s_key = $this->GetNamingPrefix() . 'BatFirst';
-		if (isset($_POST[$s_key]))
+		$key = $this->GetNamingPrefix() . 'BatFirst';
+		if (isset($_POST[$key]))
 		{
-			$s_batted = $_POST[$s_key];
-			if ($s_batted == 'home')
+			$batted = $_POST[$key];
+			if ($batted == TeamRole::Home() or $batted == TeamRole::Away())
 			{
-				$match->Result()->SetHomeBattedFirst(true);
-			}
-			else if ($s_batted == 'away')
-			{
-				$match->Result()->SetHomeBattedFirst(false);
+				$match->Result()->SetHomeBattedFirst($batted == TeamRole::Home());
 			}
 		}
 
 		# Get the result
-		$s_key = $this->GetNamingPrefix() . 'Result';
-		if (isset($_POST[$s_key]))
+		$key = $this->GetNamingPrefix() . 'Result';
+		if (isset($_POST[$key]))
 		{
-			$s_result = $_POST[$s_key];
+			$s_result = $_POST[$key];
 			if (strlen($s_result))
 			{
 				# First option, "match went ahead", is a negative value of the current result, so if we get a negative value
@@ -180,8 +187,8 @@ class MatchEditControl extends DataEditControl
 		}
 
 		# Get the short URL
-		$s_key = $this->GetNamingPrefix() . 'ShortUrl';
-		if (isset($_POST[$s_key])) $match->SetShortUrl($_POST[$s_key]);
+		$key = $this->GetNamingPrefix() . 'ShortUrl';
+		if (isset($_POST[$key])) $match->SetShortUrl($_POST[$key]);
 
 		return $match;
 	}
@@ -307,24 +314,13 @@ class MatchEditControl extends DataEditControl
 		{
 			$match_box->AddControl('<h3>If the match went ahead:</h3>');
 
-			$o_bat_first = new XhtmlSelect($this->GetNamingPrefix() . 'BatFirst');
-			$o_bat_first->AddControl(new XhtmlOption("Don't know", ''));
-			$o_bat_first->AddControl(new XhtmlOption($got_home_team ? $match->GetHomeTeam()->GetName() : 'Home team', 'home'));
-			$o_bat_first->AddControl(new XhtmlOption($got_away_team ? $match->GetAwayTeam()->GetName() : 'Away team', 'away'));
+            $toss = $this->SelectOneOfTwoTeams($this->GetNamingPrefix() . 'Toss', $match, $match->Result()->GetTossWonBy() === TeamRole::Home(), $match->Result()->GetTossWonBy() === TeamRole::Away());
+            $toss_part = new FormPart('Who won the toss?', $toss);
+            $match_box->AddControl($toss_part);
 
-			if (!is_null($match->Result()->GetHomeBattedFirst()))
-			{
-				if ($match->Result()->GetHomeBattedFirst())
-				{
-					$o_bat_first->SelectOption('home');
-				}
-				else
-				{
-					$o_bat_first->SelectOption('away');
-				}
-			}
-			$o_bat_part = new FormPart('Who batted first?', $o_bat_first);
-			$match_box->AddControl($o_bat_part);
+			$bat_first = $this->SelectOneOfTwoTeams($this->GetNamingPrefix() . 'BatFirst', $match, $match->Result()->GetHomeBattedFirst() === true, $match->Result()->GetHomeBattedFirst() === false);
+			$bat_part = new FormPart('Who batted first?', $bat_first);
+			$match_box->AddControl($bat_part);
 		}
 
 		# Who won?
@@ -391,6 +387,18 @@ class MatchEditControl extends DataEditControl
 		}
 
 	}
+
+    /**
+     * Creates a dropdown list to select either "don't know" or one of the two playing teams
+     */
+    private function SelectOneOfTwoTeams($list_id, Match $match, $select_home_if, $select_away_if) 
+    {
+        $list = new XhtmlSelect($list_id);
+        $list->AddControl(new XhtmlOption("Don't know", ''));
+        $list->AddControl(new XhtmlOption(!is_null($match->GetHomeTeam()) ? $match->GetHomeTeam()->GetName() : 'Home team', TeamRole::Home(), $select_home_if));
+        $list->AddControl(new XhtmlOption(!is_null($match->GetAwayTeam()) ? $match->GetAwayTeam()->GetName() : 'Away team', TeamRole::Away(), $select_away_if));
+        return $list;
+    }
 
 	/**
 	 * Replace the words "home" and "away" with the names of the relevant teams
