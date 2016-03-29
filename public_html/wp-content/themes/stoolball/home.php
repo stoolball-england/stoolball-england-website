@@ -197,7 +197,7 @@ class CurrentPage extends StoolballPage
 			<h2>Manage your team</h2>
 			<ul>
 				<li><a href="/play/manage/start-a-new-stoolball-team/">Start a team</a></li>
-				<li><a href="/play/manage/promote-stoolball-and-find-new-players/">Find players</a></li>
+				<li><a href="/play/equipment/buy/">Buy equipment</a></li>
 				<li><a href="/insurance">Insurance</a></li>
 				<li><a href="/play/manage/website/">Add your results</a></li>
 			</ul>
