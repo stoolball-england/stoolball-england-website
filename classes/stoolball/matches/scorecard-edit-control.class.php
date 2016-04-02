@@ -75,73 +75,73 @@ class ScorecardEditControl extends DataEditControl
 		$match->SetTitle($teams[5]);
 
 		# Read posted batting data
-		$i = 1;
-		$key = "batName$i";
-		while (isset($_POST[$key]))
+		$key = "batRows";
+        if (isset($_POST[$key])) {
+            # This controls not only which fields are read, but also which are redisplayed on an invalid postback or for the next innings.
+            $match->SetMaximumPlayersPerTeam(intval($_POST[$key]));
+        }
+
+		for ($i = 1; $i <= $match->GetMaximumPlayersPerTeam(); $i++) 
 		{
-			# This will increment up to the number previously posted, which means the same number of boxes
-			# will be redisplayed on an invalid postback
-			$match->SetMaximumPlayersPerTeam($i);
-
-			# The row exists - has it been filled in?
-			if (trim($_POST[$key]))
-			{
-				# Read the batter data in this row
-				$player = new Player($this->GetSettings());
-				$player->SetName($_POST[$key]);
-				$player->Team()->SetId($home_batting ? $home_team->GetId() : $away_team->GetId());
-
-				$key = "batHowOut$i";
-				$how_out = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
-
-				$key = "batOutBy$i";
-				$dismissed_by = null;
-				if (isset($_POST[$key]) and trim($_POST[$key]))
-				{
-					$dismissed_by = new Player($this->GetSettings());
-					$dismissed_by->SetName($_POST[$key]);
-					$dismissed_by->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
-				}
-
-				$key = "batBowledBy$i";
-				$bowler = null;
-				if (isset($_POST[$key]) and trim($_POST[$key]))
-				{
-					$bowler = new Player($this->GetSettings());
-					$bowler->SetName($_POST[$key]);
-					$bowler->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
-				}
-
-				# Correct caught and bowled if marked as caught
-				if ($how_out == Batting::CAUGHT and !is_null($dismissed_by) and !is_null($bowler) and trim($dismissed_by->GetName()) == trim($bowler->GetName()))
-				{
-					$how_out = Batting::CAUGHT_AND_BOWLED;
-					$dismissed_by = null;
-				}
-
-				$key = "batRuns$i";
-				$runs = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
-
-                $key = "batBalls$i";
-                $balls = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
-
-				# Add that batting performance to the match result
-				$batting = new Batting($player, $how_out, $dismissed_by, $bowler, $runs, $balls);
-				if ($home_batting)
-				{
-					$match->Result()->HomeBatting()->Add($batting);
-				}
-				else
-				{
-					$match->Result()->AwayBatting()->Add($batting);
-				}
-			}
-
-			# Get ready to check for another row
-			$i++;
-			$key = "batName$i";
+            $key = "batName$i";
+    		if (isset($_POST[$key]))
+    		{
+    			# The row exists - has it been filled in?
+    			if (trim($_POST[$key]))
+    			{
+    				# Read the batter data in this row
+    				$player = new Player($this->GetSettings());
+    				$player->SetName($_POST[$key]);
+    				$player->Team()->SetId($home_batting ? $home_team->GetId() : $away_team->GetId());
+    
+    				$key = "batHowOut$i";
+    				$how_out = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
+    
+    				$key = "batOutBy$i";
+    				$dismissed_by = null;
+    				if (isset($_POST[$key]) and trim($_POST[$key]))
+    				{
+    					$dismissed_by = new Player($this->GetSettings());
+    					$dismissed_by->SetName($_POST[$key]);
+    					$dismissed_by->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
+    				}
+    
+    				$key = "batBowledBy$i";
+    				$bowler = null;
+    				if (isset($_POST[$key]) and trim($_POST[$key]))
+    				{
+    					$bowler = new Player($this->GetSettings());
+    					$bowler->SetName($_POST[$key]);
+    					$bowler->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
+    				}
+    
+    				# Correct caught and bowled if marked as caught
+    				if ($how_out == Batting::CAUGHT and !is_null($dismissed_by) and !is_null($bowler) and trim($dismissed_by->GetName()) == trim($bowler->GetName()))
+    				{
+    					$how_out = Batting::CAUGHT_AND_BOWLED;
+    					$dismissed_by = null;
+    				}
+    
+    				$key = "batRuns$i";
+    				$runs = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
+    
+                    $key = "batBalls$i";
+                    $balls = (isset($_POST[$key]) and is_numeric($_POST[$key])) ? (int)$_POST[$key] : null;
+    
+    				# Add that batting performance to the match result
+    				$batting = new Batting($player, $how_out, $dismissed_by, $bowler, $runs, $balls);
+    				if ($home_batting)
+    				{
+    					$match->Result()->HomeBatting()->Add($batting);
+    				}
+    				else
+    				{
+    					$match->Result()->AwayBatting()->Add($batting);
+    				}
+    			}
+    		}
 		}
-
+		
 		$key = "batByes";
 		if (isset($_POST[$key]) and is_numeric($_POST[$key]))
 		{
@@ -241,54 +241,55 @@ class ScorecardEditControl extends DataEditControl
 		}
 
 		# Read posted bowling data
-		$i = 1;
-		$key = "bowlerName$i";
-		while (isset($_POST[$key]))
-		{
-			# This will increment up to the number previously posted, which means the same number of boxes
-			# will be redisplayed on an invalid postback
-			$match->SetOvers($i);
-
-			# The row exists - has it been filled in?
-			if (trim($_POST[$key]))
-			{
-				# Read the bowler data in this row
-				# strlen test allows 0 but not empty string, because is_numeric allows empty string
-				$player = new Player($this->GetSettings());
-				$player->SetName($_POST[$key]);
-				$player->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
-
-				$key = "bowlerBalls$i";
-				$balls = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
-
-				$key = "bowlerNoBalls$i";
-				$no_balls = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
-
-				$key = "bowlerWides$i";
-				$wides = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
-
-				$key = "bowlerRuns$i";
-				$runs = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
-
-				# Add that over to the match result
-				$bowling = new Over($player);
-				$bowling->SetBalls($balls);
-				$bowling->SetNoBalls($no_balls);
-				$bowling->SetWides($wides);
-				$bowling->SetRunsInOver($runs);
-				if ($home_batting)
-				{
-					$match->Result()->AwayOvers()->Add($bowling);
-				}
-				else
-				{
-					$match->Result()->HomeOvers()->Add($bowling);
-				}
-			}
-
-			# Get ready to check for another row
-			$i++;
-			$key = "bowlerName$i";
+        $key = "bowlerRows";
+        if (isset($_POST[$key])) {
+            # This controls not only which fields are read, but also which are redisplayed on an invalid postback or for the next innings.
+            $match->SetOvers(intval($_POST[$key]));
+        }
+        
+	    for ($i = 1; $i <= $match->GetOvers(); $i++) 
+        {
+    		$key = "bowlerName$i";
+            
+    		if (isset($_POST[$key]))
+    		{
+    			# The row exists - has it been filled in?
+    			if (trim($_POST[$key]))
+    			{
+    				# Read the bowler data in this row
+    				# strlen test allows 0 but not empty string, because is_numeric allows empty string
+    				$player = new Player($this->GetSettings());
+    				$player->SetName($_POST[$key]);
+    				$player->Team()->SetId($home_batting ? $away_team->GetId() : $home_team->GetId());
+    
+    				$key = "bowlerBalls$i";
+    				$balls = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
+    
+    				$key = "bowlerNoBalls$i";
+    				$no_balls = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
+    
+    				$key = "bowlerWides$i";
+    				$wides = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
+    
+    				$key = "bowlerRuns$i";
+    				$runs = (isset($_POST[$key]) and is_numeric($_POST[$key]) and strlen(trim($_POST[$key]))) ? (int)$_POST[$key] : null;
+    
+    				# Add that over to the match result
+    				$bowling = new Over($player);
+    				$bowling->SetBalls($balls);
+    				$bowling->SetNoBalls($no_balls);
+    				$bowling->SetWides($wides);
+    				$bowling->SetRunsInOver($runs);
+    				if ($home_batting)
+    				{
+    					$match->Result()->AwayOvers()->Add($bowling);
+    				}
+    				else
+    				{
+    					$match->Result()->HomeOvers()->Add($bowling);
+    				}
+    			}
+    		}
 		}
 
 		return $match;
@@ -449,6 +450,11 @@ class ScorecardEditControl extends DataEditControl
 		$batting_table->AddRow($this->CreateWicketsRow($match, $wickets_taken));
 
 		$this->AddControl($batting_table);
+        
+        $total_batsmen = new TextBox("batRows", $match->GetMaximumPlayersPerTeam(), $this->IsValidSubmit());
+        $total_batsmen->SetMode(TextBoxMode::Hidden());
+        $this->AddControl($total_batsmen);
+        
 
 		$bowling_table = new XhtmlTable();
 		$bowling_table->SetCaption($bowling_team->GetName() . "'s bowling, over-by-over");
@@ -511,7 +517,10 @@ class ScorecardEditControl extends DataEditControl
 
 		$this->AddControl($bowling_table);
 
-        		
+        $total_overs = new TextBox("bowlerRows", $match->GetOvers(), $this->IsValidSubmit());
+        $total_overs->SetMode(TextBoxMode::Hidden());
+		$this->AddControl($total_overs);
+        
         if ($match->GetLastAudit() != null)
         {
             require_once("data/audit-control.class.php");

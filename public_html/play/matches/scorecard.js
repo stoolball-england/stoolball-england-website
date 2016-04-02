@@ -390,6 +390,7 @@ $(function()
 			if (typeof stoolballAutoSuggest != "undefined") $("input.player", newRow).each(stoolballAutoSuggest.enablePlayerSuggestions);
 			$("select.howOut", newRow).keyup(howOutEnableDetails).click(howOutEnableDetails).change(howOutEnableDetails).each(howOutEnableDetails);
 			$('input:first', newRow)[0].focus();
+			updateTotalBatsmen();
 	}).hide();
 	
 	// Add over button
@@ -404,9 +405,14 @@ $(function()
 		$("input.numeric", newRow).focus(suggestBowlingDefaults).keydown(replaceBowlingDefaults);
 		if (typeof stoolballAutoSuggest != "undefined") $("input.player", newRow).each(stoolballAutoSuggest.enablePlayerSuggestions);
 		$('input:first', newRow)[0].focus();
+		updateTotalOvers();
 	}).hide();
 	
-	$("form.ScorecardEdit").submit(function(){
-		$("input.batsman:disabled", this).val('').removeAttr("disabled");	
-	});
+	function updateTotalBatsmen() {
+		$("#batRows").val($("input.batsman").length);
+	}
+	
+	function updateTotalOvers() {
+		$("#bowlerRows").val($(".bowling-scorecard input.player").length);
+	}
 });
