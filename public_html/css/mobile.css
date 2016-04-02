@@ -386,6 +386,16 @@ mark { background-color: rgba(259,241,121,.8); padding: 2px; }
 /* Link to an iCalendar */
 a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repeat -171px -110px; }
 
+/* Shop */
+.shop { padding: 0; max-width: none; } 
+.shop li { display: inline-block; width: 180px; position: relative;  margin-right: 10px; vertical-align: top; }
+.shop img { display: block; }
+.shop .buy-this { background: #333; color: #fff; padding: 5px; margin: 0; }
+.shop a:link, .shop a:visited { color: #fff; text-decoration: none; }
+.shop a:hover, .shop a:focus, .shop a:active { text-decoration: underline; }
+.shop .price { position: absolute; top: 0; right: 0; margin: 0; background: #008044; color: #fff; padding: 5px; }
+.shop .why-buy { margin: .5em 0; }
+
 /* Print styles */
 @media print {
   

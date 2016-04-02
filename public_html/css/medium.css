@@ -100,3 +100,7 @@ form.poster { float: left; width: 46%; padding: 0 2%; }
 /* Twitter/Facebook buttons below content */
 .social { margin-top: 1em; clear: both; }
 
+/* Shop */
+.shop .why-buy { font-size: .8em; }
+
+
