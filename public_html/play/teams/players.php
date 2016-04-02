@@ -136,7 +136,7 @@ class CurrentPage extends StoolballPage
 			# Create a panel with actions
 			$panel = new UserEditPanel($this->GetSettings());
             $panel->AddCssClass("with-tabs");
-			$panel->AddLink("add a player", $this->team->GetPlayerAddNavigateUrl());
+			#$panel->AddLink("add a player", $this->team->GetPlayerAddNavigateUrl());
 			echo $panel;
             $this->BuySomething();
 		}
