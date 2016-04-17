@@ -6,7 +6,6 @@ require_once('authentication/personal-info-form.class.php');
 
 class PersonalInfoPage extends StoolballPage
 {
-	private $o_error_list;
 	private $o_editing_user;
 	private $o_form;
 
@@ -46,28 +45,17 @@ class PersonalInfoPage extends StoolballPage
 	# process submitted data
 	function OnPostback()
 	{
-		# new list for validation
-		$this->o_error_list = new XhtmlElement('ul');
-		$this->o_error_list->AddAttribute('class', 'validationSummary');
+		$user = AuthenticationManager::GetUser();
+		if (isset($_POST['gender'])) $user->SetGender($_POST['gender']);
+		$user->SetOccupation(trim($_POST['occupation']));
+		$user->SetInterests(trim($_POST['interests']));
+		$user->SetLocation(trim($_POST['location']));
 
-		# ensure signature not too long
-		if (strlen(trim($_POST['signature'])) > 1000) $this->o_error_list->AddControl(new XhtmlElement('li', 'Your signature is ' . strlen($_POST['signature']) . ' characters, which is too long. Please use 1000 characters or less.'));
+		$authentication_manager = $this->GetAuthenticationManager();
+		$authentication_manager->SavePersonalInfo($user);
 
-		# if no errors, write to db
-		if (!$this->o_error_list->CountControls())
-		{
-			$user = AuthenticationManager::GetUser();
-			if (isset($_POST['gender'])) $user->SetGender($_POST['gender']);
-			$user->SetOccupation(trim($_POST['occupation']));
-			$user->SetInterests(trim($_POST['interests']));
-			$user->SetLocation(trim($_POST['location']));
-
-			$authentication_manager = $this->GetAuthenticationManager();
-			$authentication_manager->SavePersonalInfo($user);
-
-			# redirect to edit profile home
-			$this->Redirect($this->GetSettings()->GetUrl('AccountEdit'));
-		}
+		# redirect to edit profile home
+		$this->Redirect($this->GetSettings()->GetUrl('AccountEdit'));
 	}
 
 
