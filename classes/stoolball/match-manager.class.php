@@ -2179,19 +2179,42 @@ class MatchManager extends DataManager
 		# All changes to master data from here are logged, because this method can be called from the public interface
 		
 		# Update the main match record
-		$batting_first = 'home_bat_first = ' . Sql::ProtectBool($match->Result()->GetHomeBattedFirst(), true);
-        
-		$sql = 'UPDATE nsa_match SET ' .
-			$batting_first . ', ' .
-			'date_changed = ' . gmdate('U') . ", 
-            modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ' ' . 
-			'WHERE match_id = ' . $match_id;
+		$sql = 'UPDATE nsa_match SET 
+            home_bat_first = ' . Sql::ProtectBool($match->Result()->GetHomeBattedFirst(), true) . ', 
+            date_changed = ' . gmdate('U') . ", 
+            modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . '  
+			WHERE match_id = ' . $match_id;
 
 		$this->LoggedQuery($sql);
         
         # Copy updated value to statistics
-        $sql = "UPDATE nsa_player_match SET $batting_first WHERE match_id = " . $match_id;
-        $this->GetDataConnection()->query($sql);        
+        if (is_null($match->Result()->GetHomeBattedFirst())) 
+        {
+            $sql = "UPDATE nsa_player_match SET batting_first = NULL WHERE match_id = " . $match_id;
+            $this->GetDataConnection()->query($sql);
+        } 
+        else if ($match->Result()->GetHomeBattedFirst() === true) 
+        {
+            if ($match->GetHomeTeamId()) {
+                $sql = "UPDATE nsa_player_match SET batting_first = 1 WHERE match_id = " . $match_id  . " AND team_id = " . $match->GetHomeTeamId();
+                $this->GetDataConnection()->query($sql);
+            }
+            if ($match->GetAwayTeamId()) {
+                $sql = "UPDATE nsa_player_match SET batting_first = 0 WHERE match_id = " . $match_id  . " AND team_id = " . $match->GetAwayTeamId();
+                $this->GetDataConnection()->query($sql);
+            }
+        } 
+        else if ($match->Result()->GetHomeBattedFirst() === false) 
+        {
+            if ($match->GetHomeTeamId()) {
+                $sql = "UPDATE nsa_player_match SET batting_first = 0 WHERE match_id = " . $match_id  . " AND team_id = " . $match->GetHomeTeamId();
+                $this->GetDataConnection()->query($sql);
+            }
+            if ($match->GetAwayTeamId()) {
+                $sql = "UPDATE nsa_player_match SET batting_first = 1 WHERE match_id = " . $match_id  . " AND team_id = " . $match->GetAwayTeamId();
+                $this->GetDataConnection()->query($sql);
+            }
+        }
         
 
 		# Match data has changed so notify moderator
