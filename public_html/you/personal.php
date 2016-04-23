@@ -35,9 +35,6 @@ class PersonalInfoPage extends StoolballPage
 	{
 		echo new XhtmlElement('h1', $this->GetPageTitle());
 
-		# display any errors
-		echo $this->o_error_list;
-
 		# display the form
 		echo $this->o_form;
 	}
