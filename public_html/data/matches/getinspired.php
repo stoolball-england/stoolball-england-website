@@ -64,9 +64,9 @@ class CurrentPage extends Page
         $partner->addChild("organisational_type")->addAttribute("value", 10);
         $partner->addChild("url", "https://www.stoolball.org.uk");
         $partner->addChild("description", "Stoolball England is the governing body of stoolball: a fast, fun, exciting sport. We promote stoolball, set the rules, train coaches and supply equipment.");
-        $partner->addChild("address_line1", "");
-        $partner->addChild("city", "");
-        $partner->addChild("postcode", "");
+        $partner->addChild("address_line1", "13 Nymans Court");
+        $partner->addChild("city", "Crawley");
+        $partner->addChild("postcode", "RH10 6PP");
         if ($valid_api_key) {
             $partner->addChild("contact_name", "");
             $partner->addChild("contact_job_title", "");
