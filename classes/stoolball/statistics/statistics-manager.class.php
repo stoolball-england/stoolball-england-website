@@ -2305,7 +2305,8 @@ class StatisticsManager extends DataManager
 				$teams_in_match = $team_data[$row->match_id];
 				$players_team = $teams_in_match[$row->match_team_id];
 				unset($teams_in_match[$row->match_team_id]);
-				$opposition_team = $teams_in_match[0];
+                $remaining_teams_in_match = array_keys($teams_in_match);
+				$opposition_team = $teams_in_match[$remaining_teams_in_match[0]];
 				$team_id = Sql::ProtectNumeric($players_team["team_id"], false, false);
 				$team_name = Sql::ProtectString($this->GetDataConnection(), $players_team["team_name"]);
 				$opposition_id = Sql::ProtectNumeric($opposition_team["team_id"], false, false);
