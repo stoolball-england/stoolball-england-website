@@ -426,7 +426,10 @@ class Player implements IHasShortUrl
 		}
         
         if (count($this->scores_with_balls_faced)) {
-            $this->batting_strike_rate = round((array_sum($this->scores_with_balls_faced)/array_sum($this->balls_faced))*100,2);
+            $total_balls_faced = array_sum($this->balls_faced);
+            if ($total_balls_faced) {
+                $this->batting_strike_rate = round((array_sum($this->scores_with_balls_faced)/$total_balls_faced)*100,2);
+            }
         }
 
 		# Gather bowling stats
