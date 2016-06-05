@@ -109,6 +109,10 @@ abbr.dtstart { border-bottom: 0; }
 .rss { background: url(/images/sprite.4.png) no-repeat -172px -48px; padding: 0 20px; }
 .twitter-follow-button { vertical-align: bottom; }
 
+.mailing-list h2, .mailing-list .buttonGroup { margin: 0; }
+.mailing-list .form label { margin-top: .5em; }
+
+
 /* A heading which is a link should just display at normal size. Typically applies on a landing page where the HTML can't be altered for mobile. */
 h2 a { font-size: 0.75em; line-height: 1.5em; font-family: Arial, Helvetica, sans-serif; } /* down to 12px from 16px */
 

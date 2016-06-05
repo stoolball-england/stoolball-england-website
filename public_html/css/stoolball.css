@@ -143,8 +143,7 @@ div.nav p { display: block; }
 .home .history .more { margin-right: 40px; }
 .audience .more a { padding-right: 12px; background: url(/images/sprite.4.png) no-repeat right -786px; }
 
-.volunteer { clear: left; } /* for older webkit, used on ipad */
-.volunteer h2, .volunteer p { display: inline; padding-right: 5px; }
+.mailing-list { clear: left; } /* for older webkit, used on ipad */
 
 /* Play */
 .tiles-intro { max-width: none; }
