@@ -383,6 +383,19 @@ class StoolballPage extends Page
         </div>
         <?php
     }
+    
+    
+    /**
+     * Display the Page plugin for a Facebook page
+     */
+    protected function ShowFacebookPage($url, $name) {
+        ?>    
+        <div class="fb-page" data-href="<?php echo Html::Encode($url); ?>" data-tabs="timeline" data-small-header="false" data-adapt-container-width="true" data-hide-cover="false" data-show-facepile="true">
+            <blockquote cite="<?php echo Html::Encode($url); ?>" class="fb-xfbml-parse-ignore"><a href="<?php echo Html::Encode($url); ?>"><?php echo Html::Encode($name); ?> on Facebook</a></blockquote>
+        </div>
+        <?php
+    }
+    
 
 	/**
 	 * @return void

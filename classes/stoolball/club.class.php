@@ -15,6 +15,7 @@ class Club extends Collection implements IHasShortUrl
 	private $o_settings;
 	private $s_short_url;
     private $twitter;
+    private $facebook;
     private $instagram;
     private $clubmark = false;
 
@@ -70,6 +71,22 @@ class Club extends Collection implements IHasShortUrl
     * @desc Gets the twitter account of the stoolball club
     */
     public function GetTwitterAccount() { return $this->twitter; }
+
+    /**
+    * @return void
+    * @param string $facebook
+    * Sets the Facebook URL of the stoolball club
+    */
+    public function SetFacebookUrl($facebook) 
+    {
+        $this->facebook = (string)$facebook;
+    }
+    
+    /**
+    * @return string
+    * @desc Gets the Facebook URL of the stoolball club
+    */
+    public function GetFacebookUrl() { return $this->facebook; }
 
     /**
     * @return void

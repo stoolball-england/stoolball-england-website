@@ -30,6 +30,9 @@ class CurrentPage extends StoolballPage
 	private $seasons;
 	private $season_key;
     private $is_one_time_team;
+    private $has_facebook_group_url;
+    private $has_facebook_page_url;
+    
     
 	function OnLoadPageData()
 	{
@@ -79,31 +82,37 @@ class CurrentPage extends StoolballPage
         $match_manager->ReadMatchSummaries();
 		$this->a_matches = $match_manager->GetItems();
 		unset($match_manager);
-
-		require_once('stoolball/statistics/statistics-manager.class.php');
-		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
-		$statistics_manager->FilterByTeam(array($this->team->GetId()));
-		$statistics_manager->FilterMaxResults(1);
-		$this->best_batting = $statistics_manager->ReadBestBattingPerformance();
-		$this->best_bowling = $statistics_manager->ReadBestBowlingPerformance();
-		$this->most_runs = $statistics_manager->ReadBestPlayerAggregate("runs_scored");
-		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets");
-		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches");
-
-		# See what stats we've got available
-		$best_batting_count = count($this->best_batting);
-		$best_bowling_count = count($this->best_bowling);
-		$best_batters = count($this->most_runs);
-		$best_bowlers = count($this->most_wickets);
-		$best_catchers = count($this->most_catches);
-		$this->has_player_stats = ($best_batting_count or $best_batters or $best_bowling_count or $best_bowlers or $best_catchers);
-
-		if (!$this->has_player_stats)
-		{
-			$player_of_match = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
-			$this->has_player_stats = (bool)count($player_of_match);
+        
+        $club = $this->team->GetClub();
+        $this->has_facebook_group_url = ($club->GetFacebookUrl() and strpos($club->GetFacebookUrl(), '/groups/') !== false);
+        $this->has_facebook_page_url = ($club->GetFacebookUrl() and !$this->has_facebook_group_url);
+        
+        if (!$this->has_facebook_page_url) {
+    		require_once('stoolball/statistics/statistics-manager.class.php');
+    		$statistics_manager = new StatisticsManager($this->GetSettings(), $this->GetDataConnection());
+    		$statistics_manager->FilterByTeam(array($this->team->GetId()));
+    		$statistics_manager->FilterMaxResults(1);
+    		$this->best_batting = $statistics_manager->ReadBestBattingPerformance();
+    		$this->best_bowling = $statistics_manager->ReadBestBowlingPerformance();
+    		$this->most_runs = $statistics_manager->ReadBestPlayerAggregate("runs_scored");
+    		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets");
+    		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches");
+    
+    		# See what stats we've got available
+    		$best_batting_count = count($this->best_batting);
+    		$best_bowling_count = count($this->best_bowling);
+    		$best_batters = count($this->most_runs);
+    		$best_bowlers = count($this->most_wickets);
+    		$best_catchers = count($this->most_catches);
+    		$this->has_player_stats = ($best_batting_count or $best_batters or $best_bowling_count or $best_bowlers or $best_catchers);
+    
+    		if (!$this->has_player_stats)
+    		{
+    			$player_of_match = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
+    			$this->has_player_stats = (bool)count($player_of_match);
+    		}
+    		unset($statistics_manager);
 		}
-		unset($statistics_manager);
 
 		# Get whether to show add league/cup links
 		$season_manager = new SeasonManager($this->GetSettings(), $this->GetDataConnection());
@@ -157,7 +166,7 @@ class CurrentPage extends StoolballPage
         if (!$this->is_one_time_team)
         { 
     		# add club name
-    		if (!is_null($team->GetClub()))
+    		if ($team->GetClub()->GetId())
     		{
     			$o_club_para = new XhtmlElement('p');
     			$o_club_para->AddControl('Part of ');
@@ -349,11 +358,17 @@ class CurrentPage extends StoolballPage
 		}
 
         
-        $club = $this->team->GetClub();
-        if ($club and ($club->GetTwitterAccount() or $club->GetInstagramAccount())) {
+        $club = $this->team->GetClub();      
+        if ($club and ($club->GetFacebookUrl() or $club->GetTwitterAccount() or $club->GetInstagramAccount())) {
             ?>
             <div class="social screen">
             <?php
+            if ($club->GetFacebookUrl())
+            {
+            ?>
+                <a href="<?php echo Html::Encode($club->GetFacebookUrl()); ?>" class="facebook-group"><img src="/images/play/find-us-on-facebook.png" alt="Find us on Facebook" width="137" height="22" /></a>
+            <?php
+            }
             if ($club->GetTwitterAccount()) {
                 ?>
                 <a href="https://twitter.com/<?php echo Html::Encode(substr($club->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->team->GetClub()->GetTwitterAccount()); ?></a>
@@ -386,6 +401,10 @@ class CurrentPage extends StoolballPage
 		$this->Render();
 
 		### Build charts ###
+		
+		if ($this->has_facebook_page_url) {
+		    $this->ShowFacebookPage($club->GetFacebookUrl(), $club->GetName());
+		}
 
 		# Show top players, except for once-only teams which have a very short page for this to sit alongside
         if ($this->has_player_stats and !$this->is_one_time_team)

@@ -111,8 +111,6 @@ div.nav p { display: block; }
 .EssentialInfoForm fieldset p { margin: 0; padding-top: 10px; clear: both; }
 .inlineButton { margin: 0 1em; } /* when signing in with unactivated account */
 
-#facebook { margin-top: 10px; clear: both; }
-
 #post { margin: auto; width: 200px; text-align: center; height: 200px; background: url(/images/design/wood.jpg) repeat-y 0 0; clear: both; box-shadow: -1px 0 2px 1px #ccc, 
                            -1px 0 #eee, 
                            -2px 0 #ddd, 

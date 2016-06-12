@@ -25,15 +25,16 @@ class ClubEditControl extends DataEditControl
 	 */
 	function BuildPostedDataObject()
 	{
-		$o_club = new Club($this->GetSettings());
-		if (isset($_POST['item'])) $o_club->SetId($_POST['item']);
-		$o_club->SetName($_POST['name']);
-        $o_club->SetClubmarkAccredited(isset($_POST['clubmark']));
-        $o_club->SetTwitterAccount($_POST['twitter']);
-        $o_club->SetInstagramAccount($_POST['instagram']);
-		$o_club->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
+		$club = new Club($this->GetSettings());
+		if (isset($_POST['item'])) $club->SetId($_POST['item']);
+		$club->SetName($_POST['name']);
+        $club->SetClubmarkAccredited(isset($_POST['clubmark']));
+        $club->SetTwitterAccount($_POST['twitter']);
+        $club->SetFacebookUrl($_POST['facebook']);
+        $club->SetInstagramAccount($_POST['instagram']);
+		$club->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
 
-		$this->SetDataObject($o_club);
+		$this->SetDataObject($club);
 	}
 
 	function CreateControls()
@@ -49,6 +50,11 @@ class ClubEditControl extends DataEditControl
         $twitter = new FormPart('Twitter account', $twitter_box);
         $this->AddControl($twitter);
         
+        $facebook_box = new TextBox('facebook', $this->GetDataObject()->GetFacebookUrl(), $this->IsValidSubmit());
+        $facebook_box->AddAttribute('maxlength', 250);
+        $facebook = new FormPart('Facebook URL', $facebook_box);
+        $this->AddControl($facebook);
+
         $instagram_box = new TextBox('instagram', $this->GetDataObject()->GetInstagramAccount(), $this->IsValidSubmit());
         $instagram_box->AddAttribute('maxlength', 50);
         $instagram = new FormPart('Instagram account', $instagram_box);
@@ -70,11 +76,13 @@ class ClubEditControl extends DataEditControl
 		require_once('data/validation/required-field-validator.class.php');
 		require_once('data/validation/plain-text-validator.class.php');
 		require_once('data/validation/length-validator.class.php');
+        require_once('data/validation/regex-validator.class.php');
 		require_once('http/short-url-validator.class.php');
 
 		$this->a_validators[] = new RequiredFieldValidator('name', 'Please add the name of the club');
 		$this->a_validators[] = new PlainTextValidator('name', 'Please use only letters, numbers and simple punctuation in the club name');
 		$this->a_validators[] = new LengthValidator('name', 'Please make the club name shorter', 0, 100);
+        $this->a_validators[] = new RegexValidator('facebook', 'Please enter a valid Facebook URL', '^(|https?:\/\/(m.|www.|)facebook.com\/.+)');
 		$this->a_validators[] = new ShortUrlValidator($this->GetNamingPrefix() . 'ShortUrl', 'That short URL is already in use', ValidatorMode::SingleField(), $this->GetDataObject());
 	}
 

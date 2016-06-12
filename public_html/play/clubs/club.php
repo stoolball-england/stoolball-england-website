@@ -13,7 +13,7 @@ class CurrentPage extends StoolballPage
 	 *
 	 * @var Club
 	 */
-	private $o_club;
+	private $club;
 	
 	function OnLoadPageData()
 	{
@@ -25,10 +25,10 @@ class CurrentPage extends StoolballPage
 
 		# get teams
 		$o_manager->ReadById(array($_GET['item']));
-		$this->o_club = $o_manager->GetFirst();
+		$this->club = $o_manager->GetFirst();
 		
 		# must have found a team
-		if (!$this->o_club instanceof Club) $this->Redirect();
+		if (!$this->club instanceof Club) $this->Redirect();
 
 		# tidy up
 		unset($o_manager);
@@ -36,43 +36,56 @@ class CurrentPage extends StoolballPage
 	
 	function OnPrePageLoad()
 	{
-		$this->SetPageTitle($this->o_club->GetName());
+		$this->SetPageTitle($this->club->GetName());
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 	}
 	
 	function OnPageLoad()
 	{
-		echo new XhtmlElement('h1', Html::Encode($this->o_club->GetName()));
+		echo new XhtmlElement('h1', Html::Encode($this->club->GetName()));
 		
-		$a_teams = $this->o_club->GetItems();
+		$a_teams = $this->club->GetItems();
 		if (count($a_teams) > 0)
 		{
 			echo new TeamListControl($a_teams);
 		}
         
-        if ($this->o_club->GetClubmarkAccredited()) {
+        if ($this->club->GetClubmarkAccredited()) {
             ?>
             <p><img src="/images/logos/clubmark.png" alt="Clubmark accredited" width="150" height="29" /></p>
             <p>This is a <a href="http://www.sportenglandclubmatters.com/club-mark/">Clubmark accredited</a> stoolball club.</p>
             <?php
         }
         
-        if ($this->o_club->GetTwitterAccount() or $this->o_club->GetInstagramAccount())
+        $has_facebook_group_url = ($this->club->GetFacebookUrl() and strpos($this->club->GetFacebookUrl(), '/groups/') !== false);
+        $has_facebook_page_url = ($this->club->GetFacebookUrl() and !$has_facebook_group_url);
+
+        if ($has_facebook_page_url) {
+            $this->ShowFacebookPage($this->club->GetFacebookUrl(), $this->club->GetName());
+        }
+        
+        if ($has_facebook_group_url or $this->club->GetTwitterAccount() or $this->club->GetInstagramAccount())
         {
             ?>
             <div class="social screen">
             <?php
-            if ($this->o_club->GetTwitterAccount())
+            if ($has_facebook_group_url)
             {
             ?>
-                <a href="https://twitter.com/<?php echo Html::Encode(substr($this->o_club->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->o_club->GetTwitterAccount()); ?></a>
+                <a href="<?php echo Html::Encode($this->club->GetFacebookUrl()); ?>" class="facebook-group"><img src="/images/play/find-us-on-facebook.png" alt="Find us on Facebook" width="137" height="22" /></a>
+            <?php
+            }
+            if ($this->club->GetTwitterAccount())
+            {
+            ?>
+                <a href="https://twitter.com/<?php echo Html::Encode(substr($this->club->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->club->GetTwitterAccount()); ?></a>
                 <script src="https://platform.twitter.com/widgets.js"></script>
             <?php
             }
-            if ($this->o_club->GetInstagramAccount())
+            if ($this->club->GetInstagramAccount())
             {
                 ?>
-                <a href="https://www.instagram.com/<?php echo Html::Encode(trim($this->o_club->GetInstagramAccount(),'@')); ?>/?ref=badge" class="instagram"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
+                <a href="https://www.instagram.com/<?php echo Html::Encode(trim($this->club->GetInstagramAccount(),'@')); ?>/?ref=badge" class="instagram"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
                 <?php
             }
             ?>
@@ -81,16 +94,21 @@ class CurrentPage extends StoolballPage
         }
         
         
-		
-		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) 
+        $can_edit = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS);
+        
+		if ($can_edit or $has_facebook_page_url) {
+		    $this->AddSeparator();
+		}
+        
+		if ($can_edit) 
 		{
 			require_once('stoolball/user-edit-panel.class.php');
 			$panel = new UserEditPanel($this->GetSettings(), 'this club');
-			$panel->AddLink('edit this club', $this->o_club->GetEditClubUrl());
-			$panel->AddLink('delete this club', $this->o_club->GetDeleteClubUrl());
-			echo $this->AddSeparator() . $panel;
+			$panel->AddLink('edit this club', $this->club->GetEditClubUrl());
+			$panel->AddLink('delete this club', $this->club->GetDeleteClubUrl());
+			echo $panel;
 		}
-
+        
 		parent::OnPageLoad();
 	}
 }
