@@ -5,7 +5,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('stoolball/match-type.enum.php');
 if (isset($_GET['type']) and $_GET['type'] == MatchType::TOURNAMENT and isset($_GET['item']))
 {
-	require_once('/play/tournaments/edit.php');
+	require_once($_SERVER['DOCUMENT_ROOT'] . '/play/tournaments/edit.php');
 	exit();
 }
 
