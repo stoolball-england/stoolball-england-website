@@ -57,7 +57,7 @@ class TournamentMatchesControl extends DataEditControl
         {
             require_once('stoolball/tournaments/matches-in-tournament-editor.class.php');
             $heading = 'Matches in this tournament';
-            $this->matches_editor = new MatchesInTournamentEditor($this->GetSettings(), $this, 'Matches', $heading, array('Matches'));
+            $this->matches_editor = new MatchesInTournamentEditor($this->GetSettings(), $this, 'Matches', $heading);
         }
     }
     

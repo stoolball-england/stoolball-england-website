@@ -217,12 +217,14 @@ class MatchControl extends Placeholder
         
         if ($toss_known) {
             $toss_team = $this->o_match->Result()->GetTossWonBy() === TeamRole::Home() ? $this->o_match->GetHomeTeam() : $this->o_match->GetAwayTeam();
-            $toss_text = $toss_team->GetName() . " won the toss";
-            if ($b_batting_order_known) {
-                $chose_to = (($this->o_match->Result()->GetTossWonBy() === TeamRole::Home()) == $this->o_match->Result()->GetHomeBattedFirst()) ? "bat" : "bowl";
-                $toss_text .= " and chose to " . $chose_to;
+            if ($toss_team instanceof Team) {
+                $toss_text = $toss_team->GetName() . " won the toss";
+                if ($b_batting_order_known) {
+                    $chose_to = (($this->o_match->Result()->GetTossWonBy() === TeamRole::Home()) == $this->o_match->Result()->GetHomeBattedFirst()) ? "bat" : "bowl";
+                    $toss_text .= " and chose to " . $chose_to;
+                }
+                $this->AddControl("<p>" . Html::Encode($toss_text) . '.</p>');
             }
-            $this->AddControl("<p>" . Html::Encode($toss_text) . '.</p>');
             
         }
 

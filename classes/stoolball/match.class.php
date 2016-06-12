@@ -47,6 +47,7 @@ class Match implements IHasShortUrl
 	private $a_matches_in_tournament;
     private $max_tournament_teams;
     private $spaces_in_tournament;
+    private $order_in_tournament;
 	private $s_short_url;
 	private $b_custom_title = false;
 	private $b_custom_url = false;
@@ -630,6 +631,24 @@ class Match implements IHasShortUrl
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Sets the order of the match if it is part of a tournament
+     */
+    public function SetOrderInTournament($order) {
+        if (is_null($order) or intval($order) === 0) {
+            $this->order_in_tournament = null;
+        } else {
+            $this->order_in_tournament = (int)$order;
+        }
+    }
+    
+    /**
+     * Gets the order of the match if it is part of a tournament
+     */
+    public function GetOrderInTournament() {
+        return $this->order_in_tournament;
     }
 
 	/**

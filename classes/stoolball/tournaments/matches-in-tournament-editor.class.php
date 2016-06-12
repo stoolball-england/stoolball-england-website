@@ -8,6 +8,8 @@ require_once('stoolball/match.class.php');
  */
 class MatchesInTournamentEditor extends RelatedItemEditor
 {
+    private $max_sort_order = 0;
+    
     /**
      * Creates a MatchesInTournamentEditor
      *
@@ -17,11 +19,11 @@ class MatchesInTournamentEditor extends RelatedItemEditor
      * @param string $s_title
      * @param string[] $a_column_headings
      */
-    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings)
+    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title)
     {
         $this->SetDataObjectClass('Match');
         $this->SetDataObjectMethods('GetId', '', 'GetTitle');
-        parent::__construct($settings, $controlling_editor, $s_id, $s_title, $a_column_headings);
+        parent::__construct($settings, $controlling_editor, $s_id, $s_title, array('Order','Teams'));
         $this->teams = array();
     }
 
@@ -40,6 +42,12 @@ class MatchesInTournamentEditor extends RelatedItemEditor
         if (isset($_POST[$key]) and is_numeric($_POST[$key]))
         {
             $match->SetId($_POST[$key]);
+        }
+        
+        $key = $this->GetNamingPrefix() . 'MatchOrder' . $i_counter;
+        if (isset($_POST[$key]) and is_numeric($_POST[$key]))
+        {
+            $match->SetOrderInTournament($_POST[$key]);
         }
         
         $key = $this->GetNamingPrefix() . 'MatchIdValue' . $i_counter;
@@ -129,6 +137,13 @@ class MatchesInTournamentEditor extends RelatedItemEditor
         // Which match?
         if (is_null($i_row_count))
         {
+            $order = $this->CreateTextBox(null, 'MatchOrder', null, $i_total_rows);
+            $order->AddAttribute("type", "number");
+            $order->SetCssClass("numeric");
+
+            $this->max_sort_order++;
+            $order->SetText($this->max_sort_order);           
+            
             $home_control = $this->AddTeamList('HomeTeamId', $b_has_data_object ? $data_object->GetHomeTeamId() : '', $i_total_rows);
             $away_control = $this->AddTeamList('AwayTeamId', $b_has_data_object ? $data_object->GetAwayTeamId() : '', $i_total_rows);
             
@@ -136,8 +151,8 @@ class MatchesInTournamentEditor extends RelatedItemEditor
             $match_control->AddControl($home_control);
             $match_control->AddControl(" v ");
             $match_control->AddControl($away_control);
-            
-            $this->AddRowToTable(array($match_control));
+
+            $this->AddRowToTable(array($order, $match_control));
         }
         else
         {
@@ -146,7 +161,19 @@ class MatchesInTournamentEditor extends RelatedItemEditor
                 $this->EnsureTeamName($data_object->GetHomeTeam());  
                 $this->EnsureTeamName($data_object->GetAwayTeam());   
             }
-                        
+            
+            
+            $match_order = $b_has_data_object ? $data_object->GetOrderInTournament() : null;
+            if (is_null($match_order)) {
+                $match_order = $this->max_sort_order +1;
+            }
+            if ($match_order > $this->max_sort_order) {
+                $this->max_sort_order = $match_order;
+            }
+            $order = $this->CreateTextBox($match_order, 'MatchOrder', $i_row_count, $i_total_rows);
+            $order->AddAttribute("type", "number");
+            $order->SetCssClass("numeric");
+            
             $match_control = $this->CreateNonEditableText($b_has_data_object ? $data_object->GetId() : null, $b_has_data_object ? $data_object->GetTitle() : '', 'MatchId', $i_row_count, $i_total_rows);
             
             # If the add button is used, remember the team ids until the final save is requested 
@@ -157,8 +184,8 @@ class MatchesInTournamentEditor extends RelatedItemEditor
             
             $container = new Placeholder();
             $container->SetControls(array($match_control, $home_team_id, $away_team_id));
-            
-            $this->AddRowToTable(array($container));
+                                    
+            $this->AddRowToTable(array($order, $container));
         }
     }
 
@@ -196,6 +223,7 @@ class MatchesInTournamentEditor extends RelatedItemEditor
         require_once('data/validation/numeric-validator.class.php');
 
         $this->a_validators[] = new NumericValidator($this->GetNamingPrefix() . 'MatchId' . $s_item_suffix, 'The match identifier should be a number');
+        $this->a_validators[] = new NumericValidator($this->GetNamingPrefix() . 'MatchOrder' . $s_item_suffix, 'The match order should be a number');
         $this->a_validators[] = new RequiredFieldValidator(array($this->GetNamingPrefix() . 'HomeTeamId' . $s_item_suffix, $this->GetNamingPrefix() . 'AwayTeamId' . $s_item_suffix), 'Please select two teams to add a match', ValidatorMode::AllOrNothing());
     }
 }

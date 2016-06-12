@@ -92,7 +92,7 @@ class CurrentPage extends StoolballPage
 			if ($this->b_is_tournament)
 			{   
                 # Save the matches in the tournament
-                $this->match_manager->SaveMatchesInTournament($this->tournament->GetId(), $this->tournament->GetMatchesInTournament());
+                $this->match_manager->SaveMatchesInTournament($this->tournament);
                 $this->match_manager->NotifyMatchModerator($this->tournament->GetId());
                 $this->match_manager->ExpandMatchUrl($this->tournament);
                 http_response_code(303);

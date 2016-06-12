@@ -109,7 +109,7 @@ class MatchManager extends DataManager
 		$s_comp . '.competition_id, ' . $s_comp . '.competition_name, ' . $s_comp . '.notification_email, ' .
 		"$s_ground.saon, $s_ground.paon, $s_ground.street_descriptor, $s_ground.locality, $s_ground.town, $s_ground.postcode, $s_ground.short_url AS ground_short_url, $s_ground.latitude, $s_ground.longitude, $s_ground.geo_precision, " .
 		'tournament_match.match_id AS match_id_in_tournament, tournament_match.match_title AS tournament_match_title, tournament_match.short_url AS tournament_match_url, ' .
-		'tournament_match.start_time AS tournament_match_time, tournament_match.start_time_known AS tournament_match_start_time_known, ' .
+		'tournament_match.start_time AS tournament_match_time, tournament_match.start_time_known AS tournament_match_start_time_known, tournament_match.order_in_tournament, ' .
 		'tournament.match_title AS tournament_title, tournament.short_url AS tournament_url, ' .
 		"player_of_match.player_id AS player_of_match_id, player_of_match.player_name AS player_of_match, player_of_match.short_url AS player_of_match_url, player_of_match.team_id AS player_of_match_team_id,
 		player_of_match_home.player_id AS player_of_match_home_id, player_of_match_home.player_name AS player_of_match_home, player_of_match_home.short_url AS player_of_match_home_url, player_of_match_home.team_id AS player_of_match_home_team_id,
@@ -144,7 +144,7 @@ class MatchManager extends DataManager
         $s_sql = $this->SqlAddWhereClause($s_sql, $where);
 
 		# sort matches
-		$s_sql .= 'ORDER BY ' . $s_match . '.start_time ASC, ' . $s_season . '.season_id ASC';
+		$s_sql .= 'ORDER BY ' . $s_match . '.start_time ASC, ' . $s_season . '.season_id ASC, tournament_match.start_time ASC';
 
 		# run query
 		$result = $this->GetDataConnection()->query($s_sql);
@@ -877,6 +877,8 @@ class MatchManager extends DataManager
 				$o_tmatch->SetShortUrl($o_row->tournament_match_url);
 				$o_tmatch->SetStartTime($o_row->tournament_match_time);
 				$o_tmatch->SetIsStartTimeKnown($o_row->tournament_match_start_time_known);
+                $o_tmatch->SetOrderInTournament($o_row->order_in_tournament);
+
 				$o_match->AddMatchInTournament($o_tmatch);
 				unset($o_tmatch);
 			}
@@ -1310,8 +1312,8 @@ class MatchManager extends DataManager
 
 			$s_sql .= 'player_type_id = ' . $player_type . ', 
 			qualification = ' . Sql::ProtectNumeric($o_match->GetQualificationType(), false, false) . ', 
-			tournament_match_id = ' . Sql::ProtectNumeric($i_tournament, true) . ', ' .
-			'ground_id = ' . $ground_id . ', ' .
+			tournament_match_id = ' . Sql::ProtectNumeric($i_tournament, true) . ', 
+    		ground_id = ' . $ground_id . ', ' .
 			'start_time = ' . $start_time . ', ' .
 			'start_time_known = ' . Sql::ProtectBool($o_match->GetIsStartTimeKnown()) . ', ' .
 			"match_notes = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetNotes()) . ", 
@@ -1319,7 +1321,6 @@ class MatchManager extends DataManager
 			date_changed = " . gmdate('U') . ", 
             modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ' ' . 
 			'WHERE match_id = ' . Sql::ProtectNumeric($o_match->GetId());
-
 			$this->LoggedQuery($s_sql);
 
 			# Update fields which are cached in the player statistics table
@@ -1341,8 +1342,8 @@ class MatchManager extends DataManager
 			'match_type = ' . Sql::ProtectNumeric($o_match->GetMatchType()) . ', ' .
 			'player_type_id = ' . Sql::ProtectNumeric($this->WorkOutPlayerType($o_match), true, false) . ', 
 			qualification = ' . Sql::ProtectNumeric($o_match->GetQualificationType(), false, false) . ', 
-            tournament_match_id = ' . Sql::ProtectNumeric($i_tournament, true) . ', ' .
-			'ground_id = ' . Sql::ProtectNumeric($i_ground, true) . ', ' .
+            tournament_match_id = ' . Sql::ProtectNumeric($i_tournament, true) . ', 
+    		ground_id = ' . Sql::ProtectNumeric($i_ground, true) . ', ' .
 			'start_time = ' . Sql::ProtectNumeric($o_match->GetStartTime()) . ', ' .
 			'start_time_known = ' . Sql::ProtectBool($o_match->GetIsStartTimeKnown()) . ', ' .
 			"match_notes = " . Sql::ProtectString($this->GetDataConnection(), $o_match->GetNotes()) . ", 
@@ -1393,7 +1394,9 @@ class MatchManager extends DataManager
 	private function CopyTournamentDetailsToTournamentMatches(Match $tournament) {
 	    
         # If it's a tournament, copy the date of the tournament to the tournament matches to ensure they're always on the same day
-        $sql = "UPDATE nsa_match SET start_time = " . Sql::ProtectNumeric($tournament->GetStartTime()) . ", 
+        $typical_match_duration_in_seconds = 45*60;
+
+        $sql = "UPDATE nsa_match SET start_time = " . Sql::ProtectNumeric($tournament->GetStartTime()) . " + ($typical_match_duration_in_seconds*IFNULL(order_in_tournament-1,0)), 
                 start_time_known = 0
                 WHERE tournament_match_id = " . Sql::ProtectNumeric($tournament->GetId());
 
@@ -1407,13 +1410,14 @@ class MatchManager extends DataManager
         $result = $this->GetDataConnection()->query($sql);
         if ($row = $result->fetch())
         {
+            $typical_match_duration_in_seconds = 45*60;
+                        
             $sql = "UPDATE nsa_match SET
-                start_time = " . Sql::ProtectNumeric($row->start_time) . ", 
+                start_time = " . Sql::ProtectNumeric($row->start_time) . " + ($typical_match_duration_in_seconds*IFNULL(order_in_tournament-1,0)), 
                 start_time_known = 0,
                 players_per_team = " . Sql::ProtectNumeric($row->players_per_team,true) . ",
                 overs = " . Sql::ProtectNumeric($row->overs,true) . "
                 WHERE match_id = " . Sql::ProtectNumeric($tournament_match->GetId());
-
             $this->LoggedQuery($sql);
         }
     }
@@ -1752,23 +1756,17 @@ class MatchManager extends DataManager
 
     /**
      * Saves the supplied match array as the matches in a tournament
-     * @param int $tournament_id
-     * @param Match[] $matches 
+     * @param Match $tournament_id
      */
-    public function SaveMatchesInTournament($tournament_id, array $matches) {
+    public function SaveMatchesInTournament(Match $tournament) {
 
-        if (!$tournament_id) throw new Exception("tournament id is required");
-
-        $matches_to_add = array();
         $match_ids_to_keep = array();
 
-        foreach ($matches as $match) {
+        foreach ($tournament->GetMatchesInTournament() as $match) {
             /* @var $match Match */
             if (!$match instanceof Match or $match->GetMatchType() !== MatchType::TOURNAMENT_MATCH) continue;
             
-            if (!$match->GetId()) {
-                $matches_to_add[] = $match;
-            } else {
+            if ($match->GetId()) {
                 $match_ids_to_keep[] = $match->GetId(); 
             }
         }
@@ -1777,7 +1775,7 @@ class MatchManager extends DataManager
         $match_ids_to_delete = array();
         
         $sql = "SELECT match_id FROM nsa_match 
-                WHERE tournament_match_id = " . Sql::ProtectNumeric($tournament_id, false, false) . "
+                WHERE tournament_match_id = " . Sql::ProtectNumeric($tournament->GetId(), false, false) . "
                 AND match_id NOT IN (" . join(',',$match_ids_to_keep) . ") ";
         $result = $this->GetDataConnection()->query($sql);
         
@@ -1789,14 +1787,34 @@ class MatchManager extends DataManager
             $this->DeleteMatch($match_ids_to_delete);
         }
         
-        # Update changed matches
-        #
-        # Currently no edit option so nothing to do
-        
-        # Add new matches
-        foreach ($matches_to_add as $match) {
-            $this->SaveFixture($match);
+        # Add and update matches
+        foreach ($tournament->GetMatchesInTournament() as $match) {
+            /* @var $match Match */
+            if (!$match instanceof Match or $match->GetMatchType() !== MatchType::TOURNAMENT_MATCH) continue;
+
+            if (!$match->GetId()) {
+                $this->SaveFixture($match);
+            }
+            $this->SaveMatchOrderInTournament($match->GetId(), $match->GetOrderInTournament());
+            $this->CopyTournamentMatchDetailsFromTournament($tournament, $match);
         }
+    }
+
+    /**
+     * Updates the order of a match in a tournament
+     */
+    private function SaveMatchOrderInTournament($match_id, $order) {
+        
+        if (!$match_id or !is_integer($match_id)) {
+            throw new Exception('$match_id must be an integer');            
+        }
+        
+        $sql = "UPDATE nsa_match SET 
+            order_in_tournament = " . Sql::ProtectNumeric($order, true, false) . ',
+            date_changed = ' . gmdate('U') . ", 
+            modified_by_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . '  
+            WHERE match_id = ' . Sql::ProtectNumeric($match_id);
+        $this->LoggedQuery($sql);
     }
 
 	/**
