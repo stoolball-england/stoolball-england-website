@@ -25,7 +25,7 @@ class ClubManager extends DataManager
 	*/
 	function ReadById($a_ids=null)
 	{
-		$s_sql = "SELECT club.club_id, club.club_name, club.twitter, club.clubmark, club.short_url, 
+		$s_sql = "SELECT club.club_id, club.club_name, club.twitter, club.instagram, club.clubmark, club.short_url, 
 		team.team_id, team.team_name, team.short_url AS team_short_url 
 		FROM nsa_club AS club LEFT OUTER JOIN nsa_team AS team ON club.club_id = team.club_id ";
 
@@ -73,6 +73,7 @@ class ClubManager extends DataManager
 				$o_club->SetName($o_row->club_name);
 				$o_club->SetShortUrl($o_row->short_url);
                 $o_club->SetTwitterAccount($o_row->twitter);
+                $o_club->SetInstagramAccount($o_row->instagram);
                 $o_club->SetClubmarkAccredited($o_row->clubmark);
 
 			}
@@ -108,11 +109,12 @@ class ClubManager extends DataManager
 		if ($o_club->GetId())
 		{
 			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
-			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", " .
-            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", 
+            twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+            instagram = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetInstagramAccount()) . ", 
             clubmark = " . Sql::ProtectBool($o_club->GetClubmarkAccredited()) . ",
-			short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", " .
-			'date_changed = ' . gmdate('U') . ' ' .
+			short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", 
+			date_changed = " . gmdate('U') . ' ' .
 			'WHERE club_id = ' . Sql::ProtectNumeric($o_club->GetId());
 
 			# run query
@@ -121,12 +123,13 @@ class ClubManager extends DataManager
 		else
 		{
 			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
-			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", " .
-            "twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetName()) . ", 
+            twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetTwitterAccount()) . ", 
+            instagram = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetInstagramAccount()) . ", 
             clubmark = " . Sql::ProtectBool($o_club->GetClubmarkAccredited()) . ",
 			short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_club->GetShortUrl()) . ", 
-			date_added = " . gmdate('U') . ', ' .
-			'date_changed = ' . gmdate('U');
+			date_added = " . gmdate('U') . ', 
+			date_changed = ' . gmdate('U');
 
 			# run query
 			$o_result = $this->GetDataConnection()->query($s_sql);

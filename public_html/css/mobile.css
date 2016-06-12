@@ -108,6 +108,7 @@ abbr.dtstart { border-bottom: 0; }
 /* Subscription options */
 .rss { background: url(/images/sprite.4.png) no-repeat -172px -48px; padding: 0 20px; }
 .twitter-follow-button { vertical-align: bottom; }
+a.instagram img { margin: 10px 0; display: block; float: none; }
 
 .mailing-list h2, .mailing-list .buttonGroup { margin: 0; }
 .mailing-list .form label { margin-top: .5em; }

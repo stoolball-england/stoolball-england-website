@@ -349,11 +349,23 @@ class CurrentPage extends StoolballPage
 		}
 
         
-        if ($this->team->GetClub() and $this->team->GetClub()->GetTwitterAccount()) {
+        $club = $this->team->GetClub();
+        if ($club and ($club->GetTwitterAccount() or $club->GetInstagramAccount())) {
             ?>
             <div class="social screen">
-                <a href="https://twitter.com/<?php echo Html::Encode(substr($this->team->GetClub()->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->team->GetClub()->GetTwitterAccount()); ?></a>
+            <?php
+            if ($club->GetTwitterAccount()) {
+                ?>
+                <a href="https://twitter.com/<?php echo Html::Encode(substr($club->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->team->GetClub()->GetTwitterAccount()); ?></a>
                 <script src="https://platform.twitter.com/widgets.js"></script>
+                <?php
+            }
+            if ($club->GetInstagramAccount()) {
+                ?>
+                <a href="https://www.instagram.com/<?php echo Html::Encode(trim($club->GetInstagramAccount(),'@')); ?>/?ref=badge" class="instagram"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
+                <?php  
+            }
+            ?>
             </div>
             <?php
         } else {            

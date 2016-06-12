@@ -57,15 +57,30 @@ class CurrentPage extends StoolballPage
             <?php
         }
         
-        if ($this->o_club->GetTwitterAccount())
+        if ($this->o_club->GetTwitterAccount() or $this->o_club->GetInstagramAccount())
         {
             ?>
             <div class="social screen">
+            <?php
+            if ($this->o_club->GetTwitterAccount())
+            {
+            ?>
                 <a href="https://twitter.com/<?php echo Html::Encode(substr($this->o_club->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->o_club->GetTwitterAccount()); ?></a>
                 <script src="https://platform.twitter.com/widgets.js"></script>
+            <?php
+            }
+            if ($this->o_club->GetInstagramAccount())
+            {
+                ?>
+                <a href="https://www.instagram.com/<?php echo Html::Encode(trim($this->o_club->GetInstagramAccount(),'@')); ?>/?ref=badge" class="instagram"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
+                <?php
+            }
+            ?>
             </div>
             <?php
         }
+        
+        
 		
 		if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) 
 		{

@@ -30,6 +30,7 @@ class ClubEditControl extends DataEditControl
 		$o_club->SetName($_POST['name']);
         $o_club->SetClubmarkAccredited(isset($_POST['clubmark']));
         $o_club->SetTwitterAccount($_POST['twitter']);
+        $o_club->SetInstagramAccount($_POST['instagram']);
 		$o_club->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
 
 		$this->SetDataObject($o_club);
@@ -48,6 +49,11 @@ class ClubEditControl extends DataEditControl
         $twitter = new FormPart('Twitter account', $twitter_box);
         $this->AddControl($twitter);
         
+        $instagram_box = new TextBox('instagram', $this->GetDataObject()->GetInstagramAccount(), $this->IsValidSubmit());
+        $instagram_box->AddAttribute('maxlength', 50);
+        $instagram = new FormPart('Instagram account', $instagram_box);
+        $this->AddControl($instagram);
+
         $this->AddControl(new FormPart('',new CheckBox('clubmark', 'Clubmark accredited', 1, $this->GetDataObject()->GetClubmarkAccredited(), $this->IsValidSubmit())));
 
 		# Remember short URL

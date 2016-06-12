@@ -15,6 +15,7 @@ class Club extends Collection implements IHasShortUrl
 	private $o_settings;
 	private $s_short_url;
     private $twitter;
+    private $instagram;
     private $clubmark = false;
 
 	/**
@@ -69,6 +70,23 @@ class Club extends Collection implements IHasShortUrl
     * @desc Gets the twitter account of the stoolball club
     */
     public function GetTwitterAccount() { return $this->twitter; }
+
+    /**
+    * @return void
+    * @param string $instagram
+    * Sets the instagram username of the stoolball club
+    */
+    public function SetInstagramAccount($instagram) 
+    {
+        $this->instagram = trim((string)$instagram, ' @');
+        if ($this->instagram) $this->instagram = "@" . $this->instagram;
+    }
+        
+    /**
+    * @return string
+    * @desc Gets the instagram account of the stoolball club
+    */
+    public function GetInstagramAccount() { return $this->instagram; }
     
     /**
      * Sets whether the club is Clubmark accredited
