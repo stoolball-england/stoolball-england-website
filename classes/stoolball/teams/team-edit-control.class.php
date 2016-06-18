@@ -60,7 +60,7 @@ class TeamEditControl extends DataEditControl
         if (isset($_POST['name'])) $team->SetName($_POST['name']);
 		$team->SetWebsiteUrl($_POST['websiteUrl']);
 		$team->SetIsActive(isset($_POST['playing']));
-		$team->SetTeamType($_POST['team_type']);
+		if (isset($_POST['team_type'])) $team->SetTeamType($_POST['team_type']);
 		$team->SetIntro(ucfirst(trim($_POST['intro'])));
 		$team->SetPlayingTimes($_POST['times']);
 		$team->SetCost($_POST['yearCost']);
