@@ -47,6 +47,7 @@ class CurrentPage extends StoolballPage
 		$team_manager = new TeamManager($this->GetSettings(), $this->GetDataConnection());
 		$team_manager->FilterByActive(true) ;
 		$team_manager->FilterByGround(array($this->ground->GetId()));
+        $team_manager->FilterByTeamType(array(Team::CLOSED_GROUP, Team::OCCASIONAL, Team::REGULAR, Team::REPRESENTATIVE, Team::SCHOOL_YEARS, Team::SCHOOL_CLUB, Team::SCHOOL_OTHER));
 		$team_manager->ReadTeamSummaries();
 		$this->ground->Teams()->SetItems($team_manager->GetItems());
 
