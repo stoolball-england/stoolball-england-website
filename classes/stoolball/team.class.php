@@ -1,7 +1,7 @@
 <?php
 require_once('collection.class.php');
 require_once('stoolball/ground.class.php');
-require_once('stoolball/club.class.php');
+require_once('stoolball/clubs/club.class.php');
 require_once('stoolball/team-role.enum.php');
 require_once 'stoolball/player-type.enum.php';
 require_once('http/has-short-url.interface.php');
@@ -44,6 +44,7 @@ class Team implements IHasShortUrl
 	private $o_club;
     private $update_search;
     private $owner_role_id;
+    private $school_years = array();
     
 	/**
 	 * @return Team
@@ -434,6 +435,29 @@ class Team implements IHasShortUrl
 	{
 		return $this->team_type;
 	}
+    
+    /**
+     * Sets the school years represented by this team
+     * @param array[int=>bool] $school_years [$year] = bool
+     */
+    public function SetSchoolYears(array $school_years) 
+    {
+        foreach ($school_years as $key => $value) {
+            $year = (int)$key;
+            if ($year < 1 or $year > 12 or !is_bool($value)) {
+                unset($school_years[$key]);
+            }
+        }
+        $this->school_years = $school_years;
+    }
+    
+    /**
+     * Sets the school years represented by this team
+     * @return array[int=>bool] $school_years [$year] = bool
+     */
+    public function GetSchoolYears() {
+        return $this->school_years;
+    }
 
 	/**
 	 * @return void
@@ -513,8 +537,8 @@ class Team implements IHasShortUrl
 		return new ShortUrlFormat("nsa_team", 'short_url', array('team_id'), array('GetId'),
 		array(
 		'{0}' => $settings->GetUrl('Team') . '{0}',
-		'{0}/edit' => "/play/teamedit.php?item={0}",
-		'{0}/delete' => "/play/teamdelete.php?item={0}", 
+		'{0}/edit' => "/play/teams/teamedit.php?item={0}",
+		'{0}/delete' => "/play/teams/teamdelete.php?item={0}", 
 		'{0}/matches/friendlies/add' => '/play/matches/matchadd.php?team={0}',
 		'{0}/matches/league/add' => '/play/matches/matchadd.php?team={0}&type=' . MatchType::LEAGUE,
 		'{0}/matches/cup/add' => '/play/matches/matchadd.php?team={0}&type=' . MatchType::CUP,
@@ -648,15 +672,9 @@ class Team implements IHasShortUrl
 	const ONCE = 4;
     
     /**
-     * A team made up of pupils from one school year
-     */
-    const SCHOOL_YEAR = 5;
-    
-    /**
      * A team made up of pupils from multiple school years
      */
-    const SCHOOL_YEARS = 6;
-    
+	const SCHOOL_YEARS = 6;
     /**
      * A extra-curricular school club, such as an after-school club 
      */

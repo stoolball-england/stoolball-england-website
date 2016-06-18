@@ -2,20 +2,20 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('stoolball/clubs/club-manager.class.php');
+require_once('stoolball/team-manager.class.php');
 
 class CurrentPage extends StoolballPage
 {
 	/**
 	 * The object being deleted
 	 *
-	 * @var Club
+	 * @var Team
 	 */
 	private $data_object;
 	/**
 	 * Data manager
 	 *
-	 * @var ClubManager
+	 * @var TeamManager
 	 */
 	private $manager;
 
@@ -24,7 +24,8 @@ class CurrentPage extends StoolballPage
 	
 	function OnPageInit()
 	{
-		$this->manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
+		$this->manager = new TeamManager($this->GetSettings(), $this->GetDataConnection());
+        $this->manager->FilterByTeamType(array());
 
 		$this->has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS));
 		if (!$this->has_permission) 
@@ -56,6 +57,10 @@ class CurrentPage extends StoolballPage
 				# Delete it
 				$this->manager->Delete(array($id));
 
+                # Delete team from search engine
+                $this->SearchIndexer()->DeleteFromIndexById("team" . $id);
+                $this->SearchIndexer()->CommitChanges();
+
 				# Note success
 				$this->deleted = true;
 			}
@@ -78,19 +83,20 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		$this->SetPageTitle('Delete club: ' . $this->data_object->GetName());
+		# set page title
+		$this->SetPageTitle('Delete team: ' . $this->data_object->GetName());
 		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 	}
 
 	function OnPageLoad()
 	{
-		echo new XhtmlElement('h1', Html::Encode('Delete club: ' . $this->data_object->GetName()));
+		echo new XhtmlElement('h1', 'Delete team: ' . htmlentities($this->data_object->GetName(), ENT_QUOTES, "UTF-8", false));
 
 		if ($this->deleted)
 		{
 			?>
-			<p>The club has been deleted.</p>
-			<p><a href="/yesnosorry/clublist.php">View all clubs</a></p>
+			<p>The team has been deleted.</p>
+			<p><a href="/teams">View all teams</a></p>
 			<?php
 		}
 		else
@@ -98,11 +104,11 @@ class CurrentPage extends StoolballPage
 			if ($this->has_permission)
 			{
 				?>
-				<p>Deleting a club cannot be undone.</p>
-				<p>Are you sure you want to delete this club?</p>
-				<form action="<?php echo Html::Encode($this->data_object->GetDeleteClubUrl()) ?>" method="post" class="deleteButtons">
+				<p>Deleting a team cannot be undone. All players will be deleted, and the team will be removed from existing matches.</p>
+				<p>Are you sure you want to delete this team?</p>
+				<form action="<?php echo htmlentities($this->data_object->GetDeleteTeamUrl(), ENT_QUOTES, "UTF-8", false) ?>" method="post" class="deleteButtons">
 				<div>
-				<input type="submit" value="Delete club" name="delete" />
+				<input type="submit" value="Delete team" name="delete" />
 				<input type="submit" value="Cancel" name="cancel" />
 				</div>
 				</form>
@@ -110,18 +116,18 @@ class CurrentPage extends StoolballPage
 
 				$this->AddSeparator();
 				require_once('stoolball/user-edit-panel.class.php');
-				$panel = new UserEditPanel($this->GetSettings(), 'this club');
+				$panel = new UserEditPanel($this->GetSettings(), 'this team');
 
-				$panel->AddLink('view this club', $this->data_object->GetNavigateUrl());
-				$panel->AddLink('edit this club', $this->data_object->GetEditClubUrl());
+				$panel->AddLink('view this team', $this->data_object->GetNavigateUrl());
+				$panel->AddLink('edit this team', $this->data_object->GetEditTeamUrl());
 
 				echo $panel;
 			}
 			else
 			{
 				?>
-				<p>Sorry, you're not allowed to delete this club.</p>
-				<p><a href="<?php echo Html::Encode($this->data_object->GetNavigateUrl()) ?>">Go back to the club</a></p>
+				<p>Sorry, you're not allowed to delete this team.</p>
+				<p><a href="<?php echo htmlentities($this->data_object->GetNavigateUrl(), ENT_QUOTES, "UTF-8", false) ?>">Go back to the team</a></p>
 				<?php
 			}
 		}

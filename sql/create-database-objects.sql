@@ -108,19 +108,25 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 -- Table `nsa_club`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_club` (
-  `club_id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `club_name` VARCHAR(100) NOT NULL,
-  `twitter` VARCHAR(16) NULL DEFAULT NULL,
-  `clubmark` BIT(1) NOT NULL DEFAULT false,
-  `short_url` VARCHAR(100) NULL DEFAULT NULL,
-  `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
+CREATE TABLE `nsa_club` (
+  `club_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `club_name` varchar(100) NOT NULL,
+  `club_type` tinyint(3) unsigned NOT NULL DEFAULT '1',
+  `plays_outdoors` bit(1) DEFAULT NULL,
+  `plays_indoors` bit(1) DEFAULT NULL,
+  `twitter` varchar(16) DEFAULT NULL,
+  `facebook` varchar(250) DEFAULT NULL,
+  `instagram` varchar(50) DEFAULT NULL,
+  `clubmark` bit(1) NOT NULL DEFAULT b'0',
+  `how_many_players` int(5) unsigned DEFAULT NULL,
+  `age_range_lower` tinyint(3) unsigned DEFAULT NULL,
+  `age_range_upper` tinyint(3) unsigned DEFAULT NULL,
+  `short_url` varchar(100) DEFAULT NULL,
+  `date_added` int(10) unsigned NOT NULL DEFAULT '0',
+  `date_changed` int(10) unsigned NOT NULL DEFAULT '0',
   PRIMARY KEY (`club_id`),
-  UNIQUE INDEX `short_url` (`short_url` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Stoolball clubs: clubs can have many teams';
+  UNIQUE KEY `short_url` (`short_url`)
+) ENGINE=InnoDB AUTO_INCREMENT=72 DEFAULT CHARSET=utf8 COMMENT='Stoolball clubs: clubs can have many teams';
 
 
 -- -----------------------------------------------------
@@ -535,34 +541,45 @@ COMMENT = 'Query cache for short URLs';
 -- -----------------------------------------------------
 -- Table `nsa_team`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `nsa_team` (
-  `team_id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `team_name` VARCHAR(100) NOT NULL DEFAULT '',
-  `comparable_name` VARCHAR(100) NOT NULL,
-  `intro` TEXT NULL DEFAULT NULL,
-  `ground_id` INT(5) UNSIGNED NULL DEFAULT NULL,
-  `website` VARCHAR(250) NOT NULL DEFAULT '',
-  `active` TINYINT(1) UNSIGNED NOT NULL DEFAULT '1',
-  `team_type` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-  `player_type_id` INT(5) UNSIGNED NOT NULL DEFAULT '2',
-  `club_id` INT(5) UNSIGNED NULL DEFAULT NULL,
-  `playing_times` TEXT NULL DEFAULT NULL,
-  `cost` TEXT NULL DEFAULT NULL,
-  `contact` TEXT NULL DEFAULT NULL,
-  `contact_nsa` TEXT NULL DEFAULT NULL,
-  `short_url` VARCHAR(100) NULL DEFAULT NULL,
-  `update_search` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-  `owner_role_id` INT(5) UNSIGNED NULL DEFAULT NULL,
-  `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
-  `modified_by_id` INT(5) UNSIGNED NOT NULL,
+CREATE TABLE `nsa_team` (
+  `team_id` int(5) unsigned NOT NULL AUTO_INCREMENT,
+  `team_name` varchar(100) NOT NULL DEFAULT '',
+  `comparable_name` varchar(100) NOT NULL,
+  `intro` text,
+  `ground_id` int(5) unsigned DEFAULT NULL,
+  `website` varchar(250) NOT NULL DEFAULT '',
+  `active` tinyint(1) unsigned NOT NULL DEFAULT '1',
+  `team_type` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `player_type_id` int(5) unsigned NOT NULL DEFAULT '2',
+  `club_id` int(5) unsigned DEFAULT NULL,
+  `year1` bit(1) NOT NULL DEFAULT b'0',
+  `year2` bit(1) NOT NULL DEFAULT b'0',
+  `year3` bit(1) NOT NULL DEFAULT b'0',
+  `year4` bit(1) NOT NULL DEFAULT b'0',
+  `year5` bit(1) NOT NULL DEFAULT b'0',
+  `year6` bit(1) NOT NULL DEFAULT b'0',
+  `year7` bit(1) NOT NULL DEFAULT b'0',
+  `year8` bit(1) NOT NULL DEFAULT b'0',
+  `year9` bit(1) NOT NULL DEFAULT b'0',
+  `year10` bit(1) NOT NULL DEFAULT b'0',
+  `year11` bit(1) NOT NULL DEFAULT b'0',
+  `year12` bit(1) NOT NULL DEFAULT b'0',
+  `playing_times` text,
+  `cost` text,
+  `contact` text,
+  `contact_nsa` text,
+  `short_url` varchar(100) DEFAULT NULL,
+  `update_search` tinyint(1) unsigned NOT NULL DEFAULT '0',
+  `owner_role_id` int(5) unsigned DEFAULT NULL,
+  `date_added` int(10) unsigned NOT NULL DEFAULT '0',
+  `date_changed` int(10) unsigned NOT NULL DEFAULT '0',
+  `modified_by_id` int(5) unsigned NOT NULL,
   PRIMARY KEY (`team_id`),
-  UNIQUE INDEX `comparable_name` (`comparable_name` ASC),
-  UNIQUE INDEX `short_url` (`short_url` ASC),
-  INDEX `owner_role_id` (`owner_role_id` ASC))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8
-COMMENT = 'Stoolball teams';
+  UNIQUE KEY `comparable_name` (`comparable_name`),
+  UNIQUE KEY `short_url` (`short_url`),
+  KEY `owner_role_id` (`owner_role_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Stoolball teams';
+
 
 
 -- -----------------------------------------------------

@@ -8,7 +8,7 @@ require_once('stoolball/season-manager.class.php');
 require_once('stoolball/team-edit-panel.class.php');
 require_once('stoolball/team-name-control.class.php');
 require_once('markup/xhtml-markup.class.php');
-require_once('stoolball/club.class.php');
+require_once('stoolball/clubs/club.class.php');
 require_once('stoolball/season-list-control.class.php');
 require_once('stoolball/match-list-control.class.php');
 

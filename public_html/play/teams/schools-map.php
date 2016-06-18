@@ -18,7 +18,7 @@ class CurrentPage extends StoolballPage
 		
 		$this->LoadClientScript("/scripts/lib/markerclusterer_compiled.js");
 		$this->LoadClientScript('/scripts/maps-3.js');
-		$this->LoadClientScript("map.js.php?team-type=" .implode(",", array(Team::SCHOOL_YEAR, Team::SCHOOL_YEARS, Team::SCHOOL_CLUB, Team::SCHOOL_OTHER)), true);
+		$this->LoadClientScript("map.js.php?team-type=" .implode(",", array(Team::SCHOOL_YEARS, Team::SCHOOL_CLUB, Team::SCHOOL_OTHER)), true);
 	}
 
 	function OnPageLoad()

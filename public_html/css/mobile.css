@@ -171,6 +171,11 @@ input.year { width: 3em; }
 .back:before { content: '◄'; font-size: 10px; margin: -1px 6px 0 0; }
 .forward:after { content: '►'; font-size: 10px; margin: -1px 0 0 6px; }
 
+/* Edit team */
+fieldset.school-years { margin-bottom: 2.5em;}
+fieldset.school-years p { margin-bottom: 0; }
+fieldset.school-years label { display: inline-block; width: 6.5em; }
+
 
 /* Rules of stoolball */
 .outline li { list-style: none; padding-left: 3em; position: relative; }

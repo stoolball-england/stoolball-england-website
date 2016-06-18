@@ -1,6 +1,6 @@
 <?php
 require_once('collection.class.php');
-require_once('team.class.php');
+require_once('stoolball/team.class.php');
 require_once('http/has-short-url.interface.php');
 require_once('http/short-url.class.php');
 
@@ -14,10 +14,16 @@ class Club extends Collection implements IHasShortUrl
 	private $s_name;
 	private $o_settings;
 	private $s_short_url;
+    private $how_many_players;
+    private $age_range_lower;
+    private $age_range_upper;
     private $twitter;
     private $facebook;
     private $instagram;
     private $clubmark = false;
+    private $club_type;
+    private $plays_outdoors;
+    private $plays_indoors;
 
 	/**
 	 * Instantiates a Club
@@ -54,6 +60,73 @@ class Club extends Collection implements IHasShortUrl
 	* @desc Gets the name of the stoolball club
 	*/
 	public function GetName() { return $this->s_name; }
+    
+    /**
+     * Sets the type of club this is: an independent club or a school
+     */
+    public function SetTypeOfClub($club_type) { $this->club_type = (int)$club_type; }
+    
+    /**
+     * Gets the type of club this is: an independent club or a school
+     */
+    public function GetTypeOfClub() { return $this->club_type; }
+
+    /**
+    * @return void
+    * @param int $how_many_players
+    * Sets an estimate of how many active players the club has
+    */
+    public function SetHowManyPlayers($how_many_players) 
+    {
+        if (!$how_many_players) {
+            $this->how_many_players = null;
+        }
+        else $this->how_many_players = (int)$how_many_players;
+    }
+    
+    /**
+    * @return int
+    * @desc Gets an estimate of how many active players the club has
+    */
+    public function GetHowManyPlayers() { return $this->how_many_players; }
+
+    /**
+    * @return void
+    * @param int $age
+    * Sets the lower end of the age range for club members
+    */
+    public function SetAgeRangeLower($age) 
+    {
+        if (!$age) {
+            $this->age_range_lower = null;
+        }
+        else $this->age_range_lower = (int)$age;
+    }
+    
+    /**
+    * @return int
+    * @desc Gets the lower end of the age range for club members
+    */
+    public function GetAgeRangeLower() { return $this->age_range_lower; }
+    
+    /**
+    * @return void
+    * @param int $age
+    * Sets the upper end of the age range for club members
+    */
+    public function SetAgeRangeUpper($age) 
+    {
+        if (!$age) {
+            $this->age_range_upper = null;
+        }
+        else $this->age_range_upper = (int)$age;
+    }
+    
+    /**
+    * @return int
+    * @desc Gets the upper end of the age range for club members
+    */
+    public function GetAgeRangeUpper() { return $this->age_range_upper; }
 
     /**
     * @return void
@@ -104,7 +177,45 @@ class Club extends Collection implements IHasShortUrl
     * @desc Gets the instagram account of the stoolball club
     */
     public function GetInstagramAccount() { return $this->instagram; }
+
+    /**
+     * Sets whether the club plays outdoor stoolball
+     * @param bool? $plays_outdoors
+     */
+    public function SetPlaysOutdoors($plays_outdoors) {
+        if (is_null($plays_outdoors)) 
+        {
+            $this->plays_outdoors = null;
+        }
+        else $this->plays_outdoors = (bool)$plays_outdoors;
+    }
     
+    /**
+     * Gets whether the club plays outdoor stoolball
+     */
+    public function GetPlaysOutdoors() {
+        return $this->plays_outdoors;
+    }
+    
+    /**
+     * Sets whether the club plays indoor stoolball
+     * @param bool? $plays_indoors
+     */
+    public function SetPlaysIndoors($plays_indoors) {
+        if (is_null($plays_indoors)) 
+        {
+            $this->plays_indoors = null;
+        }
+        else $this->plays_indoors = (bool)$plays_indoors;
+    }
+    
+    /**
+     * Gets whether the club plays indoor stoolball
+     */
+    public function GetPlaysIndoors() {
+        return $this->plays_indoors;
+    }
+        
     /**
      * Sets whether the club is Clubmark accredited
      */
@@ -118,6 +229,7 @@ class Club extends Collection implements IHasShortUrl
     public function GetClubmarkAccredited() {
         return $this->clubmark;
     }
+    
     
 	/**
 	* @return string
@@ -213,5 +325,15 @@ class Club extends Collection implements IHasShortUrl
 
 		return $s_url;
 	}
+    
+    /**
+     * This club is an independent multi-sport or stoolball club
+     */
+    const STOOLBALL_CLUB = 1;
+    
+    /**
+     * This club represents a school
+     */
+    const SCHOOL = 2;
 }
 ?>

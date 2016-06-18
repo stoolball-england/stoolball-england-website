@@ -60,7 +60,6 @@ class TeamEditControl extends DataEditControl
         if (isset($_POST['name'])) $team->SetName($_POST['name']);
 		$team->SetWebsiteUrl($_POST['websiteUrl']);
 		$team->SetIsActive(isset($_POST['playing']));
-		if (isset($_POST['team_type'])) $team->SetTeamType($_POST['team_type']);
 		$team->SetIntro(ucfirst(trim($_POST['intro'])));
 		$team->SetPlayingTimes($_POST['times']);
 		$team->SetCost($_POST['yearCost']);
@@ -70,6 +69,27 @@ class TeamEditControl extends DataEditControl
 		$ground = new Ground($this->GetSettings());
 		$ground->SetId($_POST['ground']);
 		$team->SetGround($ground);
+        
+        if (isset($_POST['team_type'])) 
+        {
+            $team->SetTeamType($_POST['team_type']);
+            if ($team->GetTeamType() == Team::SCHOOL_YEARS) {
+                $team->SetSchoolYears(array(
+                    1 => isset($_POST['year1']),
+                    2 => isset($_POST['year2']),
+                    3 => isset($_POST['year3']),
+                    4 => isset($_POST['year4']),
+                    5 => isset($_POST['year5']),
+                    6 => isset($_POST['year6']),
+                    7 => isset($_POST['year7']),
+                    8 => isset($_POST['year8']),
+                    9 => isset($_POST['year9']),
+                    10 => isset($_POST['year10']),
+                    11 => isset($_POST['year11']),
+                    12 => isset($_POST['year12'])
+                    ));
+            }
+        }
 
         if ($this->is_admin)
         { 
@@ -186,8 +206,7 @@ class TeamEditControl extends DataEditControl
             $team_type->AddControl(new XhtmlOption("represents a league or group", Team::REPRESENTATIVE, $team->GetTeamType() == Team::REPRESENTATIVE));
             $team_type->AddControl(new XhtmlOption("closed group (example: only staff can join a work team)", Team::CLOSED_GROUP, $team->GetTeamType() == Team::CLOSED_GROUP));
             $team_type->AddControl(new XhtmlOption("plays occasionally", Team::OCCASIONAL, $team->GetTeamType() == Team::OCCASIONAL));
-            $team_type->AddControl(new XhtmlOption("school year group", Team::SCHOOL_YEAR, $team->GetTeamType() == Team::SCHOOL_YEAR));
-            $team_type->AddControl(new XhtmlOption("multiple school year groups playing together", Team::SCHOOL_YEARS, $team->GetTeamType() == Team::SCHOOL_YEARS));
+            $team_type->AddControl(new XhtmlOption("school year group(s)", Team::SCHOOL_YEARS, $team->GetTeamType() == Team::SCHOOL_YEARS));
             $team_type->AddControl(new XhtmlOption("school club (eg after school)", Team::SCHOOL_CLUB, $team->GetTeamType() == Team::SCHOOL_CLUB));
             $team_type->AddControl(new XhtmlOption("other school team", Team::SCHOOL_OTHER, $team->GetTeamType() == Team::SCHOOL_OTHER));
             
@@ -197,6 +216,25 @@ class TeamEditControl extends DataEditControl
             $this->AddControl($type_label);
             $this->AddControl('<p class="label-hint">We use this to decide when to list your team.</p>');
             $this->AddControl($team_type);
+            
+            $school_years_data = $this->GetDataObject()->GetSchoolYears();
+            $school_years = new XhtmlElement("fieldset", null, "school-years");
+            $school_years->AddControl(new XhtmlElement("legend", "Select the school year(s) this team represents"));
+            $school_years->AddControl(new XhtmlElement("p", "For example, if Years 7 and 8 play together, select both. If Year 9 also plays, but separately, create a separate Year 9 team."));
+            $school_years->AddControl(new CheckBox('year1', 'Year 1', 1, array_key_exists(1, $school_years_data) and $school_years_data[1], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year2', 'Year 2', 1, array_key_exists(2, $school_years_data) and $school_years_data[2], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year3', 'Year 3', 1, array_key_exists(3, $school_years_data) and $school_years_data[3], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year4', 'Year 4', 1, array_key_exists(4, $school_years_data) and $school_years_data[4], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year5', 'Year 5', 1, array_key_exists(5, $school_years_data) and $school_years_data[5], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year6', 'Year 6', 1, array_key_exists(6, $school_years_data) and $school_years_data[6], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year7', 'Year 7', 1, array_key_exists(7, $school_years_data) and $school_years_data[7], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year8', 'Year 8', 1, array_key_exists(8, $school_years_data) and $school_years_data[8], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year9', 'Year 9', 1, array_key_exists(9, $school_years_data) and $school_years_data[9], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year10', 'Year 10', 1, array_key_exists(10, $school_years_data) and $school_years_data[10], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year11', 'Year 11', 1, array_key_exists(11, $school_years_data) and $school_years_data[11], $this->IsValidSubmit()));
+            $school_years->AddControl(new CheckBox('year11', 'Year 12', 1, array_key_exists(12, $school_years_data) and $school_years_data[12], $this->IsValidSubmit()));
+            $this->AddControl($school_years);
+            
 
             $this->AddControl(new CheckBox('playing', 'This team still plays matches', 1, $team->GetIsActive(), $this->IsValidSubmit()));
     

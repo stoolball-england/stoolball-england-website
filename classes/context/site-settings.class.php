@@ -304,7 +304,7 @@ abstract class SiteSettings
 
         $a_formats = array();
 
-        require_once('stoolball/club.class.php');
+        require_once('stoolball/clubs/club.class.php');
         $a_formats[] = Club::GetShortUrlFormatForType($this);
 
         require_once('stoolball/competition.class.php');

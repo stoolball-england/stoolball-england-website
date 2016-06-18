@@ -93,7 +93,7 @@ RewriteRule ^competitions/([a-z]*)/?$ /play/competitions/index.php?category=$1 [
 RewriteRule ^matches/?$ /play/matches/index.php [L,NC,QSA]
 RewriteRule ^matches/?([a-z]*)/?$ /play/matches/matches.php?player=$1 [L,NC,QSA]
 RewriteRule ^teams/?$ /teams/all [R=303,L,NC]
-RewriteRule ^teams/add/?$ /play/teamedit.php [L,NC,QSA]
+RewriteRule ^teams/add/?$ /play/teams/teamedit.php [L,NC,QSA]
 RewriteRule ^teams/map/?$ /play/teams/map.php [L,NC,QSA]
 RewriteRule ^tournaments/?$ /tournaments/all/ [R=303,L,NC]
 RewriteRule ^tournaments/add/?(teams|competitions)?/?$ /play/tournaments/add.php [L,NC,QSA]

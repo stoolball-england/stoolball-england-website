@@ -2,8 +2,8 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('stoolball/club-manager.class.php');
-require_once('stoolball/club-list-control.class.php');
+require_once('stoolball/clubs/club-manager.class.php');
+require_once('stoolball/clubs/club-list-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -24,14 +24,23 @@ class CurrentPage extends StoolballPage
 
 	function OnPrePageLoad()
 	{
-		# set page title
-		$this->SetPageTitle('Stoolball clubs');
+		$this->SetPageTitle('Stoolball clubs and schools');
+        $this->SetContentConstraint(StoolballPage::ConstrainColumns());
 	}
 
 	function OnPageLoad()
 	{
 		echo new XhtmlElement('h1', Html::Encode($this->GetPageTitle()));
         echo new ClubListControl($this->a_clubs);
+        
+        if (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) 
+        {
+            require_once("stoolball/user-edit-panel.class.php");
+            $this->AddSeparator();
+            $panel = new UserEditPanel($this->GetSettings(), "clubs and schools");
+            $panel->AddLink("add a club or school", "/play/clubs/clubedit.php");
+            echo $panel;
+        }
     }
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

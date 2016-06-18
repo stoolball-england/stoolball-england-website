@@ -172,7 +172,8 @@ class TeamManager extends DataManager
 
 		$s_sql = "SELECT team.team_id, team.team_name, team.website, team.active, team.team_type, 
 		team.intro, team.player_type_id, team.playing_times, team.cost, team.short_url, 
-		team.contact, team.contact_nsa, team.update_search, team.date_changed, team.modified_by_id,  
+		team.contact, team.contact_nsa, team.update_search, team.date_changed, team.modified_by_id,
+		team.year1, team.year2, team.year3, team.year4, team.year5, team.year6, team.year7, team.year8, team.year9, team.year10, team.year11, team.year12,  
 	    club.club_id, club.club_name, club.twitter, club.facebook, club.instagram, club.clubmark, club.short_url AS club_short_url, 
 		$s_season_link.withdrawn_league, " .
 		$s_season . '.season_id, ' . $s_season . '.season_name, ' . $s_season . '.is_latest, ' . $s_season . '.start_year, ' . $s_season . '.end_year, ' . $s_season . '.short_url AS season_short_url, ' .
@@ -454,6 +455,20 @@ class TeamManager extends DataManager
 				if (isset($row->contact_nsa)) $o_team->SetPrivateContact($row->contact_nsa);
 				if (isset($row->short_url)) $o_team->SetShortUrl($row->short_url);
 				if (isset($row->player_type_id)) $o_team->SetPlayerType($row->player_type_id);
+                $o_team->SetSchoolYears(array(
+                    1 => isset($row->year1) and $row->year1,
+                    2 => isset($row->year2) and $row->year2,
+                    3 => isset($row->year3) and $row->year3,
+                    4 => isset($row->year4) and $row->year4,
+                    5 => isset($row->year5) and $row->year5,
+                    6 => isset($row->year6) and $row->year6,
+                    7 => isset($row->year7) and $row->year7,
+                    8 => isset($row->year8) and $row->year8,
+                    9 => isset($row->year9) and $row->year9,
+                    10 => isset($row->year10) and $row->year10,
+                    11 => isset($row->year11) and $row->year11,
+                    12 => isset($row->year12) and $row->year12
+                ));
                 if (isset($row->update_search) and $row->update_search == 1) $o_team->SetSearchUpdateRequired();
                 if (isset($row->date_changed))
                 {
@@ -588,6 +603,20 @@ class TeamManager extends DataManager
 		# build query
 		$i_club_id = (!is_null($team->GetClub())) ? $team->GetClub()->GetId() : null;
         $allowed_html = array('p','br','strong','em','a[href]', 'ul', 'ol', 'li');
+        $school_years = $team->GetSchoolYears();
+        $school_years_sql = "year1 = ". Sql::ProtectBool(array_key_exists(1, $school_years) and $school_years[1], false, false) . ", 
+                            year2 = ". Sql::ProtectBool(array_key_exists(2, $school_years) and $school_years[2], false, false) . ", 
+                            year3 = ". Sql::ProtectBool(array_key_exists(3, $school_years) and $school_years[3], false, false) . ", 
+                            year4 = ". Sql::ProtectBool(array_key_exists(4, $school_years) and $school_years[4], false, false) . ", 
+                            year5 = ". Sql::ProtectBool(array_key_exists(5, $school_years) and $school_years[5], false, false) . ", 
+                            year6 = ". Sql::ProtectBool(array_key_exists(6, $school_years) and $school_years[6], false, false) . ", 
+                            year7 = ". Sql::ProtectBool(array_key_exists(7, $school_years) and $school_years[7], false, false) . ", 
+                            year8 = ". Sql::ProtectBool(array_key_exists(8, $school_years) and $school_years[8], false, false) . ", 
+                            year9 = ". Sql::ProtectBool(array_key_exists(9, $school_years) and $school_years[9], false, false) . ", 
+                            year10 = ". Sql::ProtectBool(array_key_exists(10, $school_years) and $school_years[10], false, false) . ", 
+                            year11 = ". Sql::ProtectBool(array_key_exists(11, $school_years) and $school_years[11], false, false) . ", 
+                            year12 = ". Sql::ProtectBool(array_key_exists(12, $school_years) and $school_years[12], false, false) . ", "; 
+        
                 
 		# if no id, it's a new Team; otherwise update the Team
 		if ($adding)
@@ -599,8 +628,9 @@ class TeamManager extends DataManager
             website = " . $this->SqlString($team->GetWebsiteUrl()) . ", " .
             'ground_id = ' . Sql::ProtectNumeric($team->GetGround()->GetId(), true) . ', ' .
             'active = ' . Sql::ProtectBool($team->GetIsActive()) . ", 
-            team_type = " . Sql::ProtectNumeric($team->GetTeamType()) . ', ' .
-            'player_type_id = ' . Sql::ProtectNumeric($team->GetPlayerType()) . ",
+            team_type = " . Sql::ProtectNumeric($team->GetTeamType()) . ", 
+            $school_years_sql
+            player_type_id = " . Sql::ProtectNumeric($team->GetPlayerType()) . ",
             intro = " . $this->SqlHtmlString($team->GetIntro(), $allowed_html) . ",
             playing_times = " . $this->SqlHtmlString($team->GetPlayingTimes(), $allowed_html) . ",  
             cost = " . $this->SqlHtmlString($team->GetCost(), $allowed_html) . ", " .
@@ -662,7 +692,8 @@ class TeamManager extends DataManager
             {
                 $sql .= ", 
                         active = " . Sql::ProtectBool($team->GetIsActive()) . ", 
-                        team_type = " . Sql::ProtectNumeric($team->GetTeamType()) . ", 
+                        team_type = " . Sql::ProtectNumeric($team->GetTeamType()) . ",
+                        $school_years_sql
                         ground_id = " . Sql::ProtectNumeric($team->GetGround()->GetId(), true) . ", 
                         playing_times = " . $this->SqlHtmlString($team->GetPlayingTimes(), $allowed_html);
             }             

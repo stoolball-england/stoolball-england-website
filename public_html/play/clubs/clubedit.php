@@ -2,8 +2,8 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('stoolball/club-manager.class.php');
-require_once('stoolball/club-edit-control.class.php');
+require_once('stoolball/clubs/club-manager.class.php');
+require_once('stoolball/clubs/club-edit-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
