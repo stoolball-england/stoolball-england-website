@@ -107,6 +107,9 @@ RewriteCond %{REQUEST_FILENAME}.php -f
 RewriteRule ^play/statistics/([a-z0-9-]+)/?$ /play/statistics/$1.php [L,NC,QSA]
 RewriteRule ^play/statistics/([a-z0-9-]+)/?$ /play/statistics/table.php?statistic=$1 [L,NC,QSA]
 
+# used in schools section
+RewriteRule ^schools/map/?$ /play/teams/schools-map.php [L,NC,QSA]
+
 # redirect to real static files - full in dev, minified in production
 # RewriteCond %{HTTP_HOST}   ^www\.stoolball\.org\.uk [NC]
 # RewriteRule ^css/([a-z]+)\.[0-9]+\.css$ /css/$1.min.css [L,NC,QSA]

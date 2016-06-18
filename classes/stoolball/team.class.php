@@ -624,7 +624,7 @@ class Team implements IHasShortUrl
 	const REGULAR = 0;
 
 	/**
-	 * A team that only particular people can join, such as a work or school team
+	 * A team that only particular people can join, such as a work team
 	 * @var int
 	 */
 	const CLOSED_GROUP = 1;
@@ -646,5 +646,25 @@ class Team implements IHasShortUrl
 	 * @var int
 	 */
 	const ONCE = 4;
+    
+    /**
+     * A team made up of pupils from one school year
+     */
+    const SCHOOL_YEAR = 5;
+    
+    /**
+     * A team made up of pupils from multiple school years
+     */
+    const SCHOOL_YEARS = 6;
+    
+    /**
+     * A extra-curricular school club, such as an after-school club 
+     */
+    const SCHOOL_CLUB = 7;
+    
+    /** 
+     * Any other type of school team
+     */
+    const SCHOOL_OTHER = 8;
 }
 ?>

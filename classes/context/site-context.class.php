@@ -10,38 +10,16 @@ class SiteContext
 		$this->GetSiteContext($o_categories);
 	}
 
-	protected function GetSiteContext(CategoryCollection $o_categories)
+	protected function GetSiteContext(CategoryCollection $categories_to_search)
 	{
-		# for WordPress get the actual URL requested rather than the script name, since mod_rewrite can introduce some big differences
-		$url = SiteContext::IsWordPress() ? $_SERVER['REQUEST_URI'] : $_SERVER['PHP_SELF'];
-
-		# Strip any querystring
-		$pos = strpos($url, '?');
-		if ($pos) $url = substr($url, 0, $pos);
-
-		# If there's a filename, strip it
-		if (strpos($url, ".php")) $url = substr($url, 0, strpos($url, basename($url)));
-
-		# Strip any surrounding slashes
-		$url = trim($url, '/');
-
-		# If there's more than one folder, loop from the deepest to the highest looking for one which matches a category
-		$a_folders = explode('/', $url);
-		if (is_array($a_folders))
-		{
-			for ($i = count($a_folders)-1; $i >=0; $i--)
-			{
-				$o_category = $o_categories->GetByUrl($a_folders[$i]);
-				if ($o_category != false)
-				{
-					$this->o_current_categories->Add($o_category);
-					break;
-				}
-			}
-		}
+        # Prefer the actual URL requested and only fall back to the script name, since mod_rewrite can introduce some big differences
+        $this->FindCurrentCategoriesFromUrl($_SERVER['REQUEST_URI'], $categories_to_search);
+        if (!$this->o_current_categories->GetCount()) {
+            $this->FindCurrentCategoriesFromUrl($_SERVER['PHP_SELF'], $categories_to_search);
+        }
 
 		# get ancestors of current category
-		while($o_parent = $o_categories->GetParent($this->o_current_categories->GetFirst()))
+		while($o_parent = $categories_to_search->GetParent($this->o_current_categories->GetFirst()))
 		{
 			if ($o_parent != false)
 			{
@@ -50,6 +28,34 @@ class SiteContext
 			else break;
 		}
 	}
+    
+    private function FindCurrentCategoriesFromUrl($url, CategoryCollection $categories_to_search) {
+
+        # Strip any querystring
+        $pos = strpos($url, '?');
+        if ($pos) $url = substr($url, 0, $pos);
+
+        # If there's a filename, strip it
+        if (strpos($url, ".php")) $url = substr($url, 0, strpos($url, basename($url)));
+
+        # Strip any surrounding slashes
+        $url = trim($url, '/');
+
+        # If there's more than one folder, loop from the deepest to the highest looking for one which matches a category
+        $folders = explode('/', $url);
+        if (is_array($folders))
+        {
+            for ($i = count($folders)-1; $i >=0; $i--)
+            {
+                $category = $categories_to_search->GetByUrl($folders[$i]);
+                if ($category != false)
+                {
+                    $this->o_current_categories->Add($category);
+                    break;
+                }
+            }
+        }
+    }
 
 	/**
 	 * @return Category

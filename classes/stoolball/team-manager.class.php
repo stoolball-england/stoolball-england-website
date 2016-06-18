@@ -29,7 +29,7 @@ class TeamManager extends DataManager
 		$this->s_item_class = 'Team';
 		$this->b_inactive_last = true;
         
-        # Exclude once-only teams by default
+        # Exclude once-only teams and schools by default
         $this->filter_team_types = array(Team::CLOSED_GROUP, Team::OCCASIONAL, Team::REGULAR, Team::REPRESENTATIVE);
 	}
 

@@ -184,8 +184,12 @@ class TeamEditControl extends DataEditControl
             $team_type = new XhtmlSelect('team_type', null, $this->IsValidSubmit());
             $team_type->AddControl(new XhtmlOption("plays regularly", Team::REGULAR, $team->GetTeamType() == Team::REGULAR));
             $team_type->AddControl(new XhtmlOption("represents a league or group", Team::REPRESENTATIVE, $team->GetTeamType() == Team::REPRESENTATIVE));
-            $team_type->AddControl(new XhtmlOption("closed group (example: only pupils can join a school team)", Team::CLOSED_GROUP, $team->GetTeamType() == Team::CLOSED_GROUP));
+            $team_type->AddControl(new XhtmlOption("closed group (example: only staff can join a work team)", Team::CLOSED_GROUP, $team->GetTeamType() == Team::CLOSED_GROUP));
             $team_type->AddControl(new XhtmlOption("plays occasionally", Team::OCCASIONAL, $team->GetTeamType() == Team::OCCASIONAL));
+            $team_type->AddControl(new XhtmlOption("school year group", Team::SCHOOL_YEAR, $team->GetTeamType() == Team::SCHOOL_YEAR));
+            $team_type->AddControl(new XhtmlOption("multiple school year groups playing together", Team::SCHOOL_YEARS, $team->GetTeamType() == Team::SCHOOL_YEARS));
+            $team_type->AddControl(new XhtmlOption("school club (eg after school)", Team::SCHOOL_CLUB, $team->GetTeamType() == Team::SCHOOL_CLUB));
+            $team_type->AddControl(new XhtmlOption("other school team", Team::SCHOOL_OTHER, $team->GetTeamType() == Team::SCHOOL_OTHER));
             
             $type_label = new XhtmlElement('label', "Type of team");
             $type_label->AddAttribute('for', $team_type->GetXhtmlId()); 

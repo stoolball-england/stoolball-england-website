@@ -19,6 +19,23 @@ class CurrentPage extends Page
 		require_once('stoolball/ground-manager.class.php');
 		$manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 		$manager->FilterByActive(true);
+        
+        # Check for team type
+        if (isset($_GET["team-type"])) 
+        {
+            # Sanitise input to ensure we work only with integers
+            $team_types = explode(",", $_GET['team-type']);    
+            foreach ($team_types as $key=>$value) {
+                if (!is_numeric($value)) {
+                    unset($team_types[$key]);
+                } else {
+                    $team_types[$key] = (int)$team_types[$key];
+                }
+            }
+            if (count($team_types)) {
+                $manager->FilterByTeamType($team_types);
+            }
+        }
 	
     
         # Check for player type

@@ -2,8 +2,6 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('xhtml/forms/xhtml-form.class.php');
-require_once('xhtml/forms/xhtml-select.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -13,7 +11,6 @@ class CurrentPage extends StoolballPage
 	function OnPageInit()
 	{
 		$this->SetHasGoogleMap(true);
-		if (isset($_GET['type']) and is_numeric($_GET['type'])) $this->i_team_type = (int)$_GET['type'];
 		parent::OnPageInit();
 	}
 
