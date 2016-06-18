@@ -178,7 +178,7 @@ class CurrentPage extends StoolballPage
         	require_once('stoolball/user-edit-panel.class.php');
 			$panel = new UserEditPanel($this->GetSettings(), '');	
 			if ($add_teams) $panel->AddLink('add a team', '/teams/add');
-			if ($add_grounds) $panel->AddLink('add a ground', '/yesnosorry/groundedit.php');
+			if ($add_grounds) $panel->AddLink('add a ground', '/play/grounds/groundedit.php');
 			echo $panel;
 		}
         else 
