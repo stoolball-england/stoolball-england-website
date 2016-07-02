@@ -306,24 +306,32 @@ class Club extends Collection implements IHasShortUrl
 	 */
 	public function SuggestShortUrl($i_preference=1)
 	{
-		$s_url = strtolower(html_entity_decode($this->GetName()));
+		$url = strtolower(html_entity_decode($this->GetName()));
 
 		# Remove punctuation
-		$s_url = preg_replace('/[^a-z ]/i', '', $s_url);
+		$url = preg_replace('/[^a-z ]/i', '', $url);
 
 		# Remove noise words
-		$s_url = preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bladies\b/i', '/\bmixed\b/i', '/\bsports\b/i', '/\bthe\b/i', '/\band\b/i'), '', $s_url);
+		$url = trim(preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bladies\b/i', '/\bmixed\b/i', '/\bsports\b/i'), '', $url));
+
+        if ($this->GetTypeOfClub() == Club::SCHOOL) {
+            $url = "school/$url";
+            $suffix_if_duplicate = 'school';
+        }
+        else {
+            $suffix_if_duplicate = 'club';
+        }
 
 		# Apply preference
 		if ($i_preference > 1)
 		{
-			$s_url = ShortUrl::SuggestShortUrl($s_url, $i_preference, 1, 'club');
+			$url = ShortUrl::SuggestShortUrl($url, $i_preference, 1, $suffix_if_duplicate);
 		}
 
 		# Remove spaces
-		$s_url = str_replace(' ', '', $s_url);
+		$url = str_replace(' ', '-', $url);
 
-		return $s_url;
+		return $url;
 	}
     
     /**

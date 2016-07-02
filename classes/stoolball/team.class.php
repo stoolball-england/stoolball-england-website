@@ -575,10 +575,10 @@ class Team implements IHasShortUrl
 		$s_url = strtolower(html_entity_decode($this->GetName()));
 
 		# Remove punctuation
-		$s_url = preg_replace('/[^a-z ]/i', '', $s_url);
+		$s_url = preg_replace('/[^a-z0-9 ]/i', '', $s_url);
 
 		# Remove noise words
-		$s_url = preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bladies\b/i', '/\bmixed\b/i', '/\bsports\b/i', '/\bthe\b/i', '/\band\b/i'), '', $s_url);
+		$s_url = preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bladies\b/i', '/\bmixed\b/i', '/\bsports\b/i'), '', $s_url);
 
 		# Apply preference
 		if ($i_preference == 2)
@@ -593,7 +593,7 @@ class Team implements IHasShortUrl
 		}
 
 		# Remove spaces
-		$s_url = str_replace(' ', '', $s_url);
+		$s_url = str_replace(' ', '-', trim($s_url));
 
 		return $this->GetShortUrlPrefix() . $s_url;
 	}
