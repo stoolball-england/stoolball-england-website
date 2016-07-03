@@ -90,7 +90,7 @@ class CurrentPage extends StoolballPage
 		{
 			?>
 			<p>The club has been deleted.</p>
-			<p><a href="/yesnosorry/clublist.php">View all clubs</a></p>
+			<p><a href="/play/clubs/">View all clubs</a></p>
 			<?php
 		}
 		else

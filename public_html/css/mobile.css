@@ -125,16 +125,18 @@ fieldset { border: 0; padding: 0; margin: 1em 0; }
 legend { font-weight: bold; margin: 0; padding: 0; }
 
 label { display: block; }
-.form label { margin: 1.5em 0 3px; font-weight: bold; }
-.form .label-hint { margin: -3px 0 3px; }
-
-.requiredField { font-family: Verdana, Arial, Helvetica, sans-serif; color: #900; padding: 0 .3em; font-weight: bold; }
-
 textarea { width: 100%; font-family: Arial, Helvetica, sans-serif; }
 input[type=text], input[type=email], input[type=password] { width: 100%; }
 select { max-width: 100%; }
 
+.form label { margin: 1.5em 0 5px; font-weight: bold; }
+.form .label-hint { margin: -3px 0 3px; }
+.form input[type=text] { padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; width: 98%; }
+
+.requiredField { font-family: Verdana, Arial, Helvetica, sans-serif; color: #900; padding: 0 .3em; font-weight: bold; }
+
 .form .mceLayout { width: 100%!important;}
+.form .town { max-width: 20em; }
 
 .radioButtonList label { position: relative; padding: 1px 0 0 25px; }
 .radioButtonList input { position: absolute; top: 0; left: 0; }
@@ -406,6 +408,15 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
 .shop a:hover, .shop a:focus, .shop a:active { text-decoration: underline; }
 .shop .price { position: absolute; top: 0; right: 0; margin: 0; background: #008044; color: #fff; padding: 5px; }
 .shop .why-buy { margin: .5em 0; }
+
+/* Add a school */
+.SchoolEdit .panel { margin: 1.5em 0 1em;}
+
+/* Edit a school 
+ * 
+ * Negative margin to counteract standard margin before first field label 
+ */
+.box-content .SchoolEdit { margin-top: -1.5em; }
 
 /* Print styles */
 @media print {

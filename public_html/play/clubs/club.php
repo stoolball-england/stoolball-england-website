@@ -102,10 +102,14 @@ class CurrentPage extends StoolballPage
         
 		if ($can_edit) 
 		{
+		    $club_or_school = $this->club->GetTypeOfClub() == Club::SCHOOL ? "school" : "club";
 			require_once('stoolball/user-edit-panel.class.php');
-			$panel = new UserEditPanel($this->GetSettings(), 'this club');
-			$panel->AddLink('edit this club', $this->club->GetEditClubUrl());
-			$panel->AddLink('delete this club', $this->club->GetDeleteClubUrl());
+			$panel = new UserEditPanel($this->GetSettings(), "this $club_or_school");
+			$panel->AddLink("edit this $club_or_school", $this->club->GetEditClubUrl());
+            if ($this->club->GetTypeOfClub() == Club::SCHOOL) {
+                $panel->AddLink("edit this school as a club", $this->club->GetEditClubUrl() . "/club");
+            }
+			$panel->AddLink("delete this $club_or_school", $this->club->GetDeleteClubUrl());
 			echo $panel;
 		}
         

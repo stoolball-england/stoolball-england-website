@@ -4,13 +4,30 @@ require_once('club.class.php');
 
 class ClubManager extends DataManager
 {
+    private $filter_club_type = null;
+    private $filter_search = null;
+    
+    /**
+     * Filters the results of supporting queries to clubs matching the specified type
+     */
+    public function FilterByClubType($club_type) {
+        $this->filter_club_type = (int)$club_type;
+    }
+    
+    /**
+     * Filters the results of supporting queries to clubs with names matching the search term
+     */
+    public function FilterBySearch($search_term) {
+        $this->filter_search = explode(" ", preg_replace("/[^A-Za-z0-9-' ]/", '', (string)$search_term));
+    }
+    
 	/**
 	* @return ClubManager
 	* @param SiteSettings $settings
 	* @param MySqlConnection $db
 	* @desc Read and write Clubs
 	*/
-	function ClubManager(SiteSettings $settings, MySqlConnection $db)
+	function __construct(SiteSettings $settings, MySqlConnection $db)
 	{
 		parent::DataManager($settings, $db);
 		$this->s_item_class = 'Club';
@@ -25,19 +42,40 @@ class ClubManager extends DataManager
 	*/
 	function ReadById($a_ids=null)
 	{
-		$s_sql = "SELECT club.club_id, club.club_name, club.club_type, club.how_many_players, club.age_range_lower, club.age_range_upper, 
+		$sql = "SELECT club.club_id, club.club_name, club.club_type, club.how_many_players, club.age_range_lower, club.age_range_upper, 
 		club.plays_outdoors, club.plays_indoors, club.twitter, club.facebook, club.instagram, club.clubmark, club.short_url, 
 		team.team_id, team.team_name, team.short_url AS team_short_url 
 		FROM nsa_club AS club LEFT OUTER JOIN nsa_team AS team ON club.club_id = team.club_id ";
 
 		# limit to specific club, if specified
-		if (is_array($a_ids)) $s_sql .= 'WHERE club.club_id IN (' . join(', ', $a_ids) . ') ';
+		$where = '';
+		if (is_array($a_ids)) $where = $this->SqlAddCondition($where, 'club.club_id IN (' . join(', ', $a_ids) . ')');
+        if (!is_null($this->filter_club_type)) $where = $this->SqlAddCondition($where, "club.club_type = $this->filter_club_type");
+        if (is_array($this->filter_search)) {
+            $search_where = '';    
+            foreach ($this->filter_search as $search_term) {
+                if ($search_term and !$this->IsNoiseWord($search_term)) {
+                    $search_where = $this->SqlAddCondition($search_where, "club.club_name LIKE '%" . trim(Sql::ProtectString($this->GetDataConnection(), $search_term), "'") . "%'");
+                }                
+            }
+            if ($search_where) {
+                $where = $this->SqlAddCondition($where, $search_where);
+            }
+            else {
+                // If the only search terms were noise words, we don't want to return everything because that's noise.
+                return;
+            }
+        }
+
+        if ($where) {
+            $sql .= "WHERE $where";
+        }
 
 		# sort clubs
-		$s_sql .= 'ORDER BY club.club_name ASC, team.team_name ASC';
+		$sql .= 'ORDER BY club.club_name ASC, team.team_name ASC';
 
 		# run query
-		$result = $this->GetDataConnection()->query($s_sql);
+		$result = $this->GetDataConnection()->query($sql);
 
 		# build raw data into Club objects
 		$this->BuildItems($result);
@@ -46,6 +84,17 @@ class ClubManager extends DataManager
 		$result->closeCursor();
 		unset($result);
 	}
+
+    private function IsNoiseWord($word) {
+        # A noise word is an exact match, or the start of a matching word
+        $noise_words = array("club", "stoolball", "school", "academy", "primary", "secondary", "college", "special", "free", "infant", "junior");
+        $word = strtolower($word);
+        $len = strlen($word);
+        foreach ($noise_words as $noisy) {
+            if (strlen($noisy) >= $len and strpos($noisy, $word) === 0) return true;
+        }
+        return false;
+    }
 
 
 	/**
@@ -171,6 +220,41 @@ class ClubManager extends DataManager
 		return $club->GetId();
 
 	}
+
+    /**
+    * @return int
+    * @param Club $school
+    * @desc Update the supplied school in the database
+    */
+    public function SaveSchool(Club $school)
+    {
+        if (!$school->GetId())
+        {
+            throw new Exception("SaveSchool is for updates only. To save a new school, use Save()");
+        }
+
+        # Set up short URL manager
+        require_once('http/short-url-manager.class.php');
+        $url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
+        $new_short_url = $url_manager->EnsureShortUrl($school);
+
+        $sql = 'UPDATE nsa_club SET ' .
+        "club_name = " . Sql::ProtectString($this->GetDataConnection(), $school->GetName()) . ", 
+        club_type = " . Club::SCHOOL . ", 
+        short_url = " . Sql::ProtectString($this->GetDataConnection(), $school->GetShortUrl()) . ", 
+        date_changed = " . gmdate('U') . ' ' .
+        'WHERE club_id = ' . Sql::ProtectNumeric($school->GetId());
+
+        $this->GetDataConnection()->query($sql);
+
+        # Regenerate short URLs
+        if (is_object($new_short_url))
+        {
+            $new_short_url->SetParameterValuesFromObject($school);
+            $url_manager->Save($new_short_url);
+        }
+        unset($url_manager);
+    }
 
 	/**
 	* @access public

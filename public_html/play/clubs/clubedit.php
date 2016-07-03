@@ -1,6 +1,12 @@
 <?php
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
+if (strpos($_SERVER['REQUEST_URI'], '/school/')===0 and substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI'])-5) !== "/club") {
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/play/schools/edit-school.php');
+    exit();
+}
+
+
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/clubs/club-manager.class.php');
 require_once('stoolball/clubs/club-edit-control.class.php');

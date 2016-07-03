@@ -18,7 +18,7 @@ class CurrentPage extends StoolballPage
 		
 		$this->LoadClientScript("/scripts/lib/markerclusterer_compiled.js");
 		$this->LoadClientScript('/scripts/maps-3.js');
-		$this->LoadClientScript("map.js.php?team-type=" .implode(",", array(Team::SCHOOL_YEARS, Team::SCHOOL_CLUB, Team::SCHOOL_OTHER)), true);
+		$this->LoadClientScript("/play/teams/map.js.php?team-type=" .implode(",", array(Team::SCHOOL_YEARS, Team::SCHOOL_CLUB, Team::SCHOOL_OTHER)));
 	}
 
 	function OnPageLoad()
@@ -28,6 +28,13 @@ class CurrentPage extends StoolballPage
        ?>
        <p>Stoolball is played in schools across England, and in other areas of the UK. We know there are many more schools playing, and we'd like to add them to our map. 
            If your school plays stoolball and isn't shown here, please let us know.</p>
+       <?php
+       if ($this->GetAuthenticationManager()->GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS)) {
+           ?>
+           <p><a href="/schools/add" class="action-button add-one">Admin: Add a school</a></p>
+           <?php
+       }
+       ?>
        <div class="dataFilter"><nav>
             <p>Can't find it? <a href="<?php echo $this->GetSettings()->GetUrl('TeamAdd');?>">Tell us about your school</a> 
                 <span class="or">or</span> <a href="/rules/starter-stoolball/">see how to start playing</a></p>

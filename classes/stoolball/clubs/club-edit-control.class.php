@@ -53,7 +53,7 @@ class ClubEditControl extends DataEditControl
 		$this->AddControl(new FormPart('', new CheckBox('school', 'This is a school', 1, $this->GetDataObject()->GetTypeOfClub() === Club::SCHOOL, $this->IsValidSubmit())));
 
 		$o_name_box = new TextBox('name', $this->GetDataObject()->GetName(), $this->IsValidSubmit());
-		$o_name_box->AddAttribute('maxlength', 100);
+		$o_name_box->AddAttribute('maxlength', 250);
 		$o_name = new FormPart('Name', $o_name_box);
 		$this->AddControl($o_name);
 
@@ -113,7 +113,7 @@ class ClubEditControl extends DataEditControl
 
 		$this->a_validators[] = new RequiredFieldValidator('name', 'Please add the name of the club');
 		$this->a_validators[] = new PlainTextValidator('name', 'Please use only letters, numbers and simple punctuation in the club name');
-		$this->a_validators[] = new LengthValidator('name', 'Please make the club name shorter', 0, 100);
+		$this->a_validators[] = new LengthValidator('name', 'Please make the club name shorter', 0, 250);
 		$this->a_validators[] = new RegexValidator('facebook', 'Please enter a valid Facebook URL', '^(|https?:\/\/(m.|www.|)facebook.com\/.+)');
 		$this->a_validators[] = new ShortUrlValidator($this->GetNamingPrefix() . 'ShortUrl', 'That short URL is already in use', ValidatorMode::SingleField(), $this->GetDataObject());
 	}
