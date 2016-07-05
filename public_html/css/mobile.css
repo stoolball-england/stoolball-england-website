@@ -136,7 +136,8 @@ select { max-width: 100%; }
 .requiredField { font-family: Verdana, Arial, Helvetica, sans-serif; color: #900; padding: 0 .3em; font-weight: bold; }
 
 .form .mceLayout { width: 100%!important;}
-.form .town { max-width: 20em; }
+.form .town, .form .county { max-width: 20em; }
+.form .postcode { max-width: 5em; text-transform: uppercase; }
 
 .radioButtonList label { position: relative; padding: 1px 0 0 25px; }
 .radioButtonList input { position: absolute; top: 0; left: 0; }
@@ -416,7 +417,10 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
  * 
  * Negative margin to counteract standard margin before first field label 
  */
-.box-content .SchoolEdit { margin-top: -1.5em; }
+.box-content .EditSchool { margin-top: -1.5em; }
+.box-content .validationSummary+.EditSchool { margin-top: 0; }
+
+.EditSchool .map-instruction { margin: 20px 0 10px; }
 
 /* Print styles */
 @media print {

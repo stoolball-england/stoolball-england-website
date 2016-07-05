@@ -2,7 +2,7 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('stoolball/schools/school-edit-control.class.php');
+require_once('stoolball/schools/add-school-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
@@ -16,7 +16,7 @@ class CurrentPage extends StoolballPage
     
     public function OnPageInit()
     {
-        $this->edit = new SchoolEditControl($this->GetSettings());
+        $this->edit = new AddSchoolControl($this->GetSettings());
         $this->RegisterControlForValidation($this->edit);
 
         parent::OnPageInit();
@@ -34,7 +34,7 @@ class CurrentPage extends StoolballPage
             $id = $club_manager->Save($this->school);
             $this->school->SetId($id);
 
-            $this->Redirect($this->school->GetNavigateUrl());
+            $this->Redirect($this->school->GetNavigateUrl() . "/edit");
         }
     }
     

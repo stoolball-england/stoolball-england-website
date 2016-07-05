@@ -3,15 +3,13 @@ require_once('data/data-edit-control.class.php');
 require_once('stoolball/clubs/club.class.php');
 
 /**
- * Edit control for details of a school that plays stoolball
+ * Control to add a new school that plays stoolball
  *
  */
-class SchoolEditControl extends DataEditControl
+class AddSchoolControl extends DataEditControl
 {
-    private $is_admin;
-
 	/**
-	 * Creates a new TeamEditControl
+	 * Creates a new AddSchoolControl
 	 *
 	 * @param SiteSettings $settings
 	 */
@@ -20,8 +18,6 @@ class SchoolEditControl extends DataEditControl
 		# set up element
 		$this->SetDataObjectClass('Club');
 		parent::__construct($settings);
-
-        $this->is_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS);
     }
 
 	/**
@@ -45,26 +41,13 @@ class SchoolEditControl extends DataEditControl
         
 		require_once('xhtml/forms/textbox.class.php');
 
-        if (is_null($this->GetDataObject())) {
-            $this->SetButtonText('Add new school');
-            $school = new Club($this->GetSettings());
-        } 
-        else {
-            $this->SetButtonText('Save school');
-            $school = $this->GetDataObject();
-        }
+        $this->SetButtonText('Add new school');
+        $school = new Club($this->GetSettings());
+
         /* @var $school Club */
         
-        $school_name = $school->GetName();
-        $town_name = '';
-        $comma = strrpos($school_name, ",");
-        if ($comma !== false) {
-            $town_name = trim(substr($school_name,$comma+1));
-            $school_name = substr($school_name, 0, $comma);
-        }
-        
         # add name
-    	$name_box = new TextBox('school-name', $school_name, $this->IsValidSubmit());
+    	$name_box = new TextBox('school-name', '', $this->IsValidSubmit());
     	$name_box->AddAttribute('maxlength', 100);
         $name_box->AddAttribute('autocomplete', "off");
         $name_box->AddCssClass("searchable");
@@ -74,7 +57,7 @@ class SchoolEditControl extends DataEditControl
         $this->AddControl($name_box);
 
         # add town
-        $town_box = new TextBox('town', $town_name, $this->IsValidSubmit());
+        $town_box = new TextBox('town', '', $this->IsValidSubmit());
         $town_box->AddAttribute('maxlength', 100);
         $town_box->AddAttribute('autocomplete', "off");
         $town_box->AddCssClass("searchable town");

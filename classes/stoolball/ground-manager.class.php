@@ -141,6 +141,23 @@ class GroundManager extends DataManager
 		unset($o_result);
 	}
 
+    /**
+     * Reads the ground for a school by matching the name and town
+     */
+    public function ReadGroundForSchool(School $school) {
+            
+        $sql = "SELECT ground_id FROM nsa_ground 
+        WHERE town = " . Sql::ProtectString($this->GetDataConnection(), $school->Ground()->GetAddress()->GetTown()) . " 
+        AND paon = " . Sql::ProtectString($this->GetDataConnection(), $school->Ground()->GetAddress()->GetPaon());
+        
+        $result = $this->GetDataConnection()->query($sql);
+        if ($row = $result->fetch())
+        {
+            $this->ReadById(array($row->ground_id));
+        }
+        unset($result);        
+    }
+
 	/**
 	 * Populates the collection of business objects from raw data
 	 *
@@ -234,9 +251,9 @@ class GroundManager extends DataManager
 			"parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
 			"facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", " .
 			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
-			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true) . ', ' .
-			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true) . ', ' .
-			'geo_precision' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, true) . ', ' .
+			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
+			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .
+			'geo_precision = ' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
             "update_search = 1, " . 
 			'date_changed = ' . gmdate('U') . ' ' .
 			'WHERE ground_id = ' . Sql::ProtectNumeric($o_ground->GetId());
@@ -259,9 +276,9 @@ class GroundManager extends DataManager
 			"parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
 			"facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", " .
 			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
-			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true) . ', ' .
-			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true) . ', ' .
-			'geo_precision' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, true) . ', ' .
+			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
+			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .
+			'geo_precision = ' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
             "update_search = 1, " . 
 			'date_added = ' . gmdate('U') . ', ' .
 			'date_changed = ' . gmdate('U');

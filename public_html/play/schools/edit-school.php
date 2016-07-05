@@ -2,8 +2,9 @@
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
 
 require_once('page/stoolball-page.class.php');
-require_once('stoolball/schools/school-edit-control.class.php');
-require_once("stoolball/clubs/club-manager.class.php");
+require_once('stoolball/schools/edit-school-control.class.php');
+require_once("stoolball/schools/school-manager.class.php");
+require_once("stoolball/ground-manager.class.php");
 
 class CurrentPage extends StoolballPage
 {
@@ -12,20 +13,33 @@ class CurrentPage extends StoolballPage
      */
     private $school_manager;
     
+    /**
+     * @var GroundManager
+     */
+    private $ground_manager;
+    
     /* @var SchoolEditControl */
     private $edit;
     
     /**
-     * @var Club 
+     * @var School 
      */
     private $school;
     
+    
+    public function OnSiteInit()
+    {
+        $this->SetHasGoogleMap(true);
+        parent::OnSiteInit();
+    }
+    
     public function OnPageInit()
     {
-        $this->edit = new SchoolEditControl($this->GetSettings());
+        $this->edit = new EditSchoolControl($this->GetSettings());
         $this->RegisterControlForValidation($this->edit);
         
-        $this->school_manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
+        $this->school_manager = new SchoolManager($this->GetSettings(), $this->GetDataConnection());
+        $this->ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 
         parent::OnPageInit();
     }
@@ -37,6 +51,9 @@ class CurrentPage extends StoolballPage
         # save data if valid
         if($this->IsValid())
         {
+            $ground_id = $this->ground_manager->SaveGround($this->school->Ground());
+            $this->school->Ground()->SetId($ground_id);
+            
             $this->school_manager->SaveSchool($this->school);
             $this->Redirect($this->school->GetNavigateUrl());
         }
@@ -48,6 +65,13 @@ class CurrentPage extends StoolballPage
         $this->school_manager->ReadById(array($id));
         $this->school = $this->school_manager->GetFirst();
         unset($this->school_manager);
+        
+        $this->ground_manager->ReadGroundForSchool($this->school);
+        $ground = $this->ground_manager->GetFirst();
+        if ($ground instanceof Ground) {
+            $this->school->Ground()->SetId($ground->GetId());
+            $this->school->Ground()->SetAddress($ground->GetAddress());
+        }
     }
     
     
@@ -55,6 +79,8 @@ class CurrentPage extends StoolballPage
 	{
 	    $this->SetPageTitle('Edit ' . $this->school->GetName());
         $this->SetContentConstraint(StoolballPage::ConstrainText());
+        $this->LoadClientScript('/scripts/maps-3.js');
+        $this->LoadClientScript("/play/schools/edit-school.js");
     }
 
 	public function OnPageLoad()

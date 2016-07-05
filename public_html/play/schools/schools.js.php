@@ -14,38 +14,37 @@ class CurrentPage extends Page
 
 	public function OnLoadPageData()
 	{
-		require_once("stoolball/clubs/club-manager.class.php");
-		$club_manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
-        $club_manager->FilterByClubType(Club::SCHOOL);
+		require_once("stoolball/schools/school-manager.class.php");
+		$school_manager = new SchoolManager($this->GetSettings(), $this->GetDataConnection());
         
         $search_terms = array();
         if (isset($_GET["name"])) $search_terms[] = $_GET["name"]; 
         if (isset($_GET["town"])) $search_terms[] = $_GET["town"]; 
         if (count($search_terms)) {
-            $club_manager->FilterBySearch(implode(' ', $search_terms));
+            $school_manager->FilterBySearch(implode(' ', $search_terms));
         }
         
-		$club_manager->ReadAll();
-		$clubs = $club_manager->GetItems();
-		unset($club_manager);
+		$school_manager->ReadAll();
+		$schools = $school_manager->GetItems();
+		unset($school_manager);
 
-		if (count($clubs))
+		if (count($schools))
 		{
             # Build up the data to display in the autocomplete dropdown
-			$schools = array();
-    		foreach ($clubs as $school)
+			$school_data = array();
+    		foreach ($schools as $school)
 			{
 				/* @var $school Club */
 				# escape single quotes because this will become JS string
 				$escaped_name = str_replace("'", "\'",$school->GetName()); 
                 $escaped_url = str_replace("'", "\'",$school->GetNavigateUrl()); 
 
-				$schools[] = '{"name":"' . $escaped_name . '","url":"' . $escaped_url . '"}';
+				$school_data[] = '{"name":"' . $escaped_name . '","url":"' . $escaped_url . '"}';
 			}
 
 			# Write those names as a JS array
 			?>
-[<?php echo implode(",\n",$schools);?>]
+[<?php echo implode(",\n",$school_data);?>]
 			<?php
 		}
 		exit();
