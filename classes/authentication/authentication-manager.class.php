@@ -911,6 +911,8 @@ class AuthenticationManager extends DataManager
 
         # If they're trying to sign out, don't sign them back in again
         if (isset($_GET['action']) and $_GET['action'] == 'signout') return;
+        
+        $this->TryAutoSignIn();
     }
   
     /**
