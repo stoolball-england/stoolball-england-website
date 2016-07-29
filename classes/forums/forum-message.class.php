@@ -115,6 +115,7 @@ class ForumMessage
 
 	private function FormatBody(SiteSettings $o_site_settings, $b_strip_tags=false)
 	{
+	    $this->s_body_formatted = '';
 		if ($this->GetFilteredBody())
 		{
 			$text = $this->GetFilteredBody();
@@ -138,9 +139,9 @@ class ForumMessage
 			$text = XhtmlMarkup::ApplySimpleTags($text, $b_strip_tags);
 			$text = XhtmlMarkup::ApplySimpleXhtmlTags($text, $b_strip_tags);
 			$text = XhtmlMarkup::CloseUnmatchedTags($text);
+            $this->s_body_formatted = $text;
 		}
 
-		$this->s_body_formatted = $text;
 	}
 
 	function GetExcerpt()
