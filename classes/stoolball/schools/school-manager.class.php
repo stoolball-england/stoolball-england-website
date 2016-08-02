@@ -215,20 +215,15 @@ class SchoolManager extends DataManager
 
     /**
     * @return int
-    * @param Club $school
+    * @param School $school
     * @desc Update the supplied school in the database
     */
-    public function SaveSchool(Club $school)
+    public function SaveSchool(School $school, GroundManager $ground_manager)
     {
         if (!$school->GetId())
         {
             throw new Exception("SaveSchool is for updates only. To save a new school, use Save()");
         }
-
-        # Set up short URL manager
-        require_once('http/short-url-manager.class.php');
-        $url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
-        $new_short_url = $url_manager->EnsureShortUrl($school);
 
         $sql = 'UPDATE nsa_club SET ' .
         "club_name = " . Sql::ProtectString($this->GetDataConnection(), $school->GetName()) . ", 
@@ -239,13 +234,12 @@ class SchoolManager extends DataManager
 
         $this->GetDataConnection()->query($sql);
 
-        # Regenerate short URLs
-        if (is_object($new_short_url))
-        {
-            $new_short_url->SetParameterValuesFromObject($school);
-            $url_manager->Save($new_short_url);
-        }
-        unset($url_manager);
+        # Set the ground URL to be the same as the school URL, 
+        # but with a different prefix, then update the ground
+        $school->Ground()->SetShortUrl('ground' . substr($school->GetShortUrl(), 6));
+        $ground_id = $ground_manager->SaveGround($school->Ground(), true);
+        $school->Ground()->SetId($ground_id);
+        
     }
 }
 ?>

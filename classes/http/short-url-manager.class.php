@@ -431,5 +431,19 @@ class ShortUrlManager extends DataManager
 		$short_url->SetParameterValuesFromObject($object);
 		return $short_url;
 	}
+
+    /**
+     * Regenerate the URL, accepting the current one may still be valid, save it and update the original object
+     * @param IHasShortUrl $object
+     */
+    public function EnsureShortUrlAndSave(IHasShortUrl $object)
+    {
+        $new_short_url = $this->EnsureShortUrl($object, true);
+        if (is_object($new_short_url))
+        {
+            $new_short_url->SetParameterValuesFromObject($object);
+            $this->Save($new_short_url);
+        }    
+    }
 }
 ?>

@@ -35,6 +35,19 @@ class EditSchoolControl extends DataEditControl
             $school->SetId($_POST['item']);
         }
         $school->SetName($_POST['school-name'] . ", " . $_POST["town"]);
+
+        # Preserve the current URL
+        $url = ltrim($_SERVER["REQUEST_URI"], '/');
+        $strip_querystring = strpos($url, '?'); 
+        if ($strip_querystring!==false) {
+            $url = substr($url, 0, $strip_querystring);
+        }
+        $len = strlen($url)-5;
+        if ($len > 5 and substr($url, $len)=='/edit') {
+            $url = substr($url, 0, strlen($url)-5);
+        }
+        $school->SetShortUrl($url);
+
         
         $school->Ground()->SetId($_POST['ground-id']);
         $address = new PostalAddress();
