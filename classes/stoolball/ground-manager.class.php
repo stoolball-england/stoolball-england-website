@@ -225,7 +225,7 @@ class GroundManager extends DataManager
 	 * @param Ground $o_ground
 	 * @desc Save the supplied Ground to the database, and return the id
 	 */
-	function SaveGround($o_ground)
+	function SaveGround($o_ground, $save_school_ground_fields_only=false)
 	{
 		# Set up short URL manager
 		require_once('http/short-url-manager.class.php');
@@ -235,21 +235,26 @@ class GroundManager extends DataManager
 		# build query
 		$o_address = $o_ground->GetAddress();
 
+        $fields_not_used_by_schools = '';
+        if (!$save_school_ground_fields_only) {
+            $fields_not_used_by_schools = "saon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetSaon()) . ", " .
+                                          "directions = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetDirections()) . ", " .
+                                          "parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
+                                          "facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", ";
+        }
+
 		# if no id, it's a new ground; otherwise update the ground
 		if ($o_ground->GetId())
 		{
 			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Ground') . ' SET ' .
 			"sort_name = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GenerateSortName()) . ", " .
-			"saon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetSaon()) . ", " .
 			"paon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPaon()) . ", " .
 			"street_descriptor = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetStreetDescriptor()) . ", " .
 			"locality = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetLocality()) . ", " .
 			"town = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetTown()) . ", " .
 			"administrative_area = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetAdministrativeArea()) . ", " .
 			"postcode = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPostcode()) . ", " .
-			"directions = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetDirections()) . ", " .
-			"parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
-			"facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", " .
+            $fields_not_used_by_schools .
 			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
 			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
 			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .
@@ -265,16 +270,13 @@ class GroundManager extends DataManager
 		{
 			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Ground') . ' SET ' .
 			"sort_name = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GenerateSortName()) . ", " .
-			"saon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetSaon()) . ", " .
 			"paon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPaon()) . ", " .
 			"street_descriptor = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetStreetDescriptor()) . ", " .
 			"locality = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetLocality()) . ", " .
 			"town = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetTown()) . ", " .
 			"administrative_area = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetAdministrativeArea()) . ", " .
 			"postcode = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPostcode()) . ", " .
-			"directions = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetDirections()) . ", " .
-			"parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
-			"facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", " .
+            $fields_not_used_by_schools .
 			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
 			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
 			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .

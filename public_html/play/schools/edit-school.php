@@ -51,10 +51,14 @@ class CurrentPage extends StoolballPage
         # save data if valid
         if($this->IsValid())
         {
-            $ground_id = $this->ground_manager->SaveGround($this->school->Ground());
+            $this->school_manager->SaveSchool($this->school);
+
+            # Set the ground URL to be the same as the school URL, but with a different prefix
+            $this->school->Ground()->SetShortUrl('ground' . substr($this->school->GetShortUrl(), 6));
+
+            $ground_id = $this->ground_manager->SaveGround($this->school->Ground(), true);
             $this->school->Ground()->SetId($ground_id);
             
-            $this->school_manager->SaveSchool($this->school);
             $this->Redirect($this->school->GetNavigateUrl());
         }
     }
