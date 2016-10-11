@@ -23,5 +23,12 @@ class School extends Club {
     public function Ground() {
         return $this->ground;
     }
+    
+    /**
+     * Gets the URL for editing contact information for the school
+     */
+    public function EditContactsUrl() {
+        return $this->GetNavigateUrl() . "/edit-contacts";
+    }
 }
 ?>

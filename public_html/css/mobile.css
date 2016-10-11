@@ -131,7 +131,7 @@ select { max-width: 100%; }
 
 .form label { margin: 1.5em 0 5px; font-weight: bold; }
 .form .label-hint { margin: -3px 0 3px; }
-.form input[type=text] { padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; width: 98%; }
+.form input[type=text], .form input[type=url] { padding: 5px; border-radius: 5px; border: 1px solid #ccc; font-size: 1em; width: 98%; }
 
 .requiredField { font-family: Verdana, Arial, Helvetica, sans-serif; color: #900; padding: 0 .3em; font-weight: bold; }
 
@@ -417,10 +417,15 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
  * 
  * Negative margin to counteract standard margin before first field label 
  */
-.box-content .EditSchool { margin-top: -1.5em; }
+.box-content .EditSchool, .box-content .EditSchoolContacts { margin-top: -1.5em; }
 .box-content .validationSummary+.EditSchool { margin-top: 0; }
 
 .EditSchool .map-instruction { margin: 20px 0 10px; }
+.EditSchoolContacts label.twitter { background: url(/images/icons/inline-icons.png) no-repeat 0 3px; padding-left: 20px;}
+.EditSchoolContacts input.twitter { width: 10em; }
+.EditSchoolContacts label.facebook { background: url(/images/icons/inline-icons.png) no-repeat 0 -100px; padding-left: 20px;}
+.EditSchoolContacts label.instagram { background: url(/images/icons/inline-icons.png) no-repeat 0 -200px; padding-left: 20px;}
+
 
 /* Print styles */
 @media print {

@@ -284,7 +284,8 @@ class Club extends Collection implements IHasShortUrl
         array(
         '{0}' => '/play/clubs/club.php?item={0}',
         '{0}/edit' => "/play/clubs/clubedit.php?item={0}",
-        '{0}/delete' => "/play/clubs/clubdelete.php?item={0}" 
+        '{0}/delete' => "/play/clubs/clubdelete.php?item={0}", 
+        '{0}/edit-contacts' => "/play/schools/edit-contacts.php?item={0}" 
         ));
 	}
 

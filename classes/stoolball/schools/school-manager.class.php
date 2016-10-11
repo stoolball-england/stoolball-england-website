@@ -174,7 +174,7 @@ class SchoolManager extends DataManager
 			'WHERE club_id = ' . Sql::ProtectNumeric($club->GetId());
 
 			# run query
-			$this->GetDataConnection()->query($s_sql);
+			$this->LoggedQuery($s_sql);
 		}
 		else
 		{
@@ -195,7 +195,7 @@ class SchoolManager extends DataManager
 			date_changed = ' . gmdate('U');
 
 			# run query
-			$result = $this->GetDataConnection()->query($s_sql);
+			$result = $this->LoggedQuery($s_sql);
 
 			# get autonumber
 			$club->SetId($this->GetDataConnection()->insertID());
@@ -232,7 +232,7 @@ class SchoolManager extends DataManager
         date_changed = " . gmdate('U') . ' ' .
         'WHERE club_id = ' . Sql::ProtectNumeric($school->GetId());
 
-        $this->GetDataConnection()->query($sql);
+        $this->LoggedQuery($sql);
 
         # Set the ground URL to be the same as the school URL, 
         # but with a different prefix, then update the ground
@@ -240,6 +240,28 @@ class SchoolManager extends DataManager
         $ground_id = $ground_manager->SaveGround($school->Ground(), true);
         $school->Ground()->SetId($ground_id);
         
+    }
+
+    /**
+    * @return int
+    * @param School $school
+    * @desc Update the social media accounts for the supplied school in the database
+    */
+    public function SaveSocialMedia(School $school)
+    {
+        if (!$school->GetId())
+        {
+            throw new Exception("SaveSocialMedia is for updates only. To save a new school, use Save()");
+        }
+
+        $sql = "UPDATE nsa_club SET 
+        twitter = " . Sql::ProtectString($this->GetDataConnection(), $school->GetTwitterAccount()) . ", 
+        facebook = " . Sql::ProtectString($this->GetDataConnection(), $school->GetFacebookUrl()) . ", 
+        instagram = " . Sql::ProtectString($this->GetDataConnection(), $school->GetInstagramAccount()) . ", 
+        date_changed = " . gmdate('U') . ' ' .
+        'WHERE club_id = ' . Sql::ProtectNumeric($school->GetId());
+
+        $this->LoggedQuery($sql);        
     }
 }
 ?>
