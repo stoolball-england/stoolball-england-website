@@ -19,12 +19,15 @@ class EmailForm extends DataEditControl
 	function BuildPostedDataObject()
 	{
 		$email = new Zend_Mail('UTF-8');
-		if (isset($_POST['from'])) $email->setFrom($_POST['from'], html_entity_decode((isset($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']));
-		if (isset($_POST['subject']) and $_POST['subject'])
+		if (isset($_POST['from']) and is_string($_POST['from'])) {
+	        $fromName = html_entity_decode((isset($_POST['fromName']) and is_string($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']);
+		    $email->setFrom($_POST['from'], $fromName);
+        }
+		if (isset($_POST['subject']) and is_string($_POST['subject']) and $_POST['subject'])
 		{
 			$email->setSubject(html_entity_decode($_POST['subject']));
 		}
-        $body = isset($_POST['body']) ? $_POST['body'] : '';
+        $body = (isset($_POST['body']) and is_string($_POST['body'])) ? $_POST['body'] : '';
         $email->setBodyText(html_entity_decode($body));
 		$this->SetDataObject($email);
 	}

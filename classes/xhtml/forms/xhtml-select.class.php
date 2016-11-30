@@ -154,7 +154,7 @@ class XhtmlSelect extends Placeholder
 	function SelectOption($s_value)
 	{
 		# always work with strings
-		$s_value = (string)$s_value;
+		if (!is_string($s_value)) return;
 
 		$i_options = $this->CountControls();
 		$found = false;

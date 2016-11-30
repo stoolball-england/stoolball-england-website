@@ -23,7 +23,7 @@ class CurrentPage extends StoolballPage
 		$this->form = new EmailForm($this->GetSettings());
 		$this->RegisterControlForValidation($this->form);
 
-		$this->valid = isset($_GET['to']);
+		$this->valid = (isset($_GET['to']) and is_string($_GET['to']));
         if ($this->valid)
         {
             $protector = new EmailAddressProtector($this->GetSettings());

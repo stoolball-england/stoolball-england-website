@@ -21,7 +21,7 @@ class CurrentPage extends Page
 		$manager->FilterByActive(true);
         
         # Check for team type
-        if (isset($_GET["team-type"])) 
+        if (isset($_GET["team-type"]) and is_string($_GET['team-type'])) 
         {
             # Sanitise input to ensure we work only with integers
             $team_types = explode(",", $_GET['team-type']);    
@@ -40,7 +40,7 @@ class CurrentPage extends Page
     
         # Check for player type
         $player_type = null;
-        if (isset($_GET['player']) and is_numeric($_GET['player']))
+        if (isset($_GET['player']) and is_string($_GET['player']) and is_numeric($_GET['player']))
         {
             $player_type = (int)$_GET['player'];
         }

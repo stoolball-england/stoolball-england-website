@@ -10,14 +10,14 @@ class StatisticsFilter
 		$filter_data = array(null, null, "");
 
 		$filter_data[0] = "";
-		if (isset($_GET['from']))
+		if (isset($_GET['from']) and is_string($_GET['from']))
 		{
 			# Replace slashes with hyphens in submitted date because then it's treated as a British date, not American
 			$date = is_numeric($_GET['from']) ? (int)$_GET['from'] : strtotime(str_replace("/", "-", $_GET['from']));
 			if ($date !== false) $filter_data[0] = $date;
 		}
 		$to = "";
-		if (isset($_GET['to']))
+		if (isset($_GET['to']) and is_string($_GET['to']))
 		{
 			# Replace slashes with hyphens in submitted date because then it's treated as a British date, not American
 			$date = is_numeric($_GET['to']) ? (int)$_GET['to'] : strtotime(str_replace("/", "-", $_GET['to']));

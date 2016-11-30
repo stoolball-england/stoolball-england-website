@@ -249,12 +249,12 @@ class StatisticsFilterControl extends XhtmlForm
 			<label for="from" class="formLabel">From date</label>
 			<div class="formControl twoFields">
 			<input type="text" class="date firstField" id="from" name="from" placeholder="any date" autocomplete="off"';
-		if (!$this->IsValid()) $date_fields .= ' value="' . (isset($_GET["from"]) ? $_GET["from"] : "") . '"'; # GET values already escaped, so no XSS risk
+		if (!$this->IsValid()) $date_fields .= ' value="' . (isset($_GET["from"]) and is_string($_GET['from']) ? $_GET["from"] : "") . '"'; # GET values already escaped, so no XSS risk
 		else if ($this->after_date_filter) $date_fields .= ' value="' . Date::BritishDate($this->after_date_filter, false, true, false) . '"';
 		$date_fields .= ' />
 			<label for="to">Up to date
 			<input type="text" class="date" id="to" name="to" placeholder="any date" autocomplete="off"';
-		if (!$this->IsValid()) $date_fields .= ' value="' . (isset($_GET["to"]) ? $_GET["to"] : "") . '"'; # GET values already escaped, so no XSS risk
+		if (!$this->IsValid()) $date_fields .= ' value="' . (isset($_GET["to"]) and is_string($_GET['to']) ? $_GET["to"] : "") . '"'; # GET values already escaped, so no XSS risk
 		else if ($this->before_date_filter) $date_fields .= ' value="' . Date::BritishDate($this->before_date_filter, false, true, false) . '"';
 		$date_fields .= ' /></label>
 			</div>

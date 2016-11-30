@@ -23,9 +23,12 @@ class DateValidator extends DataValidator
 	 */
 	function Test($s_input, $a_keys)
 	{
+        # If it's the wrong type, it's always invalid
+        if (!is_string($s_input)) return false;
+
 		# This is not a required field validator
 		if (!$s_input) return true;
-
+        
 		# Assume a number is a UNIX timestamp
 		# Replace slashes with hyphens in submitted date because then it's treated as a British date, not American
 		$date = is_numeric($s_input) ? (int)$s_input : strtotime(str_replace("/", "-", $s_input));
