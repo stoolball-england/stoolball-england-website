@@ -1,11 +1,16 @@
 <?php
 if (substr(strtolower(trim($_SERVER['REQUEST_URI'], '/')), 0, 25) == "competitions/surreyladies")
 {
-    # Add trailing slash to keeps the /category bit invisible if just /categoryname requested
-    if ($_SERVER['REQUEST_URI'] == "/competitions/surreyladies") $_SERVER['REQUEST_URI'] = "/competitions/surreyladies/";
-    $_SERVER['REQUEST_URI'] = "/category/surreyladies/";
-
     # Pass request to WordPress
+    $_SERVER['REQUEST_URI'] = "/category/surreyladies/";
+    require('../../index.php');
+    exit();
+}
+
+if (substr(strtolower(trim($_SERVER['REQUEST_URI'], '/')), 0, 17) == "competitions/scsa")
+{
+    # Pass request to WordPress
+    $_SERVER['REQUEST_URI'] = "/play/sussex-county-stoolball-association/";
     require('../../index.php');
     exit();
 }
