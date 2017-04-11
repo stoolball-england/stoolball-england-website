@@ -228,12 +228,7 @@ abstract class SiteSettings
      * Gets the email address to sales queries to
      */
     public function GetSalesEmail() { return 'example@example.org'; }
-            
-    /**
-     * Gets the email address to send match update notifications to
-     */
-    public function GetMatchUpdatesEmail() { return 'example@example.org'; }
-    
+                
     /**
      * Gets private email addresses and the official versions they should be replaced with
      */

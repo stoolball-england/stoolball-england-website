@@ -55,19 +55,14 @@ class DataChangeNotifier
 					if ($season->GetCompetition()->GetNotificationEmail() == $o_user->GetEmail()) continue;
 
 					$email = $season->GetCompetition()->GetNotificationEmail();
-				}
-				else
-				{
-					# If there's no competition manager, send to backup email address
-					$email = $this->settings->GetMatchUpdatesEmail();
-				}
 
-				# Add the current season to the list of seasons to notify that email address about
-				if ($email)
-				{
-					if (!isset($emails_to_send[$email])) $emails_to_send[$email] = array();
-					$emails_to_send[$email][] = $season;
-				}
+    				# Add the current season to the list of seasons to notify that email address about
+    				if ($email)
+    				{
+    					if (!isset($emails_to_send[$email])) $emails_to_send[$email] = array();
+    					$emails_to_send[$email][] = $season;
+    				}
+                }
 			}
 
 			# And now send an email to each address, listing the change for all the seasons they represent
@@ -75,11 +70,6 @@ class DataChangeNotifier
 			{
 				$this->SendMatchUpdatedEmail($o_match, $o_user, $b_is_new_match, $b_is_deleted_match, $email, $seasons);
 			}
-		}
-		else
-		{
-			# If there's no season there's no competition manager, send to backup email address
-			$this->SendMatchUpdatedEmail($o_match, $o_user, $b_is_new_match, $b_is_deleted_match, $this->settings->GetMatchUpdatesEmail());
 		}
 	}
 
