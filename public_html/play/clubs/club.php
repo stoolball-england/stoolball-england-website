@@ -4,6 +4,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('page/stoolball-page.class.php');
 require_once('stoolball/clubs/club-manager.class.php');
 require_once('stoolball/team-list-control.class.php');
+require_once('stoolball/match-manager.class.php');
 
 class CurrentPage extends StoolballPage 
 {
@@ -14,6 +15,7 @@ class CurrentPage extends StoolballPage
 	 * @var Club
 	 */
 	private $club;
+    private $matches;
 	
 	function OnLoadPageData()
 	{
@@ -26,29 +28,56 @@ class CurrentPage extends StoolballPage
 		# get teams
 		$o_manager->ReadById(array($_GET['item']));
 		$this->club = $o_manager->GetFirst();
+        unset($o_manager);
 		
 		# must have found a team
 		if (!$this->club instanceof Club) $this->Redirect();
 
-		# tidy up
-		unset($o_manager);
+        # get matches
+    	$teams = $this->club->GetItems();
+    	if (count($teams) > 0)
+    	{
+    		$team_ids = array();
+    		foreach ($teams as $team)
+    		{
+    			$team_ids[] = $team->GetId();
+    		}
+    
+    		$match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
+    		$a_season_dates = Season::SeasonDates();
+    		$match_manager->FilterByDateStart($a_season_dates[0]);
+    		$match_manager->FilterByTeam($team_ids);
+    		$match_manager->ReadMatchSummaries();
+    		$this->matches = $match_manager->GetItems();
+    		unset($match_manager);
+    
+    	}
+
 	}
-	
+
 	function OnPrePageLoad()
 	{
-		$this->SetPageTitle($this->club->GetName());
-		$this->SetContentConstraint(StoolballPage::ConstrainColumns());
+	$this->SetPageTitle($this->club->GetName());
+	$this->SetContentConstraint(StoolballPage::ConstrainColumns());
 	}
-	
+
 	function OnPageLoad()
 	{
-		echo new XhtmlElement('h1', Html::Encode($this->club->GetName()));
+	echo new XhtmlElement(
+'h1', Html::Encode($this->club->GetName()));
 		
 		$a_teams = $this->club->GetItems();
 		if (count($a_teams) > 0)
 		{
 			echo new TeamListControl($a_teams);
 		}
+        
+        # Match list
+        if (count($this->matches))
+        {
+            echo new XhtmlElement('h2', 'Matches this season');
+            echo new MatchListControl($this->matches);
+        }
         
         if ($this->club->GetClubmarkAccredited()) {
             ?>
@@ -60,10 +89,6 @@ class CurrentPage extends StoolballPage
         $has_facebook_group_url = ($this->club->GetFacebookUrl() and strpos($this->club->GetFacebookUrl(), '/groups/') !== false);
         $has_facebook_page_url = ($this->club->GetFacebookUrl() and !$has_facebook_group_url);
 
-        if ($has_facebook_page_url) {
-            $this->ShowFacebookPage($this->club->GetFacebookUrl(), $this->club->GetName());
-        }
-        
         if ($has_facebook_group_url or $this->club->GetTwitterAccount() or $this->club->GetInstagramAccount())
         {
             ?>
@@ -112,7 +137,12 @@ class CurrentPage extends StoolballPage
 			$panel->AddLink("delete this $club_or_school", $this->club->GetDeleteClubUrl());
 			echo $panel;
 		}
+
+		if ($has_facebook_page_url) {
+            $this->ShowFacebookPage($this->club->GetFacebookUrl(), $this->club->GetName());
+        }
         
+		        
 		parent::OnPageLoad();
 	}
 }
