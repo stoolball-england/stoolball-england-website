@@ -32,6 +32,9 @@ class CompetitionEditControl extends DataEditControl
 		$o_comp->SetIntro(ucfirst(trim($_POST['intro'])));
 		$o_comp->SetContact($_POST['contact']);
 		$o_comp->SetWebsiteUrl($_POST['website']);
+        $o_comp->SetTwitterAccount($_POST['twitter']);
+        $o_comp->SetFacebookUrl($_POST['facebook']);
+        $o_comp->SetInstagramAccount($_POST['instagram']);
 		$o_comp->SetNotificationEmail($_POST['notification']);
 		$o_comp->SetShortUrl($_POST[$this->GetNamingPrefix() . 'ShortUrl']);
 		$o_comp->SetPlayerType($_POST['playerType']);
@@ -154,6 +157,22 @@ class CompetitionEditControl extends DataEditControl
 		$o_website = new FormPart('Website', $o_website_box);
 		$this->AddControl($o_website);
 
+        # add social media
+        $twitter_box = new TextBox('twitter', $o_comp->GetTwitterAccount(), $this->IsValidSubmit());
+        $twitter_box->SetMaxLength(16);
+        $twitter = new FormPart('Twitter', $twitter_box);
+        $this->AddControl($twitter);
+
+        $facebook_box = new TextBox('facebook', $o_comp->GetFacebookUrl(), $this->IsValidSubmit());
+        $facebook_box->SetMaxLength(250);
+        $facebook = new FormPart('Facebook', $facebook_box);
+        $this->AddControl($facebook);
+
+        $instagram_box = new TextBox('instagram', $o_comp->GetInstagramAccount(), $this->IsValidSubmit());
+        $instagram_box->SetMaxLength(50);
+        $instagram = new FormPart('Instagram', $instagram_box);
+        $this->AddControl($instagram);
+
 		# Remember short URL
 		$o_short_url = new TextBox($this->GetNamingPrefix() . 'ShortUrl', $o_comp->GetShortUrl(), $this->IsValidSubmit());
 		$this->AddControl(new FormPart('Short URL', $o_short_url));
@@ -171,6 +190,7 @@ class CompetitionEditControl extends DataEditControl
 		require_once('data/validation/email-validator.class.php');
 		require_once('data/validation/numeric-validator.class.php');
 		require_once('data/validation/url-validator.class.php');
+        require_once ('data/validation/regex-validator.class.php');
 		require_once('http/short-url-validator.class.php');
 
 		$this->AddValidator(new RequiredFieldValidator('name', 'Please add the name of the competition'));
@@ -188,6 +208,7 @@ class CompetitionEditControl extends DataEditControl
 		$this->AddValidator(new EmailValidator('notification', 'Please enter a valid notification email address'));
 		$this->AddValidator(new LengthValidator('website', 'Please make the website URL shorter', 0, 250));
 		$this->AddValidator(new UrlValidator('website', 'Please enter a valid web address, eg http://www.mystoolballsite.com/'));
+	   $this->AddValidator(new RegexValidator('facebook', 'Please enter a valid Facebook URL', '^(|https?:\/\/(m.|www.|)facebook.com\/.+)'));
 		$this->AddValidator(new ShortUrlValidator($this->GetNamingPrefix() . 'ShortUrl', 'That short URL is already in use', ValidatorMode::SingleField(), $this->GetDataObject()));
 	}
 

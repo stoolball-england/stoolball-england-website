@@ -284,6 +284,38 @@ class CurrentPage extends StoolballPage
             echo new XhtmlAnchor("Visit the " . htmlentities($this->competition->GetName(), ENT_QUOTES, "UTF-8", false) . ' website', $s_website);
         }
 
+        $has_facebook_group_url = ($this->competition->GetFacebookUrl() and strpos($this->competition->GetFacebookUrl(), '/groups/') !== false);
+        $has_facebook_page_url = ($this->competition->GetFacebookUrl() and !$has_facebook_group_url);
+
+        if ($has_facebook_group_url or $this->competition->GetTwitterAccount() or $this->competition->GetInstagramAccount())
+        {
+            ?>
+            <div class="social screen">
+            <?php
+            if ($has_facebook_group_url)
+            {
+            ?>
+                <a href="<?php echo Html::Encode($this->competition->GetFacebookUrl()); ?>" class="facebook-group"><img src="/images/play/find-us-on-facebook.png" alt="Find us on Facebook" width="137" height="22" /></a>
+            <?php
+            }
+            if ($this->competition->GetTwitterAccount())
+            {
+            ?>
+                <a href="https://twitter.com/<?php echo Html::Encode(substr($this->competition->GetTwitterAccount(), 1)); ?>" class="twitter-follow-button">Follow <?php echo Html::Encode($this->competition->GetTwitterAccount()); ?></a>
+                <script src="https://platform.twitter.com/widgets.js"></script>
+            <?php
+            }
+            if ($this->competition->GetInstagramAccount())
+            {
+                ?>
+                <a href="https://www.instagram.com/<?php echo Html::Encode(trim($this->competition->GetInstagramAccount(),'@')); ?>/?ref=badge" class="instagram"><img src="//badges.instagram.com/static/images/ig-badge-view-24.png" alt="Instagram" /></a>
+                <?php
+            }
+            ?>
+            </div>
+            <?php
+        }
+
 		# Check for other seasons. Check is >2 becuase current season is there twice - added above
 		if (count($this->competition->GetSeasons()) > 2)
 		{
@@ -347,6 +379,10 @@ class CurrentPage extends StoolballPage
 
 		echo $you_can;
 
+		if ($has_facebook_page_url) {
+            $this->ShowFacebookPage($this->competition->GetFacebookUrl(), $this->competition->GetName());
+        }
+        
         if ($this->has_player_stats)
 		{
 			require_once('stoolball/statistics-highlight-table.class.php');

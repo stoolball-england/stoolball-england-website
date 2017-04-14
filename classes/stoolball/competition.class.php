@@ -14,6 +14,9 @@ class Competition extends Collection implements IHasShortUrl
 	var $s_name;
 	private $contact;
 	private $s_website;
+    private $twitter;
+    private $facebook;
+    private $instagram;
 	private $player_type;
 	private $s_intro;
 	private $i_working_index;
@@ -206,15 +209,64 @@ class Competition extends Collection implements IHasShortUrl
 	* @param string $s_url
 	* @desc Sets the URL of the competition's website
 	*/
-	function SetWebsiteUrl($s_url) { $this->s_website = trim((string)$s_url); }
+	public function SetWebsiteUrl($s_url) { $this->s_website = trim((string)$s_url); }
 
 	/**
 	* @return string
 	* @desc Gets the URL of the competition's website
 	*/
-	function GetWebsiteUrl() { return $this->s_website; }
+	public function GetWebsiteUrl() { return $this->s_website; }
 
+    /**
+    * @return void
+    * @param string $twitter
+    * Sets the twitter username of the stoolball club
+    */
+    public function SetTwitterAccount($twitter) 
+    {
+        $this->twitter = trim((string)$twitter, ' @');
+        if ($this->twitter) $this->twitter = "@" . $this->twitter;
+    }
+    
+    /**
+    * @return string
+    * @desc Gets the twitter account of the stoolball club
+    */
+    public function GetTwitterAccount() { return $this->twitter; }
 
+    /**
+    * @return void
+    * @param string $facebook
+    * Sets the Facebook URL of the stoolball club
+    */
+    public function SetFacebookUrl($facebook) 
+    {
+        $this->facebook = (string)$facebook;
+    }
+    
+    /**
+    * @return string
+    * @desc Gets the Facebook URL of the stoolball club
+    */
+    public function GetFacebookUrl() { return $this->facebook; }
+
+    /**
+    * @return void
+    * @param string $instagram
+    * Sets the instagram username of the stoolball club
+    */
+    public function SetInstagramAccount($instagram) 
+    {
+        $this->instagram = trim((string)$instagram, ' @');
+        if ($this->instagram) $this->instagram = "@" . $this->instagram;
+    }
+        
+    /**
+    * @return string
+    * @desc Gets the instagram account of the stoolball club
+    */
+    public function GetInstagramAccount() { return $this->instagram; }
+    
 	/**
 	* @return void
 	* @param Season[] $a_input

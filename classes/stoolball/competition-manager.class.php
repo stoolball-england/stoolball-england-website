@@ -92,7 +92,8 @@ class CompetitionManager extends DataManager
 		$s_matchtypes = $this->GetSettings()->GetTable('SeasonMatchType');
 
 		$s_sql = "SELECT $s_comp.competition_id, $s_comp.competition_name, $s_comp.category_id, $s_comp.intro, $s_comp.contact, $s_comp.notification_email, 
-		$s_comp.website, $s_comp.short_url, $s_comp.active, $s_comp.player_type_id, $s_comp.players_per_team, $s_comp.overs, $s_comp.update_search,
+		$s_comp.website, $s_comp.twitter, $s_comp.facebook, $s_comp.instagram, $s_comp.short_url, $s_comp.active, $s_comp.player_type_id, $s_comp.players_per_team, 
+		$s_comp.overs, $s_comp.update_search,
 		$s_season_link.withdrawn_league,
 		$s_season.season_id, $s_season.season_name, $s_season.is_latest, $s_season.start_year,	$s_season.end_year, 
 		$s_season.intro AS season_intro, $s_season.results, $s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, $s_season.short_url AS season_short_url, 
@@ -314,6 +315,9 @@ class CompetitionManager extends DataManager
 				if (isset($o_row->contact)) $o_competition->SetContact($o_row->contact);
 				if (isset($o_row->notification_email)) $o_competition->SetNotificationEmail($o_row->notification_email);
 				if (isset($o_row->website)) $o_competition->SetWebsiteUrl($o_row->website);
+                if (isset($o_row->twitter)) $o_competition->SetTwitterAccount($o_row->twitter);
+                if (isset($o_row->facebook)) $o_competition->SetFacebookUrl($o_row->facebook);
+                if (isset($o_row->instagram)) $o_competition->SetInstagramAccount($o_row->instagram);
 				if (isset($o_row->short_url)) $o_competition->SetShortUrl($o_row->short_url);
 				if (isset($o_row->active)) $o_competition->SetIsActive($o_row->active);
 				if (isset($o_row->players_per_team)) $o_competition->SetMaximumPlayersPerTeam($o_row->players_per_team);
@@ -421,8 +425,11 @@ class CompetitionManager extends DataManager
 			"intro = " . $this->SqlHtmlString($o_competition->GetIntro(), $allowed_html) . ", " .
 			"contact = " . $this->SqlHtmlString($o_competition->GetContact(), $allowed_html) . ", " .
 			"notification_email = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetNotificationEmail()) . ", " .
-			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", " .
-			'active = ' . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .
+			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", 
+            twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetTwitterAccount()) . ", 
+            facebook = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetFacebookUrl()) . ", 
+            instagram = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetInstagramAccount()) . ", 
+			active = " . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .
 			'player_type_id = ' . Sql::ProtectNumeric($o_competition->GetPlayerType()) . ", " .
 			'players_per_team = ' . Sql::ProtectNumeric($o_competition->GetMaximumPlayersPerTeam()) . ", " .
 			'overs = ' . Sql::ProtectNumeric($o_competition->GetOvers()) . ", " .
@@ -456,8 +463,11 @@ class CompetitionManager extends DataManager
 			"intro = " . $this->SqlHtmlString($o_competition->GetIntro(), $allowed_html) . ", " .
 			"contact = " . $this->SqlHtmlString($o_competition->GetContact(), $allowed_html) . ", " .
 			"notification_email = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetNotificationEmail()) . ", " .
-			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", " .
-			'active = ' . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .
+			"website = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetWebsiteUrl()) . ", 
+            twitter = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetTwitterAccount()) . ", 
+            facebook = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetFacebookUrl()) . ", 
+            instagram = " . Sql::ProtectString($this->GetDataConnection(), $o_competition->GetInstagramAccount()) . ", 
+			active = " . Sql::ProtectBool($o_competition->GetIsActive()) . ', ' .
 			'player_type_id = ' . Sql::ProtectNumeric($o_competition->GetPlayerType()) . ", " .
 			'players_per_team = ' . Sql::ProtectNumeric($o_competition->GetMaximumPlayersPerTeam()) . ", " .
 			'overs = ' . Sql::ProtectNumeric($o_competition->GetOvers()) . ", " .
