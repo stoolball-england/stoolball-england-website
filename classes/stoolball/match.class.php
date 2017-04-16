@@ -44,6 +44,7 @@ class Match implements IHasShortUrl
 	private $o_tournament_match;
 	private $a_away_teams;
 	private $added_by;
+    private $date_added;
 	private $a_matches_in_tournament;
     private $max_tournament_teams;
     private $spaces_in_tournament;
@@ -86,6 +87,20 @@ class Match implements IHasShortUrl
 	 */
 	function GetId() { return $this->i_id; }
 
+    /**
+     * Sets when the match was added to the website
+     *
+     * @param int $timestamp
+     */
+    public function SetDateAdded($timestamp) { $this->date_added = (int)$timestamp; }
+
+    /**
+     * Gets when the match was added to the website
+     *
+     * @return int
+     */
+    public function GetDateAdded() { return $this->date_added; }
+     
 	/**
 	 * Sets who added the match to the website
 	 *

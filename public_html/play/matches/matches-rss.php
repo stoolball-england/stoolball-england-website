@@ -44,9 +44,13 @@ $manager = new MatchManager($settings, $database);
 
 # check for date range, or use defaults
 $i_one_day = 86400;
+$today = isset($_GET['today']) && $_GET['today'] === "true";
 
 $from = "";
-if (isset($_GET['from']) and is_string($_GET['from']))
+if ($today) {
+    $from = mktime(0,0,0);
+}
+else if (isset($_GET['from']) and is_string($_GET['from']))
 {
     # Replace slashes with hyphens in submitted date because then it's treated as a British date, not American
     $date = is_numeric($_GET['from']) ? (int)$_GET['from'] : strtotime(str_replace("/", "-", $_GET['from']));
@@ -56,7 +60,10 @@ if (!$from) $from = gmdate('U') - ($i_one_day * 1); # yesterday
 $manager->FilterByDateStart($from);
 
 $to = "";
-if (isset($_GET['to']) and is_string($_GET['to']))
+if ($today) {
+    $to = $from + $i_one_day;
+}
+else if (isset($_GET['to']) and is_string($_GET['to']))
 {
     # Replace slashes with hyphens in submitted date because then it's treated as a British date, not American
     $date = is_numeric($_GET['to']) ? (int)$_GET['to'] : strtotime(str_replace("/", "-", $_GET['to']));
@@ -177,9 +184,41 @@ $tweet = isset($_GET['format']) && $_GET['format'] === "tweet";
                   
 foreach ($matches as $match) 
 {
+    /* @var $match Match */
     if ($tweet)
-    {
-        $item_title = "New #stoolball match: " . $match->GetTitle() . ", " . $match->GetStartTimeFormatted(true, true, true);
+    {       
+        $one_hour = 60*60;
+        $is_update = $match->GetLastAudit()->GetTime() > ($match->GetDateAdded() + $one_hour);
+        $title = $match->GetTitle();
+        $type = "match";
+        if ($match->GetMatchType() === MatchType::TOURNAMENT) $type = "tournament";
+         if ($match->GetMatchType() === MatchType::PRACTICE) {
+             $type = "practice";
+            $title = "";
+         }
+         
+         if ($today) 
+         {
+            if ($match->GetMatchType() === MatchType::TOURNAMENT) {
+                if (time() < mktime(8)) continue; # don't tweet until 8am
+                $item_title = "We're off to $title! #stoolball";
+            }
+            else if ($match->GetMatchType() === MatchType::PRACTICE) {
+                if (time() < mktime(16)) continue; # don't tweet until 4pm
+                $item_title = "It's practice night - come and join us! #stoolball";    
+            }
+            else {
+                if (time() < mktime(16)) continue; # don't tweet until 4pm
+                $item_title = "It's match night! $title #stoolball";	
+            }             
+             
+         }
+         else 
+         {
+             if ($title) $title .= ", ";
+            $item_title = ($is_update ? "Updated " : "New ") .  "$type: $title" . $match->GetStartTimeFormatted(true, true, true) . " #stoolball";
+        }
+         
     }
     else
     {
@@ -197,7 +236,7 @@ foreach ($matches as $match)
     $medium = $tweet ? "twitter" : "rss";
     $feedData["entries"][]  = array('title' => $item_title, 
                                 'description' => $description, 
-                                'link' => "http://" . $settings->GetDomain() . $match->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=matches", 
+                                'link' => "https://" . $settings->GetDomain() . $match->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=matches", 
                                 'guid' => $match->GetLinkedDataUri(), 
                                 "lastUpdate" => $match->GetLastAudit()->GetTime(),
                                 "category" => array(array("term" => strtolower(PlayerType::Text($match->GetPlayerType())))));

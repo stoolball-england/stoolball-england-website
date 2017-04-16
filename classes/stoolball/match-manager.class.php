@@ -585,7 +585,7 @@ class MatchManager extends DataManager
 
 		$s_sql = "SELECT $s_match.match_id, $s_match.match_title, $s_match.match_type, $s_match.player_type_id, $s_match.start_time, $s_match.start_time_known, 
 		$s_match.short_url, $s_match.players_per_team,  $s_match.home_runs, $s_match.home_wickets, $s_match.away_runs, $s_match.away_wickets, $s_match.match_result_id,  
-		$s_match.home_bat_first, $s_match.date_changed, $s_match.modified_by_id, $s_match.qualification, $s_match.overs AS overs_per_innings, $s_match.tournament_spaces, $s_match.match_notes, 
+		$s_match.home_bat_first, $s_match.date_added, $s_match.date_changed, $s_match.modified_by_id, $s_match.qualification, $s_match.overs AS overs_per_innings, $s_match.tournament_spaces, $s_match.match_notes, 
 		$s_ground.ground_id, $s_ground.saon, $s_ground.paon, $s_ground.town, $s_ground.latitude, $s_ground.longitude, $s_ground.geo_precision,
 		$s_season.season_id, $s_season.season_name, 
 		nsa_competition.competition_id, nsa_competition.competition_name, ";
@@ -974,6 +974,10 @@ class MatchManager extends DataManager
 		if (isset($row->match_notes)) $match->SetNotes($row->match_notes);
 		if (isset($row->short_url)) $match->SetShortUrl($row->short_url);
         if (isset($row->update_search) and $row->update_search == 1) $match->SetSearchUpdateRequired();
+		if (isset($row->date_added) and is_numeric($row->date_added)) 
+		{
+		    $match->SetDateAdded($row->date_added);
+        }
 		if (isset($row->added_by) and is_numeric($row->added_by))
 		{
 			$match->SetAddedBy(new User($row->added_by));
