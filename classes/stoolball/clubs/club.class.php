@@ -12,7 +12,7 @@ class Club extends Collection implements IHasShortUrl
 {
 	private $i_id;
 	private $s_name;
-	private $o_settings;
+	private $settings;
 	private $s_short_url;
     private $how_many_players;
     private $age_range_lower;
@@ -28,11 +28,11 @@ class Club extends Collection implements IHasShortUrl
 	/**
 	 * Instantiates a Club
 	 *
-	 * @param SiteSettings $o_settings
+	 * @param SiteSettings $settings
 	 */
-	public function __construct(SiteSettings $o_settings)
+	public function __construct(SiteSettings $settings)
 	{
-		$this->o_settings = $o_settings;
+		$this->settings = $settings;
 		$this->s_item_class = 'Team';
 	}
 
@@ -237,7 +237,7 @@ class Club extends Collection implements IHasShortUrl
 	*/
 	public function GetNavigateUrl()
 	{
-        return $this->o_settings->GetClientRoot() . $this->GetShortUrl();
+        return $this->settings->GetClientRoot() . $this->GetShortUrl();
 	}
 	
 	/**
@@ -257,7 +257,16 @@ class Club extends Collection implements IHasShortUrl
 	{
 		return $this->GetNavigateUrl() . "/delete";
 	}
-
+    
+    /**
+     * @return string
+     * @desc Gets the URL for an RSS feed of matches
+     */
+    public function GetMatchesRssUrl()
+    {
+        return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches.rss';
+    }
+    
 	/**
 	 * Sets the short URL for a club
 	 *
@@ -285,7 +294,8 @@ class Club extends Collection implements IHasShortUrl
         '{0}' => '/play/clubs/club.php?item={0}',
         '{0}/edit' => "/play/clubs/clubedit.php?item={0}",
         '{0}/delete' => "/play/clubs/clubdelete.php?item={0}", 
-        '{0}/edit-contacts' => "/play/schools/edit-contacts.php?item={0}" 
+        '{0}/edit-contacts' => "/play/schools/edit-contacts.php?item={0}",
+        '{0}/matches.rss' => '/play/matches/matches-rss.php?club={0}',
         ));
 	}
 
@@ -296,7 +306,7 @@ class Club extends Collection implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Club::GetShortUrlFormatForType($this->o_settings);
+		return Club::GetShortUrlFormatForType($this->settings);
 	}
 
 	/**

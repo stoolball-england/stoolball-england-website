@@ -69,6 +69,19 @@ class MatchManager extends DataManager
         $this->filter_by_tournament_id = (int)$tournament_id;
     }
 
+    private $filter_by_competitions;
+
+    /**
+     * Filter supporting queries to select only matches in the specified competition
+     *
+     * @var int[] $competition_ids
+     */
+    public function FilterByCompetition($competition_ids)
+    {
+        $this->ValidateNumericArray($competition_ids);
+        $this->filter_by_competitions = $competition_ids;
+    }
+    
     private $sort_by;
     
     /**
@@ -568,15 +581,14 @@ class MatchManager extends DataManager
 		$s_ground = $this->GetSettings()->GetTable('Ground');
 		$s_season = $this->GetSettings()->GetTable('Season');
 		$s_season_match = $this->GetSettings()->GetTable('SeasonMatch');
-		$s_comp = $this->GetSettings()->GetTable('Competition');
 		$players = $this->GetSettings()->GetTable("Player");
 
 		$s_sql = "SELECT $s_match.match_id, $s_match.match_title, $s_match.match_type, $s_match.player_type_id, $s_match.start_time, $s_match.start_time_known, 
 		$s_match.short_url, $s_match.players_per_team,  $s_match.home_runs, $s_match.home_wickets, $s_match.away_runs, $s_match.away_wickets, $s_match.match_result_id,  
 		$s_match.home_bat_first, $s_match.date_changed, $s_match.modified_by_id, $s_match.qualification, $s_match.overs AS overs_per_innings, $s_match.tournament_spaces, $s_match.match_notes, 
 		$s_ground.ground_id, $s_ground.saon, $s_ground.paon, $s_ground.town, $s_ground.latitude, $s_ground.longitude, $s_ground.geo_precision,
-		$s_season.season_id, $s_season.season_name, " .
-		$s_comp . '.competition_id, ' . $s_comp . '.competition_name, ';
+		$s_season.season_id, $s_season.season_name, 
+		nsa_competition.competition_id, nsa_competition.competition_name, ";
 
 		if ($include_teams)
 		{
@@ -591,7 +603,7 @@ class MatchManager extends DataManager
 		'LEFT OUTER JOIN ' . $s_mt . ' AS away_link ON ' . $s_match . '.match_id = away_link.match_id AND away_link.team_role = ' . TeamRole::Away() . ') ' .
 		'LEFT OUTER JOIN ' . $s_season_match . ' ON ' . $s_match . '.match_id = ' . $s_season_match . '.match_id) ' .
 		'LEFT OUTER JOIN ' . $s_season . ' ON ' . $s_season_match . '.season_id = ' . $s_season . '.season_id) ' .
-		'LEFT OUTER JOIN ' . $s_comp . ' ON ' . $s_comp . '.competition_id = ' . $s_season . '.competition_id) ';
+		'LEFT OUTER JOIN nsa_competition ON nsa_competition.competition_id = ' . $s_season . '.competition_id) ';
 
 		if ($include_teams)
 		{
@@ -659,6 +671,16 @@ class MatchManager extends DataManager
             $where .= "$s_match.tournament_match_id = " . Sql::ProtectNumeric($this->filter_by_tournament_id) . " ";
         } 
 
+        if (!is_null($this->filter_by_competitions))
+        {
+            $competition_ids = join(', ', $this->filter_by_competitions);
+            if ($where)
+            {
+                $where .= 'AND ';
+            }
+            $where .= "nsa_competition.competition_id IN ($competition_ids) ";
+        } 
+        
         if ($where)
         {
             $s_sql .= 'WHERE ' . $where;

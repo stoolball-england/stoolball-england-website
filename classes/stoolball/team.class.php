@@ -14,7 +14,7 @@ class Team implements IHasShortUrl
 	 *
 	 * @var SiteSettings
 	 */
-	private $o_settings;
+	private $settings;
 	private $i_id;
 	private $s_name;
     private $comparable_name;
@@ -48,15 +48,15 @@ class Team implements IHasShortUrl
     
 	/**
 	 * @return Team
-	 * @param SiteSettings $o_settings
+	 * @param SiteSettings $settings
 	 * @desc A stoolball team
 	 */
-	function Team(SiteSettings $o_settings)
+	function Team(SiteSettings $settings)
 	{
-		$this->o_settings = $o_settings;
+		$this->settings = $settings;
 		$this->seasons = new Collection(null, "TeamInSeason");
 		$this->b_active = true;
-		$this->o_ground = new Ground($this->o_settings);
+		$this->o_ground = new Ground($this->settings);
 	}
 
 	/**
@@ -285,7 +285,7 @@ class Team implements IHasShortUrl
 		$s_url = '';
 		if ($this->GetShortUrl())
 		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl();
+			$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl();
 		}
 		else
 		{
@@ -301,7 +301,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetEditTeamUrl()
 	{
-	    return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/edit';
+	    return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/edit';
 	}
 
 	/**
@@ -310,7 +310,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetDeleteTeamUrl()
 	{
-        return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/delete';
+        return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/delete';
 	}
 
 	/**
@@ -319,7 +319,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetResultsNavigateUrl()
 	{
-		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/edit';
+		return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/edit';
 	}
 
 	/**
@@ -328,7 +328,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetCalendarNavigateUrl()
 	{
-        return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/calendar';
+        return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/calendar';
 	}
 
 	/**
@@ -337,7 +337,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetStatsNavigateUrl()
 	{
-		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/statistics';
+		return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/statistics';
 	}
 
 	/**
@@ -352,19 +352,19 @@ class Team implements IHasShortUrl
 		switch ($i_match_type)
 		{
 			case MatchType::TOURNAMENT:
-				$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/tournaments/add';
+				$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/tournaments/add';
 				break;
 			case MatchType::PRACTICE:
-				$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/practices/add';
+				$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/practices/add';
 				break;
 			case MatchType::FRIENDLY:
-				$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/friendlies/add';
+				$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/friendlies/add';
 				break;
 			case MatchType::LEAGUE:
-				$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/league/add';
+				$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/league/add';
 				break;
 			case MatchType::CUP:
-				$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/matches/cup/add';
+				$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches/cup/add';
 				break;
 		}
 		return $s_url;
@@ -376,7 +376,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetPlayersNavigateUrl()
 	{
-		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/players';
+		return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/players';
 	}
 
 	/**
@@ -388,16 +388,25 @@ class Team implements IHasShortUrl
 		$s_url = '';
 		if ($this->GetShortUrl())
 		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/players/add';
+			$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl() . '/players/add';
 		}
 		else
 		{
-			$s_url = str_replace('{0}', $this->GetId(), $this->o_settings->GetUrl('PlayerAdd'));
+			$s_url = str_replace('{0}', $this->GetId(), $this->settings->GetUrl('PlayerAdd'));
 		}
 
 		return $s_url;
 	}
-
+    
+    /**
+     * @return string
+     * @desc Gets the URL for an RSS feed of matches
+     */
+    public function GetMatchesRssUrl()
+    {
+        return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches.rss';
+    }
+    
 	/**
 	 * @return void
 	 * @param bool $b_active
@@ -523,7 +532,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetRealUrl()
 	{
-		return $this->o_settings->GetUrl('Team') . $this->GetId();
+		return $this->settings->GetUrl('Team') . $this->GetId();
 	}
 
 	/**
@@ -545,6 +554,7 @@ class Team implements IHasShortUrl
 		'{0}/matches/practices/add' => '/play/matches/matchadd.php?team={0}&type=' . MatchType::PRACTICE,
 		'{0}/matches/tournaments/add' => '/play/tournaments/add.php?team={0}',
 		'{0}/matches/edit' => $settings->GetUrl('TeamResults'),
+        '{0}/matches.rss' => '/play/matches/matches-rss.php?team={0}',
 		'{0}/calendar' => $settings->GetUrl('TeamCalendar'),
 		'{0}/statistics' => $settings->GetUrl('TeamStats'),
 		'{0}/players' => '/play/teams/players.php?team={0}',
@@ -560,7 +570,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Team::GetShortUrlFormatForType($this->o_settings);
+		return Team::GetShortUrlFormatForType($this->settings);
 	}
 
 	/**

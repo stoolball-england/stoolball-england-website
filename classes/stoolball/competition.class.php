@@ -9,7 +9,7 @@ require_once 'stoolball/player-type.enum.php';
 
 class Competition extends Collection implements IHasShortUrl
 {
-	var $o_settings;
+	var $settings;
 	var $i_id;
 	var $s_name;
 	private $contact;
@@ -31,12 +31,12 @@ class Competition extends Collection implements IHasShortUrl
 	/**
 	 * An ongoing competition such as a league or cup
 	 *
-	 * @param SiteSettings $o_settings
+	 * @param SiteSettings $settings
 	 * @return Competition
 	 */
-	function Competition(SiteSettings $o_settings)
+	function Competition(SiteSettings $settings)
 	{
-		$this->o_settings = $o_settings;
+		$this->settings = $settings;
 
 		parent::Collection();
 		$this->s_item_class = 'Season';
@@ -432,7 +432,7 @@ class Competition extends Collection implements IHasShortUrl
 	{
 		if ($this->GetShortUrl())
 		{
-			$s_url = $this->o_settings->GetClientRoot() . $this->GetShortUrl();
+			$s_url = $this->settings->GetClientRoot() . $this->GetShortUrl();
 		}
 		else
 		{
@@ -448,7 +448,7 @@ class Competition extends Collection implements IHasShortUrl
 	*/
 	public function GetEditCompetitionUrl()
 	{
-		return $this->o_settings->GetFolder('Play') . 'competitions/competitionedit.php?item=' . $this->GetId();
+		return $this->settings->GetFolder('Play') . 'competitions/competitionedit.php?item=' . $this->GetId();
 	}
 
 	/**
@@ -473,7 +473,16 @@ class Competition extends Collection implements IHasShortUrl
 	 * Gets the URL for statistics about the competition
 	 * @return string
 	 */
-	public function GetStatisticsUrl() { return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . "/statistics"; }
+	public function GetStatisticsUrl() { return $this->settings->GetClientRoot() . $this->GetShortUrl() . "/statistics"; }
+
+    /**
+     * @return string
+     * @desc Gets the URL for an RSS feed of matches
+     */
+    public function GetMatchesRssUrl()
+    {
+        return $this->settings->GetClientRoot() . $this->GetShortUrl() . '/matches.rss';
+    }
 
 	/**
 	 * Sets the short URL for a competition
@@ -503,7 +512,7 @@ class Competition extends Collection implements IHasShortUrl
 		}
 		else
 		{
-			return $this->o_settings->GetUrl('Competition') . $this->GetId();
+			return $this->settings->GetUrl('Competition') . $this->GetId();
 		}
 	}
 
@@ -519,8 +528,9 @@ class Competition extends Collection implements IHasShortUrl
 		return new ShortUrlFormat($settings->GetTable('Competition'), 'short_url', array('competition_id'), array('GetId'),
 			array('{0}' => $settings->GetUrl('Competition') . '{0}',
 					'{0}/statistics' => '/play/statistics/summary-competition.php?competition={0}', 
-					'{0}/map' => "/play/competitions/map.php?competition={0}"
-					));
+					'{0}/map' => "/play/competitions/map.php?competition={0}",
+                    '{0}/matches.rss' => '/play/matches/matches-rss.php?competition={0}',
+				));
 	}
 
 	/**
@@ -530,7 +540,7 @@ class Competition extends Collection implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Competition::GetShortUrlFormatForType($this->o_settings);
+		return Competition::GetShortUrlFormatForType($this->settings);
 	}
 
 	/**

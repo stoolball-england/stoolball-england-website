@@ -102,6 +102,54 @@ if (isset($_GET['type']) and is_numeric($_GET['type']))
     }
 }
 
+# Check for team
+$team_id = null;
+if (isset($_GET['team']) and is_numeric($_GET['team']))
+{
+    $team_id = (int)$_GET['team'];
+    if ($team_id < 1) $team_id = null;
+    if (!is_null($team_id)) {
+        $manager->FilterByTeam(array($team_id));
+    }
+}
+
+# Check for club
+$club_id = null;
+if (isset($_GET['club']) and is_numeric($_GET['club']))
+{
+    $club_id = (int)$_GET['club'];
+    if ($club_id < 1) $club_id = null;
+    if (!is_null($club_id)) {
+        
+        require_once('stoolball/clubs/club-manager.class.php');
+       $club_manager = new ClubManager($settings, $database);
+        $club_manager->ReadById(array($_GET['club']));
+        $club = $club_manager->GetFirst();
+        unset($club_manager);
+        
+        $teams = $club->GetItems();
+        if (count($teams) > 0)
+        {
+            $team_ids = array();
+            foreach ($teams as $team)
+            {
+                $team_ids[] = $team->GetId();
+            }
+            $manager->FilterByTeam($team_ids);
+        }
+    }
+}
+
+# Check for competition
+$competition_id = null;
+if (isset($_GET['competition']) and is_numeric($_GET['competition']))
+{
+    $competition_id = (int)$_GET['competition'];
+    if ($competition_id < 1) $competition_id = null;
+    if (!is_null($competition_id)) {
+        $manager->FilterByCompetition(array($competition_id));
+    }
+}
 
 $manager->SortBy("date_changed DESC");
 $manager->ReadMatchSummaries();

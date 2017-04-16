@@ -254,6 +254,9 @@ class CurrentPage extends StoolballPage
 
 			echo new MatchListControl($this->a_matches);
 		}
+        ?>
+        <p><a href="<?php echo $team->GetMatchesRssUrl(); ?>" rel="alternate" type="application/rss+xml" class="rss">Subscribe to new or updated matches</a></p>
+        <?php
 
 		if (!$this->is_one_time_team)     
         {

@@ -78,6 +78,9 @@ class CurrentPage extends StoolballPage
             echo new XhtmlElement('h2', 'Matches this season');
             echo new MatchListControl($this->matches);
         }
+        ?>
+        <p><a href="<?php echo $this->club->GetMatchesRssUrl(); ?>" rel="alternate" type="application/rss+xml" class="rss">Subscribe to new or updated matches</a></p>
+        <?php
         
         if ($this->club->GetClubmarkAccredited()) {
             ?>

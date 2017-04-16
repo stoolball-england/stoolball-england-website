@@ -231,7 +231,10 @@ class CurrentPage extends StoolballPage
             }
             echo $o_matches;
         }
-
+        ?>
+        <p><a href="<?php echo $this->competition->GetMatchesRssUrl(); ?>" rel="alternate" type="application/rss+xml" class="rss">Subscribe to new or updated <?php echo $this->competition->GetName(); ?> matches</a></p>
+        <?php
+        
         # Add teams
         $a_teams = $season->GetTeams();
         if (count($a_teams) > 0)
