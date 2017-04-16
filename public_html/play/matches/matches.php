@@ -11,6 +11,9 @@ class CurrentPage extends StoolballPage
 {
 	private $a_matches;
 	private $a_months;
+    private $i_start;
+    private $i_end;
+    private $rss_url;
 
 	function OnLoadPageData()
 	{
@@ -28,22 +31,22 @@ class CurrentPage extends StoolballPage
 			if ($i_year >= 2000 and $i_year <= 2050 and $i_month >= 1 and $i_month <= 12 and $i_day == 1)
 			{
 				# Read start date specified by user, which will be with DST applied because users don't think in UTC
-				$i_start = $_GET['month'];
-				$i_end = mktime(11, 59, 59, $i_month, date('t', $_GET['month']), $i_year);
+				$this->i_start = $_GET['month'];
+				$this->i_end = mktime(11, 59, 59, $i_month, date('t', $_GET['month']), $i_year);
 
 				# Convert to UTC, as that's how match dates are stored
-				$i_end = gmdate('U', $i_end);
+				$this->i_end = gmdate('U', $this->i_end);
 
-                $manager->FilterByDateStart($i_start);
-                $manager->FilterByDateEnd($i_end);
+                $manager->FilterByDateStart($this->i_start);
+                $manager->FilterByDateEnd($this->i_end);
 			}
 		}
         else 
         {
             # get next few matches
             $i_one_day = 86400;
-            $i_start = gmdate('U')-($i_one_day*1); # yesterday
-            $manager->FilterByDateStart($i_start);
+            $this->i_start = gmdate('U')-($i_one_day*1); # yesterday
+            $manager->FilterByDateStart($this->i_start);
             $manager->FilterByMaximumResults(50);
         }
 
@@ -82,6 +85,34 @@ class CurrentPage extends StoolballPage
 
 		$this->SetContentConstraint(StoolballPage::ConstrainBox());
 	}
+
+    function OnCloseHead()
+    {  
+        $rss_url = "";
+        if (isset($_GET['player']) and $_GET['player'] and $_GET['player'] !== 'all') {
+            $rss_url = 'player=' . Html::Encode($_GET['player']);
+        } 
+        if (isset($_GET['type']) and $_GET['type']) {
+            if ($rss_url) $rss_url .= '&amp;'; 
+           $rss_url .= 'type=' . Html::Encode($_GET['type']);
+        }
+        if ($this->i_start) {
+            if ($rss_url) $rss_url .= '&amp;'; 
+            $rss_url .= 'from=' . Html::Encode(gmdate("Y-m-d", $this->i_start));             
+        }
+        if ($this->i_end) {
+            if ($rss_url) $rss_url .= '&amp;'; 
+            $rss_url .= 'to=' . Html::Encode(gmdate("Y-m-d", $this->i_end)); 
+        }
+                 
+        if ($rss_url) $rss_url = '?' . $rss_url;
+        $this->rss_url = Html::Encode("https://" . $_SERVER['HTTP_HOST'] .'/matches.rss' . $rss_url);
+        
+        ?>
+<link rel="alternate" type="application/rss+xml" title="<?php echo Html::Encode($this->GetPageTitle()); ?> RSS feed" href="<?php echo $this->rss_url; ?>" />
+        <?php
+        parent::OnCloseHead();
+    }
 
 	function OnPageLoad()
 	{
@@ -151,7 +182,21 @@ class CurrentPage extends StoolballPage
 			$content->AddControl(new XhtmlElement('p', 'Sorry, there are no matches to show you.'));
 			$content->AddControl(new XhtmlElement('p', 'If you know of a match which should be listed, please <a href="/play/manage/website/">add the match to the website</a>.'));
 		}
+
 		echo $container;
+        
+        ?>
+        <form method='post' action='http://blogtrottr.com' class="rss-form">
+            <h2>Get alerts about new and updated matches like these <small>(uses <a href="http://blogtrottr.com">blogtrottr.com</a>)</small></h2>
+            <label for="rss-email">Your email:</label>
+            <input type='email' name='btr_email' id="rss-email" required="required" />
+            <input type='hidden' name='btr_url' value='<?php echo $this->rss_url; ?>' />
+            <input type='hidden' name='schedule_type' value='0' />
+            <input type='submit' value='Subscribe' />
+            <p><a href="<?php echo $this->rss_url; ?>" rel="alternate" type="application/rss+xml" class="rss">Subscribe by RSS</a></p>
+        </form>
+
+        <?php
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);
