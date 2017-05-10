@@ -175,7 +175,6 @@ $feedData = array('title' => $title,
                   'link' => 'https://www.stoolball.org.uk/play/matches', 
                   'charset' => 'utf-8', 
                   "language" => "en-GB", 
-                  "author" => "Stoolball England", 
                   "image" => "https://www.stoolball.org.uk/images/feed-ident.gif", 
                   'entries' => array());
 
@@ -237,8 +236,8 @@ foreach ($matches as $match)
     $feedData["entries"][]  = array('title' => $item_title, 
                                 'description' => $description, 
                                 'link' => "https://" . $settings->GetDomain() . $match->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=matches", 
-                                'guid' => $match->GetLinkedDataUri(), 
-                                "lastUpdate" => $match->GetLastAudit()->GetTime(),
+                                'guid' => $today ? $match->GetLinkedDataUri() . "/today" : $match->GetLinkedDataUri(), 
+                                "lastUpdate" => $today ? mktime(8) : $match->GetLastAudit()->GetTime(),
                                 "category" => array(array("term" => strtolower(PlayerType::Text($match->GetPlayerType())))));
 }
 // create our feed object and import the data
