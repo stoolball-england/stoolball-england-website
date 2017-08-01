@@ -42,6 +42,9 @@ $database = new MySqlConnection($settings->DatabaseHost(), $settings->DatabaseUs
 
 $manager = new MatchManager($settings, $database);
 
+# Option to tweet new entries to a user, for use with www.iftt.com or similar            
+$tweet = isset($_GET['format']) && $_GET['format'] === "tweet";
+
 # check for date range, or use defaults
 $i_one_day = 86400;
 $today = isset($_GET['today']) && $_GET['today'] === "true";
@@ -76,8 +79,6 @@ if (!$to) {
 }
 
 $manager->FilterByDateEnd($to);
-
-
 
 # Check for player type
 $player_type = null;
@@ -158,6 +159,11 @@ if (isset($_GET['competition']) and is_numeric($_GET['competition']))
     }
 }
 
+if ($tweet) {
+    # Only tweet matches which have no result, therefore excluding cancelled and postponed matches
+    $manager->FilterByMatchResult(array(MatchResult::UNKNOWN));
+}
+
 $manager->SortBy("date_changed DESC");
 $manager->ReadMatchSummaries();
 $matches = $manager->GetItems();
@@ -177,10 +183,7 @@ $feedData = array('title' => $title,
                   "language" => "en-GB", 
                   "image" => "https://www.stoolball.org.uk/images/feed-ident.gif", 
                   'entries' => array());
-
-# Option to tweet new entries to a user, for use with www.iftt.com                  
-$tweet = isset($_GET['format']) && $_GET['format'] === "tweet";
-                  
+                 
 foreach ($matches as $match) 
 {
     /* @var $match Match */

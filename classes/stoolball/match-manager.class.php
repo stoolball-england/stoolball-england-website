@@ -31,6 +31,19 @@ class MatchManager extends DataManager
 		$this->ValidateNumericArray($a_types);
 		$this->filter_by_match_types = $a_types;
 	}
+    
+    private $filter_by_match_result;
+
+    /**
+     * Sets the permitted results of the matches to select
+     *
+     * @param int[] $results
+     */
+    public function FilterByMatchResult($results)
+    {
+        $this->ValidateNumericArray($results);
+        $this->filter_by_match_result = $results;
+    }
 
     private $filter_by_player_types;
 
@@ -651,6 +664,20 @@ class MatchManager extends DataManager
             }
             $where .= $s_match . '.match_type != ' .  MatchType::TOURNAMENT_MATCH . ' ';
         } 
+
+        if (count($this->filter_by_match_result))
+        {
+            $result_ids = join(', ', $this->filter_by_match_result);
+           if ($where)
+            {
+                $where .= 'AND ';
+           }
+            $clause = $s_match . '.match_result_id IN (' . $result_ids . ') ';
+            if (in_array(MatchResult::UNKNOWN, $this->filter_by_match_result)) {
+                $clause = "($clause OR match_result_id IS NULL) ";
+            }
+           $where .= $clause;
+        }
 
 		if (count($this->filter_by_player_types))
 		{
