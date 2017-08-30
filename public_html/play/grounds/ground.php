@@ -73,8 +73,8 @@ class CurrentPage extends StoolballPage
 		$this->best_batting = $statistics_manager->ReadBestBattingPerformance();
 		$this->best_bowling = $statistics_manager->ReadBestBowlingPerformance();
 		$this->most_runs = $statistics_manager->ReadBestPlayerAggregate("runs_scored");
-		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets");
-		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches");
+		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets", true);
+		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches", true);
 
 		# See what stats we've got available
 		$best_batting_count = count($this->best_batting);

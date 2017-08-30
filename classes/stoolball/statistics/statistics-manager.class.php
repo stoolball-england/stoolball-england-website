@@ -10,6 +10,7 @@ class StatisticsManager extends DataManager
 	private $filter_opposition = array();
 	private $filter_players = array();
 	private $filter_bowlers = array();
+    private $filter_catchers = array();
 	private $filter_seasons = array();
 	private $filter_competitions = array();
 	private $filter_grounds = array();
@@ -27,6 +28,7 @@ class StatisticsManager extends DataManager
     private $filter_won_match = null;
 	private $filter_how_out = array();
 	private $swap_team_and_opposition_filters = false;
+    private $swap_batting_first_filter = false;
 	private $output_as_csv = null;
 
 	/**
@@ -88,6 +90,26 @@ class StatisticsManager extends DataManager
 			$this->swap_team_and_opposition_filters = false;
 		}
 	}
+
+    /**
+     * Limits supporting queries to returning only data where the catcher is in the supplied array of ids
+     *
+     * @param int[] $player_ids
+     */
+    public function FilterByCatcher($player_ids)
+    {
+        if (is_array($player_ids))
+        {
+            $this->ValidateNumericArray($player_ids);
+            $this->filter_catchers = $player_ids;
+            $this->swap_team_and_opposition_filters = (count($this->filter_catchers) > 0);
+        }
+        else
+        {
+            $this->filter_catchers = array();
+            $this->swap_team_and_opposition_filters = false;
+        }
+    }
 
 	/**
 	 * Limits supporting queries to returning only teams in the supplied array of ids
@@ -368,17 +390,23 @@ class StatisticsManager extends DataManager
 		{
 			$where .= "AND $statistics.bowled_by IN (" . implode(",", $this->filter_bowlers) . ") ";
 		}
+        if (count($this->filter_catchers))
+        {
+            $where .= "AND $statistics.caught_by IN (" . implode(",", $this->filter_catchers) . ") ";
+        }
 		if ($this->swap_team_and_opposition_filters)
 		{
 			# When querying by the player id of a fielder, flip team and opposition because
 			# the fielder's team is the opposition_id
 			if (count($this->filter_teams)) $where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_teams) . ") ";
 			if (count($this->filter_opposition)) $where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_opposition) . ") ";
+           if (!is_null($this->filter_won_match)) $where .= "AND $statistics.won_match = " . ($this->filter_won_match*-1) . " ";
 		}
 		else
 		{
 			if (count($this->filter_teams)) $where .= "AND $statistics.team_id IN (" . implode(",", $this->filter_teams) . ") ";
 			if (count($this->filter_opposition)) $where .= "AND $statistics.opposition_id IN (" . implode(",", $this->filter_opposition) . ") ";
+           if (!is_null($this->filter_won_match)) $where .= "AND $statistics.won_match = " . $this->filter_won_match . " ";
 		}
 		if (count($this->filter_seasons)) $where .= "AND $sm.season_id IN (" . implode(",", $this->filter_seasons) . ") ";
 		if (count($this->filter_competitions)) $where .= "AND $seasons.competition_id IN (" . implode(",", $this->filter_competitions) . ") ";
@@ -390,9 +418,19 @@ class StatisticsManager extends DataManager
 		if (count($this->filter_how_out)) $where .= "AND $statistics.how_out IN (" . implode(",", $this->filter_how_out) . ") ";
 		if (!is_null($this->filter_after_date)) $where .= "AND $statistics.match_time >= " . $this->filter_after_date . " ";
 		if (!is_null($this->filter_before_date)) $where .= "AND $statistics.match_time <= " . $this->filter_before_date . " ";
-        if (!is_null($this->filter_batting_first)) $where .= "AND $statistics.batting_first = " . $this->filter_batting_first . " ";
-        if (!is_null($this->filter_won_match)) $where .= "AND $statistics.won_match = " . $this->filter_won_match . " ";
-        		
+    
+       if (!is_null($this->filter_batting_first)) 
+        {
+          if ($this->swap_batting_first_filter) 
+          {
+             $where .= "AND $statistics.batting_first = " . ($this->filter_batting_first == 0 ? 1 : 0) . " ";
+         }
+          else
+          {
+            $where .= "AND $statistics.batting_first = " . $this->filter_batting_first . " ";
+         } 
+        }  
+		        		
 		return $where;
 	}
 
@@ -651,10 +689,14 @@ class StatisticsManager extends DataManager
 	/**
 	 * Gets best player aggregate data based on current filters
 	 * @param string $field
+     * @param bool $is_fielding_statistic
 	 * @return An array of aggregate data, or CSV download
 	 */
-	public function ReadBestPlayerAggregate($field)
+	public function ReadBestPlayerAggregate($field, $is_fielding_statistic=false)
 	{
+	    $batting_first_filter_previous_setting = $this->swap_batting_first_filter;
+	    $this->swap_batting_first_filter = $is_fielding_statistic;
+        
 		# Select players with best aggregate data for the field, even it they're tied at
 		# the top of the table
 		# Although $players table is not necessary here, it's actually FASTER with the
@@ -727,6 +769,8 @@ class StatisticsManager extends DataManager
 		}
 
 		$result->closeCursor();
+
+        $this->swap_batting_first_filter = $batting_first_filter_previous_setting;
 
 		return $performances;
 	}
@@ -1125,8 +1169,9 @@ class StatisticsManager extends DataManager
 	public function ReadMatchPerformances()
 	{
 		$from = $this->FromFilteredPlayerStatistics();
-
-		$where = "WHERE player_role = " . Player::PLAYER . " ";
+       $from .= "LEFT JOIN nsa_player AS bowler ON nsa_player_match.bowled_by = bowler.player_id ";    
+		
+		$where = "WHERE nsa_player_match.player_role = " . Player::PLAYER . " ";
 		$where = $this->ApplyFilters($where);
 
 		$limit = $this->LimitByPage();
@@ -1138,8 +1183,9 @@ class StatisticsManager extends DataManager
 
 		# Note: specify table for match_id to avoid ambiguous column when a season filter
 		# is applied
-		$sql = "SELECT player_id, player_name, player_url, nsa_player_match.match_id, match_title, match_time, match_url,
-        runs_scored, how_out, runs_conceded, wickets, catches, run_outs
+		$sql = "SELECT nsa_player_match.player_id, nsa_player_match.player_name, nsa_player_match.player_url, nsa_player_match.match_id, match_title, match_time, match_url,
+        runs_scored, how_out, runs_conceded, wickets, catches, run_outs,
+        bowler.player_id AS bowler_id, bowler.player_name AS bowler_name, bowler.short_url AS bowler_url
         $from 
         $where
         ORDER BY match_time DESC 
@@ -1176,6 +1222,11 @@ class StatisticsManager extends DataManager
 			$performance["catches"] = $row->catches;
 			$performance["run_outs"] = $row->run_outs;
 
+            $performance["bowler_id"] = $row->bowler_id;
+            $performance["bowler_name"] = $row->bowler_name;
+            if (!$csv)
+                $performance["bowler_url"] = "/" . $row->bowler_url;
+
 			$performances[] = $performance;
 		}
 
@@ -1183,7 +1234,7 @@ class StatisticsManager extends DataManager
 		# data
 		if ($csv)
 		{
-			array_unshift($performances, array("Player id", "Player", "Match id", "Match date (UTC)", "Match", "Runs", "How out", "Wickets", "Runs conceded", "Catches", "Run-outs"));
+			array_unshift($performances, array("Player id", "Player", "Match id", "Match date (UTC)", "Match", "Runs", "How out", "Wickets", "Runs conceded", "Catches", "Run-outs", "Bowler id", "Bowler name"));
 		}
 
 		return $performances;

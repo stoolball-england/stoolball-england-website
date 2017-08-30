@@ -133,10 +133,10 @@ class CurrentPage extends StoolballPage
     			$this->regenerating = true;
     		}
     
-    		$data = $statistics_manager->ReadBestPlayerAggregate("catches");
+    		$data = $statistics_manager->ReadBestPlayerAggregate("catches", true);
     		$this->player->SetCatches(count($data) ? $data[0]["statistic"] : 0);
     
-    		$data = $statistics_manager->ReadBestPlayerAggregate("run_outs");
+    		$data = $statistics_manager->ReadBestPlayerAggregate("run_outs", true);
     		$this->player->SetRunOuts(count($data) ? $data[0]["statistic"] : 0);
     
             if ($this->player->GetPlayerRole() == Player::PLAYER)
@@ -227,8 +227,10 @@ class CurrentPage extends StoolballPage
 		echo '<div typeof="schema:Person" about="' . htmlentities($this->player->GetLinkedDataUri(), ENT_QUOTES, "UTF-8", false) . '">';
 
         $querystring = '?player=' . $this->player->GetId();
+        $catcher_querystring = '?catcher=' . $this->player->GetId();
         if ($_SERVER["QUERY_STRING"]) {
              $querystring = htmlspecialchars('?' . $_SERVER["QUERY_STRING"]);
+             $catcher_querystring = htmlspecialchars('?' . str_replace("&player=" . $this->player->GetId(), "&catcher=" . $this->player->GetId(), $_SERVER["QUERY_STRING"]));
         }
         
         require_once("stoolball/statistics/player-summary-control.class.php");
@@ -300,17 +302,18 @@ class CurrentPage extends StoolballPage
         $run_outs = $this->player->GetRunOuts();
         if ($catches or $run_outs)
         {    
-            $fielding_table = new XhtmlTable();
-            $fielding_table->SetCssClass("numeric");
-            $fielding_table->SetCaption("Fielding");
-        
-            $fielding_heading_row = new XhtmlRow(array('Catches',"Run-outs"));
-            $fielding_heading_row->SetIsHeader(true);
-            $fielding_table->AddRow($fielding_heading_row);
-        
-            $fielding_table->AddRow(new XhtmlRow(array($catches,$run_outs)));
-        
-            echo $fielding_table;
+            ?><h2>Fielding</h2><?php
+            if ($catches == 0) {
+                $catches = "0 catches"; 
+            }
+            else if ($catches == 1){
+                $catches = '<a href="/play/statistics/catches' . $catcher_querystring . '">1 catch</a>';
+            }
+            else {
+                $catches = '<a href="/play/statistics/catches' . $catcher_querystring . '">' . $catches . " catches</a>";
+            }
+           $run_outs_text = ($run_outs == 1) ? "run-out" : "run-outs"; 
+            echo "<p>" . $this->player->GetName() . " has taken $catches and completed $run_outs $run_outs_text.</p>";
         }
     
         $this->ShowSocial();

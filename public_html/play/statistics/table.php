@@ -6,7 +6,7 @@ $sanitised = preg_replace("/[^a-z0-9-]/", "", $_GET["statistic"]);
 if (!in_array($sanitised, array(
 	"individual-scores", "most-runs", "batting-average", "batting-strike-rate",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
-	"most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
+	"catches", "most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
 	"player-performances", "player-of-match", "most-player-of-match"
 )) and !(preg_match("/^most-scores-of-[0-9]+$/", $sanitised) === 1)
    and !(preg_match("/^most-[0-9][0-9]?-wickets$/", $sanitised) === 1))
@@ -49,6 +49,11 @@ class CurrentPage extends StoolballPage
 				require_once("stoolball/statistics/individual-scores.class.php");
 				$this->statistic = new IndividualScores($statistics_manager);
 				break;
+                
+            case "catches":
+                require_once("stoolball/statistics/catches.class.php");
+                $this->statistic = new Catches($statistics_manager);
+                break;
 
 			case "most-runs":             
                 require_once("stoolball/statistics/most-runs.class.php");
@@ -154,13 +159,18 @@ class CurrentPage extends StoolballPage
             $statistics_manager->OutputAsCsv($this->statistic->ColumnHeaders());
         }                
                     
-        # Apply player filter first because it can be used to limit the choices for other filters
+        # Apply player filters first because it can be used to limit the choices for other filters
         if ($this->statistic->SupportsFilterByPlayer())
         {
             $this->filter .= StatisticsFilter::ApplyPlayerFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
         }
 
-        # Apply filters common to all statistics
+        if ($this->statistic->SupportsFilterByCatcher())
+        {
+            $this->filter .= StatisticsFilter::ApplyCatcherFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+        }
+
+                # Apply filters common to all statistics
         $this->filter_control = new StatisticsFilterControl();
 
         if ($this->statistic->SupportsFilterByBattingPosition()) {
@@ -173,7 +183,7 @@ class CurrentPage extends StoolballPage
         
         # If player filter applied, no point filtering by player type because they're associated with a team of one player type.
         # There is the edge case of a ladies team playing in a mixed match, but it would be more confusing than useful to offer it.
-        if (!isset($_GET['player']))
+        if (!isset($_GET['player']) && !isset($_GET['catcher']))
         {
             $filter_player_type = StatisticsFilter::SupportPlayerTypeFilter($statistics_manager);
             $this->filter_control->SupportPlayerTypeFilter($filter_player_type);
@@ -189,7 +199,7 @@ class CurrentPage extends StoolballPage
         # If player filter applied, no point filtering by team. Check for player filter is stricter than this
         # but this is good enough. If this applies, but the player filter isn't applied, it's because someone
         # is playing with the query string, so that's tough.
-        if (!isset($_GET['player']))
+        if (!isset($_GET['player']) && !isset($_GET['catcher']))
         {
             $filter_team = StatisticsFilter::SupportTeamFilter($statistics_manager);
             $this->filter_control->SupportTeamFilter($filter_team);
@@ -299,6 +309,11 @@ switch ($this->which_statistic)
 		echo new BowlingPerformanceTable($this->data, true, $this->paging->GetFirstResultOnPage());
 		break;
 
+    case "catches":
+        require_once('stoolball/statistics/catches-table.class.php');
+        echo new CatchesTable($this->data, $this->paging->GetFirstResultOnPage());
+        break;
+
     case "most-catches-in-innings":
         require_once('stoolball/statistics/player-performance-table.class.php');
         $table = new PlayerPerformanceTable("Number of catches, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
@@ -343,7 +358,7 @@ if ($this->paging->GetTotalResults()) echo $this->paging->GetNavigationBar();
 
 	private function GetTheData($class)
 	{
-		$verbs = array("Sort", "Filter", "Sift", "Mix", "Slice", "Mash", "Cut", "Crunch", "Chart", "See");
+		$verbs = array("Sort", "Filter", "Sift", "Mix", "Slice", "Mash", "Cut", "Crunch", "Chart", "See", "Dice");
 		$verb = $verbs[array_rand($verbs, 1)];
 		$csv_url = $_SERVER["REQUEST_URI"];
 		$csv_url .= (strpos($csv_url, "?") === false) ? "?format=csv" : "&amp;format=csv";

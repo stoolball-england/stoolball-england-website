@@ -28,7 +28,7 @@ class MostRunOuts extends Statistic {
      * Gets the statistical data from the data source
      */
     public function ReadStatistic() {
-        return $this->statistics_data_source->ReadBestPlayerAggregate("run_outs");
+        return $this->statistics_data_source->ReadBestPlayerAggregate("run_outs", true);
     }
 }
 ?>

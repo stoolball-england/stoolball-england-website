@@ -79,9 +79,9 @@ class CurrentPage extends StoolballPage
 		}
 		$statistics_manager->FilterMaxResults(10);
 		$this->most_runs = $statistics_manager->ReadBestPlayerAggregate("runs_scored");
-		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets");
-		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches");
-		$this->most_run_outs = $statistics_manager->ReadBestPlayerAggregate("run_outs");
+		$this->most_wickets = $statistics_manager->ReadBestPlayerAggregate("wickets", true);
+		$this->most_catches = $statistics_manager->ReadBestPlayerAggregate("catches", true);
+		$this->most_run_outs = $statistics_manager->ReadBestPlayerAggregate("run_outs", true);
 		$this->most_player_of_match = $statistics_manager->ReadBestPlayerAggregate("player_of_match");
 		unset($statistics_manager);    
     }

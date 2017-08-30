@@ -298,11 +298,16 @@ class StatisticsFilterControl extends XhtmlForm
         <div class="formControl">' . $result_list . '</div>' .
         '</div>');
 
-		# Preserve the player filter if applied
+		# Preserve the player and catcher filters if applied
 		if (isset($_GET["player"]) and is_numeric($_GET["player"]))
 		{
 			$this->AddControl('<input type="hidden" name="player" id="player" value="' . $_GET["player"] . '" />');
 		}
+
+        if (isset($_GET["catcher"]) and is_numeric($_GET["catcher"]))
+        {
+            $this->AddControl('<input type="hidden" name="catcher" id="catcher" value="' . $_GET["catcher"] . '" />');
+        }
 
 		$this->AddControl('<p class="actions"><input type="submit" value="Apply filter" /></p>');
 		$this->AddControl('</div></div></div>');

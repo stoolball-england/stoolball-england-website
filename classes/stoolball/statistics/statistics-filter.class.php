@@ -89,6 +89,32 @@ class StatisticsFilter
 	}
 
     /**
+     * If the catcher parameter is in the query string apply catcher filter
+     * @param SiteSettings $settings
+     * @param MySqlConnection $connection
+     * @param StatisticsManager $statistics_manager
+     */
+    public static function ApplyCatcherFilter(SiteSettings $settings, MySqlConnection $connection, StatisticsManager $statistics_manager)
+    {
+        $filter = "";
+        if (isset($_GET['catcher']) and is_numeric($_GET['catcher']))
+        {
+            require_once('stoolball/player-manager.class.php');
+            $player_manager = new PlayerManager($settings, $connection);
+            $player_manager->ReadPlayerById($_GET['catcher']);
+            $player = $player_manager->GetFirst();
+            unset($player_manager);
+
+            if (!is_null($player))
+            {
+                $statistics_manager->FilterByCatcher(array($player->GetId()));
+                $filter = "by " . $player->GetName() . " ";
+            }
+        }
+        return $filter;
+    }
+
+    /**
      * If the tournament parameter is in the query string apply tournament filter
      * @param SiteSettings $settings
      * @param MySqlConnection $connection

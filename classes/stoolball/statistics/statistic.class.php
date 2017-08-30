@@ -11,6 +11,7 @@ abstract class Statistic
     private $item_type_singular;
     private $item_type_plural;
     private $supports_filter_by_player = false;
+    private $supports_filter_by_catcher = false;
     private $supports_filter_by_batting_postition = false;
     private $supports_paged_results = true;
     private $column_headers = array();
@@ -99,6 +100,20 @@ abstract class Statistic
         return $this->supports_filter_by_player;
     }
         
+    /**
+     * Sets whether this statistic can be filtered by catcher
+     */
+    protected function SetSupportsFilterByCatcher($supported) {
+        $this->supports_filter_by_catcher = (bool)$supported;
+    }
+    
+    /**
+     * Gets whether this statistic can be filtered by catcher
+     */
+    public function SupportsFilterByCatcher() {
+        return $this->supports_filter_by_catcher;
+    }
+
     /**
      * Sets whether this statistic can be filtered by batting position
      */
