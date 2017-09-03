@@ -6,7 +6,7 @@ $sanitised = preg_replace("/[^a-z0-9-]/", "", $_GET["statistic"]);
 if (!in_array($sanitised, array(
 	"individual-scores", "most-runs", "batting-average", "batting-strike-rate",
 	"bowling-performances", "most-wickets", "bowling-average", "economy-rate", "bowling-strike-rate",
-	"catches", "most-catches", "most-catches-in-innings", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
+	"catches", "most-catches", "most-catches-in-innings", "run-outs", "most-run-outs", "most-run-outs-in-innings", "most-wickets-by-bowler-and-catcher",
 	"player-performances", "player-of-match", "most-player-of-match"
 )) and !(preg_match("/^most-scores-of-[0-9]+$/", $sanitised) === 1)
    and !(preg_match("/^most-[0-9][0-9]?-wickets$/", $sanitised) === 1))
@@ -110,6 +110,11 @@ class CurrentPage extends StoolballPage
                 $this->statistic = new MostCatchesInAnInnings($statistics_manager);
                 break;
 
+            case "run-outs":
+                require_once("stoolball/statistics/run-outs.class.php");
+                $this->statistic = new RunOuts($statistics_manager);
+                break;
+
 			case "most-run-outs":
                 require_once("stoolball/statistics/most-run-outs.class.php");
                 $this->statistic = new MostRunOuts($statistics_manager);
@@ -170,6 +175,11 @@ class CurrentPage extends StoolballPage
             $this->filter .= StatisticsFilter::ApplyCatcherFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
         }
 
+        if ($this->statistic->SupportsFilterByFielder())
+        {
+            $this->filter .= StatisticsFilter::ApplyFielderFilter($this->GetSettings(), $this->GetDataConnection(), $statistics_manager);
+        }
+
                 # Apply filters common to all statistics
         $this->filter_control = new StatisticsFilterControl();
 
@@ -183,7 +193,7 @@ class CurrentPage extends StoolballPage
         
         # If player filter applied, no point filtering by player type because they're associated with a team of one player type.
         # There is the edge case of a ladies team playing in a mixed match, but it would be more confusing than useful to offer it.
-        if (!isset($_GET['player']) && !isset($_GET['catcher']))
+        if (!isset($_GET['player']) && !isset($_GET['fielder']))
         {
             $filter_player_type = StatisticsFilter::SupportPlayerTypeFilter($statistics_manager);
             $this->filter_control->SupportPlayerTypeFilter($filter_player_type);
@@ -199,7 +209,7 @@ class CurrentPage extends StoolballPage
         # If player filter applied, no point filtering by team. Check for player filter is stricter than this
         # but this is good enough. If this applies, but the player filter isn't applied, it's because someone
         # is playing with the query string, so that's tough.
-        if (!isset($_GET['player']) && !isset($_GET['catcher']))
+        if (!isset($_GET['player']) && !isset($_GET['fielder']))
         {
             $filter_team = StatisticsFilter::SupportTeamFilter($statistics_manager);
             $this->filter_control->SupportTeamFilter($filter_team);
@@ -319,6 +329,11 @@ switch ($this->which_statistic)
         $table = new PlayerPerformanceTable("Number of catches, highest first", $this->data, $this->paging->GetFirstResultOnPage(), true);
         $table->SetCssClass($table->GetCssClass() . " " . $this->statistic->CssClass());
         echo $table;
+        break;
+
+    case "run-outs":
+        require_once('stoolball/statistics/run-outs-table.class.php');
+        echo new RunOutsTable($this->data, $this->paging->GetFirstResultOnPage());
         break;
 
     case "most-run-outs-in-innings":

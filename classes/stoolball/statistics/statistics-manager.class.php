@@ -11,6 +11,7 @@ class StatisticsManager extends DataManager
 	private $filter_players = array();
 	private $filter_bowlers = array();
     private $filter_catchers = array();
+    private $filter_fielders = array();
 	private $filter_seasons = array();
 	private $filter_competitions = array();
 	private $filter_grounds = array();
@@ -111,6 +112,26 @@ class StatisticsManager extends DataManager
         }
     }
 
+    /**
+     * Limits supporting queries to returning only data where the fielder is in the supplied array of ids
+     *
+     * @param int[] $player_ids
+     */
+    public function FilterByFielder($player_ids)
+    {
+        if (is_array($player_ids))
+        {
+            $this->ValidateNumericArray($player_ids);
+            $this->filter_fielders = $player_ids;
+            $this->swap_team_and_opposition_filters = (count($this->filter_fielders) > 0);
+        }
+        else
+        {
+            $this->filter_fielders = array();
+            $this->swap_team_and_opposition_filters = false;
+        }
+    }
+    
 	/**
 	 * Limits supporting queries to returning only teams in the supplied array of ids
 	 *
@@ -393,6 +414,10 @@ class StatisticsManager extends DataManager
         if (count($this->filter_catchers))
         {
             $where .= "AND $statistics.caught_by IN (" . implode(",", $this->filter_catchers) . ") ";
+        }
+        if (count($this->filter_fielders))
+        {
+            $where .= "AND $statistics.run_out_by IN (" . implode(",", $this->filter_fielders) . ") ";
         }
 		if ($this->swap_team_and_opposition_filters)
 		{

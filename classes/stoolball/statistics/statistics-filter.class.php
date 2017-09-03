@@ -89,7 +89,7 @@ class StatisticsFilter
 	}
 
     /**
-     * If the catcher parameter is in the query string apply catcher filter
+     * If the fielder parameter is in the query string apply catcher filter
      * @param SiteSettings $settings
      * @param MySqlConnection $connection
      * @param StatisticsManager $statistics_manager
@@ -97,17 +97,43 @@ class StatisticsFilter
     public static function ApplyCatcherFilter(SiteSettings $settings, MySqlConnection $connection, StatisticsManager $statistics_manager)
     {
         $filter = "";
-        if (isset($_GET['catcher']) and is_numeric($_GET['catcher']))
+        if (isset($_GET['fielder']) and is_numeric($_GET['fielder']))
         {
             require_once('stoolball/player-manager.class.php');
             $player_manager = new PlayerManager($settings, $connection);
-            $player_manager->ReadPlayerById($_GET['catcher']);
+            $player_manager->ReadPlayerById($_GET['fielder']);
             $player = $player_manager->GetFirst();
             unset($player_manager);
 
             if (!is_null($player))
             {
                 $statistics_manager->FilterByCatcher(array($player->GetId()));
+                $filter = "by " . $player->GetName() . " ";
+            }
+        }
+        return $filter;
+    }
+
+    /**
+     * If the fielder parameter is in the query string apply fielder filter
+     * @param SiteSettings $settings
+     * @param MySqlConnection $connection
+     * @param StatisticsManager $statistics_manager
+     */
+    public static function ApplyFielderFilter(SiteSettings $settings, MySqlConnection $connection, StatisticsManager $statistics_manager)
+    {
+        $filter = "";
+        if (isset($_GET['fielder']) and is_numeric($_GET['fielder']))
+        {
+            require_once('stoolball/player-manager.class.php');
+            $player_manager = new PlayerManager($settings, $connection);
+            $player_manager->ReadPlayerById($_GET['fielder']);
+            $player = $player_manager->GetFirst();
+            unset($player_manager);
+
+            if (!is_null($player))
+            {
+                $statistics_manager->FilterByFielder(array($player->GetId()));
                 $filter = "by " . $player->GetName() . " ";
             }
         }
