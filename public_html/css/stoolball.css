@@ -190,7 +190,6 @@ a.promo { margin: 15px 0; display: block; }
 .spreadshirt h2 img { max-width: none; }
 .spreadshirt a { text-decoration: none; color: #000; }
 .spreadshirt p { margin: 0; }
-.spreadshirt .price { font-weight: bold; font-size: .85em; }
 .spreadshirt a:link .buy, .spreadshirt a:hover .buy, .spreadshirt a:focus .buy, .spreadshirt a:active .buy { color: #005920; text-decoration: underline; }
 .spreadshirt a:visited .buy { color: #008044; text-decoration: underline; }
 .spreadshirt .buy span { background: url(/images/sprite.4.png) no-repeat right -786px; padding-right: 12px; }
