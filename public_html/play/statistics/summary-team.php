@@ -124,10 +124,7 @@ class CurrentPage extends StoolballPage
 
         require_once('xhtml/navigation/tabs.class.php');
         $tabs = array('Summary' => $this->team->GetNavigateUrl());       
-
-        if ($has_player_stats) {
-            $tabs['Players'] = $this->team->GetPlayersNavigateUrl();
-        }
+         $tabs['Players'] = $this->team->GetPlayersNavigateUrl();
         $tabs['Statistics'] = '';
         echo new Tabs($tabs);
         
