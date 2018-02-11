@@ -537,8 +537,8 @@ class StoolballPage extends Page
 		$articles = simplexml_load_file($folder . "/spreadshirt.xml");
 		$article =  $articles->article[rand(0, 49)];
 		echo '<div class="spreadshirt large">';
-		echo '<h2><img src="/images/christmas.gif" alt="Stoolball at Christmas" width="204" height="90" /></h2>';
-		#echo '<h2><img src="/images/gifts.gif" alt="Visit our stoolball gift shop" width="204" height="90" /></h2>';
+		#echo '<h2><img src="/images/christmas.gif" alt="Stoolball at Christmas" width="204" height="90" /></h2>';
+		echo '<h2><img src="/images/gifts.gif" alt="Visit our stoolball gift shop" width="204" height="90" /></h2>';
 		echo '<div class="spreadshirt-box">' .
 		'<a href="https://shop.spreadshirt.co.uk/stoolball/-A' . Html::Encode($article['id']) . '">' .
 		'<img src="' . Html::Encode($article->resources->resource->attributes("http://www.w3.org/1999/xlink")->href) . '" alt="' . Html::Encode($article->name) . '" width="159" height="159" />' .
