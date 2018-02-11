@@ -66,14 +66,12 @@ class ForumTopicListing extends Placeholder
                 $s_text .= '<div class="profile';
                 if ($b_alternate) $s_text .= " altProfile";
                 $s_text .= '"><p about="' . $message->MessageLinkedDataUri() . '"><span class="small">Posted by </span>' . 
-                '<span rel="sioc:has_creator" rev="sioc:creator_of"><a typeof="sioc:UserAccount" about="' . $o_person->GetLinkedDataUri() . '" href="' . $o_person->GetUserProfileUrl() . '">' . $o_person->GetName() . '</a></span>';
-                if ($o_person->GetLocation()) $s_text .= '<span class="small">, ' . $o_person->GetLocation() . "</span>";
+                '<span rel="sioc:has_creator" rev="sioc:creator_of"><span typeof="sioc:UserAccount" about="' . $o_person->GetLinkedDataUri() . '">' . $o_person->GetName() . '</span></span>';
                 $s_text .= '<span class="small" property="dcterms:created" content="' . Date::Microformat($message->GetDate()) . '"> at ' . Date::BritishDateAndTime($message->GetDate(), false, true, true) . "</span>";
                 $s_text .= '</p>';
                 $s_text .= '<ul class="large"><li>Posted: ' . Date::BritishDateAndTime($message->GetDate(), false, true, true) . '</li>' .
                     '<li>Signed up: ' . Date::MonthAndYear($o_person->GetSignUpDate()) . "</li>\n" .
                     '<li>Total messages: ' . $o_person->GetTotalMessages() . "</li>\n";
-                if ($o_person->GetLocation()) $s_text .= '<li>Location: ' . $o_person->GetLocation() . '</li>' . "\n";
                 $s_text .= '</ul>';
                 $s_text .= '</div>';
 

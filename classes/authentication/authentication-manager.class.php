@@ -72,7 +72,7 @@ class AuthenticationManager extends DataManager
         $role = $this->GetSettings()->GetTable("Role");
 
 		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, 
-		      gender, occupation, interests, location, date_added AS sign_up_date, total_messages, disabled,  
+		      date_added AS sign_up_date, total_messages, disabled,  
 		      $role.role_id, $role.role
     		  FROM $user LEFT JOIN $user_role ON $user.user_id = $user_role.user_id 
 		      LEFT JOIN $role ON $user_role.role_id = $role.role_id ";
@@ -476,10 +476,6 @@ class AuthenticationManager extends DataManager
 				if (isset($row->name_first)) $user->SetFirstName($row->name_first);
 				if (isset($row->name_last)) $user->SetLastName($row->name_last);
 				if (isset($row->email)) $user->SetEmail($row->email);
-				if (isset($row->gender)) $user->SetGender($row->gender);
-				if (isset($row->occupation)) $user->SetOccupation($row->occupation);
-				if (isset($row->interests)) $user->SetInterests($row->interests);
-				if (isset($row->location)) $user->SetLocation($row->location);
 				if (isset($row->sign_up_date)) $user->SetSignUpDate($row->sign_up_date);
 				if (isset($row->total_messages)) $user->SetTotalMessages($row->total_messages);
                 
@@ -1216,31 +1212,5 @@ class AuthenticationManager extends DataManager
             $this->AddUserToRole($user->GetId(), $role->GetRoleId());
         }
     }
-
-	/**
-	 * Saves personal information about a user
-	 * @param User $user
-	 * @return void
-	 */
-	public function SavePersonalInfo(User $user)
-	{
-		# Prepare filter
-		require_once('text/bad-language-filter.class.php');
-		$language = new BadLanguageFilter();
-
-		$users = $this->GetSettings()->GetTable('User');
-
-		$s_sql = 'UPDATE ' . $users . ' SET ' .
-					'date_changed = ' . gmdate('U') . ', ' .
-					"gender = " . ($user->GetGender() ? $this->SqlString($user->GetGender()) : "NULL") . ", " .
-					"occupation = " . $this->SqlString($language->Filter($user->GetOccupation())) . ", " .
-					"interests = " . $this->SqlHtmlString($language->Filter($user->GetInterests())) . ", " .
-					"location = " . $this->SqlString($language->Filter($user->GetLocation())) . " " .
-					'WHERE user_id = ' . Sql::ProtectNumeric($user->GetId(), false);
-
-		$this->Lock(array($users));
-		$this->GetDataConnection()->query($s_sql);
-		$this->Unlock();
-	}
 }
 ?>

@@ -40,7 +40,7 @@ class CurrentPage extends StoolballPage
 			$id = $this->GetAuthenticationManager()->SaveUser($this->user);
 			$this->user->SetId($id);
             $this->GetAuthenticationManager()->SaveUserSecurity($this->user);
-			$this->Redirect($this->user->GetUserProfileUrl());
+			$this->Redirect("personlist.php");
 		}
 	}
 

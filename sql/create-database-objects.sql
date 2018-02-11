@@ -19,7 +19,6 @@ COMMENT = 'New sign-ups awaiting activation - Stoolball';
 CREATE TABLE IF NOT EXISTS `nsa_audit` (
   `audit_id` INT(5) UNSIGNED NOT NULL AUTO_INCREMENT,
   `user_id` INT(5) UNSIGNED NOT NULL DEFAULT '0',
-  `ip_address` VARCHAR(20) NOT NULL,
   `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `query_sql` TEXT NOT NULL,
   `request_url` VARCHAR(250) NOT NULL,
@@ -618,10 +617,6 @@ CREATE TABLE IF NOT EXISTS `nsa_user` (
   `total_messages` INT(5) UNSIGNED NOT NULL DEFAULT '0',
   `date_added` INT(10) UNSIGNED NULL DEFAULT NULL,
   `date_changed` INT(10) UNSIGNED NULL DEFAULT NULL,
-  `gender` ENUM('male', 'female') NULL DEFAULT NULL,
-  `location` VARCHAR(100) NULL DEFAULT NULL,
-  `occupation` VARCHAR(255) NULL DEFAULT NULL,
-  `interests` TEXT NULL DEFAULT NULL,
   `requested_email` VARCHAR(100) NULL DEFAULT NULL,
   `requested_email_hash` VARCHAR(255) NULL DEFAULT NULL,
   `password_reset_request_date` INT(10) UNSIGNED NULL DEFAULT NULL,

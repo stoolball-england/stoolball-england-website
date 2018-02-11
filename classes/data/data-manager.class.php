@@ -373,7 +373,6 @@ abstract class DataManager extends Collection
 
         $log_sql = "INSERT INTO nsa_audit SET 
         user_id = " . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId(), true) . ",
-        ip_address = " . Sql::ProtectString($this->GetDataConnection(), $_SERVER['REMOTE_ADDR']) . ", 
         date_changed = " . gmdate('U') . ", 
         query_sql = " . Sql::ProtectString($this->GetDataConnection(), $sql) . ", 
         request_url = " . Sql::ProtectString($this->GetDataConnection(), $_SERVER['REQUEST_URI']);

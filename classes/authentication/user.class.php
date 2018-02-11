@@ -10,11 +10,7 @@ class User
 	var $s_last_name;
 	var $s_email;
 	var $i_sign_up_date;
-	var $s_location;
 	var $i_total_messages;
-	var $s_gender;
-	var $s_occupation;
-	var $s_interests;
 	private $s_last_message = '';
 	private $s_password;
 	private $s_password_confirmation;
@@ -187,15 +183,6 @@ class User
 	}
 
 	/**
-	 * Gets the URL for the user's profile page
-	 */
-	public function GetUserProfileUrl()
-	{
-		# Absolute URL because used as property of user in RDFa
-		return "https://" . $_SERVER['HTTP_HOST'] . "/you/profile.php?id=" . $this->GetId();
-	}
-
-	/**
 	 * Gets the URL to edit the user
 	 */
 	public function GetEditUserUrl()
@@ -290,49 +277,6 @@ class User
 	function GetSignUpDate()
 	{
 		return $this->i_sign_up_date;
-	}
-
-	function SetGender($s_input)
-	{
-		if (is_string($s_input))
-			$this->s_gender = $s_input;
-	}
-
-	function GetGender()
-	{
-		return $this->s_gender;
-	}
-
-	function SetLocation($s_input)
-	{
-		if (is_string($s_input))
-			$this->s_location = $s_input;
-	}
-
-	function GetLocation()
-	{
-		return $this->s_location;
-	}
-
-	function SetOccupation($s_input)
-	{
-		$this->s_occupation = (string)$s_input;
-	}
-
-	function GetOccupation()
-	{
-		return $this->s_occupation;
-	}
-
-	function SetInterests($s_input)
-	{
-		if (is_string($s_input))
-			$this->s_interests = $s_input;
-	}
-
-	function GetInterests()
-	{
-		return $this->s_interests;
 	}
 
 	/**

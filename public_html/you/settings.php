@@ -17,8 +17,6 @@ class EditProfilePage extends StoolballPage
         echo '<div class="nav">' . 
         '<h2><a href="' . $this->GetSettings()->GetUrl('AccountEssential') . '">Essential information</a></h2>' . 
 		'<p>Change your name, email address or password.</p>' . 
-        '<h2><a href="personal.php">More about you</a></h2>' . 
-		"<p>Tell others where you're from, who you are and what you like.</p>" . 
         '<h2><a href="' . $this->GetSettings()->GetUrl('EmailAlerts') . '">Email alerts</a></h2>' . 
 		"<p>Change the email alerts you get when someone adds a comment.</p>" . 
 		"</div>";
