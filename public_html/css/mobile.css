@@ -280,6 +280,7 @@ body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; 
 
 /* View match */
 .sunset { background: url(/images/matches/sunset.png) no-repeat 10px center; padding-left: 40px; font-size: .8em; white-space: nowrap; }
+.privacy-notice { margin: 10px 0 0; }
 
 /* Add a match */
 .time { white-space: nowrap; } /* Drop-down lists to enter a time */

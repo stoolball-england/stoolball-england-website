@@ -189,7 +189,7 @@ class CurrentPage extends StoolballPage
 			$panel = new XhtmlElement('div');
 			$panel->SetCssClass('panel instructionPanel');
 
-			$title_inner1 = new XhtmlElement('div', 'Fill in scorecards quickly:');
+			$title_inner1 = new XhtmlElement('div', 'Tips for completing scorecards:');
 			$title = new XhtmlElement('h2', $title_inner1, "large");
 			$panel->AddControl($title);
 
@@ -198,6 +198,7 @@ class CurrentPage extends StoolballPage
 			$tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> key to select a player\'s name from the suggestions', "large"));
             $tab_tip->AddControl(new XhtmlElement('li', "List everyone on the batting card, even if they didn't bat, so we know who played."));
 			$tab_tip->AddControl(new XhtmlElement('li', 'Don\'t worry if you don\'t know &#8211; fill in what you can and leave the rest blank.'));
+            $tab_tip->AddControl(new XhtmlElement('li', 'You are publishing personal information, so please read our <a href="https://www.stoolball.org.uk/about/privacy-notice-match-results-and-comments/">privacy notice about match results and comments</a>'));
 			$panel->AddControl($tab_tip);
 			echo $panel;
 		}

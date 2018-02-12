@@ -214,7 +214,7 @@ class CurrentPage extends StoolballPage
 		$o_panel = new XhtmlElement('div');
 		$o_panel->SetCssClass('panel instructionPanel');
 
-		$o_title_inner1 = new XhtmlElement('div', 'Add your results quickly:');
+		$o_title_inner1 = new XhtmlElement('div', 'Tips for adding results:');
 		$o_title = new XhtmlElement('h2', $o_title_inner1, "large");
 		$o_panel->AddControl($o_title);
 
@@ -222,6 +222,7 @@ class CurrentPage extends StoolballPage
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Use the <span class="tab">tab</span> key on your keyboard to move through the form', "large"));
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Type the first letter or number to select from a dropdown list', "large"));
 		$o_tab_tip->AddControl(new XhtmlElement('li', 'Don\'t worry if you don\'t know &#8211; fill in what you can and leave the rest blank.'));
+       $o_tab_tip->AddControl(new XhtmlElement('li', 'Before including personal information in a match report, please read our <a href="https://www.stoolball.org.uk/about/privacy-notice-match-results-and-comments/">privacy notice about match results and comments</a>'));
 		$o_panel->AddControl($o_tab_tip);
 		echo $o_panel;
 		

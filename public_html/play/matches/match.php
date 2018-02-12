@@ -364,6 +364,8 @@ class CurrentPage extends StoolballPage
             require_once ('forums/forum-message-form.class.php');
             $o_form = new ForumMessageForm();
             echo $o_form->GetForm();
+            
+            echo '<p class="privacy-notice">Please read our <a href="https://www.stoolball.org.uk/about/privacy-notice-match-results-and-comments/">privacy notice about match results and comments</a>.</p>'; 
         }
         
         echo '</div>';
