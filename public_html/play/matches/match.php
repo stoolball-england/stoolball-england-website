@@ -299,6 +299,11 @@ class CurrentPage extends StoolballPage
             }
         }
 
+        if ($this->match->GetStartTime() < gmdate('U') and AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES)) 
+        {
+            $panel->AddLink('recalculate statistics', $this->match->GetNavigateUrl() . "/statistics/recalculate"); 
+        }
+
 		if ($user_is_admin or $user_is_owner)
 		{
             if ($is_tournament) {

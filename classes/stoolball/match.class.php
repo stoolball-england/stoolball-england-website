@@ -812,6 +812,7 @@ class Match implements IHasShortUrl
 		'{0}/matches/edit' => "/play/tournaments/matches.php?item={0}",
         '{0}/matches/results' => "/play/results.php?tournament={0}",
 		'{0}/statistics' => "/play/statistics/summary-match.php?match={0}&type={1}",
+		'{0}/statistics/recalculate' => "/play/statistics/recalculate-player-statistics.php?match={0}",
         '{0}.json' => "/play/statistics/match.js.php?match={0}"
 		));
 	}
