@@ -60,8 +60,11 @@ class EmailExceptionPublisher implements IExceptionPublisher
             foreach ($_GET as $key => $value)
                 $body .= '$GET[\'' . $key . '\']: ' . $value . "\n";
         }
-        foreach ($_SERVER as $key => $value)
-            $body .= '$SERVER[\'' . $key . '\']: ' . $value . "\n";
+        foreach ($_SERVER as $key => $value) {
+            if (is_string($key) and is_string($value)) {
+                $body .= '$SERVER[\'' . $key . '\']: ' . $value . "\n";
+            }
+        }
 
         require_once 'Zend/Mail.php';
 

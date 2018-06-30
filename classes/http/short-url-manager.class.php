@@ -268,7 +268,7 @@ class ShortUrlManager extends DataManager
 				}
 
 				# Now save the new one
-				$sql = "INSERT INTO $url_table SET short_url = " . Sql::ProtectString($this->GetDataConnection(), $short_url_instance, false) . ", " .
+				$sql = "REPLACE INTO $url_table SET short_url = " . Sql::ProtectString($this->GetDataConnection(), $short_url_instance, false) . ", " .
 				'short_url_base = ' . Sql::ProtectString($this->GetDataConnection(), $short_url->GetShortUrl(), false) . ', ' .
 				'script = ' . Sql::ProtectString($this->GetDataConnection(), $url_bits[0], false) . ", " .
 				'param_names = ' . Sql::ProtectString($this->GetDataConnection(), join('|', $parameters)) . ', ' .

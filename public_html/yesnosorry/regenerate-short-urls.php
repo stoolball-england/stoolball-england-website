@@ -27,7 +27,7 @@ class CurrentPage extends StoolballPage
         # KNOWN ISSUE: Only uses GetShortUrlForType which for a match means tournaments are wrong
 
         require_once("data/process-manager.class.php");
-        $this->process = new ProcessManager($process_id);
+        $this->process = new ProcessManager($process_id, 50);
 
         if ($this->process->ReadyToDeleteAll())
         {
