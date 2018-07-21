@@ -79,8 +79,8 @@ class AddSchoolControl extends DataEditControl
 		require_once('data/validation/required-field-validator.class.php');
         require_once('data/validation/length-validator.class.php');
 
-		$this->AddValidator(new RequiredFieldValidator('name', 'Please add the name of the school'));
-		$this->AddValidator(new LengthValidator('name', 'Please make the school name shorter', 0, 100));
+		$this->AddValidator(new RequiredFieldValidator('school-name', 'Please add the name of the school'));
+		$this->AddValidator(new LengthValidator('school-name', 'Please make the school name shorter', 0, 100));
         $this->AddValidator(new RequiredFieldValidator('town', 'Please add the town or village'));
         $this->AddValidator(new LengthValidator('town', 'Please make the town or village shorter', 0, 100));
 	}
