@@ -145,5 +145,5 @@ class CurrentPage extends StoolballPage
 		}		
 	}
 }
-new CurrentPage(new StoolballSettings(), PermissionType::MANAGE_STATISTICS, false);
+new CurrentPage(new StoolballSettings(), PermissionType::MANAGE_MATCHES, false);
 ?>
