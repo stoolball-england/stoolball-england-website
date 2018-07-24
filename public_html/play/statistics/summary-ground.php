@@ -113,8 +113,8 @@ class CurrentPage extends StoolballPage
 			# Link to other seasons
 			if (count($this->seasons_with_statistics) > 1)
 			{
-				echo new XhtmlElement('h2', 'More statistics for ' . htmlentities($this->ground->GetName(), ENT_QUOTES, "UTF-8", false));
-				echo '<ul class="season-list">';
+				echo new XhtmlElement('h2', 'More statistics for ' . Html::Encode($this->ground->GetName()), "screen");
+				echo '<ul class="season-list screen">';
 				if ($this->season) echo "<li><a href=\"" . htmlentities($this->ground->GetStatsNavigateUrl(), ENT_QUOTES, "UTF-8", false) . "\">All seasons</a></li>";
 				foreach ($this->seasons_with_statistics as $season)
 				{

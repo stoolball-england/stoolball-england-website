@@ -39,7 +39,7 @@ if (typeof (jQuery) != "undefined") {
     }
 
     $(function(){
-    	$(".sign-out input[type=submit]").replaceWith('<a href="/you/sign-out">Sign out</a>');
+    	$(".sign-out input[type=submit]").replaceWith('<a href="/you/sign-out" class="screen">Sign out</a>');
     	$(".sign-out a").click(function(e){ e.preventDefault(); $(".sign-out").submit(); });
     });
 }

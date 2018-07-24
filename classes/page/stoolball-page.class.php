@@ -17,7 +17,7 @@ class StoolballPage extends Page
 	private $open_graph_type = "article";
     private $css_root = "";
     private $resource_root = "";
-    private $css_version = 44;
+    private $css_version = 45;
 	
 	# override constructor to accept settings for this site
 	function StoolballPage(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
@@ -51,7 +51,7 @@ class StoolballPage extends Page
 		# Register JQuery early so it's loaded before other scripts
 		# IMPORTANT: The latest JQuery 1.X does not work with the auto complete used here, so that would need upgrading too.
 		$this->LoadClientScript($this->GetContext()->IsDevelopment() ? '/scripts/lib/jquery-1.7.2.min.js' : 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
-		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.4.js");
+		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.5.js");
 	}
 
 	/**

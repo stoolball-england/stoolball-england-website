@@ -103,9 +103,10 @@ class CurrentPage extends StoolballPage
 		if (count($this->competition->GetSeasons()) > 2)
 		{
 			require_once("stoolball/season-list-control.class.php");
-			echo new XhtmlElement('h2', 'Statistics by season');
+			echo new XhtmlElement('h2', 'Statistics by season', "screen");
 			$season_list = new SeasonListControl($this->competition->GetSeasons());
 			$season_list->SetUrlMethod('GetStatisticsUrl');
+			$season_list->AddCssClass("screen");
 			echo $season_list;
 		}
 

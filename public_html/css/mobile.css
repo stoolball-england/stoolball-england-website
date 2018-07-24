@@ -432,6 +432,11 @@ a.icalendar { padding-left: 20px; background: url(/images/sprite.4.png) no-repea
 @media print {
   
   /* Responsive design: hide any elements which should not be seen in this medium */
-  .screen { display: none!important;}
+  .screen, .tab-option, .dataFilter:empty, .statsViewAll { display: none!important;}
   .print { display: block!important;}
+  .box { margin: 0; }
+  .tab-box { box-shadow: none; }
+  .box-content { padding: 0; }
+  .box-content thead tr { border-top: 1px solid #BBB; }
+  caption { color: #008044; }
 }
