@@ -23,7 +23,7 @@ class MySqlSearchIndexer implements ISearchIndexProvider {
      */    
     public function Index(SearchItem $item){
         
-        $this->index_queue[] = "INSERT INTO nsa_search_index SET 
+        $this->index_queue[] = "REPLACE INTO nsa_search_index SET 
             search_index_id = " . Sql::ProtectString($this->connection, $item->SearchItemId()) . ",
             indexed_item_type = " . Sql::ProtectString($this->connection, $item->SearchItemType()) . ",
             url = " . Sql::ProtectString($this->connection, $item->Url()) . ",
