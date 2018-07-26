@@ -196,8 +196,7 @@ a.promo { margin: 15px 0; display: block; }
 .spreadshirt-box { border: 3px solid #008044; border-top: 0; margin: 0 0 15px; border-radius: 0 0 5px 5px; padding: 10px; overflow: hidden;}
 
 /* Teams, seasons and competitions */
-.player-list li { width: 50%; }
-@media only screen and (min-width: 1000px) { .player-list li { width: 30%; } }
+@media only screen and (min-width: 1000px) { .player-list ol, .player-list ul { columns: 3; } }
 
 /* In a tabbed area it's always at the end where there is padding anyway */
 .box-content .season-list ul { margin-bottom: 0;}

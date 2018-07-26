@@ -269,13 +269,13 @@ fieldset.school-years label { display: inline-block; width: 6.5em; }
 .spaces-left { white-space: nowrap; }
 
 /* Lists of seasons and players */
-.season-list h2, .player-list h2 { clear: left; }
+.season-list h2 { clear: left; }
 body .season-list ul, body .player-list ul, body .player-list ol { width: 100%; margin: 0 0 1em; padding: 0; overflow: hidden; list-style: none; }
-.season-list li, .player-list li { float: left; margin: 0 0 .5em; padding: 0; }
-.season-list li { width: 9em; }
+.season-list li { float: left; margin: 0 0 .5em; padding: 0; width: 9em; }
 
 .player-list h2:first-child { margin-top: 0; }
-.player-list li { width: 50%; }
+.player-list ol, .player-list ul { columns: 2; }
+.player-list li { margin: 0 0 .5em; }
 .player-list ul:last-child { margin-bottom: 0; }
 
 /* View match */
