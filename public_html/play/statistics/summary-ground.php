@@ -92,7 +92,7 @@ class CurrentPage extends StoolballPage
 		require_once("_summary-data-found.php");
  
         require_once('xhtml/navigation/tabs.class.php');
-        $tabs = array('Summary' => $this->ground->GetNavigateUrl(), 'Statistics' => '');       
+        $tabs = array('Summary' => $this->ground->GetNavigateUrl(), 'Matches' => $this->ground->GetMatchesUrl(), 'Statistics' => '');       
         echo new Tabs($tabs);
  
         ?>

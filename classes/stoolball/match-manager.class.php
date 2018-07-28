@@ -69,6 +69,19 @@ class MatchManager extends DataManager
     {
         $this->ValidateNumericArray($team_ids);
         $this->filter_by_teams = $team_ids;
+	}
+	
+	private $filter_by_grounds;
+
+    /**
+     * Filter supporting queries to select only matches at the specified grounds
+     *
+     * @var int[] $ground_ids
+     */
+    public function FilterByGround($ground_ids)
+    {
+        $this->ValidateNumericArray($ground_ids);
+        $this->filter_by_grounds = $ground_ids;
     }
 
     private $filter_by_tournament_id;
@@ -653,6 +666,16 @@ class MatchManager extends DataManager
                 $where .= 'AND ';
             }
 			$where .= $s_match . '.match_type IN (' . $s_type_ids . ') ';
+		}
+
+		if (count($this->filter_by_grounds))
+		{
+			$ground_ids = join(', ', $this->filter_by_grounds);
+            if ($where)
+            {
+                $where .= 'AND ';
+            }
+			$where .= $s_match . '.ground_id IN (' . $ground_ids . ') ';
 		}
 
         # Filter out tournament matches unless selecting a tournament, to save remembering it every time

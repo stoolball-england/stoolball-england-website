@@ -210,6 +210,13 @@ class Ground implements IHasShortUrl
 		return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/statistics';
 	}
 
+	/**
+	 * Gets a URL for viewing match listings at this ground
+	 */
+	public function GetMatchesUrl() {
+		return $this->GetNavigateUrl() . "/matches";
+	}
+
 		/**
 	 * Gets the format to use for a ground's short URLs
 	 *
@@ -220,7 +227,8 @@ class Ground implements IHasShortUrl
 	{
 		return new ShortUrlFormat($settings->GetTable('Ground'), 'short_url', array('ground_id'), array('GetId'),
 			array('{0}' => '/play/grounds/ground.php?item={0}',
-				'{0}/statistics' => $settings->GetUrl('GroundStatistics'),
+				'{0}/matches' => '/play/matches/matches-at-ground.php?item={0}',
+				'{0}/statistics' => '/play/statistics/summary-ground.php?item={0}',
                 '{0}/edit' => '/play/grounds/groundedit.php?item={0}',
                 '{0}/delete' => '/play/grounds/grounddelete.php?item={0}'
 			));

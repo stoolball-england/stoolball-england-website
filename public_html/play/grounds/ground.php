@@ -130,7 +130,7 @@ class CurrentPage extends StoolballPage
 		echo $o_fn;
 
         require_once('xhtml/navigation/tabs.class.php');
-        $tabs = array('Summary' => '', 'Statistics' => $this->ground->GetStatsNavigateUrl());       
+        $tabs = array('Summary' => '', 'Matches' => $this->ground->GetMatchesUrl(), 'Statistics' => $this->ground->GetStatsNavigateUrl());       
         echo new Tabs($tabs);
         
         ?>
