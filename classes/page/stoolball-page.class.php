@@ -500,15 +500,15 @@ class StoolballPage extends Page
 	if (!SiteContext::IsDevelopment() and !AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::EXCLUDE_FROM_ANALYTICS))
 	{
 		?>
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124636663-1"></script>
 <script>
-	var _gaq = [['_setAccount', 'UA-1597472-1'], ['_trackPageview'], ['_setDomainName', '.stoolball.org.uk'], ['_trackPageLoadTime']]; ( function(d, t)
-		{
-			var g = d.createElement(t), s = d.getElementsByTagName(t)[0];
-			g.async = 1;
-			g.src = ('https:' == location.protocol ? '//ssl' : '//www') + '.google-analytics.com/ga.js';
-			s.parentNode.insertBefore(g, s)
-		}(document, 'script')); 
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'UA-124636663-1');
 </script>
+
 		<?php
 		}
 
