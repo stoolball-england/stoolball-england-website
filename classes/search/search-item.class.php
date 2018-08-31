@@ -72,7 +72,7 @@ class SearchItem
         if (is_null($title)) {
             return $this->title;
         } else {
-            $this->title = (string)$title;
+            $this->title = strip_tags((string)$title);
         }
 	}
 
@@ -84,7 +84,7 @@ class SearchItem
         if (is_null($description)) {
             return $this->description;
         } else {
-            $this->description = (string)$description;
+            $this->description = strip_tags((string)$description);
         }
 	}
 
@@ -96,7 +96,7 @@ class SearchItem
         if (is_null($keywords)) {
             return $this->keywords;
         } else {
-            $this->keywords = (string)$keywords;
+            $this->keywords = strip_tags((string)$keywords);
         }
     }
 
@@ -108,7 +108,7 @@ class SearchItem
         if (is_null($text)) {
             return $this->text;
         } else {
-            $this->text = (string)$text;
+            $this->text = strip_tags((string)$text);
         }
 	}
 
