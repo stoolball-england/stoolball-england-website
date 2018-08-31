@@ -29,9 +29,10 @@ class CurrentPage extends StoolballPage
 	public function OnPostback()
 	{
 		# Get the player info and store it
-		$id = $this->player_manager->GetItemId($this->player);
-		$this->player_manager->ReadPlayerById($id);
-		$this->player = $this->player_manager->GetFirst();
+		if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+			$this->player_manager->ReadPlayerById($_GET['item']);
+			$this->player = $this->player_manager->GetFirst();
+		}
 		if (!$this->player instanceof Player)
 		{
 			# This can be the case if the back button is used to go back to the "player has been deleted" page.
@@ -59,10 +60,10 @@ class CurrentPage extends StoolballPage
 			if ($has_permission)
 			{
 				# Delete the player
-				$this->player_manager->Delete(array($id));
+				$this->player_manager->Delete(array($this->player->GetId()));
 
                 # Delete player's entry in the search engine
-                $this->SearchIndexer()->DeleteFromIndexById("player" . $id);    
+                $this->SearchIndexer()->DeleteFromIndexById("player" . $this->player->GetId());
                 $this->SearchIndexer()->CommitChanges();
 
 				# Note success
@@ -76,10 +77,9 @@ class CurrentPage extends StoolballPage
 		# get player
 		if (!is_object($this->player))
 		{
-			$id = $this->player_manager->GetItemId($this->player);
-			if ($id)
+			if (isset($_GET['item']) and is_numeric($_GET['item']))
 			{
-				$this->player_manager->ReadPlayerById($id);
+				$this->player_manager->ReadPlayerById($_GET['item']);
 				$this->player = $this->player_manager->GetFirst();
 			}
 		}

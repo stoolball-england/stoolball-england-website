@@ -52,7 +52,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# get id of club
-		$i_id = $this->o_club_manager->GetItemId();
+		$i_id = $this->o_edit->GetDataObjectId();
 
 		# no need to read data if creating a new club
 		if ($i_id and !isset($_POST['item']))

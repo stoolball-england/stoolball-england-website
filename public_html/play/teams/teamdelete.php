@@ -38,9 +38,10 @@ class CurrentPage extends StoolballPage
 	function OnPostback()
 	{
 		# Get the item info and store it
-		$id = $this->manager->GetItemId($this->data_object);
-		$this->manager->ReadById(array($id));
-		$this->data_object = $this->manager->GetFirst();
+		if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+			$this->manager->ReadById(array($_GET['item']));
+			$this->data_object = $this->manager->GetFirst();
+		}
 
 		# Check whether cancel was clicked
 		if (isset($_POST['cancel']))
@@ -55,10 +56,10 @@ class CurrentPage extends StoolballPage
 			if ($this->has_permission)
 			{
 				# Delete it
-				$this->manager->Delete(array($id));
+				$this->manager->Delete(array($this->data_object->GetId()));
 
                 # Delete team from search engine
-                $this->SearchIndexer()->DeleteFromIndexById("team" . $id);
+                $this->SearchIndexer()->DeleteFromIndexById("team" . $this->data_object->GetId());
                 $this->SearchIndexer()->CommitChanges();
 
 				# Note success
@@ -72,9 +73,10 @@ class CurrentPage extends StoolballPage
 		# get item to be deleted
 		if (!is_object($this->data_object))
 		{
-			$id = $this->manager->GetItemId($this->data_object);
-			$this->manager->ReadById(array($id));
-			$this->data_object = $this->manager->GetFirst();
+			if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+				$this->manager->ReadById(array($_GET['item']));
+				$this->data_object = $this->manager->GetFirst();
+			}
 		}
 
 		# tidy up

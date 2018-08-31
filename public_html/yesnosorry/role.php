@@ -44,7 +44,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# get id of role
-		$id = $this->authentication_manager->GetItemId();
+		$id = $this->editor->GetDataObjectId();
 
 		# no need to read data if creating a new role
 		if ($id and !isset($_POST['item']))

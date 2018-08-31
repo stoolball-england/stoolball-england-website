@@ -74,7 +74,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# get id of team
-		$i_id = $this->team_manager->GetItemId($this->team);
+		$i_id = $this->edit->GetDataObjectId($this->team);
 
 		# no need to read team data if creating a new team
 		# unlike some pages though, re-read after a save because not all info is posted back

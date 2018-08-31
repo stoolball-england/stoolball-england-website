@@ -29,9 +29,10 @@ class CurrentPage extends StoolballPage
 	function OnPostback()
 	{
 		# Get the item info and store it
-		$id = $this->manager->GetItemId($this->data_object);
-		$this->data_object = $this->manager->ReadRoleById($id);
-		
+		if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+			$this->data_object = $this->manager->ReadRoleById($_GET['item']);
+		}
+
 		# Check whether cancel was clicked
 		if (isset($_POST['cancel']))
 		{
@@ -42,7 +43,7 @@ class CurrentPage extends StoolballPage
 		if (isset($_POST['delete']))
 		{
             # Delete it
-			$this->manager->DeleteRole($id);
+			$this->manager->DeleteRole($this->data_object->getRoleId());
 
 			# Note success
 			$this->deleted = true;
@@ -54,8 +55,9 @@ class CurrentPage extends StoolballPage
 		# get item to be deleted
 		if (!is_object($this->data_object))
 		{
-			$id = $this->manager->GetItemId($this->data_object);
-			$this->data_object = $this->manager->ReadRoleById($id);
+			if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+				$this->data_object = $this->manager->ReadRoleById($_GET['item']);
+			}
 		}
     }
 

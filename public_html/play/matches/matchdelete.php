@@ -34,9 +34,10 @@ class CurrentPage extends StoolballPage
 	function OnPostback()
 	{
 		# Get the match info and store it
-		$i_id = $this->manager->GetItemId($this->match);
-		$this->manager->ReadByMatchId(array($i_id));
-		$this->match = $this->manager->GetFirst();
+		if (isset($_GET['item']) and is_numeric($_GET['item'])) {
+			$this->manager->ReadByMatchId(array($_GET['item']));
+			$this->match = $this->manager->GetFirst();
+		}
 		if (!$this->match instanceof Match)
 		{
 			# This can be the case if the back button is used to go back to the "match has been deleted" page.
@@ -59,7 +60,7 @@ class CurrentPage extends StoolballPage
 			if ($has_permission)
 			{
 				# Delete the match
-				$this->manager->DeleteMatch(array($i_id));
+				$this->manager->DeleteMatch(array($this->match->GetId()));
 
                 # Remove match, and all dependent tournament matches, from search results
                 foreach ($this->match->GetMatchesInTournament() as $tournament_match) 
@@ -89,10 +90,9 @@ class CurrentPage extends StoolballPage
 		# get match
 		if (!is_object($this->match))
 		{
-			$i_id = $this->manager->GetItemId($this->match);
-			if ($i_id)
+			if (isset($_GET['item']) and is_numeric($_GET['item']))
 			{
-				$this->manager->ReadByMatchId(array($i_id));
+				$this->manager->ReadByMatchId(array($_GET['item']));
 				$this->match = $this->manager->GetFirst();
 			}
 		}

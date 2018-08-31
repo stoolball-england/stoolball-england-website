@@ -51,7 +51,7 @@ class CurrentPage extends StoolballPage
         /* @var $o_season_manager SeasonManager */
 
         # get id of competition
-        $i_id = $this->o_comp_manager->GetItemId($this->o_competition);
+        $i_id = $this->o_edit->GetDataObjectId();
 
         # no need to read competition data if creating a new competition
         # unlike some pages though, re-read after a save because not all info is

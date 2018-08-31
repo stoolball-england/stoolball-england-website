@@ -52,7 +52,7 @@ class CurrentPage extends StoolballPage
     function OnLoadPageData()
     {
         # get id of ground
-        $i_id = $this->ground_manager->GetItemId($this->ground);
+        $i_id = $this->editor->GetDataObjectId($this->ground);
 
         # no need to read ground data if creating a new ground
         if ($i_id and !$this->IsPostback())

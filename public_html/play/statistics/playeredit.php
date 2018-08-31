@@ -45,7 +45,7 @@ class CurrentPage extends StoolballPage
 
 		# Get player to edit
 		$this->player = new Player($this->GetSettings());
-		$this->player->SetId($this->player_manager->GetItemId());
+		$this->player->SetId($this->editor->GetDataObjectId());
 
         # If the team parameter is passed, that's a request to create a new player in a team
         if (isset($_GET['team']) and is_numeric($_GET['team'])) {

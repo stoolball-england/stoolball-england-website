@@ -49,7 +49,7 @@ class CurrentPage extends StoolballPage
 		$authentication = $this->GetAuthenticationManager();
 
 		# get id of person
-		$id = $authentication->GetItemId($this->user);
+		$id = $this->editor->GetDataObjectId();
 		$authentication->ReadUserById(array($id));
 		$this->user = $authentication->GetFirst();
 

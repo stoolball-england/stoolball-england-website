@@ -112,7 +112,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# get id of season
-		$i_id = $this->season_manager->GetItemId($this->season);
+		$i_id = $this->edit->GetDataObjectId($this->season);
 
 		# read season data when first asked to edit a season
 		if (($i_id and !$this->IsPostback()))

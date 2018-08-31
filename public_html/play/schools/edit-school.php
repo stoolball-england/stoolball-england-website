@@ -63,7 +63,7 @@ class CurrentPage extends StoolballPage
     
     public function OnLoadPageData()
     {
-        $id = $this->school_manager->GetItemId();
+        $id = $this->edit->GetDataObjectId();
         $this->school_manager->ReadById(array($id));
         $this->school = $this->school_manager->GetFirst();
         unset($this->school_manager);

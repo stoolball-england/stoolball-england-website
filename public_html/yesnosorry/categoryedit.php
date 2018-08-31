@@ -53,7 +53,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		# get id of category
-		$i_id = $this->o_category_manager->GetItemId();
+		$i_id = $this->o_edit->GetDataObjectId();
 
 		# no need to read data if creating a new category
 		if ($i_id and !isset($_POST['item']))

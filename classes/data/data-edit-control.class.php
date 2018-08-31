@@ -191,6 +191,10 @@ abstract class DataEditControl extends XhtmlForm
 		{
 			return $_POST[$this->s_naming_prefix . 'item'];
 		}
+		else if (isset($_GET[$this->s_naming_prefix . 'item'])) 
+		{
+			return $_GET[$this->s_naming_prefix . 'item'];
+		}
 		else return null;
 	}
 

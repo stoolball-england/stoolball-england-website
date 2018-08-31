@@ -114,7 +114,7 @@ class CurrentPage extends StoolballPage
 		/* @var $match_manager MatchManager */
 
 		# get id of Match
-		$i_id = $this->match_manager->GetItemId();
+		$i_id = $this->editor->GetDataObjectId();
 
 		# Get details of match but, if invalid, don't replace submitted details with saved ones
 		if ($i_id and $this->IsValid())

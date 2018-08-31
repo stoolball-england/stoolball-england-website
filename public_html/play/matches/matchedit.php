@@ -155,7 +155,7 @@ class CurrentPage extends StoolballPage
 		/* @var $editor MatchEditControl */
 
 		# get id of Match
-		$i_id = $this->match_manager->GetItemId();
+		$i_id = $this->editor->GetDataObjectId();
 
 		if ($i_id) 
         {

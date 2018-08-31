@@ -57,26 +57,6 @@ abstract class DataManager extends Collection
 		return $this->o_db;
 	}
 
-
-	/**
-	 * @return int
-	 * @param object $o_object
-	 * @desc Get a numeric id from (in order of preference): $o_object->GetId(), $_POST['item'], $_GET['item']
-	 */
-	function GetItemId($o_object=null)
-	{
-		$i_id = null;
-		if (is_object($o_object)) $i_id = $o_object->GetId();
-		if ($i_id == null)
-		{
-			if (isset($_POST['item'])) $i_id = $_POST['item'];
-			else if (isset($_GET['item'])) $i_id = $_GET['item'];
-			if (!is_numeric($i_id)) $i_id = null;
-		}
-
-		return $i_id;
-	}
-
 	/**
 	 * @access public
 	 * @return void
