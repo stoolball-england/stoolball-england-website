@@ -16,11 +16,8 @@ public_html/scripts/stoolball.min.js
 #Temporarycodesandpit
 public_html/yesnosorry/run-once.php
 
-#Aptanauserfiles
-.metadata
-.settings
-.project
-.buildpath
+# Code editor config
+.vscode
 
 #Dependencies
 htmlpurifier
