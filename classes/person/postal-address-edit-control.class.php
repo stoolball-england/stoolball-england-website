@@ -4,31 +4,22 @@ require_once('person/postal-address.class.php');
 
 class PostalAddressEditControl extends Placeholder
 {
-	var $s_data_object_class;
 	/**
 	 * The address to edit
 	 *
 	 * @var PostalAddress
 	 */
-	var $o_data_object;
-	var $a_validators;
-
-	function PostalAddressEditControl()
-	{
-		# set up element
-		parent::Placeholder();
-		$this->s_data_object_class = 'PostalAddress';
-	}
+	private $address;
+	private $validators;
 
 	/**
 	* @return void
-	* @param object $o_object
+	* @param object $address
 	* @desc Gets the data object this control is editing
 	*/
-	function SetDataObject($o_object)
+	function SetDataObject(PostalAddress $address)
 	{
-		if (!isset($this->s_data_object_class)) die('Data object class not set in edit control');
-		if ($o_object instanceof $this->s_data_object_class) $this->o_data_object = $o_object;
+		$this->address = $address;
 	}
 
 	/**
@@ -37,9 +28,9 @@ class PostalAddressEditControl extends Placeholder
 	*/
 	function &GetDataObject()
 	{
-		if (!isset($this->o_data_object) and $_SERVER['REQUEST_METHOD'] == 'POST') $this->BuildPostedDataObject();
+		if (!isset($this->address) and $_SERVER['REQUEST_METHOD'] == 'POST') $this->BuildPostedDataObject();
 
-		return $this->o_data_object;
+		return $this->address;
 	}
 
 	/**
@@ -48,15 +39,15 @@ class PostalAddressEditControl extends Placeholder
 	*/
 	function BuildPostedDataObject()
 	{
-		$this->o_data_object = new PostalAddress();
-		$this->o_data_object->SetSaon($_POST['saon']);
-		$this->o_data_object->SetPaon($_POST['paon']);
-		$this->o_data_object->SetStreetDescriptor($_POST['streetDescriptor']);
-		$this->o_data_object->SetLocality($_POST['locality']);
-		$this->o_data_object->SetTown($_POST['town']);
-		$this->o_data_object->SetAdministrativeArea($_POST['county']);
-		$this->o_data_object->SetPostcode($_POST['postcode']);
-		$this->o_data_object->SetGeoLocation(isset($_POST['lat']) ? $_POST['lat'] : null, isset($_POST['long']) ? $_POST['long'] : null, isset($_POST['geoprecision']) ? $_POST['geoprecision'] : null);
+		$this->address = new PostalAddress();
+		$this->address->SetSaon($_POST['saon']);
+		$this->address->SetPaon($_POST['paon']);
+		$this->address->SetStreetDescriptor($_POST['streetDescriptor']);
+		$this->address->SetLocality($_POST['locality']);
+		$this->address->SetTown($_POST['town']);
+		$this->address->SetAdministrativeArea($_POST['county']);
+		$this->address->SetPostcode($_POST['postcode']);
+		$this->address->SetGeoLocation(isset($_POST['lat']) ? $_POST['lat'] : null, isset($_POST['long']) ? $_POST['long'] : null, isset($_POST['geoprecision']) ? $_POST['geoprecision'] : null);
 	}
 
 	function OnPreRender()
@@ -65,71 +56,71 @@ class PostalAddressEditControl extends Placeholder
 		require_once('xhtml/forms/textbox.class.php');
 
 		# add lines
-		$o_saon_box = new TextBox('saon', $this->o_data_object->GetSaon());
-		$o_saon_box->AddAttribute('maxlength', 250);
-		$o_saon = new FormPart('Address within building', $o_saon_box);
-		$this->AddControl($o_saon);
+		$saon_box = new TextBox('saon', $this->address->GetSaon());
+		$saon_box->AddAttribute('maxlength', 100);
+		$saon = new FormPart('Address within building', $saon_box);
+		$this->AddControl($saon);
 
-		$o_line1_box = new TextBox('paon', $this->o_data_object->GetPaon());
-		$o_line1_box->AddAttribute('maxlength', 250);
-		$o_line1 = new FormPart('Building name or number', $o_line1_box);
-		$this->AddControl($o_line1);
+		$line1_box = new TextBox('paon', $this->address->GetPaon());
+		$line1_box->AddAttribute('maxlength', 100);
+		$line1 = new FormPart('Building name or number', $line1_box);
+		$this->AddControl($line1);
 
-		$o_line2_box = new TextBox('streetDescriptor', $this->o_data_object->GetStreetDescriptor());
-		$o_line2_box->AddAttribute('maxlength', 250);
-		$o_line2 = new FormPart('Street name', $o_line2_box);
-		$this->AddControl($o_line2);
+		$line2_box = new TextBox('streetDescriptor', $this->address->GetStreetDescriptor());
+		$line2_box->AddAttribute('maxlength', 100);
+		$line2 = new FormPart('Street name', $line2_box);
+		$this->AddControl($line2);
 
-		$o_line3_box = new TextBox('locality', $this->o_data_object->GetLocality());
-		$o_line3_box->AddAttribute('maxlength', 250);
-		$o_line3 = new FormPart('Village or part of town', $o_line3_box);
-		$this->AddControl($o_line3);
+		$line3_box = new TextBox('locality', $this->address->GetLocality());
+		$line3_box->AddAttribute('maxlength', 35);
+		$line3 = new FormPart('Village or part of town', $line3_box);
+		$this->AddControl($line3);
 
 		# add town
-		$o_town_box = new TextBox('town', $this->o_data_object->GetTown());
-		$o_town_box->AddAttribute('maxlength', 100);
-		$o_town = new FormPart('Town', $o_town_box);
-		$this->AddControl($o_town);
+		$town_box = new TextBox('town', $this->address->GetTown());
+		$town_box->AddAttribute('maxlength', 30);
+		$town = new FormPart('Town', $town_box);
+		$this->AddControl($town);
 
 		# add county
-		$o_county_box = new TextBox('county', $this->o_data_object->GetAdministrativeArea());
-		$o_county_box->AddAttribute('maxlength', 100);
-		$o_county = new FormPart('County', $o_county_box);
-		$this->AddControl($o_county);
+		$county_box = new TextBox('county', $this->address->GetAdministrativeArea());
+		$county_box->AddAttribute('maxlength', 30);
+		$county = new FormPart('County', $county_box);
+		$this->AddControl($county);
 
 		# add postcode
-		$o_postcode_box = new TextBox('postcode', $this->o_data_object->GetPostcode());
-		$o_postcode_box->AddAttribute('maxlength', 8);
-		$o_postcode = new FormPart('Postcode', $o_postcode_box);
-		$this->AddControl($o_postcode);
+		$postcode_box = new TextBox('postcode', $this->address->GetPostcode());
+		$postcode_box->AddAttribute('maxlength', 8);
+		$postcode = new FormPart('Postcode', $postcode_box);
+		$this->AddControl($postcode);
 
 		# add geolocation
-		$o_lat_box = new TextBox('lat', $this->o_data_object->GetLatitude());
-		$o_lat_box->SetMaxLength(20);
-		$o_lat = new FormPart('Latitude', $o_lat_box);
-		$this->AddControl($o_lat);
+		$lat_box = new TextBox('lat', $this->address->GetLatitude());
+		$lat_box->SetMaxLength(20);
+		$lat = new FormPart('Latitude', $lat_box);
+		$this->AddControl($lat);
 
-		$o_long_box = new TextBox('long', $this->o_data_object->GetLongitude());
-		$o_long_box->SetMaxLength(20);
-		$o_long = new FormPart('Longitude', $o_long_box);
-		$this->AddControl($o_long);
+		$long_box = new TextBox('long', $this->address->GetLongitude());
+		$long_box->SetMaxLength(20);
+		$long = new FormPart('Longitude', $long_box);
+		$this->AddControl($long);
 
-		$o_precision = new XhtmlSelect('geoprecision');
-		$o_precision->AddControl(new XhtmlOption("Don't know", ''));
-		$o_precision->AddControl(new XhtmlOption('Exact', GeoPrecision::Exact()));
-		$o_precision->AddControl(new XhtmlOption('Postcode', GeoPrecision::Postcode()));
-		$o_precision->AddControl(new XhtmlOption('Street', GeoPrecision::StreetDescriptor()));
-		$o_precision->AddControl(new XhtmlOption('Town', GeoPrecision::Town()));
-		$o_precision->SelectOption($this->o_data_object->GetGeoPrecision());
-		$o_precision_part = new FormPart('How accurate is lat/long?', $o_precision);
-		$this->AddControl($o_precision_part);
+		$precision = new XhtmlSelect('geoprecision');
+		$precision->AddControl(new XhtmlOption("Don't know", ''));
+		$precision->AddControl(new XhtmlOption('Exact', GeoPrecision::Exact()));
+		$precision->AddControl(new XhtmlOption('Postcode', GeoPrecision::Postcode()));
+		$precision->AddControl(new XhtmlOption('Street', GeoPrecision::StreetDescriptor()));
+		$precision->AddControl(new XhtmlOption('Town', GeoPrecision::Town()));
+		$precision->SelectOption($this->address->GetGeoPrecision());
+		$precision_part = new FormPart('How accurate is lat/long?', $precision);
+		$this->AddControl($precision_part);
 
-		$o_map = new XhtmlElement('div');
-		$o_map->SetXhtmlId('map');
-		$o_map->SetCssClass('formControl');
-		$o_map_container = new XhtmlElement('div', $o_map);
-		$o_map_container->SetCssClass('formPart');
-		$this->AddControl($o_map_container);
+		$map = new XhtmlElement('div');
+		$map->SetXhtmlId('map');
+		$map->SetCssClass('formControl');
+		$map_container = new XhtmlElement('div', $map);
+		$map_container->SetCssClass('formPart');
+		$this->AddControl($map_container);
 	}
 
 	/**
@@ -144,25 +135,25 @@ class PostalAddressEditControl extends Placeholder
 		require_once('data/validation/numeric-validator.class.php');
 
 		# validate data
-		$this->a_validators[] = new PlainTextValidator('paon', 'Please use only letters, numbers and simple punctuation in the building name or number');
-		$this->a_validators[] = new LengthValidator('paon', 'Please make the building name or number shorter', 0, 250);
-		$this->a_validators[] = new PlainTextValidator('streetDescriptor', 'Please use only letters, numbers and simple punctuation in the street name');
-		$this->a_validators[] = new LengthValidator('streetDescriptor', 'Please make the street name shorter', 0, 250);
-		$this->a_validators[] = new PlainTextValidator('locality', 'Please use only letters, numbers and simple punctuation in the village or part of town');
-		$this->a_validators[] = new LengthValidator('locality', 'Please make the village or part of town shorter', 0, 250);
-		$this->a_validators[] = new RequiredFieldValidator('town', 'Please add the town');
-		$this->a_validators[] = new LengthValidator('town', 'Please make the town shorter', 0, 100);
-		$this->a_validators[] = new PlainTextValidator('town', 'Please use only letters, numbers and simple punctuation in the town');
-		$this->a_validators[] = new PlainTextValidator('county', 'Please use only letters, numbers and simple punctuation in the county');
-		$this->a_validators[] = new LengthValidator('county', 'Please make the county shorter', 0, 100);
-		$this->a_validators[] = new LengthValidator('postcode', 'Postcodes cannot be more than eight characters', 0, 8);
+		$this->validators[] = new PlainTextValidator('paon', 'Please use only letters, numbers and simple punctuation in the building name or number');
+		$this->validators[] = new LengthValidator('paon', 'Please make the building name or number shorter', 0, 250);
+		$this->validators[] = new PlainTextValidator('streetDescriptor', 'Please use only letters, numbers and simple punctuation in the street name');
+		$this->validators[] = new LengthValidator('streetDescriptor', 'Please make the street name shorter', 0, 250);
+		$this->validators[] = new PlainTextValidator('locality', 'Please use only letters, numbers and simple punctuation in the village or part of town');
+		$this->validators[] = new LengthValidator('locality', 'Please make the village or part of town shorter', 0, 250);
+		$this->validators[] = new RequiredFieldValidator('town', 'Please add the town');
+		$this->validators[] = new LengthValidator('town', 'Please make the town shorter', 0, 100);
+		$this->validators[] = new PlainTextValidator('town', 'Please use only letters, numbers and simple punctuation in the town');
+		$this->validators[] = new PlainTextValidator('county', 'Please use only letters, numbers and simple punctuation in the county');
+		$this->validators[] = new LengthValidator('county', 'Please make the county shorter', 0, 100);
+		$this->validators[] = new LengthValidator('postcode', 'Postcodes cannot be more than eight characters', 0, 8);
 
 		# TODO: Add postcode validator
 
-		$this->a_validators[] = new LengthValidator(array('lat', 'long'), 'Latitude and longitude must be 20 digits or fewer', 0, 20, ValidatorMode::AllFields());
-		$this->a_validators[] = new NumericValidator(array('lat', 'long'), 'Latitude and longitude must be a number', ValidatorMode::AllFields());
-		$this->a_validators[] = new LengthValidator(array('geoprecision'), 'Geo precision must be one character', 0, 1);
-		$this->a_validators[] = new NumericValidator(array('geoprecision'), 'Geo precision must be a number');
+		$this->validators[] = new LengthValidator(array('lat', 'long'), 'Latitude and longitude must be 20 digits or fewer', 0, 20, ValidatorMode::AllFields());
+		$this->validators[] = new NumericValidator(array('lat', 'long'), 'Latitude and longitude must be a number', ValidatorMode::AllFields());
+		$this->validators[] = new LengthValidator(array('geoprecision'), 'Geo precision must be one character', 0, 1);
+		$this->validators[] = new NumericValidator(array('geoprecision'), 'Geo precision must be a number');
 
 /*        public static final int MIN_LATITUDE  =  -90 * 1000000;
         public static final int MAX_LATITUDE  =   90 * 1000000;
@@ -176,13 +167,13 @@ class PostalAddressEditControl extends Placeholder
 	*/
 	function &GetValidators()
 	{
-		if (!isset($this->a_validators))
+		if (!isset($this->validators))
 		{
-			$this->a_validators = array();
+			$this->validators = array();
 			$this->CreateValidators();
 		}
 
-		return $this->a_validators;
+		return $this->validators;
 	}
 }
 ?>
