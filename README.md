@@ -32,6 +32,4 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * [MarkerClusterer](https://github.com/googlemaps/js-marker-clusterer) for Google Maps groups markers together, and is included in this repository because the exact version in use has not been recorded, and the [Apache Licence 2.0](http://www.apache.org/licenses/LICENSE-2.0) allows it.
 
-* [MarkerWithLabel 1.1.4](http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/docs/reference.html) for Google Maps adds a text label below a marker, and is included in this repository for convenience because the [Apache Licence 2.0](http://www.apache.org/licenses/LICENSE-2.0) allows it. 
-
-* [YUI Compressor 2.4.2](https://github.com/yui/yuicompressor) is used to minify CSS and JavaScript, and is included in this repository for convenience, and because the [New BSD Licence](http://framework.zend.com/license/new-bsd) allows it.
+* [MarkerWithLabel 1.1.4](http://google-maps-utility-library-v3.googlecode.com/svn/tags/markerwithlabel/1.1.4/docs/reference.html) for Google Maps adds a text label below a marker, and is included in this repository for convenience because the [Apache Licence 2.0](http://www.apache.org/licenses/LICENSE-2.0) allows it.
