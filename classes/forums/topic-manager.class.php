@@ -54,22 +54,21 @@ class TopicManager extends DataManager
 	public function ReadCommentsForReviewItem(ReviewItem $review_item)
 	{
 		$s_person = $this->GetSettings()->GetTable('User');
-        $s_message = $this->GetSettings()->GetTable('ForumMessage');
 
 		# prepare command
-		$s_sql = 'SELECT ' . $s_person . '.user_id, ' . $s_person . '.known_as, ' .
-		$s_person . ".date_added AS sign_up_date, " . $s_person . '.total_messages, ' .
-		$s_message . '.id, ' . $s_message . '.message, ' . $s_message . ".date_added AS message_date " .
-		'FROM ' . $s_message . ' INNER JOIN ' . $s_person . ' ON ' . $s_message . '.user_id = ' . $s_person . '.user_id ' .
-        'WHERE ' . $s_message . '.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
+		$s_sql = 'SELECT nsa_user.user_id, nsa_user.known_as, ' .
+		"nsa_user.date_added AS sign_up_date, nsa_user.total_messages, " .
+		"nsa_forum_message.id, nsa_forum_message.message, nsa_forum_message.date_added AS message_date " .
+		'FROM nsa_forum_message LEFT JOIN nsa_user ON nsa_forum_message.user_id = nsa_user.user_id ' .
+        'WHERE nsa_forum_message.item_id = ' . Sql::ProtectNumeric($review_item->GetId(), false, false) . ' AND item_type = ' . Sql::ProtectNumeric($review_item->GetType(), false, false);
 
 		if ($this->GetReverseOrder())
 		{
-			$s_sql .=	' ORDER BY sort_override DESC, ' . $s_message . '.date_added DESC';
+			$s_sql .=	' ORDER BY sort_override DESC, nsa_forum_message.date_added DESC';
 		}
 		else
 		{
-			$s_sql .=	' ORDER BY sort_override, ' . $s_message . '.date_added ASC';
+			$s_sql .=	' ORDER BY sort_override, nsa_forum_message.date_added ASC';
 		}
 
 		# get data
@@ -79,17 +78,20 @@ class TopicManager extends DataManager
 		$o_topic = new ForumTopic($this->GetSettings());
 		while($o_row = $result->fetch())
 		{
-			$o_person = new User();
-			$o_person->SetId($o_row->user_id);
-			$o_person->SetName($o_row->known_as);
-			$o_person->SetSignUpdate($o_row->sign_up_date);
-			$o_person->SetTotalMessages($o_row->total_messages);
-			
 			$o_message = new ForumMessage($this->GetSettings(), AuthenticationManager::GetUser());
+
+			if (isset($o_row->user_id)) {
+				$o_person = new User();
+				$o_person->SetId($o_row->user_id);
+				$o_person->SetName($o_row->known_as);
+				$o_person->SetSignUpDate($o_row->sign_up_date);
+				$o_person->SetTotalMessages($o_row->total_messages);
+				$o_message->SetUser($o_person);
+			}
+			
 			$o_message->SetId($o_row->id);
 			$o_message->SetDate($o_row->message_date);
 			$o_message->SetBody($o_row->message);
-			$o_message->SetUser($o_person);
             $o_message->SetReviewItem($review_item);
 
 			$o_topic->Add($o_message);
@@ -119,12 +121,11 @@ class TopicManager extends DataManager
         /* @var $o_result MySQLRawData */
 
         # Create table aliases
-        $s_message = $this->o_settings->GetTable('ForumMessage');
         $s_reg = $this->o_settings->GetTable('User');
 
         $s_ip = (isset($_SERVER['REMOTE_ADDR'])) ? $this->SqlString($_SERVER['REMOTE_ADDR']) : 'NULL';
 
-        $s_sql = 'INSERT INTO ' . $s_message . ' SET ' .
+        $s_sql = 'INSERT INTO nsa_forum_message SET ' .
         'user_id = ' . Sql::ProtectNumeric(AuthenticationManager::GetUser()->GetId()) . ', ' .
         'date_added = ' . gmdate('U') . ', ' .
         'date_changed = ' . gmdate('U') . ', ' .
@@ -134,7 +135,7 @@ class TopicManager extends DataManager
         'item_id = ' . Sql::ProtectNumeric($item_to_comment_on->GetId()) . ', ' .
         "item_type = " . Sql::ProtectNumeric($item_to_comment_on->GetType());
 
-        $this->Lock(array($s_message, $s_reg));
+        $this->Lock(array('nsa_forum_message', $s_reg));
 
         $o_result = $this->GetDataConnection()->query($s_sql);
         if ($this->GetDataConnection()->isError()) die('Failed to create message.');

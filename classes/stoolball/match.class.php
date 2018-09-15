@@ -795,9 +795,9 @@ class Match implements IHasShortUrl
 	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
-		return new ShortUrlFormat($settings->GetTable('Match'), 'short_url', array('match_id', 'match_type'), array('GetId', 'GetMatchType'),
+		return new ShortUrlFormat("nsa_match", 'short_url', array('match_id', 'match_type'), array('GetId', 'GetMatchType'),
 		array(
 		'{0}' => '/play/matches/match.php?item={0}',
         '{0}/add/teams' => '/play/tournaments/teams.php?item={0}&action=add',
@@ -808,7 +808,7 @@ class Match implements IHasShortUrl
         '{0}/edit/teams' => '/play/tournaments/teams.php?item={0}',
         '{0}/edit/competitions' => '/play/tournaments/seasons.php?item={0}',
 		'{0}/delete' => '/play/matches/matchdelete.php?item={0}',
-		'{0}/calendar' => $settings->GetUrl('MatchCalendar'),
+		'{0}/calendar' => '/play/calendar.php?match={0}',
 		'{0}/matches/edit' => "/play/tournaments/matches.php?item={0}",
         '{0}/matches/results' => "/play/results.php?tournament={0}",
 		'{0}/statistics' => "/play/statistics/summary-match.php?match={0}&type={1}",
@@ -824,7 +824,7 @@ class Match implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Match::GetShortUrlFormatForType($this->o_settings);
+		return Match::GetShortUrlFormatForType();
 	}
 
 	/**

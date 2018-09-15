@@ -1,16 +1,18 @@
 <?php
+require_once('http/has-short-url.interface.php');
 require_once ('markup/xhtml-markup.class.php');
 require_once("permission-collection.class.php");
   
-class User
+class User implements IHasShortUrl
 {
-	var $i_id;
-	var $s_name;
-	var $s_first_name;
-	var $s_last_name;
-	var $s_email;
-	var $i_sign_up_date;
-	var $i_total_messages;
+	private $i_id;
+	private $s_name;
+	private $s_first_name;
+	private $s_last_name;
+	private $s_email;
+	private $i_sign_up_date;
+	private $last_sign_in_date;
+	private $i_total_messages;
 	private $s_last_message = '';
 	private $s_password;
 	private $s_password_confirmation;
@@ -22,6 +24,7 @@ class User
     private $account_disabled = false;
     private $permissions;
     private $salt;
+	private $short_url;
 
 	/**
 	 * Creates a new User
@@ -266,17 +269,44 @@ class User
 		return $this->s_password_confirmation;
 	}
 
-	function SetSignUpdate($i_input)
+	/**
+	 * Sets the date the user registered as a UNIX timestamp
+	 * @param int $timestamp
+	 */
+	public function SetSignUpdate($timestamp)
 	{
-		if (is_numeric($i_input))
+		if (is_numeric($timestamp))
 		{
-			$this->i_sign_up_date = (int)$i_input;
+			$this->i_sign_up_date = (int)$timestamp;
 		}
 	}
 
-	function GetSignUpDate()
+	/**
+	 * Gets the date the user registered as a UNIX timestamp
+	 */
+	public function GetSignUpDate()
 	{
 		return $this->i_sign_up_date;
+	}
+
+	/**
+	 * Sets the date the user last signed in as a UNIX timestamp
+	 * @param int $timestamp
+	 */
+	public function SetLastSignInDate($timestamp)
+	{
+		if (is_numeric($timestamp))
+		{
+			$this->last_sign_in_date = (int)$timestamp;
+		}
+	}
+
+	/**
+	 * Gets the date the user last signed in as a UNIX timestamp
+	 */
+	public function GetLastSignInDate()
+	{
+		return $this->last_sign_in_date;
 	}
 
 	/**
@@ -416,6 +446,66 @@ class User
     public function GetPasswordSalt()
     {
         return $this->salt;
-    }
+	}
+	
+	/**
+	 * Sets the short URL for a user
+	 *
+	 * @param string $s_url
+	 */
+	public function SetShortUrl($s_url) { $this->short_url = trim($s_url); }
+
+	/**
+	 * Gets the short URL for a user
+	 *
+	 * @return string
+	 */
+	public function GetShortUrl() { return $this->short_url; }
+
+	/**
+	 * Gets the URL to edit the user
+	 */
+	public function GetEditUrl() { return "/" . $this->GetShortUrl() . "/edit"; }
+
+	/**
+	 * Gets the URL to delete the user
+	 */
+	public function GetDeleteUrl() { return "/" . $this->GetShortUrl() . "/delete"; }
+	
+	/**
+	 * Gets the format to use for a user's short URLs
+	 *
+	 * @return ShortUrlFormat
+	 */
+	public static function GetShortUrlFormatForType()
+	{
+		return new ShortUrlFormat('nsa_user', 'short_url', array('user_id'), array('GetId'),
+		array(
+		'{0}/edit' => '/you/edit-user.php?item={0}',
+		'{0}/delete' => '/you/delete-user.php?item={0}'
+		));
+	}
+
+	/**
+	 * Gets the format to use for a user's short URLs
+	 *
+	 * @return ShortUrlFormat
+	 */
+	public function GetShortUrlFormat()
+	{
+		return User::GetShortUrlFormatForType();
+	}
+
+	
+	/**
+	 * Suggests a short URL to use to view the user
+	 *
+	 * @param int $i_preference
+	 * @return string
+	 */
+	public function SuggestShortUrl($i_preference=1)
+	{
+		return "users/" . $this->GetId();
+	}
 }
 ?>

@@ -284,10 +284,9 @@ class Club extends Collection implements IHasShortUrl
 	/**
 	 * Gets the format to use for a club's short URLs
 	 *
-	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
         return new ShortUrlFormat("nsa_club", 'short_url', array('club_id'), array('GetId'),
         array(
@@ -306,7 +305,7 @@ class Club extends Collection implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Club::GetShortUrlFormatForType($this->settings);
+		return Club::GetShortUrlFormatForType();
 	}
 
 	/**

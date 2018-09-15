@@ -861,12 +861,11 @@ class Player implements IHasShortUrl
 	/**
 	 * Gets the format to use for a player's short URLs
 	 *
-	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
-		return new ShortUrlFormat($settings->GetTable('Player'), 'short_url', array('player_id'), array('GetId'),
+		return new ShortUrlFormat("nsa_player", 'short_url', array('player_id'), array('GetId'),
 		array(
 		'{0}' => '/play/statistics/player-batting.php?player={0}',
         '{0}/bowling' => '/play/statistics/player-bowling.php?player={0}',
@@ -884,7 +883,7 @@ class Player implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Player::GetShortUrlFormatForType($this->settings);
+		return Player::GetShortUrlFormatForType();
 	}
 
 	/**

@@ -25,7 +25,7 @@ class CurrentPage extends StoolballPage
 		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_GROUNDS)) $list .= '<li><a href="/yesnosorry/groundlist.php">Grounds</a></li>';
 		if ($user->Permissions()->HasPermission(PermissionType::MANAGE_USERS_AND_PERMISSIONS))
         {
-          $list .= '<li><a href="/yesnosorry/personlist.php">Users</a></li>' . 
+          $list .= '<li><a href="/users">Users</a></li>' . 
                 '<li><a href="/yesnosorry/roles.php">Roles</a></li>';
         }
         if ($user->Permissions()->HasPermission(PermissionType::MANAGE_URLS)) $list  .= '<li><a href="regenerate-short-urls.php">Regenerate short URL cache</a></li>';

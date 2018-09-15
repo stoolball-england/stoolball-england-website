@@ -220,12 +220,11 @@ class Ground implements IHasShortUrl
 		/**
 	 * Gets the format to use for a ground's short URLs
 	 *
-	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
-		return new ShortUrlFormat($settings->GetTable('Ground'), 'short_url', array('ground_id'), array('GetId'),
+		return new ShortUrlFormat("nsa_ground", 'short_url', array('ground_id'), array('GetId'),
 			array('{0}' => '/play/grounds/ground.php?item={0}',
 				'{0}/matches' => '/play/matches/matches-at-ground.php?item={0}',
 				'{0}/statistics' => '/play/statistics/summary-ground.php?item={0}',
@@ -241,7 +240,7 @@ class Ground implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Ground::GetShortUrlFormatForType($this->o_settings);
+		return Ground::GetShortUrlFormatForType();
 	}
 
 	/**

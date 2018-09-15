@@ -59,7 +59,7 @@ class CurrentPage extends StoolballPage
 		# Can't trust that info from a postback so MUST go to the database to check it.
 		$this->match_manager->ReadByMatchId(array($this->editor->GetDataObjectId()));
 		$check_match = $this->match_manager->GetFirst();
-		$this->b_user_is_match_owner = ($check_match instanceof Match and AuthenticationManager::GetUser()->GetId() == $check_match->GetAddedBy()->GetId());
+		$this->b_user_is_match_owner = ($check_match instanceof Match and $check_match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $check_match->GetAddedBy()->GetId());
 
 		# Don't wan't to edit tournaments on this page, so even as admin make sure we're not trying to save one.
 		# Can't change the match type, so find out what that is from the db too. 
@@ -124,7 +124,7 @@ class CurrentPage extends StoolballPage
 			$this->match = $this->match_manager->GetFirst();
 			if ($this->match instanceof Match)
 			{
-				$this->b_user_is_match_owner = (AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
+				$this->b_user_is_match_owner = ($this->match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
 				$this->b_is_tournament = ($this->match->GetMatchType() == MatchType::TOURNAMENT);
 			}
 		}

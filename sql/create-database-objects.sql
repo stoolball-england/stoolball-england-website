@@ -177,7 +177,7 @@ DEFAULT CHARACTER SET = utf8;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `nsa_forum_message` (
   `id` INT(8) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `user_id` INT(6) UNSIGNED NOT NULL DEFAULT '0',
+  `user_id` INT(6) UNSIGNED NULL DEFAULT NULL,
   `date_added` INT(10) UNSIGNED NULL DEFAULT NULL,
   `date_changed` INT(10) UNSIGNED NULL DEFAULT NULL,
   `message` TEXT NOT NULL,
@@ -257,7 +257,7 @@ CREATE TABLE IF NOT EXISTS `nsa_match` (
   `match_notes` TEXT NULL DEFAULT NULL,
   `short_url` VARCHAR(100) NULL DEFAULT NULL,
   `update_search` TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
-  `added_by` INT(10) UNSIGNED NOT NULL DEFAULT '1',
+  `added_by` INT(10) UNSIGNED NULL DEFAULT NULL,
   `date_added` INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `date_changed` INT(10) UNSIGNED NOT NULL DEFAULT '0',
   `modified_by_id` INT(10) UNSIGNED NOT NULL,
@@ -623,6 +623,7 @@ CREATE TABLE IF NOT EXISTS `nsa_user` (
   `password_reset_token` VARCHAR(255) NULL DEFAULT NULL,
   `password_hash` VARCHAR(255) NULL DEFAULT NULL,
   `registration_consent_date` INT(10) NULL DEFAULT NULL,
+  `short_url` VARCHAR(200) NULL DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   INDEX `activated` (`activated` ASC),
   INDEX `name_sort` (`name_sort` ASC),

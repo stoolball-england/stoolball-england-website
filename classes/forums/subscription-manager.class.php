@@ -1,5 +1,6 @@
 <?php
 require_once('forum-message.class.php');
+require_once('subscription.class.php');
 require_once('text/bad-language-filter.class.php');
 require_once('text/string-formatter.class.php');
 require_once('data/data-manager.class.php');

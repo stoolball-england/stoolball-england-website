@@ -671,7 +671,8 @@ class TeamManager extends DataManager
             if ($is_once_only and !$is_admin)
             {
                 $authentication_manager->AddUserToRole($user->GetId(), $role->getRoleId());
-                $authentication_manager->LoadUserPermissions();
+                $authentication_manager->LoadUserPermissions($user);
+                $authentication_manager->SaveToSession($user);
             } 
             unset($authentication_manager);
 		}
@@ -735,7 +736,7 @@ class TeamManager extends DataManager
                 $new_short_url->SetParameterValuesFromObject($team);
                 $o_url_manager->Save($new_short_url);
                 if (!$adding) { 
-                    $o_url_manager->ReplacePrefixForChildUrls(Player::GetShortUrlFormatForType($this->GetSettings()), $old_team->GetShortUrl(), $team->GetShortUrl());
+                    $o_url_manager->ReplacePrefixForChildUrls(Player::GetShortUrlFormatForType(), $old_team->GetShortUrl(), $team->GetShortUrl());
                     
                     $old_prefix = $this->SqlString($old_team->GetShortUrl() . "/%");
                     $new_prefix = $this->SqlString($team->GetShortUrl());

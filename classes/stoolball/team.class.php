@@ -538,14 +538,13 @@ class Team implements IHasShortUrl
 	/**
 	 * Gets the format to use for a team's short URLs
 	 *
-	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
 		return new ShortUrlFormat("nsa_team", 'short_url', array('team_id'), array('GetId'),
 		array(
-		'{0}' => $settings->GetUrl('Team') . '{0}',
+		'{0}' => '/play/teams/team.php?item={0}',
 		'{0}/edit' => "/play/teams/teamedit.php?item={0}",
 		'{0}/delete' => "/play/teams/teamdelete.php?item={0}", 
 		'{0}/matches/friendlies/add' => '/play/matches/matchadd.php?team={0}',
@@ -553,12 +552,12 @@ class Team implements IHasShortUrl
 		'{0}/matches/cup/add' => '/play/matches/matchadd.php?team={0}&type=' . MatchType::CUP,
 		'{0}/matches/practices/add' => '/play/matches/matchadd.php?team={0}&type=' . MatchType::PRACTICE,
 		'{0}/matches/tournaments/add' => '/play/tournaments/add.php?team={0}',
-		'{0}/matches/edit' => $settings->GetUrl('TeamResults'),
+		'{0}/matches/edit' => '/play/results.php?team={0}',
         '{0}/matches.rss' => '/play/matches/matches-rss.php?team={0}',
-		'{0}/calendar' => $settings->GetUrl('TeamCalendar'),
-		'{0}/statistics' => $settings->GetUrl('TeamStats'),
+		'{0}/calendar' => '/play/calendar.php?team={0}',
+		'{0}/statistics' => '/play/statistics/summary-team.php?item={0}',
 		'{0}/players' => '/play/teams/players.php?team={0}',
-		'{0}/players/add' => $settings->GetUrl('PlayerAdd'),
+		'{0}/players/add' => '/play/playeredit.php?team={0}',
         '{0}/statistics.json' => "/play/statistics/team.js.php?team={0}"
 		));
 	}
@@ -570,7 +569,7 @@ class Team implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Team::GetShortUrlFormatForType($this->settings);
+		return Team::GetShortUrlFormatForType();
 	}
 
 	/**

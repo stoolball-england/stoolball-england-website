@@ -523,10 +523,10 @@ class Competition extends Collection implements IHasShortUrl
 	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
-		return new ShortUrlFormat($settings->GetTable('Competition'), 'short_url', array('competition_id'), array('GetId'),
-			array('{0}' => $settings->GetUrl('Competition') . '{0}',
+		return new ShortUrlFormat("nsa_competition", 'short_url', array('competition_id'), array('GetId'),
+			array('{0}' => '/play/competitions/competition.php?latest=1&item={0}',
 					'{0}/statistics' => '/play/statistics/summary-competition.php?competition={0}', 
 					'{0}/map' => "/play/competitions/map.php?competition={0}",
                     '{0}/matches.rss' => '/play/matches/matches-rss.php?competition={0}',
@@ -540,7 +540,7 @@ class Competition extends Collection implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Competition::GetShortUrlFormatForType($this->settings);
+		return Competition::GetShortUrlFormatForType();
 	}
 
 	/**

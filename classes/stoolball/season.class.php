@@ -480,18 +480,18 @@ class Season extends Collection implements IHasShortUrl
 	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings)
+	public static function GetShortUrlFormatForType()
 	{
-		return new ShortUrlFormat($settings->GetTable('Season'), 'short_url', array('season_id'), array('GetId'),
+		return new ShortUrlFormat("nsa_season", 'short_url', array('season_id'), array('GetId'),
 		array(
-		'{0}' => $settings->GetUrl('Season') . '{0}',
+		'{0}' => '/play/competitions/competition.php?item={0}',
 		'{0}/matches/friendlies/add' => '/play/matches/matchadd.php?season={0}',
 		'{0}/matches/league/add' => '/play/matches/matchadd.php?season={0}&type=' . MatchType::LEAGUE,
 		'{0}/matches/cup/add' => '/play/matches/matchadd.php?season={0}&type=' . MatchType::CUP,
 		'{0}/matches/practices/add' => '/play/matches/matchadd.php?season={0}&type=' . MatchType::PRACTICE,
 		'{0}/matches/tournaments/add' => "/play/tournaments/add.php?season={0}",
-		'{0}/matches/edit' => $settings->GetUrl('SeasonResults'),
-		'{0}/calendar' => $settings->GetUrl('SeasonCalendar'),
+		'{0}/matches/edit' => '/play/results.php?season={0}',
+		'{0}/calendar' => '/play/calendar.php?season={0}',
 		'{0}/statistics' => '/play/statistics/summary-season.php?season={0}',
         '{0}/table' => '/play/competitions/table.php?season={0}',
         '{0}/map' => '/play/competitions/map.php?season={0}'
@@ -505,7 +505,7 @@ class Season extends Collection implements IHasShortUrl
 	 */
 	public function GetShortUrlFormat()
 	{
-		return Season::GetShortUrlFormatForType($this->o_settings);
+		return Season::GetShortUrlFormatForType();
 	}
 
 	/**

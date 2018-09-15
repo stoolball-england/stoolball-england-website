@@ -35,9 +35,8 @@ interface IHasShortUrl
 	/**
 	 * Gets the format to use for an object's short URLs
 	 *
-	 * @param SiteSettings
 	 * @return ShortUrlFormat
 	 */
-	public static function GetShortUrlFormatForType(SiteSettings $settings);
+	public static function GetShortUrlFormatForType();
 }
 ?>

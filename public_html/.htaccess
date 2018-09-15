@@ -113,6 +113,9 @@ RewriteRule ^schools/map/?$ /play/schools/schools-map.php [L,NC,QSA]
 RewriteRule ^schools/add/?$ /play/schools/add-school.php [L,NC,QSA]
 RewriteRule ^schools.json?$ /play/schools/schools.js.php [L,NC,QSA]
 
+# User management
+RewriteRule ^users/?$ /you/users.php [L,NC,QSA]
+
 # redirect to real static files - full in dev, minified in production
 # RewriteCond %{HTTP_HOST}   ^www\.stoolball\.org\.uk [NC]
 # RewriteRule ^css/([a-z]+)\.[0-9]+\.css$ /css/$1.min.css [L,NC,QSA]

@@ -270,7 +270,7 @@ class CurrentPage extends StoolballPage
 
 		# add/edit/delete options
 		$user_is_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES);
-		$user_is_owner = (AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
+		$user_is_owner = ($this->match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
             
 		$panel = new UserEditPanel($this->GetSettings(), 'this match');
         $panel->AddCssClass("with-tabs");

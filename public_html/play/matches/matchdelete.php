@@ -55,7 +55,7 @@ class CurrentPage extends StoolballPage
 		if (isset($_POST['delete']))
 		{
 			# Check again that the requester has permission to delete this match
-			$has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES) or AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
+			$has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES) or ($this->match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId()));
 
 			if ($has_permission)
 			{
@@ -151,7 +151,7 @@ class CurrentPage extends StoolballPage
 		}
 		else
 		{
-			$has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES) or AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId());
+			$has_permission = (AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES) or ($this->match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $this->match->GetAddedBy()->GetId()));
 			if ($has_permission)
 			{
 				$s_detail = 'This is a ' . MatchType::Text($this->match->GetMatchType());

@@ -61,7 +61,7 @@ class CurrentPage extends StoolballPage
 			# Can't trust that info from a postback so MUST go to the database to check it.
 			$this->match_manager->ReadByMatchId(array($this->editor->GetDataObjectId()));
 			$check_match = $this->match_manager->GetFirst();
-			$this->b_user_is_match_owner = ($check_match instanceof Match and AuthenticationManager::GetUser()->GetId() == $check_match->GetAddedBy()->GetId());
+			$this->b_user_is_match_owner = ($check_match instanceof Match and $check_match->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $check_match->GetAddedBy()->GetId());
 
 			# This page is only for tournaments, so check that against the db too
 			$this->b_is_tournament = ($check_match->GetMatchType() == MatchType::TOURNAMENT);
@@ -129,7 +129,7 @@ class CurrentPage extends StoolballPage
 			$this->tournament = $this->match_manager->GetFirst();
 			if ($this->tournament instanceof Match)
 			{
-				$this->b_user_is_match_owner = (AuthenticationManager::GetUser()->GetId() == $this->tournament->GetAddedBy()->GetId());
+				$this->b_user_is_match_owner = ($this->tournament->GetAddedBy() instanceof User and AuthenticationManager::GetUser()->GetId() == $this->tournament->GetAddedBy()->GetId());
 				$this->b_is_tournament = ($this->tournament->GetMatchType() == MatchType::TOURNAMENT);
 			} else {
                return ;

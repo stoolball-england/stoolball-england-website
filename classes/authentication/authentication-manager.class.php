@@ -71,8 +71,8 @@ class AuthenticationManager extends DataManager
         $user_role = $this->GetSettings()->GetTable("UserRole");
         $role = $this->GetSettings()->GetTable("Role");
 
-		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, 
-		      date_added AS sign_up_date, total_messages, disabled,  
+		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, $user.short_url,
+		      date_added AS sign_up_date, last_signed_in, total_messages, disabled,  
 		      $role.role_id, $role.role
     		  FROM $user LEFT JOIN $user_role ON $user.user_id = $user_role.user_id 
 		      LEFT JOIN $role ON $user_role.role_id = $role.role_id ";
@@ -162,8 +162,24 @@ class AuthenticationManager extends DataManager
 		$this->Lock(array("nsa_user"));
 		$result = $this->GetDataConnection()->query($s_sql);
 		$user->SetId($this->GetDataConnection()->insertID());
-        $this->SavePassword($user);
+		$this->SavePassword($user);
+		
+		$s_sql = "UPDATE nsa_user SET short_url = 'users/" . $user->GetId() . "' WHERE user_id = " . Sql::ProtectNumeric($user->GetId());
+		$this->GetDataConnection()->query($s_sql);
+
 		$this->Unlock();
+
+        # Generate short URL
+		require_once('http/short-url-manager.class.php');
+		$url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
+		$new_short_url = $url_manager->EnsureShortUrl($user);
+
+		if (is_object($new_short_url))
+		{
+			$new_short_url->SetParameterValuesFromObject($user);
+			$url_manager->Save($new_short_url);
+		}
+		unset($url_manager);
 
 		return $user;
 	}
@@ -476,7 +492,9 @@ class AuthenticationManager extends DataManager
 				if (isset($row->name_first)) $user->SetFirstName($row->name_first);
 				if (isset($row->name_last)) $user->SetLastName($row->name_last);
 				if (isset($row->email)) $user->SetEmail($row->email);
+				if (isset($row->short_url)) $user->SetShortUrl($row->short_url);
 				if (isset($row->sign_up_date)) $user->SetSignUpDate($row->sign_up_date);
+				if (isset($row->last_signed_in)) $user->SetLastSignInDate($row->last_signed_in);
 				if (isset($row->total_messages)) $user->SetTotalMessages($row->total_messages);
                 
                 if (isset($row->disabled)) 
@@ -766,10 +784,9 @@ class AuthenticationManager extends DataManager
         {
            session_regenerate_id(false);
         }
-
-        $this->SaveToSession($user);
         
-        $this->LoadUserPermissions();
+        $this->LoadUserPermissions($user);
+        $this->SaveToSession($user);
 
         $this->Lock(array("nsa_user"));
 
@@ -791,12 +808,10 @@ class AuthenticationManager extends DataManager
     }
 
     /**
-     * Read the current user's permissions from the database, and update the current user
+     * Read a user's permissions from the database
      */
-    public function LoadUserPermissions() 
+    public function LoadUserPermissions(User $user) 
     {
-        $user = AuthenticationManager::GetUser();
-        
         $sql = "SELECT pr.permission_id, pr.resource_uri
         FROM nsa_user_role AS ur  
         LEFT OUTER JOIN nsa_role AS role ON ur.role_id = role.role_id 
@@ -808,8 +823,6 @@ class AuthenticationManager extends DataManager
         {
             $user->Permissions()->AddPermission($row->permission_id, $row->resource_uri);
         }
-    
-        $this->SaveToSession($user);
     }
 
 
@@ -1211,6 +1224,79 @@ class AuthenticationManager extends DataManager
         {
             $this->AddUserToRole($user->GetId(), $role->GetRoleId());
         }
-    }
+	}
+	
+	/**
+	 * Permanently deletes the user accounts matching the supplied ids
+	 * @return void
+	 * @param int[] $user_ids
+	 */
+	public function DeleteUsers($user_ids) {
+
+		# check parameter
+		$this->ValidateNumericArray($user_ids);
+		if (!count($user_ids)) throw new Exception('No users to delete');
+        $ids = join(', ', $user_ids);
+        
+        # Check that current user has permission to do this
+        $current_user = AuthenticationManager::GetUser();
+		if (!$current_user->Permissions()->HasPermission(PermissionType::MANAGE_USERS_AND_PERMISSIONS))
+		{
+			throw new Exception("Unauthorised");
+		}
+    
+		# Delete ownership of matches
+		$sql = 'UPDATE nsa_match SET added_by = NULL WHERE added_by IN (' . $ids . ') ';
+		$this->GetDataConnection()->query($sql);
+
+		# Anonymise match comments
+		$sql = 'UPDATE nsa_forum_message SET user_id = NULL WHERE user_id IN (' . $ids . ') ';
+		$this->GetDataConnection()->query($sql);
+
+		# Delete email subscriptions
+		require_once "forums/subscription-manager.class.php";
+		$subscription_manager = new SubscriptionManager($this->GetSettings(), $this->GetDataConnection());
+		foreach ($user_ids as $user_id) 
+        {
+			$subscription_manager->ReadSubscriptionsForUser($user_id);
+			$subscriptions = $subscription_manager->GetItems();
+
+			if (count($subscriptions))
+			{
+				foreach ($subscriptions as $subscription) 
+				{
+					$subscription_manager->DeleteSubscription($subscription->GetSubscribedItemId(), $subscription->GetType(), $user_id);
+				}
+			}
+		}
+		unset($subscription_manager);
+
+        # delete role memberships
+        foreach ($user_ids as $user_id) 
+        {
+			$user = new User($user_id);
+			$this->SaveUserSecurity($user);
+        }
+		
+		# delete from short URL cache
+		require_once('http/short-url-manager.class.php');
+		$o_url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
+
+		$this->ReadUserById($user_ids);
+		$users = $this->GetItems();
+
+		foreach ($users as $user) 
+        {
+            /* @var $user User */
+            $o_url_manager->Delete($user->GetShortUrl());
+		}
+		unset($o_url_manager);
+
+		# Delete user(s)
+		$sql = 'DELETE FROM nsa_user WHERE user_id IN (' . $ids . ') ';
+		$this->GetDataConnection()->query($sql);
+
+		return $this->GetDataConnection()->GetAffectedRows();
+	}
 }
 ?>

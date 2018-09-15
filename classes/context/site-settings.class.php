@@ -56,26 +56,14 @@ abstract class SiteSettings
                 return $this->GetFolder('Play') . 'competitions/competition.php?latest=1&item=';
             case 'EmailAlerts':
                 return $this->GetFolder('Account') . 'emails.php';
-            case 'MatchCalendar':
-                return $this->GetFolder('Play') . 'calendar.php?match={0}';
             case 'PlayerAdd':
                 return $this->GetFolder('Play') . 'playeredit.php?team={0}';
             case 'Season':
                 return $this->GetFolder('Play') . 'competitions/competition.php?item=';
-            case 'SeasonCalendar':
-                return $this->GetFolder('Play') . 'calendar.php?season={0}';
-            case 'SeasonResults':
-                return $this->GetFolder('Play') . 'results.php?season={0}';
             case 'Team':
                 return $this->GetFolder('Play') . 'teams/team.php?item=';
             case 'TeamAdd':
                 return $this->GetFolder('Play') . 'yourteam.php';
-            case 'TeamCalendar':
-                return $this->GetFolder('Play') . 'calendar.php?team={0}';
-            case 'TeamResults':
-                return $this->GetFolder('Play') . 'results.php?team={0}';
-            case 'TeamStats':
-                return $this->GetFolder('Play') . 'statistics/summary-team.php?item={0}';
             case 'TournamentEdit':
                 return $this->GetFolder('Play') . 'tournamentedit.php?item={0}';
             default:
@@ -145,8 +133,6 @@ abstract class SiteSettings
                 return 'nsa_competition';
             case 'EmailSubscription':
                 return 'nsa_email_subscription';
-            case 'ForumMessage':
-                return 'nsa_forum_message';
             case 'Ground':
                 return 'nsa_ground';
             case 'Match':
@@ -298,25 +284,28 @@ abstract class SiteSettings
         $a_formats = array();
 
         require_once('stoolball/clubs/club.class.php');
-        $a_formats[] = Club::GetShortUrlFormatForType($this);
+        $a_formats[] = Club::GetShortUrlFormatForType();
 
         require_once('stoolball/competition.class.php');
-        $a_formats[] = Competition::GetShortUrlFormatForType($this);
+        $a_formats[] = Competition::GetShortUrlFormatForType();
 
         require_once('stoolball/ground.class.php');
-        $a_formats[] = Ground::GetShortUrlFormatForType($this);
+        $a_formats[] = Ground::GetShortUrlFormatForType();
 
         require_once('stoolball/match.class.php');
-        $a_formats[] = Match::GetShortUrlFormatForType($this);
+        $a_formats[] = Match::GetShortUrlFormatForType();
 
         require_once('stoolball/season.class.php');
-        $a_formats[] = Season::GetShortUrlFormatForType($this);
+        $a_formats[] = Season::GetShortUrlFormatForType();
 
         require_once('stoolball/team.class.php');
-        $a_formats[] = Team::GetShortUrlFormatForType($this);
+        $a_formats[] = Team::GetShortUrlFormatForType();
 
         require_once 'stoolball/player.class.php';
-        $a_formats[] = Player::GetShortUrlFormatForType($this);
+        $a_formats[] = Player::GetShortUrlFormatForType();
+
+        require_once 'authentication/user.class.php';
+        $a_formats[] = User::GetShortUrlFormatForType();
 
         return $a_formats;
 
