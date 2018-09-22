@@ -44,8 +44,6 @@ abstract class SiteSettings
         {
             case 'AccountActivate':
                 return $this->GetFolder('Account') . 'a.php'; # short because link sent by email
-            case 'AccountConfirmEmail':
-                return $this->GetFolder('Account') . 'e.php'; # short because link sent by email
             case 'AccountCreate':
                 return $this->GetFolder('Account') . 'signup.php';
             case 'AccountEdit':

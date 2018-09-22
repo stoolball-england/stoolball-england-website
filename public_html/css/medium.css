@@ -42,7 +42,7 @@ optgroup { font-style: normal; padding: .5em 0 0; margin: .5em 0 0; border-top: 
 .legacy-form label { margin: 0; }
 .formPart { float: left; width: 100%; margin: .2em 0; }
 .formPart .formLabel { float: left; width: 24%; vertical-align: top; }
-.formPart .formControl { float: right; width: 74%; vertical-align: top; }
+.formPart .formControl { float: right; width: 74%; vertical-align: top; max-width: none; }
 .formPart fieldset.formControl { border: 0; padding: 0; margin: 0; }
 .formPart input.formControl { width: 73.6%; }
 .formPart table { float: right; width: 74%; vertical-align: top; }

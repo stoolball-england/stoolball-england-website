@@ -12,13 +12,17 @@ class User implements IHasShortUrl
 	private $s_email;
 	private $i_sign_up_date;
 	private $last_sign_in_date;
+	private $total_sign_ins;
 	private $i_total_messages;
 	private $s_last_message = '';
 	private $s_password;
 	private $s_password_confirmation;
 	private $b_auto_sign_in;
 	private $requested_email;
+	private $requested_email_hash;
 	private $requested_password;
+	private $password_reset_token;
+	private $password_reset_request_date;
 	private $roles = null;
 	private $account_activated = null;
     private $account_disabled = false;
@@ -190,7 +194,7 @@ class User implements IHasShortUrl
 	 */
 	public function GetEditUserUrl()
 	{
-		return "/yesnosorry/personedit.php?item=" . $this->GetId();
+		return "/users/" . $this->GetId() . "/edit/";
 	}
 
 	/**
@@ -210,6 +214,33 @@ class User implements IHasShortUrl
 	public function GetRequestedEmail()
 	{
 		return $this->requested_email;
+	}
+
+	/**
+	 * @return void
+	 * @param string $s_input
+	 * @desc Sets the hash used to confirm a requested change of email address
+	 */
+	public function SetRequestedEmailHash($s_input)
+	{
+		$this->requested_email_hash = (string)$s_input;
+	}
+
+	/**
+	 * @return string
+	 * @desc Gets the hash used to confirm a requested change of email address
+	 */
+	public function GetRequestedEmailHash()
+	{
+		return $this->requested_email_hash;
+	}
+
+	/**
+	 * Gets the relative URL to confirm a change of email address, if one has been requested
+	 */
+	public function GetRequestedEmailConfirmationUrl()
+	{
+		return '/you/e.php?p=' . $this->GetId() . '&c=' . urlencode($this->GetRequestedEmailHash());
 	}
 
 	/**
@@ -267,6 +298,51 @@ class User implements IHasShortUrl
 	function GetPasswordConfirmation()
 	{
 		return $this->s_password_confirmation;
+	}
+
+	/**
+	 * Sets the token used to confirm a password reset request
+	 * @param string $token
+	 */
+	public function SetPasswordResetToken($token)
+	{
+		$this->password_reset_token = (string)$token;
+	}
+
+	/**
+	 * Gets the token used to confirm a password reset request
+	 */
+	public function GetPasswordResetToken()
+	{
+		return $this->password_reset_token;
+	}
+
+	/**
+	 * Sets the date the user requested a password reset
+	 * @param int $timestamp
+	 */
+	public function SetPasswordResetRequestDate($timestamp)
+	{
+		if (is_numeric($timestamp))
+		{
+			$this->password_reset_request_date = (int)$timestamp;
+		}
+	}
+
+	/**
+	 * Gets the date the user requested a password reset
+	 */
+	public function GetPasswordResetRequestDate()
+	{
+		return $this->password_reset_request_date;
+	}
+
+	/**
+	 * Gets the relative URL to confirm a password reset request
+	 */
+	public function GetPasswordResetConfirmationUrl() 
+	{
+		return "/you/reset-password?request=" . urlencode($this->GetPasswordResetToken());	
 	}
 
 	/**
@@ -328,13 +404,42 @@ class User implements IHasShortUrl
 		return $this->b_auto_sign_in;
 	}
 
-	function SetTotalMessages($i_input)
+	/**
+	 * Sets the total number of times this user has signed in
+	 * @param int $total
+	 */
+	public function SetTotalSignIns($total)
 	{
-		if (is_numeric($i_input))
-			$this->i_total_messages = (int)$i_input;
+		if (is_numeric($total)) {
+			$this->total_sign_ins = (int)$total;
+		}
 	}
 
-	function GetTotalMessages()
+	/**
+	 * Gets the total number of times this user has signed in
+	 * @returns int
+	 */
+	public function GetTotalSignIns()
+	{
+		return $this->total_sign_ins;
+	}
+
+	/**
+	 * Sets the total number of match comments by this user
+	 * @param int $i_input
+	 */
+	public function SetTotalMessages($i_input)
+	{
+		if (is_numeric($i_input)) {
+			$this->i_total_messages = (int)$i_input;
+		}
+	}
+
+	/**
+	 * Gets the total number of match comments by this user
+	 * @returns int
+	 */
+	public function GetTotalMessages()
 	{
 		return $this->i_total_messages;
 	}

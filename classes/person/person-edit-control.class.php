@@ -48,6 +48,7 @@ class PersonEditControl extends DataEditControl
 		$user->SetLastName($_POST['name_last']);
 		$user->SetName($_POST['known_as']);
 		$user->SetEmail($_POST['email']);
+        $user->SetAccountActivated(isset($_POST['activated']));
         $user->SetAccountDisabled(isset($_POST['disabled']));
 
         $roles = $this->roles_editor->DataObjects()->GetItems();
@@ -97,9 +98,60 @@ class PersonEditControl extends DataEditControl
 		$email = new FormPart('Email', $email_box);
 		$this->AddControl($email);
 
-        # Is account disabled?
+        # Is account activated/disabled?
+        $this->AddControl(new CheckBox("activated", "Account activated", 1, $user->GetAccountActivated(), $this->IsValidSubmit()));
         $this->AddControl(new CheckBox("disabled", "Account disabled", 1, $user->GetAccountDisabled(), $this->IsValidSubmit()));
-        
+		
+		# Display info
+		$registered = new XhtmlElement("div", null, "formPart");
+		$registered->AddControl(new XhtmlElement("p", "Registered", "formLabel"));
+		$registered->AddControl(new XhtmlElement("p", Date::BritishDate($user->GetSignUpDate()), "formControl"));
+		$this->AddControl($registered);
+
+		$last_sign_in = new XhtmlElement("div", null, "formPart");
+		$last_sign_in->AddControl(new XhtmlElement("p", "Last signed in", "formLabel"));
+		$last_sign_in->AddControl(new XhtmlElement("p", Date::BritishDateAndTime($user->GetLastSignInDate()), "formControl"));
+		$this->AddControl($last_sign_in);
+
+		$total_sign_ins = new XhtmlElement("div", null, "formPart");
+		$total_sign_ins->AddControl(new XhtmlElement("p", "Total sign-ins", "formLabel"));
+		$total_sign_ins->AddControl(new XhtmlElement("p", $user->GetTotalSignIns(), "formControl"));
+		$this->AddControl($total_sign_ins);
+
+		$total_comments = new XhtmlElement("div", null, "formPart");
+		$total_comments->AddControl(new XhtmlElement("p", "Total comments", "formLabel"));
+		$total_comments->AddControl(new XhtmlElement("p", $user->GetTotalMessages(), "formControl"));
+		$this->AddControl($total_comments);
+
+		if ($user->GetRequestedEmail()) {
+			$requested_email = new XhtmlElement("div", null, "formPart");
+			$requested_email->AddControl(new XhtmlElement("p", "Requested email", "formLabel"));
+			$email = new XhtmlElement("p", $user->GetRequestedEmail() . " &#8211; ", "formControl");
+			$email->AddControl(new XhtmlAnchor("confirm change", $user->GetRequestedEmailConfirmationUrl()));
+			$requested_email->AddControl($email);
+			$this->AddControl($requested_email);
+		}
+
+		if ($user->GetPasswordResetToken()) {
+			$password_reset = new XhtmlElement("div", null, "formPart");
+			$password_reset->AddControl(new XhtmlElement("p", "Password reset requested", "formLabel"));
+			
+			$request_date = $user->GetPasswordResetRequestDate();
+			$expire_date = $request_date + (60 * 60 * 24);
+
+			if ($expire_date <= (int)gmdate('U')) {
+				$reset = new XhtmlElement("p", "Request expired " . Date::BritishDateAndTime($expire_date), "formControl");
+			}
+			else {
+				$reset = new XhtmlElement("p", Date::BritishDateAndTime($request_date) . ". Expires " . Date::BritishDateAndTime($expire_date) . ". ", "formControl");
+				$reset->AddControl(new XhtmlAnchor("Reset now", $user->GetPasswordResetConfirmationUrl()));
+				$reset->AddControl(".");
+			}
+
+			$password_reset->AddControl($reset);
+			$this->AddControl($password_reset);
+		}
+
 		# Permissions
 		if (!$this->IsPostback() or $this->IsValidSubmit())
 		{

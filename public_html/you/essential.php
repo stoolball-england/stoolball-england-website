@@ -77,7 +77,8 @@ class CurrentPage extends StoolballPage
     				}
     
     				# request saved to db, now email the new address for confirmation
-    				$authentication->SendChangeEmailAddressEmail($o_person, $hash);
+					$o_person->SetRequestedEmailHash($hash);
+					$authentication->SendChangeEmailAddressEmail($o_person);
     				$this->show_changed_email_message = true;
                } else {
 

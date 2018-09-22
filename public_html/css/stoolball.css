@@ -244,14 +244,6 @@ label.matchReport { padding: 10px 0 5px; display: block; clear: both; }
 .radioButtonList .column { float: left; width: 50%; margin: 0 0 5px; } /* player types */
 .checkBoxList label.checkBox { margin-left: 0; } /* seasons */
 
-/* adding matches */
-.ie8 fieldset.formPart .formControl { margin-top: 0; }
-
-/* editing matches - IE can't size controls correctly */
-.ie8 table.batting td { padding-left: 0; padding-right: 0; }
-.ie8 table.batting input.player { width: 130px; }
-.ie8 table.bowling-scorecard input.player { width: 200px; }
-
 /* Scorecards */
 table.scorecardEditor { max-width: 48em; margin-bottom: 0; }
 table.scorecard input.player { width: 100%; }

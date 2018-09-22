@@ -72,7 +72,8 @@ class AuthenticationManager extends DataManager
         $role = $this->GetSettings()->GetTable("Role");
 
 		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, $user.short_url,
-		      date_added AS sign_up_date, last_signed_in, total_messages, disabled,  
+		      date_added AS sign_up_date, sign_in_count, last_signed_in, total_messages, disabled, activated,
+			  requested_email, requested_email_hash, password_reset_token, password_reset_request_date,
 		      $role.role_id, $role.role
     		  FROM $user LEFT JOIN $user_role ON $user.user_id = $user_role.user_id 
 		      LEFT JOIN $role ON $user_role.role_id = $role.role_id ";
@@ -493,14 +494,16 @@ class AuthenticationManager extends DataManager
 				if (isset($row->name_last)) $user->SetLastName($row->name_last);
 				if (isset($row->email)) $user->SetEmail($row->email);
 				if (isset($row->short_url)) $user->SetShortUrl($row->short_url);
+				if (isset($row->sign_in_count)) $user->SetTotalSignIns($row->sign_in_count);
 				if (isset($row->sign_up_date)) $user->SetSignUpDate($row->sign_up_date);
 				if (isset($row->last_signed_in)) $user->SetLastSignInDate($row->last_signed_in);
 				if (isset($row->total_messages)) $user->SetTotalMessages($row->total_messages);
-                
-                if (isset($row->disabled)) 
-                {
-                    $user->SetAccountDisabled($row->disabled);
-                }
+                if (isset($row->activated)) $user->SetAccountActivated($row->activated);
+				if (isset($row->disabled)) $user->SetAccountDisabled($row->disabled);
+				if (isset($row->requested_email)) $user->SetRequestedEmail($row->requested_email);
+				if (isset($row->requested_email_hash)) $user->SetRequestedEmailHash($row->requested_email_hash);
+				if (isset($row->password_reset_token)) $user->SetPasswordResetToken($row->password_reset_token);
+				if (isset($row->password_reset_request_date)) $user->SetPasswordResetRequestDate($row->password_reset_request_date);
             }
              # Add security roles
             if (isset($row->role_id) and !$roles->IsDone($row->role_id))
@@ -1051,10 +1054,9 @@ class AuthenticationManager extends DataManager
 	/**
 	 * Sends an email to the user with a link to confirm a change of email address
 	 * @param User $account
-	 * @param string hash returned by a call to SaveRequestedEmail() $confirmation_hash
 	 * @return bool
 	 */
-	public function SendChangeEmailAddressEmail(User $account, $confirmation_hash)
+	public function SendChangeEmailAddressEmail(User $account)
 	{
 		# send email requesting confirmation - validates email address
 		require_once 'Zend/Mail.php';
@@ -1064,8 +1066,7 @@ class AuthenticationManager extends DataManager
 		$o_email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
 
 		$s_greeting = $account->GetName() ? $account->GetName() : 'there';
-		$s_confirm_url = 'https://' . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetUrl('AccountConfirmEmail') . 
-		'?p=' . $account->GetId() . '&c=' . urlencode($confirmation_hash);
+		$s_confirm_url = 'https://' . $this->GetSettings()->GetDomain() . $account->GetRequestedEmailConfirmationUrl();
 
 		$o_email->setBodyText('Hi ' . $s_greeting . "!\n\n" .
 		wordwrap("Please confirm you'd like to use this email address, " . $account->GetRequestedEmail() . ", to sign in to " .
@@ -1212,7 +1213,9 @@ class AuthenticationManager extends DataManager
         $user_id = Sql::ProtectNumeric($user->GetId(), false, false);
         
         # First update main user table
-        $sql = "UPDATE $user_table SET disabled = " . Sql::ProtectBool($user->GetAccountDisabled()) . " WHERE user_id = $user_id";
+		$sql = "UPDATE $user_table SET disabled = " . Sql::ProtectBool($user->GetAccountDisabled()) . ",
+				activated = " . Sql::ProtectBool($user->GetAccountActivated()) . "
+				WHERE user_id = $user_id";
         $this->GetDataConnection()->query($sql);
         
         # Remove existing roles

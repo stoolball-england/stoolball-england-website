@@ -49,14 +49,14 @@ class CurrentPage extends StoolballPage
     
     		if ($user->GetId())
     		{
-    			$token = $authentication_manager->SavePasswordResetRequest($user->GetId());
+    			$user->SetPasswordResetToken($authentication_manager->SavePasswordResetRequest($user->GetId()));
     
 				# account found and reset request saved - send the email
 				if ($user->GetName()) $greeting = "Hi " . $user->GetName() . '!';
 
 				$body = 'If this was you, click the link below to reset your password' . "\n\n" .
 				"This link will expire after 24 hours.\n\n" .
-				"https://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetFolder('Account') . "reset-password?request=" . urlencode($token);
+				"https://" . $this->GetSettings()->GetDomain() . $user->GetPasswordResetConfirmationUrl();
 
     		}
         } else {

@@ -25,7 +25,7 @@ class CurrentPage extends StoolballPage
 		?>
 		<h1>Manage users</h1>
 		<table>
-		<thead><tr><th>User</th><th>Action</th></tr></thead>
+		<thead><tr><th>User</th><th>Email</th><th>Action</th></tr></thead>
 		<tbody>
 		<?php
 
@@ -37,7 +37,7 @@ class CurrentPage extends StoolballPage
 				$edit->AddAttribute('href', $user->GetEditUrl());
 				$delete = new XhtmlElement('a', 'Delete');
 				$delete->AddAttribute('href', $user->GetDeleteUrl());
-				echo "<tr><td>$edit</td><td>$delete</td>";
+				echo "<tr><td>$edit</td><td>" . $user->GetEmail() . "</td><td>$delete</td>";
 			}
 		}
 

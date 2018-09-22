@@ -17,7 +17,7 @@ class StoolballPage extends Page
 	private $open_graph_type = "article";
     private $css_root = "";
     private $resource_root = "";
-    private $css_version = 45;
+    private $css_version = 46;
 	
 	# override constructor to accept settings for this site
 	function StoolballPage(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
