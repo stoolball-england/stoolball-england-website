@@ -15,7 +15,7 @@ class MutuallyExclusiveValidator extends DataValidator
 	 */
 	public function __construct($field_names, $message, $default_values, $i_mode=null)
 	{
-		parent::DataValidator($field_names, $message, $i_mode);
+		parent::__construct($field_names, $message, $i_mode);
 		$this->default_values = (is_array($default_values)) ? $default_values : array();
 	}
 

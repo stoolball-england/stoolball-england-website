@@ -9,7 +9,7 @@ class SubscriptionGrid extends XhtmlElement
 
 	public function __construct(SiteSettings $o_settings, $a_subs)
 	{
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->o_settings = $o_settings;
 		$this->a_subs = $a_subs;
 	}

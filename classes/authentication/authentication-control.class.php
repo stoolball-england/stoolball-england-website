@@ -4,31 +4,28 @@ require_once ('xhtml/xhtml-anchor.class.php');
 
 class AuthenticationControl extends XhtmlElement
 {
-	var $o_settings;
-	var $o_user;
+	/* @var SiteSettings */
+	private $o_settings;
 
-	function AuthenticationControl(SiteSettings $o_settings, User $o_user)
+	/* @var User */
+	private $o_user;
+
+	function __construct(SiteSettings $o_settings, User $o_user)
 	{
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->o_settings = $o_settings;
 		$this->o_user = $o_user;
 	}
 
 	function OnPreRender()
 	{
-		/* @var $o_settings SiteSettings */
-		/* @var $o_user User */
-		$o_settings = $this->o_settings;
-		$o_user = &$this->o_user;
-
-		if ($o_user->IsSignedIn())
+		if ($this->o_user->IsSignedIn())
 		{
 			# Show username
-			$this->AddControl(new XhtmlElement('p', 'Welcome ' . $o_user->GetName(), "large"));
+			$this->AddControl(new XhtmlElement('p', 'Welcome ' . $this->o_user->GetName(), "large"));
             
             $token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB)));
             $_SESSION['csrf_token'] = $token;
-            
             $html = '<form method="post" class="sign-out screen" action="/you/sign-out"><div>
             <input type="hidden" name="action" value="signout" />
             <input type="hidden" name="securitytoken" value="' . Html::Encode($token) . '" />
@@ -36,7 +33,7 @@ class AuthenticationControl extends XhtmlElement
             $this->AddControl($html);
 
 			# Build edit profile link
-			$o_profile = new XhtmlAnchor('Edit profile', $o_settings->GetUrl('AccountEdit'));
+			$o_profile = new XhtmlAnchor('Edit profile', $this->o_settings->GetUrl('AccountEdit'));
 			$o_profile->AddAttribute('accesskey', '0');
 			$o_profile->SetCssClass('editProfile screen');
 			$this->AddControl($o_profile);
@@ -44,13 +41,13 @@ class AuthenticationControl extends XhtmlElement
 		else
 		{
 		    # Build sign in link
-			$o_sign_in = new XhtmlAnchor('Sign in', $o_settings->GetFolder('Account'));
+			$o_sign_in = new XhtmlAnchor('Sign in', $this->o_settings->GetFolder('Account'));
 			$o_sign_in->AddAttribute('accesskey', '0');
 			$o_sign_in->SetCssClass('signIn');
 			$this->AddControl($o_sign_in);
 
 			# Build register link
-			$register = new XhtmlAnchor('Register', $o_settings->GetUrl('AccountCreate'));
+			$register = new XhtmlAnchor('Register', $this->o_settings->GetUrl('AccountCreate'));
 			$this->AddControl($register);
 		}
 	}

@@ -24,7 +24,7 @@ class MySqlRawData
 
     */
 
-    function MySqlRawData($query) {
+    function __construct($query) {
 
         $this->query=$query;
 

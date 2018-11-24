@@ -9,9 +9,9 @@ class CompareValidator extends DataValidator
 	* @param string $s_message
 	* @desc Test whether given fields are the same
 	*/
-	function CompareValidator($a_keys, $s_message)
+	function __construct($a_keys, $s_message)
 	{
-		parent::DataValidator($a_keys, $s_message, ValidatorMode::MultiField());
+		parent::__construct($a_keys, $s_message, ValidatorMode::MultiField());
 	}
 	/**
 	* @return bool

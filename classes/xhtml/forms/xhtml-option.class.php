@@ -7,7 +7,7 @@ class XhtmlOption extends XhtmlElement
 
 	public function __construct($s_text=null, $s_value=null, $selected=false)
 	{
-		parent::XhtmlElement('option');
+		parent::__construct('option');
 
 		# store text
 		$this->AddControl(Html::Encode((string)$s_text));

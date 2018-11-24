@@ -29,7 +29,7 @@ class PlayerManager extends DataManager
 	 */
 	public function __construct(SiteSettings $settings, MySqlConnection $connection)
 	{
-		parent::DataManager($settings, $connection);
+		parent::__construct($settings, $connection);
 		$this->SetItemClass('Player');
 	}
 

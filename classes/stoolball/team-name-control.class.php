@@ -16,7 +16,7 @@ class TeamNameControl extends XhtmlElement
 	 */
 	public function __construct(Team $team, $container_element)
 	{
-		parent::XhtmlElement($container_element);
+		parent::__construct($container_element);
 
 		$name = $team->GetName();
 		$type = is_null($team->GetPlayerType()) ? '' : PlayerType::Text($team->GetPlayerType());

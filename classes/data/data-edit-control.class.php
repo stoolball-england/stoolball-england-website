@@ -22,7 +22,7 @@ abstract class DataEditControl extends XhtmlForm
 	 */
 	public function __construct(SiteSettings $o_settings, $b_entire_form=true)
 	{
-		parent::XhtmlForm();
+		parent::__construct();
 		$this->o_settings = $o_settings;
 		$this->SetCssClass(str_ireplace('control', '', get_class($this)));
 		$this->b_render_base_element = $b_entire_form;

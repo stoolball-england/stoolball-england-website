@@ -17,7 +17,7 @@ class PlayerNameValidator extends DataValidator
 	 */
 	public function __construct($a_keys, $message)
 	{
-		parent::DataValidator($a_keys, $message, ValidatorMode::MultiField());
+		parent::__construct($a_keys, $message, ValidatorMode::MultiField());
 	}
 
 	/**

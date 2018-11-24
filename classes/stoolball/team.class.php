@@ -51,7 +51,7 @@ class Team implements IHasShortUrl
 	 * @param SiteSettings $settings
 	 * @desc A stoolball team
 	 */
-	function Team(SiteSettings $settings)
+	function __construct(SiteSettings $settings)
 	{
 		$this->settings = $settings;
 		$this->seasons = new Collection(null, "TeamInSeason");

@@ -28,12 +28,12 @@ abstract class DataManager extends Collection
 	 * @param MySqlConnection $o_db
 	 * @desc Create a DataManager to read and write structured data
 	 */
-	function DataManager(SiteSettings $o_settings, MySqlConnection $o_db)
+	function __construct(SiteSettings $o_settings, MySqlConnection $o_db)
 	{
 		$this->o_settings = $o_settings;
 		$this->o_db = $o_db;
 
-		parent::Collection();
+		parent::__construct();
 	}
 
 

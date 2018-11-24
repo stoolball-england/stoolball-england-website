@@ -12,9 +12,9 @@ class XhtmlRow extends XhtmlElement
 	private $b_is_footer;
 	private $i_columns;
 
-	function XhtmlRow($a_values=null)
+	function __construct($a_values=null)
 	{
-		parent::XhtmlElement('tr');
+		parent::__construct('tr');
 
 		if (is_array($a_values)) foreach ($a_values as $m_value) $this->AddCell($m_value);
 		else if (!is_null($a_values)) throw new Exception('Table row values must be supplied in an array');

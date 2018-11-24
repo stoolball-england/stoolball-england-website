@@ -5,11 +5,11 @@ class XhtmlCell extends XhtmlElement
 {
 	private $b_is_header;
 	
-	public function XhtmlCell($b_is_header = false, $m_content=null)
+	public function __construct($b_is_header = false, $m_content=null)
 	{
 		$this->b_is_header = (bool)$b_is_header;
 
-		parent::XhtmlElement($this->b_is_header ? 'th' : 'td');
+		parent::__construct($this->b_is_header ? 'th' : 'td');
 		$this->AddControl($m_content);
 	}
 	

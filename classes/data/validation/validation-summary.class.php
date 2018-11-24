@@ -6,11 +6,11 @@ class ValidationSummary extends XhtmlElement
 	var $a_controls_to_validate;
 	var $s_header_text;
 
-	function ValidationSummary($a_controls_to_validate, $s_header_text='')
+	function __construct($a_controls_to_validate, $s_header_text='')
 	{
 		if (!is_array($a_controls_to_validate)) die('No controls to validate');
 
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->SetCssClass('validationSummary');
 		$this->a_controls_to_validate = &$a_controls_to_validate;
 		$this->s_header_text = trim($s_header_text);

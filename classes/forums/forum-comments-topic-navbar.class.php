@@ -23,7 +23,7 @@ class ForumCommentsTopicNavbar extends XhtmlElement
         $this->o_topic = $o_topic;
         $this->authentication_manager = $authentication_manager;
 
-        parent::XhtmlElement('div');
+        parent::__construct('div');
         $this->SetCssClass('forumNavbar');
     }
 

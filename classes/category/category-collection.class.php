@@ -5,11 +5,11 @@ require_once('category/category.class.php');
 class CategoryCollection extends Collection
 {
 	# override base constructor to limit content to Category objects
-	function CategoryCollection($a_items=null)
+	function __construct($a_items=null)
 	{
 		$this->SetItemClass('Category');
 		
-		parent::Collection($a_items);
+		parent::__construct($a_items);
 	}
 	
 	/**

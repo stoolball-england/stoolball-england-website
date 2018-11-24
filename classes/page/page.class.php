@@ -50,7 +50,7 @@ class Page
 	 */
 	private $errors;
 
-	public function Page(SiteSettings $settings, $i_permission_required, $obsolete = false)
+	public function __construct(SiteSettings $settings, $i_permission_required, $obsolete = false)
 	{
 		$start_time = microtime(true);
 
@@ -63,7 +63,7 @@ class Page
 		{
             require_once('page/exception-manager.class.php');
             require_once('page/email-exception-publisher.class.php');
-            $this->errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail())));
+			$this->errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail())));
             
             # Use production settings recommended by http://perishablepress.com/advanced-php-error-handling-via-htaccess/
             # Not possible to set in .htaccess because PHP is running as a CGI. This is the next best thing.

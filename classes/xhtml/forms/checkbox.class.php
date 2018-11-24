@@ -19,10 +19,10 @@ class CheckBox extends XhtmlElement
 	 * @param bool $page_valid
 	 * @return CheckBox
 	 */
-	function CheckBox($s_id, $s_label, $s_value='', $b_checked=false, $page_valid=null)
+	function __construct($s_id, $s_label, $s_value='', $b_checked=false, $page_valid=null)
 	{
 		# this element is the label for the checkbox
-		parent::XhtmlElement('label');
+		parent::__construct('label');
 		$this->AddAttribute('for', $s_id);
 		$this->SetCssClass('checkBox');
 		

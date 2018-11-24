@@ -16,10 +16,10 @@ class TextBox extends XhtmlElement
 	 * @param bool $page_valid
 	 * @return TextBox
 	 */
-	function TextBox($s_id, $s_value='', $page_valid=null)
+	function __construct($s_id, $s_value='', $page_valid=null)
 	{
 		# set options assuming <input type="text" />
-		parent::XhtmlElement("input");
+		parent::__construct("input");
 		$this->SetMode(TextBoxMode::SingleLine());
 		$this->SetXhtmlId($s_id);
 

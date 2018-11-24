@@ -5,9 +5,9 @@ class GroundListControl extends XhtmlElement
 {
 	private $a_grounds;
 
-	function GroundListControl($a_grounds=null)
+	function __construct($a_grounds=null)
 	{
-		parent::XhtmlElement('ul');
+		parent::__construct('ul');
 		$this->a_grounds = (is_array($a_grounds)) ? $a_grounds : array();
 	}
 

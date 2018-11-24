@@ -12,7 +12,7 @@ class DateValidator extends DataValidator
 	 */
 	public function __construct($a_keys, $s_message, $i_mode=null)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 	}
 
 	/**

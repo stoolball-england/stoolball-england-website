@@ -14,7 +14,7 @@ class AuditControl extends XhtmlElement
 	{
 		$this->audit = $audit;
 		$this->thing = $thing;
-		parent::XhtmlElement("p");
+		parent::__construct("p");
 	}
 
 	public function OnPreRender()

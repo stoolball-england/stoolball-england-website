@@ -4,7 +4,7 @@ require_once('xhtml/forms/xhtml-select.class.php');
 
 class CategorySelectControl extends XhtmlSelect 
 {
-	function CategorySelectControl(CategoryCollection $o_categories, $page_valid=null)
+	function __construct(CategoryCollection $o_categories, $page_valid=null)
 	{
 		# set properties
 		parent::XhtmlSelect('category', null, $page_valid);

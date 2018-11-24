@@ -25,7 +25,7 @@ class Ground implements IHasShortUrl
 	private $teams;
     private $update_search;
 
-	function Ground(SiteSettings $o_settings)
+	function __construct(SiteSettings $o_settings)
 	{
 		$this->o_settings = $o_settings;
 		$this->o_address = new PostalAddress();

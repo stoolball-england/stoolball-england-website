@@ -22,9 +22,9 @@ class XhtmlForm extends XhtmlElement
 	 * @return XhtmlForm
 	 * @desc Creates an XHTML form
 	 */
-	function XhtmlForm()
+	function __construct()
 	{
-		parent::XhtmlElement('form');
+		parent::__construct('form');
 		$this->SetNavigateUrl(htmlentities($_SERVER['REQUEST_URI']));
 		$this->AddAttribute('method', 'post');
         $this->csrf_token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB)));

@@ -5,9 +5,9 @@ class ClubListControl extends XhtmlElement
 {
 	var $a_clubs;
 	
-	function ClubListControl($a_clubs=null)
+	function __construct($a_clubs=null)
 	{
-		parent::XhtmlElement('ul');
+		parent::__construct('ul');
 		$this->a_clubs = (is_array($a_clubs)) ? $a_clubs : array();
 	}
 	

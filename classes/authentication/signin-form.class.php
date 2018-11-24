@@ -12,7 +12,7 @@ class SignInForm extends XhtmlForm
 		$this->settings = $settings;
         $this->authentication_manager = $authentication_manager;
 
-		parent::XhtmlForm();
+		parent::__construct();
 	}
 
 	function OnPreRender()

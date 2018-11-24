@@ -18,7 +18,7 @@ class StatisticsHighlightTable extends Placeholder
 	 */
 	public function __construct($best_batting, $most_runs, $best_bowling, $most_wickets, $most_catches, $description)
 	{
-		parent::Placeholder();
+		parent::__construct();
 
 		$best_batting_count = count($best_batting);
 		$best_bowling_count = count($best_bowling);

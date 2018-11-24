@@ -20,7 +20,7 @@ class StoolballPage extends Page
     private $css_version = 46;
 	
 	# override constructor to accept settings for this site
-	function StoolballPage(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
+	function __construct(SiteSettings $o_settings, $i_permission_required, $obsolete = false)
 	{
 		$this->i_constraint_type = StoolballPage::ConstrainNone();
         if (!SiteContext::IsDevelopment())
@@ -28,7 +28,7 @@ class StoolballPage extends Page
             $this->css_root = 'https://www.stoolball.org.uk';
             $this->resource_root = 'https://www.stoolball.org.uk';
         }
-		parent::Page($o_settings, $i_permission_required);
+		parent::__construct($o_settings, $i_permission_required);
 	}
 
 	# override base method to get data required by every page on the site

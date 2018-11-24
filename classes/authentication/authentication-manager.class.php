@@ -20,7 +20,7 @@ class AuthenticationManager extends DataManager
 	 */
 	public function __construct($o_settings, $o_db, $i_permission_required=null)
 	{
-		parent::DataManager($o_settings, $o_db);
+		parent::__construct($o_settings, $o_db);
 		$this->s_item_class = 'User';
 
 		# If a permission is supplied this is the main authentication manager for the page,

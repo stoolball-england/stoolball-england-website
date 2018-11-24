@@ -5,7 +5,7 @@ class CategoryEditControl extends DataEditControl
 {
 	var $o_categories;
 
-	function CategoryEditControl(SiteSettings $o_settings, CategoryCollection $o_categories)
+	function __construct(SiteSettings $o_settings, CategoryCollection $o_categories)
 	{
 		# check input and store
 		$this->o_categories = $o_categories;

@@ -17,7 +17,7 @@ class NumericRangeValidator extends DataValidator
 	*/
 	function __construct($a_keys, $s_message, $i_min, $i_max, $i_mode=null)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 		$this->i_min = is_null($i_min) ? null : (float)$i_min;
 		$this->i_max = is_null($i_max) ? null : (float)$i_max;
 	}

@@ -11,10 +11,10 @@ class PostalAddressControl extends XhtmlElement
 	 */
 	private $o_address;
 
-	function PostalAddressControl(PostalAddress $o_address)
+	function __construct(PostalAddress $o_address)
 	{
 		# set up element
-		parent::XhtmlElement('p');
+		parent::__construct('p');
 		$this->SetCssClass('adr');
 		$this->AddAttribute("typeof", "schema:PostalAddress");
 		$this->SetAddress($o_address);

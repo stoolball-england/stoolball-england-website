@@ -27,7 +27,7 @@ class PlayerStatisticsTable extends XhtmlTable
 		$this->display_team = (bool)$display_team;
 		$this->first_result = (int)$first_result;
 
-		parent::XhtmlTable();
+		parent::__construct();
 
         if (count($data) > 0) 
         {

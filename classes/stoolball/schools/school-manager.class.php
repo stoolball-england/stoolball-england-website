@@ -21,7 +21,7 @@ class SchoolManager extends DataManager
 	*/
 	function __construct(SiteSettings $settings, MySqlConnection $db)
 	{
-		parent::DataManager($settings, $db);
+		parent::__construct($settings, $db);
 		$this->s_item_class = 'Club';
 	}
 

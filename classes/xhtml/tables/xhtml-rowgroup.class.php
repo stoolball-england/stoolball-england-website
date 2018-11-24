@@ -8,9 +8,9 @@ require_once('xhtml/tables/xhtml-row.class.php');
  */
 class XhtmlRowGroup extends XhtmlElement
 {
-	function XhtmlRowGroup($b_is_header=false)
+	function __construct($b_is_header=false)
 	{
-		parent::XhtmlElement($b_is_header ? 'thead' : 'tbody');
+		parent::__construct($b_is_header ? 'thead' : 'tbody');
 	}
 	
 	/**

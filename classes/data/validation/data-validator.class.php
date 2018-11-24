@@ -19,7 +19,7 @@ class DataValidator
 	 * @param int $i_mode
 	 * @desc Abstract constructor for all validators - can be used as inherited constructor
 	 */
-	function DataValidator($a_keys, $s_message, $i_mode=null)
+	function __construct($a_keys, $s_message, $i_mode=null)
 	{
 		# validators act by default on one field; can act on a combination
 		if (!is_numeric($i_mode)) $this->i_mode = ValidatorMode::SingleField();

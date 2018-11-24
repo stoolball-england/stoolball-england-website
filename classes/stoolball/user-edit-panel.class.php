@@ -19,7 +19,7 @@ class UserEditPanel extends XhtmlElement
 	 */
 	public function __construct(SiteSettings $o_settings, $s_about='')
 	{
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->o_settings = $o_settings;
 		$this->a_links = array();
 		$this->s_about = (string)$s_about;

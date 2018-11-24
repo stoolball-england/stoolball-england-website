@@ -18,7 +18,7 @@ class PlayerPerformanceTable extends XhtmlTable
         $this->first_result = (int)$first_result;
         $this->show_position = (bool)$show_position;
 
-        parent::XhtmlTable();
+        parent::__construct();
 
         if (count($performance_data) > 0) 
         {

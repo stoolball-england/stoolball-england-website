@@ -23,7 +23,7 @@ class SeasonTable extends XhtmlTable
 		$this->o_settings = $o_settings;
 		$this->o_season = $o_season;
 
-		parent::XhtmlTable();
+		parent::__construct();
 
 		# Add table header
 		$this->SetCaption('Results table for this season');

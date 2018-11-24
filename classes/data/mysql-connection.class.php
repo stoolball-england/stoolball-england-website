@@ -45,7 +45,7 @@ class MySqlConnection
 
     */
 
-    function MySqlConnection ($host,$dbUser,$dbPass,$dbName) {
+    function __construct($host,$dbUser,$dbPass,$dbName) {
 
         // Make connection to MySQL server
 

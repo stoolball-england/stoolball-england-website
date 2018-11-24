@@ -15,10 +15,10 @@ class EmailExceptionPublisher implements IExceptionPublisher
      /**
      * Display errors in development and email them in release mode
      *
-     * @param Exception $e
+     * @param Throwable $e
      * @param array $a_additional_info
      */
-    public function Publish(Exception $e, array $a_additional_info)
+    public function Publish(Throwable $e, array $a_additional_info)
     {
         // define an assoc array of error string
         // in reality the only entries we should

@@ -17,7 +17,7 @@ class RegExValidator extends DataValidator
 	 */
 	function __construct($a_keys, $s_message, $s_pattern, $i_mode = null, $valid_if_match = true)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 		$this->s_pattern = (string)$s_pattern;
 		$this->valid_if_match = (bool)$valid_if_match;
 	}

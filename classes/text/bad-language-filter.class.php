@@ -3,7 +3,7 @@ class BadLanguageFilter
 {
 	var $s_replacement;
 	
-	function &BadLanguageFilter($s_replacement='@*%!')
+	function &__construct($s_replacement='@*%!')
 	{
 		$this->s_replacement = (string)$s_replacement;
 		return $this;

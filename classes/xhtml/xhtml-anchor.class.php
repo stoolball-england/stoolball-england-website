@@ -7,9 +7,9 @@ require_once('xhtml/xhtml-element.class.php');
  */
 class XhtmlAnchor extends XhtmlElement
 {
-	public function XhtmlAnchor($s_text='', $s_navigate_url='')
+	public function __construct($s_text='', $s_navigate_url='')
 	{
-		parent::XhtmlElement('a');
+		parent::__construct('a');
 		$this->AddControl($s_text);
 		$this->SetNavigateUrl($s_navigate_url);
 	}

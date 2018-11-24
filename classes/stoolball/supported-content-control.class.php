@@ -14,7 +14,7 @@ class SupportedContentControl extends XhtmlElement
 	 */
 	public function __construct(XhtmlElement $o_all_content)
 	{
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->SetCssClass('supportedContentContainer');
 		$o_all_content->AddCssClass('supportedContent');
 		$this->AddControl($o_all_content);

@@ -10,9 +10,9 @@ class NumericValidator extends DataValidator
 	* @param int $i_mode
 	* @desc Constructor for numeric validator
 	*/
-	function &NumericValidator($a_keys, $s_message, $i_mode=null)
+	function &__construct($a_keys, $s_message, $i_mode=null)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 
 		return $this;
 	}

@@ -16,7 +16,7 @@ class RunOutsTable extends XhtmlTable
         $this->performance_data = $performance_data;
         $this->first_result = (int)$first_result;
 
-        parent::XhtmlTable();
+        parent::__construct();
 
         if (count($performance_data) > 0) 
         {

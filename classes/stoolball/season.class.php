@@ -75,7 +75,7 @@ class Season extends Collection implements IHasShortUrl
 		$this->o_possible_results = new Collection(null, 'MatchResult');
 		$this->o_points_adjustments = new Collection(null, 'PointsAdjustment');
 
-		parent::Collection();
+		parent::__construct();
 
 		$this->s_item_class = 'Match';
 

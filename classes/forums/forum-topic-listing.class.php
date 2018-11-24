@@ -13,7 +13,7 @@ class ForumTopicListing extends Placeholder
 	 */
 	var $topic;
 
-	function ForumTopicListing(SiteSettings $o_settings, User $o_user, ForumTopic $topic)
+	function __construct(SiteSettings $o_settings, User $o_user, ForumTopic $topic)
 	{
 		$this->o_settings = $o_settings;
 		$this->o_user = $o_user;

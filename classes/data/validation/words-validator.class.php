@@ -17,7 +17,7 @@ class WordsValidator extends DataValidator
 	*/
 	public function __construct($a_keys, $s_message, $i_minlength, $i_maxlength, $i_mode=null)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 		$this->i_minlength = (int)$i_minlength;
 		$this->i_maxlength = ($i_maxlength == null) ? 10000000 : (int)$i_maxlength;
 	}

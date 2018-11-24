@@ -9,9 +9,9 @@ class SeasonListControl extends XhtmlElement
 	private $show_competition = false;
 	private $url_method = 'GetNavigateUrl';
 
-	function SeasonListControl($a_seasons=null)
+	function __construct($a_seasons=null)
 	{
-		parent::XhtmlElement("div");
+		parent::__construct("div");
 		$this->SetCssClass("season-list");
 		$this->a_seasons = (is_array($a_seasons)) ? $a_seasons : array();
 		$this->a_excluded = array();

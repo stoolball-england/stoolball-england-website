@@ -28,7 +28,7 @@ class BowlingPerformanceTable extends XhtmlTable
 		$this->first_result = (int)$first_result;
 		if (!is_null($max_results)) $this->max_results = (int)$max_results;
 
-		parent::XhtmlTable();
+		parent::__construct();
 
 		# Create the table header
 		$this->SetCaption(is_null($max_results) ? "All bowling performances, best first" : "Best bowling performances");

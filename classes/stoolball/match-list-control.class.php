@@ -15,7 +15,7 @@ class MatchListControl extends XhtmlElement
 
 	public function __construct($matches=null)
 	{
-		parent::XhtmlElement('ul');
+		parent::__construct('ul');
         $this->SetCssClass("match-list");
 		$this->matches = (is_array($matches)) ? $matches : array();
 	}

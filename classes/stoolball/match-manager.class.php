@@ -12,7 +12,7 @@ class MatchManager extends DataManager
 	 */
 	public function __construct($o_settings, $o_db)
 	{
-		parent::DataManager($o_settings, $o_db);
+		parent::__construct($o_settings, $o_db);
 		$this->s_item_class = 'Match';
 		$this->filter_by_match_types = array();
         $this->filter_by_player_types = array();

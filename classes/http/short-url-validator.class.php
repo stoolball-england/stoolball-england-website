@@ -20,7 +20,7 @@ class ShortUrlValidator extends DataValidator
 	*/
 	public function __construct($a_keys, $s_message, $i_mode, IHasShortUrl $object_with_short_url)
 	{
-		parent::DataValidator($a_keys, $s_message, $i_mode);
+		parent::__construct($a_keys, $s_message, $i_mode);
 		$this->object_with_short_url = $object_with_short_url;
 	}
 	

@@ -14,7 +14,7 @@ class ExceptionManager
 	 *
 	 * @return ExceptionManager
 	 */
-	public function ExceptionManager(array $publishers)
+	public function __construct(array $publishers)
 	{
 	    foreach ($publishers as $publisher) {
 		  $this->AddPublisher($publisher);
@@ -50,10 +50,10 @@ class ExceptionManager
 	/**
 	 * Publishes the supplied exception using the registered publishers
 	 *
-	 * @param Exception $e
+	 * @param Throwable $e
 	 * @param array $a_additional_info
 	 */
-	public function Publish(Exception $e, array $a_additional_info = null)
+	public function Publish(Throwable $e, array $a_additional_info = null)
 	{
 		if (is_null($a_additional_info))
         {
@@ -120,9 +120,9 @@ class ExceptionManager
 	/**
 	 * Error handler which publishes all otherwise-uncaught exceptions
 	 *
-	 * @param Exception $e
+	 * @param Throwable $e
 	 */
-	public function ExceptionHandler(Exception $e)
+	public function ExceptionHandler(Throwable $e)
 	{
 		$this->Publish($e);
 	}

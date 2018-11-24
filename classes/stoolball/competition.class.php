@@ -34,11 +34,11 @@ class Competition extends Collection implements IHasShortUrl
 	 * @param SiteSettings $settings
 	 * @return Competition
 	 */
-	function Competition(SiteSettings $settings)
+	function __construct(SiteSettings $settings)
 	{
 		$this->settings = $settings;
 
-		parent::Collection();
+		parent::__construct();
 		$this->s_item_class = 'Season';
 		$this->SetWorkingIndex(-1);
 	}

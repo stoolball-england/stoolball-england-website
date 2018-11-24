@@ -14,9 +14,9 @@ class CompetitionManager extends DataManager
 	 * @param MySqlConnection $o_db
 	 * @desc Read and write Competitions
 	 */
-	function CompetitionManager(SiteSettings $o_settings, MySqlConnection $o_db)
+	function __construct(SiteSettings $o_settings, MySqlConnection $o_db)
 	{
-		parent::DataManager($o_settings, $o_db);
+		parent::__construct($o_settings, $o_db);
 		$this->s_item_class = 'Competition';
 	}
 

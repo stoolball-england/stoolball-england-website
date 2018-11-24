@@ -25,7 +25,7 @@ class TeamRunsTable extends XhtmlTable
 	 */
 	public function __construct($matches_with_run_data, $runs_scored, $runs_conceded, $highest_innings, $lowest_innings, $average_innings)
 	{
-		parent::XhtmlTable();
+		parent::__construct();
 
 		$this->matches_with_run_data = $matches_with_run_data;
 		$this->runs_scored = $runs_scored;

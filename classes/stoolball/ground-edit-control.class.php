@@ -6,7 +6,7 @@ class GroundEditControl extends DataEditControl
 {
 	var $o_address_edit;
 
-	function GroundEditControl(SiteSettings $o_settings)
+	function __construct(SiteSettings $o_settings)
 	{
 		# set up element
 		$this->SetDataObjectClass('Ground');

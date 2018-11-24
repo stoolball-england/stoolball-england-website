@@ -39,7 +39,7 @@ class StatisticsManager extends DataManager
 	 */
 	public function __construct($o_settings, $o_db)
 	{
-		parent::DataManager($o_settings, $o_db);
+		parent::__construct($o_settings, $o_db);
 	}
 
 	/**

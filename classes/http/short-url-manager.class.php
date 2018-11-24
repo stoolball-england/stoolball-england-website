@@ -46,7 +46,7 @@ class ShortUrlManager extends DataManager
 	 */
 	public function __construct(SiteSettings $o_settings, MySqlConnection $o_db)
 	{
-		parent::DataManager($o_settings, $o_db);
+		parent::__construct($o_settings, $o_db);
 		$this->SetItemClass('ShortUrl');
 		$a_formats = $this->GetSettings()->GetShortUrlFormats();
 		foreach ($a_formats as $o_format) $this->AddUrlFormat($o_format);

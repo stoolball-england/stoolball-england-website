@@ -12,9 +12,9 @@ class FormPart extends XhtmlElement
 	* @param XhtmlElement $o_control
 	* @desc Create a container for a form control and its label
 	*/
-	function FormPart($s_label = null, $o_control = null)
+	function __construct($s_label = null, $o_control = null)
 	{
-		parent::XhtmlElement('div');
+		parent::__construct('div');
 		$this->SetCssClass('formPart');
 
 		$this->SetLabel($s_label);

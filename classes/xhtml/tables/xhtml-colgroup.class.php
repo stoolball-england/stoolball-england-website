@@ -14,9 +14,9 @@ class XhtmlColumnGroup extends XhtmlElement
 	 * @param int $i_column_count
 	 * @return XhtmlColumnGroup
 	 */
-	public function XhtmlColumnGroup($i_column_count=1)
+	public function __construct($i_column_count=1)
 	{
-		parent::XhtmlElement('colgroup');
+		parent::__construct('colgroup');
 		$this->SetColumnCount($i_column_count);
 	}
 

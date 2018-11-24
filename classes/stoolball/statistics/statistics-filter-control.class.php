@@ -26,7 +26,7 @@ class StatisticsFilterControl extends XhtmlForm
 	 */
 	public function __construct()
 	{
-		parent::XhtmlForm();
+		parent::__construct();
 		$this->AddAttribute("method", "get");
 	}
 

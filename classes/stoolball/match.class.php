@@ -64,7 +64,7 @@ class Match implements IHasShortUrl
 	private $overs;
     private $update_search;
 
-	public function Match(SiteSettings $o_settings)
+	public function __construct(SiteSettings $o_settings)
 	{
 		$this->o_settings = $o_settings;
 		$this->seasons = new Collection();

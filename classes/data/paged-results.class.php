@@ -12,7 +12,7 @@ class PagedResults
 	private  $s_page_name;
 	private  $s_query_string;
 
-	function PagedResults()
+	function __construct()
 	{
 		# set current page from query string
 		$this->UpdateCurrentPage();

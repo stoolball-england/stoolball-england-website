@@ -9,7 +9,7 @@ class Subscription
 	var $i_subscribe_date;
     private $subscribed_item_url;
 
-	function Subscription(SiteSettings $o_settings)
+	function __construct(SiteSettings $o_settings)
 	{
 		$this->o_settings = &$o_settings;
 	}

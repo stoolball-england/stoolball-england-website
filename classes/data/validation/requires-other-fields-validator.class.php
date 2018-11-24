@@ -13,7 +13,7 @@ class RequiresOtherFieldsValidator extends DataValidator
 	*/
 	public function __construct($a_keys, $s_message, $requires_values=null)
 	{
-		parent::DataValidator($a_keys, $s_message, ValidatorMode::MultiField());
+		parent::__construct($a_keys, $s_message, ValidatorMode::MultiField());
 		$this->requires_values = is_array($requires_values) ? $requires_values : array();
 	}
 	/**

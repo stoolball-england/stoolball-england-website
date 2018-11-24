@@ -12,9 +12,9 @@ class CompetitionTextTable extends XhtmlTable
 	 */
 	private $o_competition;
 
-	function CompetitionTextTable(Competition $o_competition)
+	function __construct(Competition $o_competition)
 	{
-		parent::XhtmlTable();
+		parent::__construct();
 		$this->o_competition = $o_competition;
 	}
 

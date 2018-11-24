@@ -8,9 +8,9 @@ class XhtmlColumn extends XhtmlElement
 	 *
 	 * @return XhtmlColumn
 	 */
-	public function XhtmlColumn()
+	public function __construct()
 	{
-		parent::XhtmlElement('col');
+		parent::__construct('col');
 		$this->SetEmpty(true);
 	}
 }

@@ -14,7 +14,7 @@ class XhtmlImage extends XhtmlElement
 	 */
 	public function __construct($o_settings=null, $s_path='')
 	{
-		parent::XhtmlElement('img');
+		parent::__construct('img');
 		$this->o_settings = $o_settings; // $settings must remain nullable, to support using external images which don't need local paths
 		$this->SetEmpty(true); # <img /> is an empty element
 		$this->AddAttribute('alt', ''); # default to empty alt text

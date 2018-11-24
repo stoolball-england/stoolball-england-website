@@ -8,9 +8,9 @@ class ForumTopic extends Collection
 	var $o_settings;
 	var $o_review_item;
 	
-	function ForumTopic(SiteSettings $o_settings, $a_items=null)
+	function __construct(SiteSettings $o_settings, $a_items=null)
 	{
-		parent::Collection($a_items);
+		parent::__construct($a_items);
 		$this->o_settings = $o_settings;
 		$this->s_item_class = 'ForumMessage';
 	}

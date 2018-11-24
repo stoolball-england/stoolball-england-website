@@ -46,9 +46,9 @@ class XhtmlTable extends XhtmlElement
 	 */
 	private $i_rowcount = 0;
 
-	function XhtmlTable()
+	function __construct()
 	{
-		parent::XhtmlElement('table');
+		parent::__construct('table');
 
 		$this->a_rowgroups = array();
 		$this->a_rowgroups[] = new XhtmlRowGroup();

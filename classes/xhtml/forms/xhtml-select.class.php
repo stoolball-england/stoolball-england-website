@@ -15,9 +15,9 @@ class XhtmlSelect extends Placeholder
 	private $s_label;
 	private $b_hide_label = false;
 
-	public function XhtmlSelect($s_id='', $s_label='', $page_valid=null)
+	public function __construct($s_id='', $s_label='', $page_valid=null)
 	{
-		parent::Placeholder();
+		parent::__construct();
 		$this->o_select = new XhtmlElement('select');
 		$this->SetXhtmlId($s_id);
 		$this->s_label = $s_label;

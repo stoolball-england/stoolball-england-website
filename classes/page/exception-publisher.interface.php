@@ -8,9 +8,9 @@ interface IExceptionPublisher
      /**
      * Publish an exception to a target
      *
-     * @param Exception $e
+     * @param Throwable $e
      * @param array $a_additional_info
      */
-    function Publish(Exception $e, array $a_additional_info); 
+    function Publish(Throwable $e, array $a_additional_info); 
 }
 ?>

@@ -8,7 +8,7 @@ class Placeholder implements IteratorAggregate
 	* @param XhtmlControl/Placeholder/string $o_control
 	* @desc A container for controls which does not render any additional XHTML
 	*/
-	function Placeholder($o_control=null)
+	function __construct($o_control=null)
 	{
 		$this->a_controls = array();
 		if (!is_null($o_control)) $this->AddControl($o_control); # null check important, overriden AddControl might have a type hint

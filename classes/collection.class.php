@@ -11,7 +11,7 @@ class Collection implements IteratorAggregate
 	 * @param string $item_class
 	 * @desc Create a collection and instantiate the internal array
 	 */
-	function Collection($a_items=null, $item_class=null)
+	function __construct($a_items=null, $item_class=null)
 	{
 		# optionally instantiate with array
 		$this->SetItems($a_items);

@@ -26,9 +26,9 @@ class DateControl extends XhtmlElement
 	 * @param bool $page_valid
 	 * @return DateControl
 	 */
-	public function DateControl($s_id, $i_timestamp=null, $b_time_known=true, $page_valid=null)
+	public function __construct($s_id, $i_timestamp=null, $b_time_known=true, $page_valid=null)
 	{
-		parent::XhtmlElement('span');
+		parent::__construct('span');
 		$this->SetXhtmlId($s_id);
 		$this->SetCssClass('dateControl');
 		$this->SetTimestamp($i_timestamp, $b_time_known);

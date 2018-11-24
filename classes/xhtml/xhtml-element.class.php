@@ -23,7 +23,7 @@ class XhtmlElement extends Placeholder
 	* @param string $s_css_class_or_id
 	* @desc Constructor - sets up a basic XHTML element
 	*/
-	function XhtmlElement($s_base_element, $o_control=null, $s_css_class_or_id='')
+	function __construct($s_base_element, $o_control=null, $s_css_class_or_id='')
 	{
 		$this->s_base_element = $s_base_element;
 		$this->a_attributes = array();
@@ -31,7 +31,7 @@ class XhtmlElement extends Placeholder
 		$this->b_visible = true;
 		$this->InvalidateXhtml();
 
-		parent::Placeholder($o_control);
+		parent::__construct($o_control);
 
 		if ($s_css_class_or_id)
 		{

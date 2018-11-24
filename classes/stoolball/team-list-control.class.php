@@ -11,7 +11,7 @@ class TeamListControl extends Placeholder
 
 	function TeamListControl($a_teams=null)
 	{
-		parent::Placeholder();
+		parent::__construct();
 		$this->teams = (is_array($a_teams)) ? $a_teams : array();
 	}
 

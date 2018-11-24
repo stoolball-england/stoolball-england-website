@@ -10,7 +10,7 @@ class AZControl extends XhtmlElement
 
 	public function __construct()
 	{
-		parent::XhtmlElement('ul');
+		parent::__construct('ul');
 		$this->SetCssClass('az');
 		$this->s_page = $_SERVER['REQUEST_URI'];
 		$query = strpos($this->s_page, "?");
