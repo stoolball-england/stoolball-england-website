@@ -9,7 +9,7 @@ class TeamListControl extends Placeholder
 	private $b_show_type = false;
 	private $is_navigation_list;
 
-	function TeamListControl($a_teams=null)
+	function __construct($a_teams=null)
 	{
 		parent::__construct();
 		$this->teams = (is_array($a_teams)) ? $a_teams : array();
