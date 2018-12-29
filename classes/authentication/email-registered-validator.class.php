@@ -11,7 +11,7 @@ class EmailRegisteredValidator extends DataValidator
 	 */
 	public function __construct($a_keys)
 	{
-		parent::DataValidator($a_keys, 'The email address you chose, {0}, is already in use. Please chose a different one.');
+		parent::__construct($a_keys, 'The email address you chose, {0}, is already in use. Please chose a different one.');
 	}
 
 	/**

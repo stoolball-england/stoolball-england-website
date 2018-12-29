@@ -51,19 +51,36 @@ class EmailAddressProtector {
     }
     
     private function EncryptProtectedEmail($matches) {
-        $encryption_key = $this->settings->GetEmailAddressEncryptionKey();
-        $encrypted = base64_encode(mcrypt_encrypt(MCRYPT_RIJNDAEL_256, md5($encryption_key), $matches[0], MCRYPT_MODE_CBC, md5(md5($encryption_key)))); 
-        return '<a href="/contact/email?to=' . urlencode($encrypted) . '">' . htmlentities(substr($matches[0], 0, strpos($matches[0], "@")), ENT_QUOTES, "UTF-8", false) . '@&#8230;</a>';
+        
+
+        $cipher = "aes-128-gcm";
+        $tag = null;
+        if (in_array($cipher, openssl_get_cipher_methods()))
+        {
+            $encryption_key = $this->settings->GetEmailAddressEncryptionKey();
+            $iv = $this->settings->GetEmailAddressEncryptionIv();
+            $encrypted = openssl_encrypt($matches[0], $cipher, $encryption_key, $options=0, $iv, $tag);
+        }
+
+        return '<a href="/contact/email?to=' . urlencode(base64_encode($encrypted)) . '&tag=' . urlencode(base64_encode($tag)) . '">' . htmlentities(substr($matches[0], 0, strpos($matches[0], "@")), ENT_QUOTES, "UTF-8", false) . '@&#8230;</a>';
     }
     
     /**
      * Decrypt an e-mail address encrypted by the ApplyEmailProtection() method
      * @param $address string
+     * @param $tag string
      */
-    public function DecryptProtectedEmail($address) 
+    public function DecryptProtectedEmail($address, $tag) 
     {
-        $encryption_key = $this->settings->GetEmailAddressEncryptionKey();
-        $address = rtrim(mcrypt_decrypt(MCRYPT_RIJNDAEL_256, md5($encryption_key), base64_decode($address), MCRYPT_MODE_CBC, md5(md5($encryption_key))), "\0");
+        $cipher = "aes-128-gcm";
+        if (in_array($cipher, openssl_get_cipher_methods()))
+        {
+            $address = base64_decode($address);
+            $encryption_key = $this->settings->GetEmailAddressEncryptionKey();
+            $iv = $this->settings->GetEmailAddressEncryptionIv();
+            $tag = base64_decode($tag);
+            $address = rtrim(openssl_decrypt($address, $cipher, $encryption_key, $options=0, $iv, $tag), "\0");
+        }
         return $address;
     }
     

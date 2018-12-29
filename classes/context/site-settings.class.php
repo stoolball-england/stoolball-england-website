@@ -224,9 +224,20 @@ abstract class SiteSettings
      * Gets the key used to encrypt and decrypt email addresses to hide them from spambots
      */
     public function GetEmailAddressEncryptionKey() {
+        // Generated using openssl_random_pseudo_bytes(32);
         return "";
     } 
     
+    /***
+     * Gets the iv used to encrypt and decrypt email addresses to hide them from spambots
+     */
+    public function GetEmailAddressEncryptionIv() {
+        // Generated using:
+        // $ivlen = openssl_cipher_iv_length($cipher);
+        // $iv = openssl_random_pseudo_bytes($ivlen);
+        return "";
+    }
+
     /**
      * Gets the signature to add to all automated emails
      */

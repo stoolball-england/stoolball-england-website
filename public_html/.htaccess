@@ -13,7 +13,7 @@ AddOutputFilterByType DEFLATE application/javascript
 AddOutputFilterByType DEFLATE application/x-javascript
 </IfModule>
 
-AddType x-httpd-php55 .php
+AddType x-httpd-php71 .php
 
 <IfModule mod_headers.c>
 <FilesMatch "\.(css|js)$">

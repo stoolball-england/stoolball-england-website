@@ -23,11 +23,11 @@ class CurrentPage extends StoolballPage
 		$this->form = new EmailForm($this->GetSettings());
 		$this->RegisterControlForValidation($this->form);
 
-		$this->valid = (isset($_GET['to']) and is_string($_GET['to']));
+		$this->valid = (isset($_GET['to']) and is_string($_GET['to']) and isset($_GET['tag']) and is_string($_GET['tag']));
         if ($this->valid)
         {
             $protector = new EmailAddressProtector($this->GetSettings());
-            $this->address = $protector->DecryptProtectedEmail($_GET['to']);
+            $this->address = $protector->DecryptProtectedEmail($_GET['to'], $_GET['tag']);
             $email = new EmailAddress($this->address);
             $this->valid = $email->IsValid();
         } 
@@ -126,7 +126,7 @@ class CurrentPage extends StoolballPage
 		else
 		{
 			echo "<h1>Oops, that doesn't work</h1>
-			      <p>Sorry, we're not sure who you're trying to email. If you got here by clicking a link on our website, please let us know where it was and we' ll fix it.</p>";
+			      <p>Sorry, we're not sure who you're trying to email. If you got here by clicking a link on our website, please let us know where it was and we'll fix it.</p>";
 		}
 	}
 

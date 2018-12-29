@@ -16,7 +16,10 @@ class MatchManager extends DataManager
 		$this->s_item_class = 'Match';
 		$this->filter_by_match_types = array();
         $this->filter_by_player_types = array();
-        $this->filter_by_teams = array();
+		$this->filter_by_teams = array();
+		$this->filter_by_grounds = array();
+		$this->filter_by_competitions = array();
+		$this->filter_by_match_result = array();
 	}
 
 	private $filter_by_match_types;
@@ -721,7 +724,7 @@ class MatchManager extends DataManager
             $where .= "$s_match.tournament_match_id = " . Sql::ProtectNumeric($this->filter_by_tournament_id) . " ";
         } 
 
-        if (!is_null($this->filter_by_competitions))
+        if (count($this->filter_by_competitions))
         {
             $competition_ids = join(', ', $this->filter_by_competitions);
             if ($where)

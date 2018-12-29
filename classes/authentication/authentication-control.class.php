@@ -24,7 +24,7 @@ class AuthenticationControl extends XhtmlElement
 			# Show username
 			$this->AddControl(new XhtmlElement('p', 'Welcome ' . $this->o_user->GetName(), "large"));
             
-            $token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB)));
+            $token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : bin2hex(random_bytes(32));
             $_SESSION['csrf_token'] = $token;
             $html = '<form method="post" class="sign-out screen" action="/you/sign-out"><div>
             <input type="hidden" name="action" value="signout" />

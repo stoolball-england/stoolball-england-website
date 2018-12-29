@@ -143,7 +143,7 @@ class ShortUrlManager extends DataManager
             }
             
 			# and make that complete page URL the param for the hcalendar script
-            $real_url['param_values'] = array("http://" . $_SERVER['HTTP_HOST'] . "/" . $real_url['script'] . $qs, $url_to_check);
+            $real_url['param_values'] = array("https://" . $_SERVER['HTTP_HOST'] . "/" . $real_url['script'] . $qs, $url_to_check);
 			$real_url['param_names'] = array('page', 'shorturl');
 			$real_url['script'] = "hcalendar.php";
 		}

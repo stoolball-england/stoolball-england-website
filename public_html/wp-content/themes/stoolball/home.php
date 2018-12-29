@@ -128,7 +128,14 @@ class CurrentPage extends StoolballPage
 			}
 			else
 			{
-				the_content("Read more<span class=\"aural\"> on " . the_title('', '', false) . '</span>&#8230;');
+				$content = get_the_content("Read more<span class=\"aural\"> on " . the_title('', '', false) . '</span>&#8230;');
+				$content = apply_filters('the_content', $content);
+				$content = str_replace(']]>', ']]&gt;', $content);
+
+				# Allow pictures to resize with screen on the mobile. Not ideal as should use thumbnails, but better than horizontal scrolling.
+				$content = preg_replace('/ style="[^"]+"/', "", $content);
+				$content = preg_replace('/<img([^>]*) height=["0-9]+/', "<img$1", $content);
+				echo $content;
 			}
 			?>
 			</div>

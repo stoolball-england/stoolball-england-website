@@ -409,12 +409,9 @@ class StoolballWordPressPlugin
 						$wordpress_image_folder = $this->settings->GetServerRoot();
 						if (SiteContext::IsDevelopment()) $wordpress_image_folder .= "../"; # on dev setup, WordPress image uploads are outside web root
 
-						require_once 'Zend/Uri.php';
-						$uri = Zend_Uri::factory(substr($image, $pos, $len-$pos));
-						/* @var $uri Zend_Uri_Http */
-
 						# Change it to the thumbnail path and see whether the thumbnail exists
-						$thumbnail = $wordpress_image_folder . $uri->getPath();
+						$uri = parse_url(substr($image, $pos, $len-$pos));
+						$thumbnail = $wordpress_image_folder . $uri['path'];
 						$pos = strrpos($thumbnail, '.');
 						if ($pos !== false)
 						{

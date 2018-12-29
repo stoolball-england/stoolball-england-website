@@ -909,7 +909,7 @@ class AuthenticationManager extends DataManager
      */
     private function GenerateRandomToken() 
     {
-        return base64_encode(mcrypt_create_iv(mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB)));
+        return bin2hex(random_bytes(32));
     }
  
     /**
