@@ -227,7 +227,6 @@ fieldset.school-years label { display: inline-block; width: 6.5em; }
 
 .tab-box { clear:both; border-radius: 0 5px 5px 5px; box-shadow: rgba(0,0,0,.2) 0px 0px 1px 1px inset; background: none; }
 .tab-box .dataFilter { border-radius: 0 5px 0 0; }
-.tab-box img { margin: 10px 0;} /* Identity images on pages in the Play section */
 
 /* Filter options for listings 
  *

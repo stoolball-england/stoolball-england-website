@@ -515,11 +515,11 @@ class StoolballPage extends Page
 		if ($this->GetHasGoogleMap())
 		{
 		// Load Google AJAX Search API for geocoding (Google Maps API v3 Geocoding is still rubbish 29 Oct 2009)
-		$s_key = (SiteContext::IsDevelopment()) ? 'ABQIAAAA1HxejNRwsLuCM4npXmWXVRRQNEa9vqBL8sCMeUxGvuXwQDty9RRFMSpVT9x-PVLTvFTpGlzom0U9kQ' : 'ABQIAAAA1HxejNRwsLuCM4npXmWXVRSqn96GdhD_ATNWxDNgWa3A5EXWHxQrao6MHCS6Es_c2v0t0KQ7iP-FTg';
-		echo '<script src="https://www.google.com/uds/api?file=uds.js&amp;v=1.0&amp;key=' . $s_key . '"></script>';
+		$ajax_key = (SiteContext::IsDevelopment()) ? 'ABQIAAAA1HxejNRwsLuCM4npXmWXVRRQNEa9vqBL8sCMeUxGvuXwQDty9RRFMSpVT9x-PVLTvFTpGlzom0U9kQ' : 'ABQIAAAA1HxejNRwsLuCM4npXmWXVRSqn96GdhD_ATNWxDNgWa3A5EXWHxQrao6MHCS6Es_c2v0t0KQ7iP-FTg';
+		echo '<script src="https://www.google.com/uds/api?file=uds.js&amp;v=1.0&amp;key=' . $ajax_key . '"></script>';
 
 		// Load Google Maps API v3
-		echo '<script src="https://maps.google.co.uk/maps/api/js?sensor=false"></script>';
+		echo '<script src="https://maps.google.co.uk/maps/api/js?key=' . $this->GetSettings()->GetGoogleMapsApiKey() . '"></script>';
 		}
 		}
 

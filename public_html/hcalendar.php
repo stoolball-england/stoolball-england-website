@@ -16,15 +16,12 @@ function Abort()
 }
 
 # Ensure all errors, old and new, lead to Abort()
-set_error_handler('Abort');
+//set_error_handler('Abort');
 try
 {
 	# First check if we have the required querystring parameter
-	if (!isset($_GET['page']) or !$_GET['page']) Abort();
-
-	# Use the Zend_Uri class purely to validate whether the passed URI looks like a URI
-	require_once 'Zend/Uri.php';
-	$uri = Zend_Uri::factory($_GET['page']);
+	//if (!isset($_GET['page']) or !$_GET['page']) Abort();
+	$url = 'https://stoolball.local/play/competitions/competition.php?item=462';
 
 	# Request the page to be parsed
 	/* @var $uri Zend_Uri_Http */
@@ -32,19 +29,16 @@ try
 	$user_agent = "Stoolball England microformats parser";
 	if (isset($_SERVER['HTTP_USER_AGENT'])) $user_agent = $_SERVER['HTTP_USER_AGENT'] . "; $user_agent";
 
-	$client = new Zend_Http_Client($uri->__toString(), array(
-	'maxredirects' => 0,
-	'timeout'      => 30,
-	'useragent'    => $user_agent));
-	$client->request();
-	$response = $client->getLastResponse();
-
+	$curl = curl_init($url);
+	curl_setopt($curl, CURLOPT_RETURNTRANSFER, true );   
+	$body = curl_exec($curl);
+	$httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+	curl_close($curl);
+	
 	# Check we got a non-error status code
-	if ($response->getStatus() >= 400) Abort();
+	if ($httpcode >= 400) Abort();
 
 	# Check we got some body content to parse
-	/* @var $response Zend_Http_Response */
-	$body = $response->getBody();
 	if (!$body) Abort();
 
 	# Load the XSLT file, which is from suda.co.uk

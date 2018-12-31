@@ -253,6 +253,13 @@ abstract class SiteSettings
         return array();
     }
     
+    /**
+     * Gets the API key to connect to Google Maps
+     */
+    public function GetGoogleMapsApiKey() {
+        return '';
+    }
+
 	/**
 	 * Gets the hostname to connect to the site database
 	 *
