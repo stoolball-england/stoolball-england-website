@@ -6,7 +6,6 @@ require_once ('context/stoolball-settings.class.php');
 require_once ('context/site-context.class.php');
 require_once ('stoolball/match-manager.class.php');
 require_once('xhtml/html.class.php');
-require_once ("Zend/Feed.php");
 
 # set up error handling, unless local and using xdebug
 $settings = new StoolballSettings();
@@ -37,6 +36,9 @@ if (!(SiteContext::IsDevelopment()))
 
 # set up INI options
 date_default_timezone_set('Europe/London');
+
+// set the Content Type of the document
+header('Content-type: application/rss+xml');
 
 $database = new MySqlConnection($settings->DatabaseHost(), $settings->DatabaseUser(), $settings->DatabasePassword(), $settings->DatabaseName());
 
@@ -176,14 +178,22 @@ if ($player_type)
 {
     $title = $player_type . strtolower($title);
 }
-$feedData = array('title' => $title, 
-                  'description' => "New or updated " . strtolower($player_type) . "stoolball matches on the Stoolball England website", 
-                  'link' => 'https://www.stoolball.org.uk/play/matches', 
-                  'charset' => 'utf-8', 
-                  "language" => "en-GB", 
-                  "image" => "https://www.stoolball.org.uk/images/feed-ident.gif", 
-                  'entries' => array());
-                 
+echo '<?xml version="1.0" encoding="utf-8"?>';
+?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+  <channel>
+    <title><![CDATA[<?php $title ?>]]></title>
+    <link>https://www.stoolball.org.uk/play/matches</link>
+    <description><![CDATA[New or updated <?php echo strtolower($player_type) ?>stoolball matches on the Stoolball England website]]></description>
+    <pubDate><?php echo date('r'); ?></pubDate>
+    <image>
+      <url>https://www.stoolball.org.uk/images/feed-ident.gif</url>
+      <title><![CDATA[<?php $title ?>]]></title>
+      <link>https://www.stoolball.org.uk/play/matches</link>
+    </image>
+    <language>en-GB</language>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+<?php
 foreach ($matches as $match) 
 {
     /* @var $match Match */
@@ -236,19 +246,18 @@ foreach ($matches as $match)
     } 
     
     $medium = $tweet ? "twitter" : "rss";
-    $feedData["entries"][]  = array('title' => $item_title, 
-                                'description' => $description, 
-                                'link' => "https://" . $settings->GetDomain() . $match->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=matches", 
-                                'guid' => $today ? $match->GetLinkedDataUri() . "/today" : $match->GetLinkedDataUri(), 
-                                "lastUpdate" => $today ? mktime(8) : $match->GetLastAudit()->GetTime(),
-                                "category" => array(array("term" => strtolower(PlayerType::Text($match->GetPlayerType())))));
+    ?>
+    <item>
+        <title><![CDATA[<?php echo $item_title ?>]]></title>
+        <description><![CDATA[<?php echo $description ?>]]></description>
+        <link>https://<?php echo $settings->GetDomain() . $match->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=matches" ?></link>
+        <pubDate><?php echo date('r', $today ? mktime(8) : $match->GetLastAudit()->GetTime()) ?></pubDate>
+        <guid isPermaLink="false"><?php echo $today ? $match->GetLinkedDataUri() . "/today" : $match->GetLinkedDataUri() ?></guid>
+        <source url="https://<?php echo $settings->GetDomain() . $_SERVER['REQUEST_URI'] ?>" />
+        <category><![CDATA[<?php echo strtolower(PlayerType::Text($match->GetPlayerType())) ?>]]></category>
+    </item>
+    <?php
 }
-// create our feed object and import the data
-$feed = Zend_Feed::importArray($feedData, 'rss');
-
-// set the Content Type of the document
-header('Content-type: text/xml');
-
-// echo the contents of the RSS xml document
-echo $feed->send();
 ?>
+  </channel>
+</rss>
