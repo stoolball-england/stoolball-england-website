@@ -1,4 +1,8 @@
 <?php
+function warning_handler($errno, $errstr) { 
+    // ignore the warning
+}
+    
 /**
  * Protect email addresses by obfuscating or encrypting them (depending on whether the current user is signed in)
  */
@@ -79,7 +83,12 @@ class EmailAddressProtector {
             $encryption_key = $this->settings->GetEmailAddressEncryptionKey();
             $iv = $this->settings->GetEmailAddressEncryptionIv();
             $tag = base64_decode($tag);
+
+            // When bots hit this sometimes it throws an E_WARNING "Setting tag for AEAD cipher decryption failed", 
+            // yet it seems to work when tested so catch and ignore the warning
+            set_error_handler("warning_handler", E_WARNING);
             $address = rtrim(openssl_decrypt($address, $cipher, $encryption_key, $options=0, $iv, $tag), "\0");
+            restore_error_handler();
         }
         return $address;
     }
