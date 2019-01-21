@@ -96,7 +96,7 @@ else if (isset($_GET['tournaments']) and $_GET['tournaments'])
 
 	$match_manager->FilterByMatchType(array(MatchType::TOURNAMENT));
 	$match_manager->FilterByPlayerType($player_types);
-	//$match_manager->FilterByDateStart($yesterday);
+	$match_manager->FilterByDateStart($yesterday);
 	$match_manager->ReadMatchSummaries();
 	$matches = $match_manager->GetItems();
 
