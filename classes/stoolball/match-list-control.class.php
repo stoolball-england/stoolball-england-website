@@ -166,9 +166,7 @@ class MatchListControl extends XhtmlElement
     
     private function CreateEndDate(Match $match) 
     {
-        $i_end_time = $match->GetStartTime() + (60*90);
-        if ($match->GetMatchType() == MatchType::TOURNAMENT_MATCH) $i_end_time = $match->GetStartTime() + (60*45); # 45 mins
-        if ($match->GetMatchType() == MatchType::TOURNAMENT) $i_end_time = $match->GetStartTime() + (60*420); # 7 hours
+        $i_end_time = $match->GetEstimatedEndTime();
         $hcal_end = new XhtmlElement('abbr', ' until around ' . htmlentities(Date::Time($i_end_time), ENT_QUOTES, "UTF-8", false));
         $hcal_end->SetTitle(Date::Microformat($i_end_time));
         $hcal_end->SetCssClass('dtend');

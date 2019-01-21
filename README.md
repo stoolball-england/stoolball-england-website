@@ -12,8 +12,6 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * [TinyMCE 3.5.8](https://www.tinymce.com/), available from the [TinyMCE older releases page](http://archive.tinymce.com/download/older.php), should be installed in a `tiny_mce` folder inside `public_html\scripts`.
 
-* [XHTML-2-iCal 0.9.2.1](http://suda.co.uk/projects/microformats/hcalendar/) is included in this repository because it's not actively maintained elsewhere, and the [The W3C Open Source License](http://www.w3.org/Consortium/Legal/copyright-software-19980720) allows it.
-
 * The [Block Bad Queries WordPress plugin](https://perishablepress.com/block-bad-queries/) is a first line of defence against malicious requests.
 
 * The [TinyMCE Advanced WordPress plugin](http://www.laptoptips.ca/projects/tinymce-advanced/) gives more control over the options available to editors in WordPress admin.

@@ -661,7 +661,7 @@ class MatchManager extends DataManager
 			$where .= '(home_link.team_id IN (' . $team_ids . ') OR away_link.team_id IN (' . $team_ids . ')) ';
 		}
 
-		if (count($this->filter_by_match_types))
+		if (!is_null($this->filter_by_match_types) and count($this->filter_by_match_types))
 		{
 			$s_type_ids = join(', ', $this->filter_by_match_types);
             if ($where)
@@ -671,7 +671,7 @@ class MatchManager extends DataManager
 			$where .= $s_match . '.match_type IN (' . $s_type_ids . ') ';
 		}
 
-		if (count($this->filter_by_grounds))
+		if (!is_null($this->filter_by_grounds) and count($this->filter_by_grounds))
 		{
 			$ground_ids = join(', ', $this->filter_by_grounds);
             if ($where)
@@ -691,7 +691,7 @@ class MatchManager extends DataManager
             $where .= $s_match . '.match_type != ' .  MatchType::TOURNAMENT_MATCH . ' ';
         } 
 
-        if (count($this->filter_by_match_result))
+        if (!is_null($this->filter_by_match_result) and count($this->filter_by_match_result))
         {
             $result_ids = join(', ', $this->filter_by_match_result);
            if ($where)
@@ -705,7 +705,7 @@ class MatchManager extends DataManager
            $where .= $clause;
         }
 
-		if (count($this->filter_by_player_types))
+		if (!is_null($this->filter_by_player_types) and count($this->filter_by_player_types))
 		{
 			$s_player_ids = join(', ', $this->filter_by_player_types);
             if ($where)
@@ -724,7 +724,7 @@ class MatchManager extends DataManager
             $where .= "$s_match.tournament_match_id = " . Sql::ProtectNumeric($this->filter_by_tournament_id) . " ";
         } 
 
-        if (count($this->filter_by_competitions))
+        if (!is_null($this->filter_by_competitions) and count($this->filter_by_competitions))
         {
             $competition_ids = join(', ', $this->filter_by_competitions);
             if ($where)

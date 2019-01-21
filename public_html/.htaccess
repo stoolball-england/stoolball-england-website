@@ -98,10 +98,11 @@ RewriteRule ^teams/add/?$ /play/teams/teamedit.php [L,NC,QSA]
 RewriteRule ^teams/map/?$ /play/teams/map.php [L,NC,QSA]
 RewriteRule ^tournaments/?$ /tournaments/all/ [R=303,L,NC]
 RewriteRule ^tournaments/add/?(teams|competitions)?/?$ /play/tournaments/add.php [L,NC,QSA]
+RewriteRule ^tournaments/?([a-z]*)/calendar.ics$ /play/calendar.ics.php?tournaments=$1 [L,NC,QSA]
+RewriteRule ^tournaments/?([a-z]*)/calendar/?$ /play/calendar.php?tournaments=$1 [L,NC,QSA]
 RewriteRule ^(teams|tournaments)/map/?([a-z]*)/?$ /play/$1/map.php?player=$2 [L,NC,QSA]
 RewriteRule ^(teams|tournaments)/?([a-z]*)/?([a-z]*)/?$ /play/$1/index.php?player=$2&area=$3 [L,NC,QSA]
 RewriteRule ^tournaments/?([a-z]*)\.rss$ /play/tournaments/rss.php?player=$1 [L,NC,QSA]
-RewriteRule ^tournaments/?([a-z]*)/calendar/?$ /play/calendar.php?tournaments=$1 [L,NC,QSA]
 
 RewriteRule ^play/statistics-and-photos/?$ /play/statistics-and-photos.php [L,NC,QSA]
 RewriteCond %{REQUEST_FILENAME}.php -f

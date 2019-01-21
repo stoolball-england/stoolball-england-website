@@ -403,6 +403,17 @@ class Match implements IHasShortUrl
 	public function GetIsStartTimeKnown() { return $this->b_time_known; }
 
 	/**
+	 * @return int
+	 * Gets an estimated end time for the match based on the start time and a typical duration
+	 */
+	public function GetEstimatedEndTime() {
+		$i_end_time = $this->GetStartTime() + (60*90); # 90 mins for a typical match
+        if ($this->GetMatchType() == MatchType::TOURNAMENT_MATCH) $i_end_time = $this->GetStartTime() + (60*45); # 45 mins
+        if ($this->GetMatchType() == MatchType::TOURNAMENT) $i_end_time = $this->GetStartTime() + (60*420); # 7 hours
+		return $i_end_time;
+	}
+
+	/**
 	 * @return void
 	 * @param Ground $o_input
 	 * @desc Sets the ground for the Match
@@ -809,6 +820,7 @@ class Match implements IHasShortUrl
         '{0}/edit/competitions' => '/play/tournaments/seasons.php?item={0}',
 		'{0}/delete' => '/play/matches/matchdelete.php?item={0}',
 		'{0}/calendar' => '/play/calendar.php?match={0}',
+		'{0}/calendar.ics' => '/play/calendar.ics.php?match={0}',
 		'{0}/matches/edit' => "/play/tournaments/matches.php?item={0}",
         '{0}/matches/results' => "/play/results.php?tournament={0}",
 		'{0}/statistics' => "/play/statistics/summary-match.php?match={0}&type={1}",

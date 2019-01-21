@@ -492,6 +492,7 @@ class Season extends Collection implements IHasShortUrl
 		'{0}/matches/tournaments/add' => "/play/tournaments/add.php?season={0}",
 		'{0}/matches/edit' => '/play/results.php?season={0}',
 		'{0}/calendar' => '/play/calendar.php?season={0}',
+		'{0}/calendar.ics' => '/play/calendar.ics.php?season={0}',
 		'{0}/statistics' => '/play/statistics/summary-season.php?season={0}',
         '{0}/table' => '/play/competitions/table.php?season={0}',
         '{0}/map' => '/play/competitions/map.php?season={0}'

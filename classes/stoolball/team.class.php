@@ -555,6 +555,7 @@ class Team implements IHasShortUrl
 		'{0}/matches/edit' => '/play/results.php?team={0}',
         '{0}/matches.rss' => '/play/matches/matches-rss.php?team={0}',
 		'{0}/calendar' => '/play/calendar.php?team={0}',
+		'{0}/calendar.ics' => '/play/calendar.ics.php?team={0}',
 		'{0}/statistics' => '/play/statistics/summary-team.php?item={0}',
 		'{0}/players' => '/play/teams/players.php?team={0}',
 		'{0}/players/add' => '/play/playeredit.php?team={0}',

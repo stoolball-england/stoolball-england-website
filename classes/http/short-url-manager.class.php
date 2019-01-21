@@ -119,35 +119,8 @@ class ShortUrlManager extends DataManager
 
 		$result->closeCursor();
 
-		# If last REST param is "calendar" pass page URL as parameter to hcalendar generator
 		$len_rest = count($rest_params);
-		if ($len_rest and $rest_params[$len_rest-1] == "calendar.ics")
-		{
-			# remove the calendar param and add other params to page URL
-			array_pop($rest_params);
-			$real_url['param_names'][] = "params";
-			$real_url['param_values'][] = implode("/", $rest_params);
-
-			# build up page URL with any params
-			$len = count($real_url['param_names']);
-			$qs ="?";
-			for ($i = 0; $i < $len; $i++)
-			{
-				$qs .= $real_url['param_names'][$i] . "=" . $real_url['param_values'][$i] . "&";
-			}
-
-            # If the short URL is in .htaccess rather than the database, the $rest_params are the URL
-            if (!isset($real_url['script']))
-            {
-                $real_url['script'] = implode("/", $rest_params);
-            }
-            
-			# and make that complete page URL the param for the hcalendar script
-            $real_url['param_values'] = array("https://" . $_SERVER['HTTP_HOST'] . "/" . $real_url['script'] . $qs, $url_to_check);
-			$real_url['param_names'] = array('page', 'shorturl');
-			$real_url['script'] = "hcalendar.php";
-		}
-		else if ($real_url != null and $len_rest)
+		if ($real_url != null and $len_rest)
 		{
 			# add any REST params to page URL
 			$real_url['param_names'][] = "params";
