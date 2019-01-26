@@ -1854,9 +1854,11 @@ class MatchManager extends DataManager
         $match_ids_to_delete = array();
         
         $sql = "SELECT match_id FROM nsa_match 
-                WHERE tournament_match_id = " . Sql::ProtectNumeric($tournament->GetId(), false, false) . "
-                AND match_id NOT IN (" . join(',',$match_ids_to_keep) . ") ";
-        $result = $this->GetDataConnection()->query($sql);
+				WHERE tournament_match_id = " . Sql::ProtectNumeric($tournament->GetId(), false, false);
+		if (count($match_ids_to_keep)) {
+			$sql .= " AND match_id NOT IN (" . join(',',$match_ids_to_keep) . ") ";
+		}
+		$result = $this->GetDataConnection()->query($sql);
         
         while($row = $result->fetch()) {
             $match_ids_to_delete[] = $row->match_id;
