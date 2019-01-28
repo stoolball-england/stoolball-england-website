@@ -1,7 +1,7 @@
 <?php
 require_once('data/data-manager.class.php');
-require_once('match.class.php');
-require_once('player-type.enum.php');
+require_once('stoolball/match.class.php');
+require_once('stoolball/player-type.enum.php');
 
 class MatchManager extends DataManager
 {
