@@ -200,7 +200,6 @@ class CurrentPage extends StoolballPage
         $this->LoadClientScript("/play/statistics/player-batting.js");
 		?>
 <link rel="stylesheet" href="/css/custom-theme/jquery-ui-1.8.11.custom.css" media="screen" />
-<!--[if lte IE 8]><script src="/scripts/lib/excanvas.compiled.js"></script><![endif]-->
 		<?php
 	}
 

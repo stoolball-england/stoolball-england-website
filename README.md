@@ -20,11 +20,9 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * The [WordPress Category Archive plugin](https://wordpress.org/plugins/wp-category-archive/) is included in this repository because it's not actively maintained, and has no stated licence covering its use. It enables the Surrey league to have its own news page.
 
-* [JQuery 1.7.2](https://jquery.org) and [JQuery UI 1.8.11](http://jqueryui.com/) are included in this repository because JQuery UI is a custom download of specific components, which might be different if downloaded from the current Modernizr site, and because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.
+* [JQuery 1.7.2](https://jquery.org) and [JQuery UI 1.8.11](http://jqueryui.com/) are included in this repository because JQuery UI is a custom download of specific components, which might be different if downloaded from the current site, and because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.
 
 * [Chart.js 1.0.1](http://chartjs.org/) and [Chart.StackedBar.js](https://github.com/Regaddi/Chart.StackedBar.js) are used to display charts for statistics, and are included in this repository for convenience because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.
-
-* The [ExplorerCanvas](https://github.com/arv/explorercanvas) polyfill adds canvas support in IE8, used to display charts for statistics, and is included in this repository for convenience because the [Apache Licence 2.0](http://www.apache.org/licenses/LICENSE-2.0) allows it. 
 
 * [MarkerClusterer](https://github.com/googlemaps/js-marker-clusterer) for Google Maps groups markers together, and is included in this repository because the exact version in use has not been recorded, and the [Apache Licence 2.0](http://www.apache.org/licenses/LICENSE-2.0) allows it.
 
