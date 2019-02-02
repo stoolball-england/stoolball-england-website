@@ -1,43 +1,4 @@
 if (typeof (jQuery) != "undefined") {
-    if (!Modernizr.mq("only screen and (min-width: 500px)")) {
-		// If no media query support, copy link tags which use media queries to new ones which don't.'
-        $("link[media]", "head").each(function() {
-            var a = document.createElement("link");
-            a.rel = this.rel;
-            a.type = this.type;
-            a.href = this.href;
-            a.media = "screen";
-            a.className = "js" + this.className;
-            this.parentNode.insertBefore(a, this);
-        });
-        
-        // Now remove the stylesheets in Internet Explorer conditional comments, which were only there for non-JavaScript users
-        $("link.mqIE", "head").attr("disabled", "disabled");
-        
-        // Polyfill media query in JavaScript
-        var mqMedium = $("link.jsmqMedium", "head");
-        function applyMedium() {
-            mqMedium.each(function() {
-                this.disabled = document.documentElement.offsetWidth < 500;
-            });
-        }
-        $(window).resize(applyMedium);
-        applyMedium();
-    }
-    
-    if (!Modernizr.mq("only screen and (min-width: 900px)")) {
-        
-        // Polyfill media query in JavaScript
-        var mqLarge = $("link.jsmqLarge", "head");
-        function applyLarge() {
-            mqLarge.each(function() {
-                this.disabled = document.documentElement.offsetWidth < 900;
-            });
-        }
-        $(window).resize(applyLarge);
-        applyLarge();
-    }
-
     $(function(){
     	$(".sign-out input[type=submit]").replaceWith('<a href="/you/sign-out" class="screen">Sign out</a>');
     	$(".sign-out a").click(function(e){ e.preventDefault(); $(".sign-out").submit(); });

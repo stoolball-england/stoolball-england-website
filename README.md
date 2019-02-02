@@ -20,8 +20,6 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * The [WordPress Category Archive plugin](https://wordpress.org/plugins/wp-category-archive/) is included in this repository because it's not actively maintained, and has no stated licence covering its use. It enables the Surrey league to have its own news page.
 
-* [Modernizr 2.5.3](https://modernizr.com/) is included in this repository because it is a custom download of specific components, which might be different if downloaded from the current Modernizr site, and because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.
-
 * [JQuery 1.7.2](https://jquery.org) and [JQuery UI 1.8.11](http://jqueryui.com/) are included in this repository because JQuery UI is a custom download of specific components, which might be different if downloaded from the current Modernizr site, and because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.
 
 * [Chart.js 1.0.1](http://chartjs.org/) and [Chart.StackedBar.js](https://github.com/Regaddi/Chart.StackedBar.js) are used to display charts for statistics, and are included in this repository for convenience because the [MIT Licence](http://www.opensource.org/licenses/mit-license.php) allows it.

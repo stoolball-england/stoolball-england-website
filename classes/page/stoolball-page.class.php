@@ -51,7 +51,7 @@ class StoolballPage extends Page
 		# Register JQuery early so it's loaded before other scripts
 		# IMPORTANT: The latest JQuery 1.X does not work with the auto complete used here, so that would need upgrading too.
 		$this->LoadClientScript($this->GetContext()->IsDevelopment() ? '/scripts/lib/jquery-1.7.2.min.js' : 'https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js');
-		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.5.js");
+		$this->LoadClientScript($this->resource_root . "/scripts/stoolball.6.js");
 	}
 
 	/**
@@ -104,10 +104,8 @@ class StoolballPage extends Page
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <link rel="canonical" href="https://<?php echo $this->GetSettings()->GetDomain() . htmlspecialchars($_SERVER["REQUEST_URI"]); ?>" />
 <link rel="stylesheet" href="<?php echo $css_mobile ?>" />
-<link rel="stylesheet" href="<?php echo $css_medium ?>" media="only screen and (min-width: 500px)" class="mqMedium" />
-<link rel="stylesheet" href="<?php echo $css_desktop ?>" media="only screen and (min-width: 900px)" class="mqLarge" />
-<!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_medium ?>" class="mqIE mqMedium" /><![endif]-->
-<!--[if (lte IE 8) & !(IEMobile 7) ]><link rel="stylesheet" href="<?php echo $css_desktop ?>" class="mqIE mqLarge" /><![endif]-->
+<link rel="stylesheet" href="<?php echo $css_medium ?>" media="only screen and (min-width: 500px)" />
+<link rel="stylesheet" href="<?php echo $css_desktop ?>" media="only screen and (min-width: 900px)" />
 <link rel="start" href="/" title="Go to home page" />
 <link rel="shortcut icon" href="<?php echo $this->resource_root ?>/favicon.ico" />
 <meta property="og:type" content="<?php echo htmlentities($this->GetOpenGraphType(), ENT_QUOTES, "UTF-8", false); ?>" />
@@ -116,7 +114,6 @@ class StoolballPage extends Page
 <meta property="og:site_name" content="Stoolball England" />
 <meta property="fb:app_id" content="259918514021950" />
 <meta name="twitter:site" content="@stoolball" />
-<script src="<?php echo $this->resource_root ?>/scripts/lib/modernizr.js"></script>
 <link rel="search" href="/search/" title="Go to Stoolball England\'s search page" />
 <link href='https://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css' />
 		<?php

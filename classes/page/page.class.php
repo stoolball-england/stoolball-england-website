@@ -385,23 +385,10 @@ class Page
 	 */
 	protected function OnOpenHead()
 	{
-	    $attributes = 'xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en" prefix="' . 
-	           'rdfs: http://www.w3.org/2000/01/rdf-schema# ' .
-	           'xsd:  http://www.w3.org/2001/XMLSchema# ' .   
-               'dcterms: http://purl.org/dc/terms/ ' . 
-               'schema: http://schema.org/ ' . 
-	           'og: http://opengraphprotocol.org/schema/ ' . 
-	           'fb: http://www.facebook.com/2008/fbml ' . 
-	           'sioc: http://rdfs.org/sioc/ns# ' . 
-	           'sioctypes: http://rdfs.org/sioc/types# ' . 
-	           'awol: http://bblfish.net/work/atom-owl/2006-06-06/AtomOwl.html#"'; 
-                
-	    echo "<!DOCTYPE html>
-              <!--[if IE 8 ]>    <html class=\"no-js ie8\" $attributes> <![endif]-->
-              <!--[if (gte IE 9)|!(IE)]><!--> <html class=\"no-js\" $attributes> <!--<![endif]-->
-              <head>
-              <meta charset=\"utf-8\" />";
-
+?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" dir="ltr" lang="en" xml:lang="en" prefix="rdfs: http://www.w3.org/2000/01/rdf-schema# xsd: http://www.w3.org/2001/XMLSchema# dcterms: http://purl.org/dc/terms/ schema: http://schema.org/ og: http://opengraphprotocol.org/schema/ fb: http://www.facebook.com/2008/fbml sioc: http://rdfs.org/sioc/ns# sioctypes: http://rdfs.org/sioc/types# awol: http://bblfish.net/work/atom-owl/2006-06-06/AtomOwl.html#">
+<head>
+<meta charset="utf-8" /><?php
 	}
 
 	/**
