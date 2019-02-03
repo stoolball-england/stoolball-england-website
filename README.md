@@ -6,8 +6,6 @@ This is the source code of the Stoolball England website at [www.stoolball.org.u
 
 * [WordPress](https://wordpress.org/) should be installed in the `public_html` folder, and it should always be maintained at the latest version.
 
-* [HTMLPurifier 4.3.0](http://htmlpurifier.org/),  available from the [HTMLPurifier releases page](http://htmlpurifier.org/releases/), should be installed in an `htmlpurifier` folder which is a sibling of `public_html`.
-
 * [TinyMCE 3.5.8](https://www.tinymce.com/), available from the [TinyMCE older releases page](http://archive.tinymce.com/download/older.php), should be installed in a `tiny_mce` folder inside `public_html\scripts`.
 
 * The [Block Bad Queries WordPress plugin](https://perishablepress.com/block-bad-queries/) is a first line of defence against malicious requests.

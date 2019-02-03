@@ -315,18 +315,18 @@ abstract class DataManager extends Collection
             $text = str_replace("<p>&nbsp;</p>","",$text);
 
             # Sanitise the HTML
-            require_once $_SERVER['DOCUMENT_ROOT'] . '/../htmlpurifier/HTMLPurifier.auto.php';
-            $this->purifier = new HTMLPurifier();
-            $this->purifier->config->set('AutoFormat.RemoveEmpty', true);
+			$config = HTMLPurifier_Config::createDefault();
+            $purifier = new HTMLPurifier($config);
+            $purifier->config->set('AutoFormat.RemoveEmpty', true);
 
             if (is_array($allowed_elements)) {
-                $this->purifier->config->set('HTML.Allowed', implode(',',$allowed_elements));
+                $purifier->config->set('HTML.Allowed', implode(',',$allowed_elements));
             } else {
                 # Default config if none specified
-                $this->purifier->config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
+                $purifier->config->set('AutoFormat.RemoveSpansWithoutAttributes', true);
             }
 
-            $text = $this->purifier->purify($text);
+            $text = $purifier->purify($text);
 
             # Since this is likely to be text edited using Tiny MCE, remove the extra
             # span tags inserted by the Firefox Mouseless Browsing add-on
