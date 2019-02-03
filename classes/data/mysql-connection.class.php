@@ -1,6 +1,5 @@
 <?php
 require_once ('data/mysql-raw-data.class.php');
-# require_once ("Zend/Db/Adapter/Pdo/Mysql.php");
 
 class MySqlConnection
 {

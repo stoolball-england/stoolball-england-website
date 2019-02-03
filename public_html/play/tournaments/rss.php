@@ -7,7 +7,6 @@ require_once ('context/stoolball-settings.class.php');
 require_once ('context/site-context.class.php');
 require_once ('stoolball/match-manager.class.php');
 require_once('xhtml/html.class.php');
-require_once ("Zend/Feed.php");
 
 # set up error handling, unless local and using xdebug
 $settings = new StoolballSettings();
@@ -86,18 +85,28 @@ if ($player_type)
 {
     $title = $player_type . strtolower($title);
 }
-$feedData = array('title' => $title, 
-                  'description' => "New or updated " . strtolower($player_type) . "stoolball tournaments on the Stoolball England website", 
-                  'link' => 'http://www.stoolball.org.uk/tournaments', 
-                  'charset' => 'utf-8', 
-                  "language" => "en-GB", 
-                  "author" => "Stoolball England", 
-                  "image" => "https://www.stoolball.org.uk/images/feed-ident.gif", 
-                  'entries' => array());
 
 # Option to tweet new entries to a user, for use with www.iftt.com                  
 $tweet = isset($_GET['format']) && $_GET['format'] === "tweet";
-                  
+
+// set the Content Type of the document
+header('Content-type: text/xml');
+echo '<?xml version="1.0" encoding="utf-8"?>';
+?>
+<rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
+  <channel>
+    <title><![CDATA[<?php echo $title ?>]]></title>
+    <link>https://www.stoolball.org.uk/tournaments</link>
+    <description><![CDATA[New or updated <?php echo strtolower($player_type) ?>stoolball tournaments on the Stoolball England website]]></description>
+    <pubDate><?php echo date('r'); ?></pubDate>
+    <image>
+      <url>https://www.stoolball.org.uk/images/feed-ident.gif</url>
+      <title><![CDATA[<?php echo $title ?>]]></title>
+      <link>https://www.stoolball.org.uk/tournaments</link>
+    </image>
+    <language>en-GB</language>
+    <docs>http://blogs.law.harvard.edu/tech/rss</docs>
+<?php
 foreach ($matches as $tournament) 
 {
     if ($tweet)
@@ -144,19 +153,18 @@ foreach ($matches as $tournament)
     }
     
     $medium = $tweet ? "twitter" : "rss";
-    $feedData["entries"][]  = array('title' => $item_title, 
-                                'description' => $description, 
-                                'link' => "http://" . $settings->GetDomain() . $tournament->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=tournaments", 
-                                'guid' => $tournament->GetLinkedDataUri(), 
-                                "lastUpdate" => $tournament->GetLastAudit()->GetTime(),
-                                "category" => array(array("term" => strtolower(PlayerType::Text($tournament->GetPlayerType())))));
+    ?>
+    <item>
+        <title><![CDATA[<?php echo $item_title ?>]]></title>
+        <description><![CDATA[<?php echo $description ?>]]></description>
+        <link>https://<?php echo $settings->GetDomain() . $tournament->GetNavigateUrl() . "?utm_source=stoolballengland&amp;utm_medium=" . $medium . "&amp;utm_campaign=tournaments" ?></link>
+        <pubDate><?php echo date('r', $tournament->GetLastAudit()->GetTime()) ?></pubDate>
+        <guid isPermaLink="false"><?php echo $tournament->GetLinkedDataUri() ?></guid>
+        <source url="https://<?php echo $settings->GetDomain() . $_SERVER['REQUEST_URI'] ?>" />
+        <category><![CDATA[<?php echo strtolower(PlayerType::Text($tournament->GetPlayerType())) ?>]]></category>
+    </item>
+    <?php
 }
-// create our feed object and import the data
-$feed = Zend_Feed::importArray($feedData, 'rss');
-
-// set the Content Type of the document
-header('Content-type: text/xml');
-
-// echo the contents of the RSS xml document
-echo $feed->send();
 ?>
+</channel>
+</rss>

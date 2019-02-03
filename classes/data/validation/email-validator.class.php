@@ -15,11 +15,6 @@ class EmailValidator extends DataValidator
 		if (!$s_input) return true; // this isn't a RequiredFieldValidator
 		$o_email_address = new EmailAddress($s_input);
 		return $o_email_address->IsValid(); 
-		
-		/*		require_once 'Zend/Validate/EmailAddress.php';
-		$validator = new Zend_Validate_EmailAddress();
-		$validator->setValidateMx(false);
-		return $validator->isValid($s_input);*/
 	}
 }
 ?>

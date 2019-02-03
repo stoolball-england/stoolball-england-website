@@ -183,13 +183,13 @@ echo '<?xml version="1.0" encoding="utf-8"?>';
 ?>
 <rss xmlns:content="http://purl.org/rss/1.0/modules/content/" version="2.0">
   <channel>
-    <title><![CDATA[<?php $title ?>]]></title>
+    <title><![CDATA[<?php echo $title ?>]]></title>
     <link>https://www.stoolball.org.uk/play/matches</link>
     <description><![CDATA[New or updated <?php echo strtolower($player_type) ?>stoolball matches on the Stoolball England website]]></description>
     <pubDate><?php echo date('r'); ?></pubDate>
     <image>
       <url>https://www.stoolball.org.uk/images/feed-ident.gif</url>
-      <title><![CDATA[<?php $title ?>]]></title>
+      <title><![CDATA[<?php echo $title ?>]]></title>
       <link>https://www.stoolball.org.uk/play/matches</link>
     </image>
     <language>en-GB</language>

@@ -1,11 +1,10 @@
 <?php
-require_once ("Zend/Acl/Role/Interface.php");
 require_once("permission-collection.class.php");
 
 /**
  * A security role used to assign permissions to a user
  */
-class Role implements Zend_Acl_Role_Interface
+class Role
 {
 	private $role_id;
 	private $role_name;
