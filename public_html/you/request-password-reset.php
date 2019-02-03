@@ -32,18 +32,11 @@ class CurrentPage extends StoolballPage
 
         # We're going to send an email whether they have an account or not, so as not to disclose on the website
         # whether the email address is registered.
-        require_once 'Zend/Mail.php';
-        $o_email = new Zend_Mail('UTF-8');
-        $o_email->addTo($_POST['email']);
-        $o_email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
-        $o_email->setSubject('Reset ' . $this->GetSettings()->GetSiteName() . ' password');
-        
         $greeting = "Hi there!";
         $body = '';
 
 		if ($authentication_manager->GetCount())
 		{
-
     		$user = $authentication_manager->GetFirst();
     		/* @var $user User */
     
@@ -70,17 +63,12 @@ class CurrentPage extends StoolballPage
                 $this->GetSettings()->GetEmailSignature() . "\n\n\n" .
                  "(If you didn't ask for this email, please ignore it.)";
 
-        $o_email->setBodyText($body);
-
-        $b_email_result = true;
-        try
-        {
-            $o_email->send();
-        }
-        catch (Zend_Mail_Transport_Exception $e)
-        {
-            $b_email_result = false;
-        }
+        $mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+        $message = (new Swift_Message('Reset ' . $this->GetSettings()->GetSiteName() . ' password'))
+        ->setFrom([$this->GetSettings()->GetEmailAddress() => $this->GetSettings()->GetSiteName()])
+        ->setTo([$_POST['email']])
+        ->setBody($body);
+        $mailer->send($message);
 
         $this->sent = true;
 	}

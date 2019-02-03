@@ -1,12 +1,11 @@
 <?php
 require_once('data/data-edit-control.class.php');
-require_once 'Zend/Mail.php';
 
 class EmailForm extends DataEditControl
 {
     function __construct(SiteSettings $settings)
 	{
-		$this->SetDataObjectClass('Zend_Mail');
+		$this->SetDataObjectClass('Swift_Message');
 		$this->SetButtonText('Send email');
 
         parent::__construct($settings);
@@ -18,28 +17,24 @@ class EmailForm extends DataEditControl
 	*/
 	function BuildPostedDataObject()
 	{
-		$email = new Zend_Mail('UTF-8');
+		$email = new Swift_Message();
+		
 		if (isset($_POST['from']) and is_string($_POST['from'])) {
 	        $fromName = html_entity_decode((isset($_POST['fromName']) and is_string($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']);
-		    $email->setFrom($_POST['from'], $fromName);
+		    $email->setFrom([$_POST['from'] => $fromName]);
         }
 		if (isset($_POST['subject']) and is_string($_POST['subject']) and $_POST['subject'])
 		{
 			$email->setSubject(html_entity_decode($_POST['subject']));
 		}
         $body = (isset($_POST['body']) and is_string($_POST['body'])) ? $_POST['body'] : '';
-        $email->setBodyText(html_entity_decode($body));
+        $email->setBody(html_entity_decode($body));
 		$this->SetDataObject($email);
 	}
 
 
 	function CreateControls()
 	{
-		/* @var $email Zend_Mail */
-
-		$email = $this->GetDataObject();
-		if (!is_object($email)) $email = new Zend_Mail('UTF-8');
-
 		# Your details
         $name = new TextBox('fromName', '', $this->IsValidSubmit());
 		$name->SetMaxLength(100);
@@ -76,15 +71,15 @@ class EmailForm extends DataEditControl
 		require_once('data/validation/plain-text-validator.class.php');
 		require_once('data/validation/email-validator.class.php');
 		
-		$this->a_validators[] = new RequiredFieldValidator(array('fromName',"from","subject","body"), 'Please complete all the fields');
-		$this->a_validators[] = new LengthValidator('fromName', 'Please make your name shorter', 0, 100);
-		$this->a_validators[] = new PlainTextValidator('fromName', 'Please use only letters, numbers and simple punctuation in your name');
-		$this->a_validators[] = new LengthValidator('from', 'Please make your email address shorter', 0, 250);
-		$this->a_validators[] = new EmailValidator(array('from'), 'Please enter your real email address');
-		$this->a_validators[] = new LengthValidator('subject', 'Please make your subject shorter', 0, 250);
-		$this->a_validators[] = new PlainTextValidator('subject', 'Please use only letters, numbers and simple punctuation in your subject');
-        $this->a_validators[] = new LengthValidator('body', 'Please make your message shorter', 0, 10000);
-		$this->a_validators[] = new PlainTextValidator('body', 'Please use only letters, numbers and simple punctuation in your message');
+		$this->AddValidator(new RequiredFieldValidator(array('fromName',"from","subject","body"), 'Please complete all the fields'));
+		$this->AddValidator(new LengthValidator('fromName', 'Please make your name shorter', 0, 100));
+		$this->AddValidator(new PlainTextValidator('fromName', 'Please use only letters, numbers and simple punctuation in your name'));
+		$this->AddValidator(new LengthValidator('from', 'Please make your email address shorter', 0, 250));
+		$this->AddValidator(new EmailValidator(array('from'), 'Please enter your real email address'));
+		$this->AddValidator(new LengthValidator('subject', 'Please make your subject shorter', 0, 250));
+		$this->AddValidator(new PlainTextValidator('subject', 'Please use only letters, numbers and simple punctuation in your subject'));
+        $this->AddValidator(new LengthValidator('body', 'Please make your message shorter', 0, 10000));
+		$this->AddValidator(new PlainTextValidator('body', 'Please use only letters, numbers and simple punctuation in your message'));
     }
 }
 ?>

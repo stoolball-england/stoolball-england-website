@@ -1,5 +1,6 @@
 <?php
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../' . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../classes/');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/../vendor/autoload.php');
 
 require_once ('data/mysql-connection.class.php');
 require_once ('context/stoolball-settings.class.php');
@@ -14,7 +15,7 @@ if (!(SiteContext::IsDevelopment()))
 {
     require_once('page/exception-manager.class.php');
     require_once('page/email-exception-publisher.class.php');
-	$errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail())));
+	$errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail(), $settings->GetEmailTransport())));
 
 	# Use production settings recommended by
 	# http://perishablepress.com/advanced-php-error-handling-via-htaccess/

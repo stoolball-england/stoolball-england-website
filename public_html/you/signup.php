@@ -46,29 +46,18 @@ class SignUpPage extends StoolballPage
 					# Email registered but not with this password - but don't tell the website user as that would
 					# reveal whether the email is already registered with the site and worth trying to hack the account.
 		            # Instead send email telling them to use password reset.
-                    require_once 'Zend/Mail.php';
-                    $o_email = new Zend_Mail('UTF-8');
-                    $o_email->addTo($new_user->GetEmail());
-                    $o_email->setSubject('Your ' . $this->GetSettings()->GetSiteName() . ' registration details');
-                    $o_email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
-
-                    $o_email->setBodyText('Hi ' . $new_user->GetName() . "!\n\n" .
-                            "You're already registered with " . $this->GetSettings()->GetSiteName() . ". If you've forgotten your password you can reset it at:\n\n" .
-                            "https://" . $this->GetSettings()->GetDomain() . "/you/request-password-reset" .
-                            $this->GetSettings()->GetEmailSignature() . "\n\n" .
-                            '(We sent you this email because someone signed up to ' . $this->GetSettings()->GetSiteName() . "\n" .
-                            'using the email address ' . $new_user->GetEmail() . ". If it wasn't you just ignore this \n" .
-                            "email, and the account won't be activated.)");
-
-                    $email_success = true;
-                    try
-                    {
-                        $o_email->send();
-                    }
-                    catch (Zend_Mail_Transport_Exception $e)
-                    {
-                        $email_success = false;
-                    }
+					$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+					$message = (new Swift_Message('Your ' . $this->GetSettings()->GetSiteName() . ' registration details'))
+					->setFrom([$this->GetSettings()->GetEmailAddress() => $this->GetSettings()->GetSiteName()])
+					->setTo([$new_user->GetEmail()])
+					->setBody('Hi ' . $new_user->GetName() . "!\n\n" .
+					"You're already registered with " . $this->GetSettings()->GetSiteName() . ". If you've forgotten your password you can reset it at:\n\n" .
+					"https://" . $this->GetSettings()->GetDomain() . "/you/request-password-reset" .
+					$this->GetSettings()->GetEmailSignature() . "\n\n" .
+					'(We sent you this email because someone signed up to ' . $this->GetSettings()->GetSiteName() . "\n" .
+					'using the email address ' . $new_user->GetEmail() . ". If it wasn't you just ignore this \n" .
+					"email, and the account won't be activated.)");
+					$email_success = $mailer->send($message);
 
                     $s_email_status = $email_success ? '' : '&email=no';				
 					$this->Redirect($this->GetSettings()->GetUrl('AccountActivate') . '?action=request' . $s_email_status);

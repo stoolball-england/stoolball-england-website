@@ -222,12 +222,6 @@ class AuthenticationManager extends DataManager
 	public function SendActivationEmail(User $account, $activation_hash)
 	{
 		# send email requesting activation - validates email address
-		require_once 'Zend/Mail.php';
-		$email = new Zend_Mail('UTF-8');
-		$email->addTo($account->GetEmail());
-		$email->setSubject($this->GetSettings()->GetSiteName() . ' - please confirm your registration');
-		$email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
-
 		$s_greeting = $account->GetName() ? $account->GetName() : 'there';
 		$s_confirm_url = 'https://' . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetUrl('AccountActivate') . '?p=' . $account->GetId() . '&c=' . urlencode($activation_hash);
         $body = 'Hi ' . $s_greeting . "!\n\n" .
@@ -238,18 +232,13 @@ class AuthenticationManager extends DataManager
                             '(We sent you this email because someone signed up to ' . $this->GetSettings()->GetSiteName() . "\n" .
                             'using the email address ' . $account->GetEmail() . ". If it wasn't you just ignore this email,\n" .
                             "and the account won't be activated.)";
-        $email->setBodyText($body);
 
-		try
-		{
-			$email->send();
-                        
-			return true;
-		}
-		catch (Zend_Mail_Transport_Exception $e)
-		{
-			return false;
-		}
+		$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+		$message = (new Swift_Message($this->GetSettings()->GetSiteName() . ' - please confirm your registration'))
+		->setFrom([$this->GetSettings()->GetEmailAddress() => $this->GetSettings()->GetSiteName()])
+		->setTo([$account->GetEmail()])
+		->setBody($body);
+		return $mailer->send($message);
 	}
 
     /**
@@ -1059,35 +1048,25 @@ class AuthenticationManager extends DataManager
 	public function SendChangeEmailAddressEmail(User $account)
 	{
 		# send email requesting confirmation - validates email address
-		require_once 'Zend/Mail.php';
-		$o_email = new Zend_Mail('UTF-8');
-		$o_email->addTo($account->GetRequestedEmail());
-		$o_email->setSubject($this->GetSettings()->GetSiteName() . ' - please confirm your email address');
-		$o_email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
-
 		$s_greeting = $account->GetName() ? $account->GetName() : 'there';
 		$s_confirm_url = 'https://' . $this->GetSettings()->GetDomain() . $account->GetRequestedEmailConfirmationUrl();
 
-		$o_email->setBodyText('Hi ' . $s_greeting . "!\n\n" .
+		$body = 'Hi ' . $s_greeting . "!\n\n" .
 		wordwrap("Please confirm you'd like to use this email address, " . $account->GetRequestedEmail() . ", to sign in to " .
 		$this->GetSettings()->GetSiteName() . " by clicking on the following link, or copying it into your web browser: ", 72, "\n") .
 					"\n\n" . $s_confirm_url .
 		$this->GetSettings()->GetEmailSignature() . "\n\n" .
 		wordwrap('(You are receiving this email because a request to register this email address was made on the ' .
 		$this->GetSettings()->GetSiteName() . " website. If you did not request this email, please ignore it. " .
-					"You will not get any more emails.)", 72, "\n"));
+					"You will not get any more emails.)", 72, "\n");
 
-		try
-		{
-			$o_email->send();
-			return true;
-		}
-		catch (Zend_Mail_Transport_Exception $e)
-		{
-			return false;
-		}
+		$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+		$message = (new Swift_Message($this->GetSettings()->GetSiteName() . ' - please confirm your email address'))
+		->setFrom([$this->GetSettings()->GetEmailAddress() => $this->GetSettings()->GetSiteName()])
+		->setTo([$account->GetRequestedEmail()])
+		->setBody($body);
+		return $mailer->send($message);
 	}
-
 
 	/**
 	 * @return bool

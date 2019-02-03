@@ -149,12 +149,6 @@ class CurrentPage extends StoolballPage
 		if ($this->IsValid())
 		{
 			# send the email
-			require_once 'Zend/Mail.php';
-
-			$email = new Zend_Mail('UTF-8');
-			$email->addTo($this->GetSettings()->GetWebEditorEmail());
-			$email->setFrom($_POST['email'], $_POST['email']);
-			$email->setSubject('Stoolball team details');
 			$s_body = 'Team name: ' . $_POST['team'] . "\n\n" .
 			'Club: ' . $_POST['club'] . "\n\n" .
 			'Ground: ' . $_POST['ground'] . "\n\n" .
@@ -168,17 +162,13 @@ class CurrentPage extends StoolballPage
 			'Permission for contact details: ' . $_POST['public'] . "\n\n" .
 			'Website contact details (if different): ' . $_POST['publicContact'] . "\n\n" .
 			'Notes: ' . $_POST['notes'];
-			$email->setBodyText(html_entity_decode($s_body));
-
-			$this->b_success = true;
-			try
-			{
-				$email->send();
-			}
-			catch (Zend_Mail_Transport_Exception $e)
-			{
-				$this->b_success = false;
-			}
+			
+			$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+			$message = (new Swift_Message('Stoolball team details'))
+			->setFrom([$_POST['email']])
+			->setTo([$this->GetSettings()->GetWebEditorEmail()])
+			->setBody(html_entity_decode($s_body));
+			$this->b_success = $mailer->send($message);
 		}
 	}
 

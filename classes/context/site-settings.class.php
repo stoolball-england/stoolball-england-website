@@ -247,6 +247,15 @@ abstract class SiteSettings
     }
 
     /**
+     * Gets the transport class to use with SwiftMail
+     * @returns Swift_Transport_AbstractSmtpTransport
+     */
+    public function GetEmailTransport()
+    {
+        return null;
+    }
+
+    /**
      * Gets API keys that allow protected data to be requested without exposing it to spam bots
      */
     public function GetApiKeys() {

@@ -7,9 +7,11 @@ require_once("exception-publisher.interface.php");
 class EmailExceptionPublisher implements IExceptionPublisher
 {
     private $emailAddress;
+    private $email_transport;
     
-    public function __construct($emailAddress) {
+    public function __construct($emailAddress, Swift_Transport_AbstractSmtpTransport $email_transport) {
         $this->emailAddress = $emailAddress;
+        $this->email_transport = $email_transport;
     }
     
      /**
@@ -66,14 +68,12 @@ class EmailExceptionPublisher implements IExceptionPublisher
             }
         }
 
-        require_once 'Zend/Mail.php';
-
-        $email = new Zend_Mail('UTF-8');
-        $email->addTo($this->emailAddress);
-        $email->setFrom('errors@' . $_SERVER['HTTP_HOST'], 'errors@' . $_SERVER['HTTP_HOST']);
-        $email->setSubject('Error: ' . $e->getMessage());
-        $email->setBodyText($body);
-        $email->send();
+        $mailer = new Swift_Mailer($this->email_transport);
+        $message = (new Swift_Message('Error: ' . $e->getMessage()))
+        ->setFrom(['errors@' . $_SERVER['HTTP_HOST'], 'errors@' . $_SERVER['HTTP_HOST']])
+        ->setTo([$this->emailAddress])
+        ->setBody($body);
+        $mailer->send($message);
     }
 }
 ?>

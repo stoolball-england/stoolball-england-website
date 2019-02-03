@@ -10,7 +10,7 @@ class SubscriptionManager extends DataManager
 	var $a_emails; # array of emails already sent to - prevent multiple emails per person for one new message
 	var $s_review_item_title;
 
-	private function GetEmailAddresses($s_sql, Zend_Mail $email)
+	private function GetEmailAddresses($s_sql, Swift_Message $email)
 	{
 		$a_send = null;
 
@@ -110,8 +110,7 @@ class SubscriptionManager extends DataManager
 			if ($s_sql)
 			{
 				# if there's at least one person, build email
-				require_once 'Zend/Mail.php';
-				$email = new Zend_Mail('UTF-8');
+				$email = new Swift_Message();
 				if ($this->GetEmailAddresses($s_sql, $email))
 				{
 					$o_filter = new BadLanguageFilter();
@@ -121,25 +120,16 @@ class SubscriptionManager extends DataManager
 					$s_title = StringFormatter::PlainText($s_title);
 
 					# send the email
-					$email->addTo($this->GetSettings()->GetSubscriptionEmailTo());
-					$email->setFrom($this->GetSettings()->GetSubscriptionEmailFrom(), $this->GetSettings()->GetSubscriptionEmailFrom());
-					$email->setSubject("Email alert: '" . $s_title . "'");
-
-					$email->setBodyText($this->GetHeader() .
+					$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+					$email->setFrom([$this->GetSettings()->GetSubscriptionEmailFrom() => $this->GetSettings()->GetSubscriptionEmailFrom()])
+					->setTo([$this->GetSettings()->GetSubscriptionEmailTo()])
+					->setSubject("Email alert: '" . $s_title . "'")
+					->setBody($this->GetHeader() .
 					trim(AuthenticationManager::GetUser()->GetName()) . ' has just commented on a page at ' . $this->GetSettings()->GetSiteName() . ' for which you subscribed to an email alert.' . "\n\n" .
 					"The page is called '" . $s_title . "' - here's an excerpt of the new comments:\n\n" . $message->GetExcerpt() . "\n\n" .
 					'View the new comments at' . "\n" .$review_item->GetNavigateUrl() . '#message' . $message->GetId() .
 					$this->GetFooter());
-
-					try
-					{
-						$email->send();
-					}
-					catch (Zend_Mail_Transport_Exception $e)
-					{
-						# Do nothing - email not that important so, if it fails, fail silently rather than raising a fatal error
-					}
-
+					$mailer->send($email);
 				}
 			}
 		}

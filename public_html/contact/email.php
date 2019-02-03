@@ -44,7 +44,7 @@ class CurrentPage extends StoolballPage
 
 	function OnPostback()
 	{
-		/* @var $email Zend_Mail */
+		/* @var $email Swift_Message */
 		$email = $this->form->GetDataObject();
 
         # Throttles sending rate to deter spam
@@ -68,18 +68,11 @@ class CurrentPage extends StoolballPage
 		# send email if valid
 		if ($this->IsValid() and $this->valid)
 		{
-			$email->addTo($this->address);
-			$this->send_attempted = true;
-			$this->send_succeeded = true;
-			try
-			{
-				$email->send();
-				$_SESSION['email_form_throttle'] = time();
-			}
-			catch (Zend_Mail_Transport_Exception $e)
-			{
-				$this->send_succeeded = false;
-			}
+			$email->setTo([$this->address]);
+
+			$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+			$this->send_succeeded = $mailer->send($email);
+			$_SESSION['email_form_throttle'] = time();
 		}
 	}
 

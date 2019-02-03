@@ -24,22 +24,16 @@ class CurrentPage extends StoolballPage
 
 	function OnPostback()
 	{
-		/* @var $o_email Zend_Mail */
+		/* @var $o_email Swift_Message */
 		$o_email = $this->o_form->GetDataObject();
 
 		# send email if valid
 		if($this->IsValid())
 		{
 			$this->b_send_attempted = true;
-			$this->b_send_succeeded = true;
-			try
-			{
-				$o_email->send();
-			}
-			catch (Zend_Mail_Transport_Exception $e)
-			{
-				$this->b_send_succeeded = false;
-			}
+			
+			$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+			$this->b_send_succeeded = $mailer->send($o_email);
 		}
 	}
 

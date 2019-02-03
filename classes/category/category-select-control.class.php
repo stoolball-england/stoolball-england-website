@@ -7,7 +7,7 @@ class CategorySelectControl extends XhtmlSelect
 	function __construct(CategoryCollection $o_categories, $page_valid=null)
 	{
 		# set properties
-		parent::XhtmlSelect('category', null, $page_valid);
+		parent::__construct('category', null, $page_valid);
 		$this->SetBlankFirst(true);
 
 		# add categories

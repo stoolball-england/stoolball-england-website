@@ -39,33 +39,22 @@ class ActivationPage extends StoolballPage
 					$s_name = $o_row->known_as;
 
 					# send email with details
-					require_once 'Zend/Mail.php';
-					$o_email = new Zend_Mail('UTF-8');
-					$o_email->addTo($s_email);
-					$o_email->setSubject('Your ' . $this->GetSettings()->GetSiteName() . ' registration details');
-					$o_email->setFrom($this->GetSettings()->GetEmailAddress(), $this->GetSettings()->GetSiteName());
-
-					$o_email->setBodyText('Hi ' . $s_name . "!\n\n" .
-							'Thanks for registering with ' . $this->GetSettings()->GetSiteName() . '.' . "\n\n" .
-							"You can sign in at https://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetFolder('Account') . "\n\n" .
-							"Please keep this email as a reminder of the email address you signed up with.\n\n" .
-							'You can change your details at any time by signing in to ' . $this->GetSettings()->GetSiteName() . "\n" .
-							"and editing your profile. You can also reset your password if you lose it.\n\n" .
-							'We hope to see you back at ' . $this->GetSettings()->GetSiteName() . ' soon!' .
-					$this->GetSettings()->GetEmailSignature() . "\n\n" .
-							'(We sent you this email because someone signed up to ' . $this->GetSettings()->GetSiteName() . "\n" .
-							'using the email address ' . $s_email . ". If it wasn't you, please contact us\n" .
-							'via our website and ask for your address to be removed.)');
-
-					$b_email_result = true;
-					try
-					{
-						$o_email->send();
-					}
-					catch (Zend_Mail_Transport_Exception $e)
-					{
-						$b_email_result = false;
-					}
+					$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
+					$message = (new Swift_Message('Your ' . $this->GetSettings()->GetSiteName() . ' registration details'))
+					->setFrom([$this->GetSettings()->GetEmailAddress() => $this->GetSettings()->GetSiteName()])
+					->setTo([$s_email])
+					->setBody('Hi ' . $s_name . "!\n\n" .
+					'Thanks for registering with ' . $this->GetSettings()->GetSiteName() . '.' . "\n\n" .
+					"You can sign in at https://" . $this->GetSettings()->GetDomain() . $this->GetSettings()->GetFolder('Account') . "\n\n" .
+					"Please keep this email as a reminder of the email address you signed up with.\n\n" .
+					'You can change your details at any time by signing in to ' . $this->GetSettings()->GetSiteName() . "\n" .
+					"and editing your profile. You can also reset your password if you lose it.\n\n" .
+					'We hope to see you back at ' . $this->GetSettings()->GetSiteName() . ' soon!' .
+			$this->GetSettings()->GetEmailSignature() . "\n\n" .
+					'(We sent you this email because someone signed up to ' . $this->GetSettings()->GetSiteName() . "\n" .
+					'using the email address ' . $s_email . ". If it wasn't you, please contact us\n" .
+					'via our website and ask for your address to be removed.)');
+					$b_email_result = $mailer->send($message);
 				}
 				else $b_email_result = false;
 

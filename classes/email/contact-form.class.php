@@ -1,6 +1,5 @@
 <?php
 require_once('data/data-edit-control.class.php');
-require_once 'Zend/Mail.php';
 
 class ContactForm extends DataEditControl
 {
@@ -12,7 +11,7 @@ class ContactForm extends DataEditControl
 		if (!is_array($a_addresses) or !count($a_addresses)) die('Must supply at least one contact address for the email form');
 
 		# set up element
-		$this->SetDataObjectClass('Zend_Mail');
+		$this->SetDataObjectClass('Swift_Message');
 		$this->SetButtonText('Send email');
 
 		$this->a_addresses = $a_addresses;
@@ -28,9 +27,9 @@ class ContactForm extends DataEditControl
 	*/
 	function BuildPostedDataObject()
 	{
-		$o_email = new Zend_Mail('UTF-8');
-		if (isset($_POST['to']) and key_exists($_POST['to'], $this->a_addresses_md5)) $o_email->addTo($this->a_addresses_md5[$_POST['to']]);
-		if (isset($_POST['from'])) $o_email->setFrom($_POST['from'], (isset($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']);
+		$o_email = new Swift_Message();
+		if (isset($_POST['to']) and key_exists($_POST['to'], $this->a_addresses_md5)) $o_email->setTo([$this->a_addresses_md5[$_POST['to']]]);
+		if (isset($_POST['from'])) $o_email->setFrom([$_POST['from'] => (isset($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']]);
 		if (isset($_POST['subject']) and $_POST['subject'])
 		{
 			$o_email->setSubject($_POST['subject']);
@@ -41,20 +40,16 @@ class ContactForm extends DataEditControl
 		}
 		$body = isset($_POST['body']) ? $_POST['body'] : '';
 		if (isset($_POST['reply'])) $body .= "\n\n(The sender of this message has asked for a reply.)";
-		$o_email->setBodyText($body);
-		if (isset($_POST['cc'])) $o_email->addCc($_POST['from']);
+		$o_email->setBody($body);
+		if (isset($_POST['cc'])) $o_email->setCC([$_POST['from']]);
 		$this->SetDataObject($o_email);
 	}
 
 
 	function CreateControls()
 	{
-		/* @var $o_email Zend_Mail */
         $this->AddCssClass('legacy-form');
 		
-		$o_email = $this->GetDataObject();
-		if (!is_object($o_email)) $o_email = new Zend_Mail('UTF-8');
-
 		# Who to send to
 		$i_address_count = count($this->a_addresses);
 		if ($i_address_count > 1)
@@ -144,15 +139,15 @@ class ContactForm extends DataEditControl
 		require_once('data/validation/email-validator.class.php');
 		require_once('data/validation/requires-other-fields-validator.class.php');
 
-		$this->a_validators[] = new RequiredFieldValidator(array('to'), 'Please say why you\'re contacting us');
-		$this->a_validators[] = new LengthValidator('fromName', 'Please make your name shorter', 0, 100);
-		$this->a_validators[] = new RequiredFieldValidator('from', 'Please include your email address');
-		$this->a_validators[] = new LengthValidator('from', 'Please make your email address shorter', 0, 250);
-		$this->a_validators[] = new EmailValidator(array('from'), 'Please enter your real email address');
-		$this->a_validators[] = new LengthValidator('subject', 'Please make your subject shorter', 0, 250);
-		$this->a_validators[] = new RequiredFieldValidator(array('body'), 'Type your message before clicking <cite>Send email</cite>');
-		$this->a_validators[] = new LengthValidator('body', 'Please make your message shorter', 0, 10000);
-		$this->a_validators[] = new RequiresOtherFieldsValidator(array('cc', 'from'), 'If you want a copy of the email, please tell us your email address');
+		$this->AddValidator(new RequiredFieldValidator(array('to'), 'Please say why you\'re contacting us'));
+		$this->AddValidator(new LengthValidator('fromName', 'Please make your name shorter', 0, 100));
+		$this->AddValidator(new RequiredFieldValidator('from', 'Please include your email address'));
+		$this->AddValidator(new LengthValidator('from', 'Please make your email address shorter', 0, 250));
+		$this->AddValidator(new EmailValidator(array('from'), 'Please enter your real email address'));
+		$this->AddValidator(new LengthValidator('subject', 'Please make your subject shorter', 0, 250));
+		$this->AddValidator(new RequiredFieldValidator(array('body'), 'Type your message before clicking <cite>Send email</cite>'));
+		$this->AddValidator(new LengthValidator('body', 'Please make your message shorter', 0, 10000));
+		$this->AddValidator(new RequiresOtherFieldsValidator(array('cc', 'from'), 'If you want a copy of the email, please tell us your email address'));
 	}
 }
 ?>

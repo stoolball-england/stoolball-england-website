@@ -188,20 +188,12 @@ $s_body .= wordwrap("You have received this email because you are the administra
 
 
 # send email, copy to me
-require_once 'Zend/Mail.php';
-$o_email = new Zend_Mail('UTF-8');
-$o_email->addTo($s_email);
-$o_email->setFrom('alerts@stoolball.org.uk', 'Stoolball England alerts');
-$o_email->setSubject(ucfirst($match_text) . " $verb: $s_title, $s_date");
-$o_email->setBodyText($s_body);
-try
-{
-	$o_email->send();
-}
-catch (Zend_Mail_Transport_Exception $e)
-{
-	# Do nothing - failure to send this email should not be a fatal error
-}
+		$mailer = new Swift_Mailer($this->settings->GetEmailTransport());
+		$message = (new Swift_Message(ucfirst($match_text) . " $verb: $s_title, $s_date"))
+		->setFrom(['alerts@stoolball.org.uk' => 'Stoolball England alerts'])
+		->setTo([$s_email])
+		->setBody($s_body);
+		$mailer->send($message);
 	}
 
 }

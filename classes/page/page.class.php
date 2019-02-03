@@ -1,5 +1,6 @@
 <?php
 ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOCUMENT_ROOT'] . '/../');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/../vendor/autoload.php');
 require_once('data/mysql-connection.class.php');
 require_once('context/site-settings.class.php');
 require_once('authentication/permission-type.enum.php');
@@ -63,7 +64,7 @@ class Page
 		{
             require_once('page/exception-manager.class.php');
             require_once('page/email-exception-publisher.class.php');
-			$this->errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail())));
+			$this->errors = new ExceptionManager(array(new EmailExceptionPublisher($settings->GetTechnicalContactEmail(), $settings->GetEmailTransport())));
             
             # Use production settings recommended by http://perishablepress.com/advanced-php-error-handling-via-htaccess/
             # Not possible to set in .htaccess because PHP is running as a CGI. This is the next best thing.
