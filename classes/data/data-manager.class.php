@@ -314,7 +314,8 @@ abstract class DataManager extends Collection
             $text = str_replace("<p>&nbsp;</p>\r\n","",$text);
             $text = str_replace("<p>&nbsp;</p>","",$text);
 
-            # Sanitise the HTML
+			# Sanitise the HTML
+			require_once($_SERVER['DOCUMENT_ROOT'] . '/../vendor/ezyang/htmlpurifier/library/HTMLPurifier.auto.php');
 			$config = HTMLPurifier_Config::createDefault();
             $purifier = new HTMLPurifier($config);
             $purifier->config->set('AutoFormat.RemoveEmpty', true);
