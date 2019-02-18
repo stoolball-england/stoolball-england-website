@@ -267,13 +267,12 @@ class CurrentPage extends StoolballPage
         }
         if ($s_contact)
         {
-            $s_contact = htmlentities($s_contact, ENT_QUOTES, "UTF-8", false);
-            $s_contact = XhtmlMarkup::ApplyCharacterEntities($s_contact);
-
             require_once('email/email-address-protector.class.php');
             $protector = new EmailAddressProtector($this->GetSettings());
             $s_contact = $protector->ApplyEmailProtection($s_contact, AuthenticationManager::GetUser()->IsSignedIn());
 
+            $s_contact = htmlentities($s_contact, ENT_QUOTES, "UTF-8", false);
+            $s_contact = XhtmlMarkup::ApplyCharacterEntities($s_contact);
             $s_contact = XhtmlMarkup::ApplyParagraphs($s_contact);
             $s_contact = XhtmlMarkup::ApplyLists($s_contact);
             $s_contact = XhtmlMarkup::ApplySimpleXhtmlTags($s_contact, false);

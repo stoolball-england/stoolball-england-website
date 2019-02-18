@@ -37,7 +37,6 @@ class EmailAddressProtector {
         $text = preg_replace('/\[url=mailto:(' . $email_pattern . ')]' . $email_pattern . '\[\/url]/', '$1', $text);
         $text = preg_replace('/<a href="mailto:(' . $email_pattern . ')">' . $email_pattern . '<\/a>/', '$1', $text);
 
-        require_once('email/email-address.class.php');
         if ($is_signed_in)
         {            
             $text = preg_replace_callback('/(' . $email_pattern . ')/', "self::ObfuscateProtectedEmail", $text);
