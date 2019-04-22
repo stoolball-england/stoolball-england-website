@@ -1,5 +1,6 @@
 <?php
 require_once('data/data-edit-control.class.php');
+require_once('email/email-message.class.php');
 
 class ContactForm extends DataEditControl
 {
@@ -17,7 +18,7 @@ class ContactForm extends DataEditControl
 		if (!is_array($a_addresses) or !count($a_addresses)) throw new Exception('Must supply at least one contact address for the email form');
 
 		# set up element
-		$this->SetDataObjectClass('Swift_Message');
+		$this->SetDataObjectClass('EmailMessage');
 		$this->SetButtonText('Send email');
 
 		$this->a_addresses = $a_addresses;
@@ -33,21 +34,31 @@ class ContactForm extends DataEditControl
 	*/
 	function BuildPostedDataObject()
 	{
-		$o_email = new Swift_Message();
-		if (isset($_POST['to']) and key_exists($_POST['to'], $this->a_addresses_md5)) $o_email->setTo([$this->a_addresses_md5[$_POST['to']]]);
-		if (isset($_POST['from'])) $o_email->setFrom([$_POST['from'] => (isset($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']]);
+		$o_email = new EmailMessage();
+		if (isset($_POST['to']) and key_exists($_POST['to'], $this->a_addresses_md5)) 
+		{
+			$o_email->SetTo($this->a_addresses_md5[$_POST['to']]);
+		}
+		if (isset($_POST['from']) and $_POST['from']) 
+		{
+			$o_email->SetFromAddress($_POST['from']);
+		}
+		if (isset($_POST['fromName']) and $_POST['fromName']) 
+		{
+			$o_email->SetFromName($_POST['fromName']);
+		}
 		if (isset($_POST['subject']) and $_POST['subject'])
 		{
-			$o_email->setSubject($_POST['subject']);
+			$o_email->SetSubject($_POST['subject']);
 		}
 		else
 		{
-			$o_email->setSubject($this->GetSettings()->GetSiteName() . ' contact form');
+			$o_email->SetSubject($this->GetSettings()->GetSiteName() . ' contact form');
 		}
 		$body = isset($_POST['body']) ? $_POST['body'] : '';
 		if (isset($_POST['reply'])) $body .= "\n\n(The sender of this message has asked for a reply.)";
-		$o_email->setBody($body);
-		if (isset($_POST['cc'])) $o_email->setCC([$_POST['from']]);
+		$o_email->SetBody($body);
+		if (isset($_POST['cc'])) $o_email->SetCC([$_POST['from']]);
 		$this->SetDataObject($o_email);
 	}
 

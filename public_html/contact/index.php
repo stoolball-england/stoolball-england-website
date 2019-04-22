@@ -24,16 +24,23 @@ class CurrentPage extends StoolballPage
 
 	function OnPostback()
 	{
-		/* @var $o_email Swift_Message */
-		$o_email = $this->o_form->GetDataObject();
+		/* @var $email EmailMessage */
+		$email = $this->o_form->GetDataObject();
 
 		# send email if valid
 		if($this->IsValid())
 		{
 			$this->b_send_attempted = true;
+
+			$email_to_send = new Swift_Message();
+			$email_to_send->setTo([$email->GetTo()]);
+			$email_to_send->setFrom([$email->GetFromAddress() => $email->GetFromName() ? $email->GetFromName() : $email->GetFromAddress()]);
+			$email_to_send->setSubject($email->GetSubject());
+			$email_to_send->setBody($email->GetBody());
+			$email_to_send->setCC($email->GetCC());
 			
 			$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
-			$this->b_send_succeeded = $mailer->send($o_email);
+			$this->b_send_succeeded = $mailer->send($email_to_send);
 		}
 	}
 
