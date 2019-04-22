@@ -5,14 +5,19 @@ class SignInForm extends XhtmlForm
 {
 	private $settings;
     private $authentication_manager;
-    
-
-	public function __construct(SiteSettings $settings, AuthenticationManager $authentication_manager)
+		
+	/**
+	 * Creates a new SignInForm
+	 * @param SiteSettings $settings
+	 * @param AuthenticationManager $authentication_manager
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, AuthenticationManager $authentication_manager, $csrf_token)
 	{
 		$this->settings = $settings;
         $this->authentication_manager = $authentication_manager;
 
-		parent::__construct();
+		parent::__construct($csrf_token);
 	}
 
 	function OnPreRender()

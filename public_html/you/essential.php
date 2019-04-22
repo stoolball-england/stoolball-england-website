@@ -12,8 +12,16 @@ class CurrentPage extends StoolballPage
 
 	function OnPageInit()
 	{
-		$this->form = new EssentialInfoForm($this->GetSettings(), AuthenticationManager::GetUser(), $this->GetAuthenticationManager());
+		$this->form = new EssentialInfoForm($this->GetSettings(), AuthenticationManager::GetUser(), $this->GetAuthenticationManager(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->form);
+	}
+
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveToSession() can update the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnPostback()
@@ -35,6 +43,9 @@ class CurrentPage extends StoolballPage
 
 			# successful name change - now update session
 			$authentication->SaveToSession($o_person);
+
+			# Safe to end session writes now
+			session_write_close();
             
             $old_password_valid = false;
             if ($o_person->GetPassword()) {
@@ -91,6 +102,11 @@ class CurrentPage extends StoolballPage
 
 			# success - redirect to edit profile home
 			$this->Redirect($this->GetSettings()->GetUrl('AccountEdit'));
+		}
+		else
+		{
+			# Safe to end session writes now
+			session_write_close();
 		}
 	}
 

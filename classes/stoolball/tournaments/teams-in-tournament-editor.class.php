@@ -16,12 +16,13 @@ class TeamsInTournamentEditor extends RelatedItemEditor
      * @param string $s_id
      * @param string $s_title
      * @param string[] $a_column_headings
+     * @param string $csrf_token
      */
-    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings)
+    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings, $csrf_token)
     {
         $this->SetDataObjectClass('Team');
         $this->SetDataObjectMethods('GetId', '', 'GetNameAndType');
-        parent::__construct($settings, $controlling_editor, $s_id, $s_title, $a_column_headings);
+        parent::__construct($settings, $controlling_editor, $s_id, $s_title, $a_column_headings, $csrf_token);
     }
 
     /**

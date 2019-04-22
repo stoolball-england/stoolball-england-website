@@ -64,9 +64,17 @@ class CurrentPage extends StoolballPage
 	public function OnPageInit()
 	{
 		# create edit control
-		$this->editor = new TournamentEditControl($this->GetSettings());
+		$this->editor = new TournamentEditControl($this->GetSettings(), $this->GetCsrfToken());
         $this->editor->SetShowStepNumber(true);
 		$this->RegisterControlForValidation($this->editor);
+	}
+	
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveTeams() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnLoadPageData()
@@ -106,11 +114,15 @@ class CurrentPage extends StoolballPage
 			$this->tournament = $this->editor->GetDataObject();
 
 			# Save match
-			$match_manager->SaveFixture($this->tournament);
+			$match_manager->SaveFixture($this->tournament, $this->GetAuthenticationManager());
             if (count($this->tournament->GetAwayTeams())) {
-                $match_manager->SaveTeams($this->tournament);
+                $match_manager->SaveTeams($this->tournament, $this->GetAuthenticationManager());
             }
-            if ($this->season instanceof Season) {
+
+			# Safe to end session writes now
+			session_write_close();
+
+			if ($this->season instanceof Season) {
                 $this->tournament->Seasons()->Add($this->season); 
                 $match_manager->SaveSeasons($this->tournament, true);
             }

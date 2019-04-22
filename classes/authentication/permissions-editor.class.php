@@ -22,12 +22,13 @@ class PermissionsEditor extends RelatedItemEditor
 	 * @param DataEditControl $controlling_editor
 	 * @param string $s_id
 	 * @param string $s_title
+	 * @param string $csrf_token
      */
-	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title)
+	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $csrf_token)
 	{
 		$this->SetDataObjectClass('IdValue');
 		$this->SetDataObjectMethods('GetId', '', '');
-		parent::__construct($settings, $controlling_editor, $s_id, $s_title, array("Permission", "Resource URI"));
+		parent::__construct($settings, $controlling_editor, $s_id, $s_title, array("Permission", "Resource URI"), $csrf_token);
 
 		# initialise arrays
 		$this->permissions = array(

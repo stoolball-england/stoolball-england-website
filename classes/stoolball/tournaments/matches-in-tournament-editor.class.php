@@ -17,13 +17,13 @@ class MatchesInTournamentEditor extends RelatedItemEditor
      * @param DataEditControl $controlling_editor
      * @param string $s_id
      * @param string $s_title
-     * @param string[] $a_column_headings
+     * @param string $csrf_token
      */
-    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title)
+    public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $csrf_token)
     {
         $this->SetDataObjectClass('Match');
         $this->SetDataObjectMethods('GetId', '', 'GetTitle');
-        parent::__construct($settings, $controlling_editor, $s_id, $s_title, array('Order','Teams'));
+        parent::__construct($settings, $controlling_editor, $s_id, $s_title, array('Order','Teams'), $csrf_token);
         $this->teams = array();
     }
 

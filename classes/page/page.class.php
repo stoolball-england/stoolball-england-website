@@ -98,6 +98,15 @@ class Page
 		# set up authentication immediately - even if it's just a generic user
 		$this->OnAuthenticate($i_permission_required);
 
+		# Set CSRF token before we shut off session writes
+		if ((!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token']) and !$this->IsPostback()) { 
+			$_SESSION['csrf_token'] = bin2hex(random_bytes(32)); 
+		}
+
+		if ($this->SessionWriteClosing()) {
+			session_write_close();
+		}
+
 		# get site-wide data from db
 		$this->OnLoadSiteData();
 
@@ -210,6 +219,15 @@ class Page
 		if (!$this->o_authentication->HasPermissionForPage(AuthenticationManager::GetUser())) $this->o_authentication->GetPermission();
 	}
 
+	/**
+	 * Executes before disabling any further writes to session state for the current request and releasing the session lock
+	 * @returns bool true to disable further writes; false otherwise
+	 */
+	protected function SessionWriteClosing()
+	{
+		return true;
+	}
+
 	function OnConnectDatabase()
 	{
 		$this->o_db = new MySqlConnection($this->settings->DatabaseHost(), $this->settings->DatabaseUser(), $this->settings->DatabasePassword(), $this->settings->DatabaseName());
@@ -270,6 +288,15 @@ class Page
 	public function GetSettings()
 	{
 		return $this->settings;
+	}
+
+	/**
+	 * Gets a string unique to the session which can be used in forms to prevent CSRF attacks
+	 */
+	protected function GetCsrfToken()
+	{
+		# SESSION['csrf_token'] should always be set, but avoid an error just in case
+		return isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : "";
 	}
 
 	/**

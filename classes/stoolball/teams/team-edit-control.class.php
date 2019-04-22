@@ -16,12 +16,13 @@ class TeamEditControl extends DataEditControl
 	 * Creates a new TeamEditControl
 	 *
 	 * @param SiteSettings $settings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Team');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 
 		# Set up aggregated editors
 		$this->a_clubs = array();

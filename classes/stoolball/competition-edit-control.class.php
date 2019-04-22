@@ -8,11 +8,17 @@ class CompetitionEditControl extends DataEditControl
 {
 	private $categories;
 
-	public function __construct(SiteSettings $settings, CategoryCollection $categories)
+	/**
+	 * Creates a new CompetitionEditControl
+	 * @param SiteSettings $settings
+	 * @param CategoryCollection $categories
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, CategoryCollection $categories, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Competition');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 
 		# store params
 		$this->categories = $categories;

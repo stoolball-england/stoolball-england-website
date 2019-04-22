@@ -20,7 +20,7 @@ class CurrentPage extends StoolballPage
 	{
 		parent::OnPageInit();
 
-		$this->form = new EmailForm($this->GetSettings());
+		$this->form = new EmailForm($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->form);
 
 		$this->valid = (isset($_GET['to']) and is_string($_GET['to']) and isset($_GET['tag']) and is_string($_GET['tag']));
@@ -40,7 +40,15 @@ class CurrentPage extends StoolballPage
 			header($_SERVER["SERVER_PROTOCOL"] . " 400 Bad Request");
 		}
 
-    }
+	}
+	
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that 'email_form_throttle' can be updated
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
+	}
 
 	function OnPostback()
 	{
@@ -74,6 +82,9 @@ class CurrentPage extends StoolballPage
 			$this->send_succeeded = $mailer->send($email);
 			$_SESSION['email_form_throttle'] = time();
 		}
+
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnPrePageLoad()

@@ -71,15 +71,16 @@ class RelatedIdEditor extends RelatedItemEditor
 	 * @param string $s_id
 	 * @param string $s_title
 	 * @param string[] $a_column_headings
+	 * @param string $csrf_token
 	 * @param string $s_data_object_class
 	 * @param bool $b_require_settings
 	 * @param string $s_get_id_method
 	 * @param string $s_set_id_method
 	 * @param string $s_set_display_name_method
 	 */
-	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings, $s_data_object_class, $b_require_settings, $s_get_id_method, $s_set_id_method, $s_set_display_name_method)
+	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings, $csrf_token, $s_data_object_class, $b_require_settings, $s_get_id_method, $s_set_id_method, $s_set_display_name_method)
 	{
-		parent::__construct($settings, $controlling_editor, $s_id, $s_title, $a_column_headings);
+		parent::__construct($settings, $controlling_editor, $s_id, $s_title, $a_column_headings, $csrf_token);
 
 		# initialise varibles
 		$this->a_possible_data = array();

@@ -8,11 +8,16 @@ class ScorecardEditControl extends DataEditControl
 	private $b_user_is_match_owner = false;
 	const DATA_SEPARATOR = "|";
 
-	public function __construct(SiteSettings $settings)
+	/**
+	 * Creates a new ScorecardEditControl
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Match');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 		$this->SetAllowCancel(true);
 		$this->SetButtonText('Next &raquo;');
 

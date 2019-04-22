@@ -23,10 +23,11 @@ class DataEditRepeater extends XhtmlForm
 	 *
 	 * @param object $o_factory_object
 	 * @param string $s_factory_method
+	 * @param string $csrf_token
 	 */
-	public function __construct($o_factory_object, $s_factory_method)
+	public function __construct($o_factory_object, $s_factory_method, $csrf_token)
 	{
-		parent::__construct();
+		parent::__construct($csrf_token);
 
 		if (!is_object($o_factory_object) or !method_exists($o_factory_object, $s_factory_method)) throw new Exception('Could not find factory method for edit control');
 

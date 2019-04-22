@@ -20,15 +20,22 @@ class MatchEditControl extends DataEditControl
 
 	private $b_user_is_match_admin = false;
 	private $b_user_is_match_owner = false;
+	private $csrf_token;
 	const DATA_SEPARATOR = "|";
 
-	public function __construct(SiteSettings $settings)
+	/**
+	 * Creates a new MatchEditControl
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Match');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 		$this->SetAllowCancel(true);
 		$this->SetButtonText('Next &raquo;');
+		$this->csrf_token = $csrf_token;
 
 		# check permissions
 		$this->b_user_is_match_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES);
@@ -44,7 +51,7 @@ class MatchEditControl extends DataEditControl
 		if (!is_object($this->fixture_editor))
 		{
 			require_once('stoolball/match-fixture-edit-control.class.php');
-			$this->fixture_editor = new MatchFixtureEditControl($this->GetSettings(), null, false);
+			$this->fixture_editor = new MatchFixtureEditControl($this->GetSettings(), $this->csrf_token, null, false);
 			$this->fixture_editor->SetNamingPrefix(get_class($this->fixture_editor)); # Ensure prefix is unique
 			$this->fixture_editor->SetShowValidationErrors(false);
 			$this->fixture_editor->SetShowHeading(true);
@@ -55,7 +62,7 @@ class MatchEditControl extends DataEditControl
 		if ($this->b_user_is_match_admin and !is_object($this->season_editor))
 		{
 			require_once('stoolball/season-id-editor.class.php');
-			$this->season_editor = new SeasonIdEditor($this->GetSettings(), $this, 'Season');
+			$this->season_editor = new SeasonIdEditor($this->GetSettings(), $this, 'Season', $this->csrf_token);
 		}
 	}
 

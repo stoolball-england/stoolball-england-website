@@ -17,12 +17,13 @@ abstract class DataEditControl extends XhtmlForm
 	/**
 	 * @return DataEditControl
 	 * @param SiteSettings $o_settings
+	 * @param string $csrf_token
 	 * @param bool $b_entire_form
 	 * @desc Abstract data-editing form
 	 */
-	public function __construct(SiteSettings $o_settings, $b_entire_form=true)
+	public function __construct(SiteSettings $o_settings, $csrf_token, $b_entire_form=true)
 	{
-		parent::__construct();
+		parent::__construct($csrf_token);
 		$this->o_settings = $o_settings;
 		$this->SetCssClass(str_ireplace('control', '', get_class($this)));
 		$this->b_render_base_element = $b_entire_form;

@@ -48,11 +48,19 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new MatchEditControl($this->GetSettings());
+		$this->editor = new MatchEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->editor);
 
 		# check permissions
 		$this->b_user_is_match_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_MATCHES);
+	}
+
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveFixture() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	public function OnPostback()
@@ -115,10 +123,13 @@ class CurrentPage extends StoolballPage
 					unset($ground_manager);
 				}
 
-				$this->match_manager->SaveFixture($this->match);
+				$this->match_manager->SaveFixture($this->match, $this->GetAuthenticationManager());
 				if ($this->b_user_is_match_admin) $this->match_manager->SaveSeasons($this->match, false);
 				$this->editor->SetNavigateUrl($this->match->GetEditNavigateUrl()); # because edit URL may have changed
 			}
+
+			# Safe to end session writes now
+			session_write_close();
 
 			# Save the result
 			$this->match_manager->SaveIfPlayed($this->match);
@@ -145,6 +156,11 @@ class CurrentPage extends StoolballPage
 			    http_response_code(303);
 				$this->Redirect($this->match->EditScorecardUrl());
 			}
+		}
+		else
+		{
+			# Safe to end session writes now
+			session_write_close();
 		}
 	}
 

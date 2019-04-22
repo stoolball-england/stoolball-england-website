@@ -18,7 +18,7 @@ class CurrentPage extends StoolballPage
 		$this->GetSettings()->GetEnquiriesEmail() => "I have a question about stoolball or Stoolball England",
 		$this->GetSettings()->GetSalesEmail() => "I want to buy something");
 
-		$this->o_form = new ContactForm($this->GetSettings(), $a_reasons);
+		$this->o_form = new ContactForm($this->GetSettings(), $a_reasons, $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->o_form);
 	}
 

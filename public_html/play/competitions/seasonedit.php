@@ -52,7 +52,7 @@ class CurrentPage extends StoolballPage
 		$this->team_manager = new TeamManager($this->GetSettings(), $this->GetDataConnection());
 
 		# data edit control
-		$this->edit = new SeasonEditControl($this->GetSettings());
+		$this->edit = new SeasonEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->edit);
 
 		parent::OnPageInit();

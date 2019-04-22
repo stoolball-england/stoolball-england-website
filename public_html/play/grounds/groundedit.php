@@ -28,7 +28,7 @@ class CurrentPage extends StoolballPage
         $this->ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 
         # New edit control
-        $this->editor = new GroundEditControl($this->GetSettings());
+        $this->editor = new GroundEditControl($this->GetSettings(), $this->GetCsrfToken());
         $this->RegisterControlForValidation($this->editor);
 
         parent::OnPageInit();

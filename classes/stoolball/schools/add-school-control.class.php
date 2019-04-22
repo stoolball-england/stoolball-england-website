@@ -12,12 +12,13 @@ class AddSchoolControl extends DataEditControl
 	 * Creates a new AddSchoolControl
 	 *
 	 * @param SiteSettings $settings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Club');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
     }
 
 	/**

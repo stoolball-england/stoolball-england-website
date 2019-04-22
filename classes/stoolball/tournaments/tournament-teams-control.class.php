@@ -21,16 +21,19 @@ class TournamentTeamsControl extends DataEditControl
 	 *
 	 * @var TeamsInTournamentEditor
 	 */
-	private $teams_editor;
+    private $teams_editor;
+    
+    private $csrf_token;
     
 	/**
 	 * Creates a TournamentTeamsControl
 	 *
 	 * @param SiteSettings $o_settings
+     * @param string $csrf_token
 	 * @param Match $match
 	 * @param bool $b_entire_form
 	 */
-	public function __construct(SiteSettings $o_settings, Match $match=null, $b_entire_form=true)
+	public function __construct(SiteSettings $o_settings, $csrf_token, Match $match=null, $b_entire_form=true)
 	{
 		$this->SetDataObjectClass('Match');
 		if (!is_null($match))
@@ -38,7 +41,8 @@ class TournamentTeamsControl extends DataEditControl
 			$match->SetMatchType(MatchType::TOURNAMENT);
 			$this->SetDataObject($match);
 		}
-		parent::__construct($o_settings, $b_entire_form);
+        parent::__construct($o_settings, $csrf_token, $b_entire_form);
+        $this->csrf_token = $csrf_token;
 
 		$this->SetAllowCancel(true);
         $this->SetCssClass('TournamentEdit');
@@ -77,7 +81,7 @@ class TournamentTeamsControl extends DataEditControl
             if ($this->show_step_number) {
                 $heading .= ' &#8211; step 2 of 3';
             }
-            $this->teams_editor = new TeamsInTournamentEditor($this->GetSettings(), $this, 'AwayTeam', $heading, array('Team name'));
+            $this->teams_editor = new TeamsInTournamentEditor($this->GetSettings(), $this, 'AwayTeam', $heading, array('Team name'), $this->csrf_token);
         }
     }
     

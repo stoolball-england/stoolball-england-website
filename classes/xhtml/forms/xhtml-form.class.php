@@ -20,14 +20,15 @@ class XhtmlForm extends XhtmlElement
 
 	/**
 	 * @return XhtmlForm
+	 * @param string $csrf_token A random unique string that should already be stored in session state
 	 * @desc Creates an XHTML form
 	 */
-	function __construct()
+	public function __construct($csrf_token)
 	{
 		parent::__construct('form');
 		$this->SetNavigateUrl(htmlentities($_SERVER['REQUEST_URI']));
 		$this->AddAttribute('method', 'post');
-        $this->csrf_token = isset($_SESSION['csrf_token']) ? $_SESSION['csrf_token'] : bin2hex(random_bytes(32));
+        $this->csrf_token = $csrf_token;
 	}
 
 	/**
@@ -148,7 +149,7 @@ class XhtmlForm extends XhtmlElement
 	            if (strtoupper($this->GetAttribute("method")) == "POST" and $this->IsPostback() and 
 	                !$this->csrf_validator_added and
 	                $this->b_show_validation_errors and 
-	                (!isset($_POST['securitytoken']) or !isset($_SESSION['csrf_token']) or $_POST['securitytoken'] != $_SESSION['csrf_token'])
+	                (!isset($_POST['securitytoken']) or $_POST['securitytoken'] != $this->csrf_token)
                     )
                 {
                     require_once('data/validation/required-field-validator.class.php');
@@ -196,12 +197,11 @@ class XhtmlForm extends XhtmlElement
 			$xhtml .= new ValidationSummary($a_controls);
 		}
         
-        # Add CSRF token in a hidden field, and store the same token in session
+        # Add CSRF token in a hidden field to match the one that should already be stored in session
         if (strtoupper($this->GetAttribute("method")) == "POST")
         {
             $this->AddControl('<input type="hidden" name="securitytoken" value="' . htmlentities($this->csrf_token, ENT_QUOTES, "UTF-8", false) . '" />');
             $this->InvalidateXhtml();
-            $_SESSION['csrf_token'] = $this->csrf_token;
         }
         
 		return $xhtml . parent::__toString();

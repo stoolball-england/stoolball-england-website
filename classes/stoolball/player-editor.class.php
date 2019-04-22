@@ -10,12 +10,13 @@ class PlayerEditor extends DataEditControl
 	/**
 	 * Creates a PlayerEditor
 	 * @param SiteSettings $settings
-	 * @return void
+	 * @param string $csrf_token
+	 * @return PlayerEditor
 	 */
-	public function __construct(SiteSettings $settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		$this->SetDataObjectClass('Player');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	private $merge_requested = false;

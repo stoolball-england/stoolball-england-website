@@ -16,7 +16,7 @@ class CurrentPage extends StoolballPage
     
     public function OnPageInit()
     {
-        $this->edit = new AddSchoolControl($this->GetSettings());
+        $this->edit = new AddSchoolControl($this->GetSettings(), $this->GetCsrfToken());
         $this->RegisterControlForValidation($this->edit);
 
         parent::OnPageInit();

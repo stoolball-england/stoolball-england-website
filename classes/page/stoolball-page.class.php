@@ -461,7 +461,7 @@ class StoolballPage extends Page
 	}
 
 	echo '<h2 id="your" class="large">Your stoolball.org.uk</h2>';
-	$authentication = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser());
+	$authentication = new AuthenticationControl($this->GetSettings(), AuthenticationManager::GetUser(), $this->GetCsrfToken());
 	$authentication->SetXhtmlId('authControl');
 	echo $authentication;
 

@@ -21,7 +21,7 @@ class CurrentPage extends StoolballPage
 		$this->authentication_manager = $this->GetAuthenticationManager();
 
 		# New edit control
-		$this->editor = new RoleEditControl($this->GetSettings());
+		$this->editor = new RoleEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->editor);
 
 		# run template method

@@ -6,9 +6,15 @@ class ContactForm extends DataEditControl
 	private $a_addresses;
 	private $a_addresses_md5;
 
-	function __construct($o_settings, $a_addresses)
+	/**
+	 * Creates a new ContactForm
+	 * @param SiteSettings $settings
+	 * @param array $a_addresses
+	 * @param string $csrf_token
+	 */
+	public function __construct($settings, $a_addresses, $csrf_token)
 	{
-		if (!is_array($a_addresses) or !count($a_addresses)) die('Must supply at least one contact address for the email form');
+		if (!is_array($a_addresses) or !count($a_addresses)) throw new Exception('Must supply at least one contact address for the email form');
 
 		# set up element
 		$this->SetDataObjectClass('Swift_Message');
@@ -18,7 +24,7 @@ class ContactForm extends DataEditControl
 		$this->a_addresses_md5 = array();
 		foreach ($this->a_addresses as $s_addr => $s_text) $this->a_addresses_md5[md5($s_addr)] = $s_addr;
 
-		parent::__construct($o_settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**

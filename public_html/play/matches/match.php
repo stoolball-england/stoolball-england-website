@@ -367,7 +367,7 @@ class CurrentPage extends StoolballPage
             $this->LoadClientScript("/scripts/tinymce.js");
         
             require_once ('forums/forum-message-form.class.php');
-            $o_form = new ForumMessageForm();
+            $o_form = new ForumMessageForm($this->GetCsrfToken());
             echo $o_form->GetForm();
             
             echo '<p class="privacy-notice">Please read our <a href="https://www.stoolball.org.uk/about/privacy-notice-match-results-and-comments/">privacy notice about match results and comments</a>.</p>'; 

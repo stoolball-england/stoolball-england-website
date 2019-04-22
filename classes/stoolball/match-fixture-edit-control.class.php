@@ -31,14 +31,15 @@ class MatchFixtureEditControl extends DataEditControl
 	 * Creates a MatchFixtureEditControl
 	 *
 	 * @param SiteSettings $o_settings
+	 * @param string $csrf_token
 	 * @param Match $o_match
 	 * @param bool $b_entire_form
 	 */
-	public function __construct(SiteSettings $o_settings, Match $o_match=null, $b_entire_form=true)
+	public function __construct(SiteSettings $o_settings, $csrf_token, Match $o_match=null, $b_entire_form=true)
 	{
 		$this->SetDataObjectClass('Match');
 		if (!is_null($o_match)) $this->SetDataObject($o_match);
-		parent::__construct($o_settings, $b_entire_form);
+		parent::__construct($o_settings, $csrf_token, $b_entire_form);
 		$this->a_teams = array();
 		$this->a_grounds = array();
 		$this->SetButtonText('Save match');

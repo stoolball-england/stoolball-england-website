@@ -5,13 +5,19 @@ class ResetPasswordForm extends DataEditControl
 {
 	private $o_person;
 
-	public function __construct(SiteSettings $settings, User $o_person)
+	/**
+	 * Creates a new ResetPasswordForm
+	 * @param SiteSettings $settings
+	 * @param User $o_person
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, User $o_person, $csrf_token)
 	{
 		$this->o_person = $o_person;
 		$this->SetDataObjectClass('User');
         $this->SetButtonText('Reset password');
 
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**

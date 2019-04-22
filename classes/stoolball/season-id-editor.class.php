@@ -14,10 +14,11 @@ class SeasonIdEditor extends RelatedIdEditor
 	 * @param SiteSettings $settings
 	 * @param DateEditControl $controlling_editor
 	 * @param string $s_id
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id)
+	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $csrf_token)
 	{
-		parent::__construct($settings, $controlling_editor, $s_id, 'Seasons', array('Season'), 'Season', true, 'GetId', 'SetId', 'SetName');
+		parent::__construct($settings, $controlling_editor, $s_id, 'Seasons', array('Season'), $csrf_token, 'Season', true, 'GetId', 'SetId', 'SetName');
 	}
 
 	/**

@@ -42,15 +42,16 @@ class SeasonEditControl extends DataEditControl
 	 * Creates a SeasonEditControl
 	 *
 	 * @param SiteSettings $o_settings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $o_settings)
+	public function __construct(SiteSettings $o_settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('Season');
-		parent::__construct($o_settings);
+		parent::__construct($o_settings, $csrf_token);
 
 		# set up aggregated editors
-		$this->match_types_editor = new RelatedIdEditor($o_settings, $this, 'MatchType', 'Match types', array('Type of match'), 'IdValue', false, 'GetId', 'SetId', 'GetValue');
+		$this->match_types_editor = new RelatedIdEditor($o_settings, $this, 'MatchType', 'Match types', array('Type of match'), $csrf_token, 'IdValue', false, 'GetId', 'SetId', 'GetValue');
 		$this->match_types_editor->SetMinimumItems(1);
 		$this->match_types_editor->SetPossibleDataObjects(
 		array(
@@ -63,9 +64,9 @@ class SeasonEditControl extends DataEditControl
 		);
 		#$this->match_types_editor->SetValuesToExclude(array(MatchType::TournamentMatch())); # Tournament match is implied by Tournament
 
-		$this->adjustments_editor = new PointsAdjustmentsEditor($o_settings, $this, 'Points', 'Points adjustments', array('Points', 'Awarded or deducted', 'Team', 'Reason'));
+		$this->adjustments_editor = new PointsAdjustmentsEditor($o_settings, $this, 'Points', 'Points adjustments', array('Points', 'Awarded or deducted', 'Team', 'Reason'), $csrf_token);
 
-		$this->teams_editor = new TeamsInSeasonEditor($o_settings, $this, 'Team', 'Teams', array('Team', 'Withdrawn'));
+		$this->teams_editor = new TeamsInSeasonEditor($o_settings, $this, 'Team', 'Teams', array('Team', 'Withdrawn'), $csrf_token);
 
 		# initialise arrays
 		$this->result_types = array(

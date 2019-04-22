@@ -17,7 +17,7 @@ class CurrentPage extends StoolballPage
 	function OnPageInit()
 	{
 		# New edit control
-		$this->editor = new PersonEditControl($this->GetSettings());
+		$this->editor = new PersonEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->editor);
 
         if (!isset($_GET["item"]) or !is_numeric($_GET['item']))

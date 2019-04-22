@@ -15,14 +15,15 @@ class PersonEditControl extends DataEditControl
 	/**
 	 * Creates a new PersonEditControl
 	 *
-	 * @param SiteSettings $o_settings
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $o_settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('User');
-		parent::__construct($o_settings);
-		$this->roles_editor = new RelatedIdEditor($this->GetSettings(), $this, "roles", "Roles", array("Role"), "Role", false, "getRoleId", "setRoleId", "setRoleName");
+		parent::__construct($settings, $csrf_token);
+		$this->roles_editor = new RelatedIdEditor($this->GetSettings(), $this, "roles", "Roles", array("Role"), $csrf_token, "Role", false, "getRoleId", "setRoleId", "setRoleName");
 	}
 
     /**

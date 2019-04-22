@@ -131,11 +131,12 @@ abstract class RelatedItemEditor extends DataEditControl
 	 * @param string $s_id
 	 * @param string $s_title
 	 * @param string $a_column_headings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings)
+	public function __construct(SiteSettings $settings, DataEditControl $controlling_editor, $s_id, $s_title, $a_column_headings, $csrf_token)
 	{
 		# Set up this control
-		parent::__construct($settings, false);
+		parent::__construct($settings, $csrf_token, false);
 		$this->SetXhtmlId($s_id);
 		$this->SetNamingPrefix($controlling_editor->GetXhtmlId() . $s_id);
 		$this->SetShowValidationErrors(false);

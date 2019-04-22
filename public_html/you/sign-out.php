@@ -7,11 +7,23 @@ require_once('markup/xhtml-markup.class.php');
 
 class CurrentPage extends StoolballPage
 {
+	
+	/**
+	 * Allow session writes beyond the usual point so that SignOutIfRequested() can be called
+	 */
+	protected function SessionWriteClosing()
+	{
+		return false;
+	}
+
 	function OnPageInit()
 	{
 	    if (!$this->GetAuthenticationManager()->SignOutIfRequested()) {
 	       http_response_code(400);   
-	    }
+		}
+		
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnPrePageLoad()

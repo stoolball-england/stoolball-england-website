@@ -23,10 +23,11 @@ class StatisticsFilterControl extends XhtmlForm
 
 	/**
 	 * Creates a new StatisticsFilterControl
+	 * @param string $csrf_token
 	 */
-	public function __construct()
+	public function __construct($csrf_token)
 	{
-		parent::__construct();
+		parent::__construct($csrf_token);
 		$this->AddAttribute("method", "get");
 	}
 

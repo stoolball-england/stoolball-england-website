@@ -61,7 +61,7 @@ class CurrentPage extends StoolballPage
 		$match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# create repeater control, and save any posted data
-		$this->repeater = new DataEditRepeater($this, 'CreateEditControl');
+		$this->repeater = new DataEditRepeater($this, 'CreateEditControl', $this->GetCsrfToken());
 		$this->repeater->SetCssClass('matchResults');
 		$this->repeater->SetPersistedParameters(array('team', 'season',"tournament"));
 		$this->repeater->SetButtonText('Save all results');
@@ -290,7 +290,7 @@ class CurrentPage extends StoolballPage
 	 */
 	public function CreateEditControl()
 	{
-		$o_edit_control = new MatchResultEditControl($this->GetSettings());
+		$o_edit_control = new MatchResultEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$o_edit_control->SetCssClass('panel');
 		$this->RegisterControlForValidation($o_edit_control);
 		return $o_edit_control;

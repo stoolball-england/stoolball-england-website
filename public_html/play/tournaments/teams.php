@@ -17,7 +17,7 @@ class CurrentPage extends StoolballPage
 	/**
 	 * Editor for the match
 	 *
-	 * @var TournamentEditControl
+	 * @var TournamentTeamsControl
 	 */
 	private $editor;
 
@@ -41,7 +41,7 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new TournamentTeamsControl($this->GetSettings());
+		$this->editor = new TournamentTeamsControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->editor->SetCssClass('panel');
         $this->editor->SetShowStepNumber($this->adding);
 		$this->RegisterControlForValidation($this->editor);
@@ -51,6 +51,14 @@ class CurrentPage extends StoolballPage
 
 		# run template method
 		parent::OnPageInit();
+	}
+
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveTeams() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnPostback()
@@ -101,7 +109,7 @@ class CurrentPage extends StoolballPage
 			if (($this->b_user_is_match_admin or $this->b_user_is_match_owner) and $this->b_is_tournament)
 			{
                 # Save the teams in the tournament
-                $this->match_manager->SaveTeams($this->tournament);
+                $this->match_manager->SaveTeams($this->tournament, $this->GetAuthenticationManager());
                 $this->match_manager->NotifyMatchModerator($this->tournament->GetId());
                 $this->match_manager->ExpandMatchUrl($this->tournament);
                 http_response_code(303);
@@ -112,13 +120,16 @@ class CurrentPage extends StoolballPage
                     $this->Redirect($this->tournament->GetNavigateUrl());
                 }
 			}
-        }
+		}
+		
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnLoadPageData()
 	{
 		/* @var $match_manager MatchManager */
-		/* @var $editor TournamentEditControl */
+		/* @var $editor TournamentTeamsControl */
 
 		# get id of Match
 		$i_id = $this->editor->GetDataObjectId();

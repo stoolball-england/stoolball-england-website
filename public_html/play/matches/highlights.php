@@ -39,7 +39,7 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new MatchHighlightsEditControl($this->GetSettings());
+		$this->editor = new MatchHighlightsEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->editor);
 
 		# check permissions

@@ -8,6 +8,14 @@ require_once('email/email-address.class.php');
 class CurrentPage extends StoolballPage
 {
 	private $o_error_list;
+	
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SignIn() can be called
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
+	}
 
 	public function OnPrePageLoad()
 	{
@@ -86,6 +94,9 @@ class CurrentPage extends StoolballPage
 					break;
 			}
 		}
+
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	public function DisplayIntro()
@@ -126,7 +137,7 @@ class CurrentPage extends StoolballPage
 	public function DisplayForm()
 	{
 		# display form, with the error control included because it may contain an action button
-		$form = new SignInForm($this->GetSettings(), $this->GetAuthenticationManager());
+		$form = new SignInForm($this->GetSettings(), $this->GetAuthenticationManager(), $this->GetCsrfToken());
 		$form->SetControls(array_unshift($form->GetControls(), $this->o_error_list));
         echo $form;
 	}

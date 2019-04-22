@@ -39,7 +39,7 @@ class CurrentPage extends StoolballPage
 	{
 		# Create the editor and manager
 		$this->player_manager = new PlayerManager($this->GetSettings(), $this->GetDataConnection());
-		$this->editor = new PlayerEditor($this->GetSettings());
+		$this->editor = new PlayerEditor($this->GetSettings(), $this->GetCsrfToken());
 		$this->editor->SetAllowCancel(true);
 		$this->RegisterControlForValidation($this->editor);
 

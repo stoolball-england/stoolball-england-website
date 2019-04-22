@@ -5,6 +5,15 @@ require_once('xhtml/forms/xhtml-form.class.php');
 
 class ForumMessageForm extends XhtmlForm
 {
+	/**
+	 * Creates a new instance of ForumMessageForm
+	 * @param string $csrf_token
+	 */
+	public function __construct($csrf_token)
+	{
+		parent::__construct($csrf_token);
+	}
+
 	function GetForm()
 	{
 		$s_text = '<form action="' . $_SERVER['REQUEST_URI'] . '#last-message" method="post" id="forumMessageForm">' . "\n";

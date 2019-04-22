@@ -7,6 +7,14 @@ class ActivationPage extends StoolballPage
 {
 	private $b_success = false;
 
+	/**
+	 * Allow session writes beyond the usual point so that SignOut() can be called
+	 */
+	protected function SessionWriteClosing()
+	{
+		return false;
+	}
+
 	function OnLoadPageData()
 	{
 		# if activation code specified, try to activate
@@ -63,6 +71,9 @@ class ActivationPage extends StoolballPage
 			}
 
 		}
+
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnPrePageLoad()

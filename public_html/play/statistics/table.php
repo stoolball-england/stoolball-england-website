@@ -181,7 +181,7 @@ class CurrentPage extends StoolballPage
         }
 
                 # Apply filters common to all statistics
-        $this->filter_control = new StatisticsFilterControl();
+        $this->filter_control = new StatisticsFilterControl($this->GetCsrfToken());
 
         if ($this->statistic->SupportsFilterByBattingPosition()) {
             $filter_batting_position = StatisticsFilter::SupportBattingPositionFilter($statistics_manager);

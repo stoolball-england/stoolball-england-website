@@ -13,7 +13,7 @@ class CurrentPage extends StoolballPage
     {
         parent::OnPageInit();
         
-        $this->form = new PasswordForm();
+        $this->form = new PasswordForm($this->GetCsrfToken());
         $this->RegisterControlForValidation($this->form);
     }
 

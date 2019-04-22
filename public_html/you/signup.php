@@ -12,7 +12,7 @@ class SignUpPage extends StoolballPage
 	function OnPageInit()
 	{
 		# New edit control
-		$this->form = new SignUpForm($this->GetSettings());
+		$this->form = new SignUpForm($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->form);
 	}
 

@@ -36,12 +36,20 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new TournamentMatchesControl($this->GetSettings());
+		$this->editor = new TournamentMatchesControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->editor->SetCssClass('panel');
 		$this->RegisterControlForValidation($this->editor);
         
 		# run template method
 		parent::OnPageInit();
+	}
+
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveFixture() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnPostback()
@@ -92,14 +100,17 @@ class CurrentPage extends StoolballPage
 			if ($this->b_is_tournament)
 			{   
                 # Save the matches in the tournament
-                $this->match_manager->SaveMatchesInTournament($this->tournament);
+                $this->match_manager->SaveMatchesInTournament($this->tournament, $this->GetAuthenticationManager());
                 $this->match_manager->NotifyMatchModerator($this->tournament->GetId());
                 $this->match_manager->ExpandMatchUrl($this->tournament);
-                http_response_code(303);
-                
+				
+				http_response_code(303);
                 $this->Redirect($this->tournament->GetNavigateUrl());
 			}
-        }
+		}
+		
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnLoadPageData()

@@ -1,5 +1,6 @@
 <?php
 require_once('data/data-manager.class.php');
+require_once("authentication/authentication-manager.class.php");
 require_once('stoolball/match.class.php');
 require_once('stoolball/player-type.enum.php');
 
@@ -1270,10 +1271,9 @@ class MatchManager extends DataManager
 
     /**
 	 * @return void
-	 * @param Match $o_match
 	 * @desc Save the fixture details of the supplied Match to the database, and return the id
 	 */
-	public function SaveFixture(Match $o_match)
+	public function SaveFixture(Match $o_match, AuthenticationManager $authentication_manager)
 	{
 		/* @var $o_away_team Team */
 		$s_match = $this->GetSettings()->GetTable('Match');
@@ -1441,7 +1441,7 @@ class MatchManager extends DataManager
 		# Save teams, unless this is a tournament, in which case it happens separately
 		if (!$is_tournament)
 		{
-			$this->SaveTeams($o_match);
+			$this->SaveTeams($o_match, $authentication_manager);
 		}
 
         if ($is_tournament) {
@@ -1560,7 +1560,7 @@ class MatchManager extends DataManager
 	 * @param $match
 	 * @return void
 	 */
-	public function SaveTeams(Match $match)
+	public function SaveTeams(Match $match, AuthenticationManager $authentication_manager)
 	{
 		if (!$match->GetId()) return;
         $match_id = Sql::ProtectNumeric($match->GetId());
@@ -1599,7 +1599,7 @@ class MatchManager extends DataManager
                     $this->ReadByMatchId(array($match->GetId()));
                     $tournament = $this->GetFirst();
                 } 
-                $away_team_id = $team_manager->SaveOrMatchTournamentTeam($tournament, $away_team);
+                $away_team_id = $team_manager->SaveOrMatchTournamentTeam($tournament, $away_team, $authentication_manager);
             } 
         
             # Ensure we now have an ID, or the following queries will be invalid
@@ -1672,7 +1672,7 @@ class MatchManager extends DataManager
         { 
     		if (count($delete_team_ids))
             {
-                $team_manager->Delete($delete_team_ids);
+                $team_manager->DeleteTeams($delete_team_ids, $authentication_manager);
             }
             unset($team_manager);
         }
@@ -1835,9 +1835,8 @@ class MatchManager extends DataManager
 
     /**
      * Saves the supplied match array as the matches in a tournament
-     * @param Match $tournament_id
      */
-    public function SaveMatchesInTournament(Match $tournament) {
+    public function SaveMatchesInTournament(Match $tournament, AuthenticationManager $authentication_manager) {
 
         $match_ids_to_keep = array();
 
@@ -1874,7 +1873,7 @@ class MatchManager extends DataManager
             if (!$match instanceof Match or $match->GetMatchType() !== MatchType::TOURNAMENT_MATCH) continue;
 
             if (!$match->GetId()) {
-                $this->SaveFixture($match);
+                $this->SaveFixture($match, $authentication_manager);
             }
             $this->SaveMatchOrderInTournament($match->GetId(), $match->GetOrderInTournament());
             $this->CopyTournamentMatchDetailsFromTournament($tournament, $match);

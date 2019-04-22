@@ -92,14 +92,23 @@ class CurrentPage extends StoolballPage
 		{
 			$match = new Match($this->GetSettings());
 			$match->SetHomeTeam($this->team); # Createa match specifying requested team as the home team, so that it gets selected by default
-			$this->edit = new MatchFixtureEditControl($this->GetSettings(), $match);
+			$this->edit = new MatchFixtureEditControl($this->GetSettings(), $this->GetCsrfToken(), $match);
 		}
 		else
 		{
-			$this->edit = new MatchFixtureEditControl($this->GetSettings());
+			$this->edit = new MatchFixtureEditControl($this->GetSettings(), $this->GetCsrfToken());
 		}
 		$this->edit->SetMatchType($this->i_match_type);
 		$this->RegisterControlForValidation($this->edit);
+	}
+
+	
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveFixture() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnLoadPageData()
@@ -246,7 +255,7 @@ class CurrentPage extends StoolballPage
 			if (!$this->IsRefresh())
 			{
 				# Save match
-				$o_match_manager->SaveFixture($this->match);
+				$o_match_manager->SaveFixture($this->match, $this->GetAuthenticationManager());
 				$o_match_manager->SaveSeasons($this->match, true);
 				$o_match_manager->NotifyMatchModerator($this->match->GetId());
 
@@ -257,6 +266,9 @@ class CurrentPage extends StoolballPage
 
 			# Reset control for new match
 			$this->edit->SetDataObject(new Match($this->GetSettings()));
+
+			# Safe to end session writes now
+			session_write_close();
 		}
 
 		$o_match_manager->FilterByMatchType(array($this->i_match_type));

@@ -17,7 +17,7 @@ class CurrentPage extends StoolballPage
 		parent::OnPageInit();
 
 		# Set up form, which must exist to be validated
-		$this->form = new XhtmlForm();
+		$this->form = new XhtmlForm($this->GetCsrfToken());
 
 		$fs1 = new XhtmlElement('fieldset', new XhtmlElement('legend', 'Your team name'));
 		$this->form->AddControl($fs1);

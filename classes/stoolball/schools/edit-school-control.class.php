@@ -14,12 +14,13 @@ class EditSchoolControl extends DataEditControl
 	 * Creates a new EditSchoolControl
 	 *
 	 * @param SiteSettings $settings
+     * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('School');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 
         $this->is_admin = AuthenticationManager::GetUser()->Permissions()->HasPermission(PermissionType::MANAGE_TEAMS);
     }

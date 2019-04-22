@@ -39,7 +39,7 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new ScorecardEditControl($this->GetSettings());
+		$this->editor = new ScorecardEditControl($this->GetSettings(), $this->GetCsrfToken());
         if (!$this->IsPostback()) {
             $this->editor->SetCurrentPage(ScorecardEditControl::FIRST_INNINGS);
         }

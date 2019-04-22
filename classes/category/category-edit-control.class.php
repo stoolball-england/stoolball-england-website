@@ -5,14 +5,20 @@ class CategoryEditControl extends DataEditControl
 {
 	var $o_categories;
 
-	function __construct(SiteSettings $o_settings, CategoryCollection $o_categories)
+	/**
+	 * Creates a new CategoryEditControl
+	 * @param SiteSettings $settings
+	 * @param CategoryCollection $categories
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, CategoryCollection $categories, $csrf_token)
 	{
 		# check input and store
-		$this->o_categories = $o_categories;
+		$this->o_categories = $categories;
 
 		# set up element
 		$this->SetDataObjectClass('Category');
-		parent::__construct($o_settings);
+		parent::__construct($settings);
 	}
 
 	/**

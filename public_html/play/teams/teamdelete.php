@@ -56,7 +56,7 @@ class CurrentPage extends StoolballPage
 			if ($this->has_permission)
 			{
 				# Delete it
-				$this->manager->Delete(array($this->data_object->GetId()));
+				$this->manager->DeleteTeams(array($this->data_object->GetId()), $this->GetAuthenticationManager());
 
                 # Delete team from search engine
                 $this->SearchIndexer()->DeleteFromIndexById("team" . $this->data_object->GetId());

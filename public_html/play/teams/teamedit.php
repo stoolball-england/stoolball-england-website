@@ -34,10 +34,18 @@ class CurrentPage extends StoolballPage
 		$this->ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 
 		# New edit control
-		$this->edit = new TeamEditControl($this->GetSettings());
+		$this->edit = new TeamEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->edit);
 
 		parent::OnPageInit();
+	}
+
+	/**
+	 * For postbacks, allow session writes beyond the usual point so that SaveTeam() can assign permissions to the current user
+	 */
+	protected function SessionWriteClosing()
+	{
+		return !$this->IsPostback();
 	}
 
 	function OnPostback()
@@ -64,11 +72,14 @@ class CurrentPage extends StoolballPage
 		# save data if valid
 		if($this->IsValid())
 		{
-			$i_id = $this->team_manager->SaveTeam($this->team);
+			$i_id = $this->team_manager->SaveTeam($this->team, $this->GetAuthenticationManager());
 			$this->team->SetId($i_id);
 
 			$this->Redirect($this->team->GetNavigateUrl());
 		}
+
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnLoadPageData()

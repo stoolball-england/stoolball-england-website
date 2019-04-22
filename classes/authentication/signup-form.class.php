@@ -3,11 +3,16 @@ require_once('data/data-edit-control.class.php');
 
 class SignUpForm extends DataEditControl
 {
-	public function __construct(SiteSettings $o_settings)
+	/**
+	 * Creates a new SignUpForm
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		# set up element
 		$this->SetDataObjectClass('User');
-		parent::__construct($o_settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**

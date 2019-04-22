@@ -825,6 +825,8 @@ class AuthenticationManager extends DataManager
 	 */
 	public function SignOutIfRequested()
 	{
+		#die('#' . $_POST['securitytoken'] . '#' . $_SESSION['csrf_token'] . '#');
+
 		if (isset($_POST['action']) and $_POST['action'] == 'signout' 
 		and isset($_SESSION['user']) and $_SESSION['user']
         and isset($_POST['securitytoken']) and $_POST['securitytoken']

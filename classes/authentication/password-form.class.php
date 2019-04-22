@@ -3,6 +3,15 @@ require_once('xhtml/forms/xhtml-form.class.php');
 
 class PasswordForm extends XhtmlForm
 {
+	/**
+	 * Creates a new PasswordForm
+	 * @param string $csrf_token
+	 */
+	public function __construct($csrf_token)
+	{
+		parent::__construct($csrf_token);
+	}
+
 	function OnPreRender()
 	{
 		$s_email = '';

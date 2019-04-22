@@ -1,4 +1,5 @@
 <?php
+require_once("authentication/authentication-manager.class.php");
 require_once('data/data-manager.class.php');
 require_once('stoolball/team.class.php');
 require_once('stoolball/team-in-season.class.php');
@@ -551,10 +552,9 @@ class TeamManager extends DataManager
 
 	/**
 	 * @return int
-	 * @param Team $team
 	 * @desc Save the supplied Team to the database, and return the id
 	 */
-	public function SaveTeam(Team $team)
+	public function SaveTeam(Team $team, AuthenticationManager $authentication_manager)
 	{
 		# First job is to check permissions. There are several scenarios:
 		# - adding regular teams requires the highest privileges
@@ -655,9 +655,7 @@ class TeamManager extends DataManager
             unset($player_manager);
             
             # Create owner role
-            require_once("authentication/authentication-manager.class.php");
             require_once("authentication/role.class.php");
-            $authentication_manager = new AuthenticationManager($this->GetSettings(), $this->GetDataConnection(), null);
             $role = new Role();
             $role->setRoleName("Team owner: " . $team->GetName());
             $role->Permissions()->AddPermission(PermissionType::MANAGE_TEAMS, $team->GetLinkedDataUri());
@@ -827,7 +825,7 @@ class TeamManager extends DataManager
      * @param Team $team
      * @return int
      */
-    public function SaveOrMatchTournamentTeam(Match $tournament, Team $team)
+    public function SaveOrMatchTournamentTeam(Match $tournament, Team $team, AuthenticationManager $authentication_manager)
     {
         if (is_null($team->GetPlayerType()))
         { 
@@ -845,7 +843,7 @@ class TeamManager extends DataManager
         {
             $team->SetTeamType(Team::ONCE);
             $team->SetGround($tournament->GetGround());
-            $this->SaveTeam($team);
+            $this->SaveTeam($team, $authentication_manager);
         }
 
         return $team->GetId();
@@ -868,7 +866,7 @@ class TeamManager extends DataManager
 	 * @param int[] $a_ids
 	 * @desc Delete from the db the Teams matching the supplied ids
 	 */
-	public function Delete($a_ids)
+	public function DeleteTeams($a_ids, AuthenticationManager $authentication_manager)
 	{
 		# check parameter
 		$this->ValidateNumericArray($a_ids);
@@ -903,7 +901,6 @@ class TeamManager extends DataManager
         }
 
         # delete owner role
-        $authentication_manager = new AuthenticationManager($this->GetSettings(), $this->GetDataConnection(), null);
         foreach ($teams as $team) 
         {
             /* @var $team Team */
@@ -912,7 +909,6 @@ class TeamManager extends DataManager
                 $authentication_manager->DeleteRole($team->GetOwnerRoleId());
             }
         }
-        unset($authentication_manager);
 		
 		# delete from short URL cache
 		require_once('http/short-url-manager.class.php');

@@ -9,7 +9,7 @@ class RoleEditControl extends DataEditControl
 	/**
 	 * Aggregated editor for security permissions
 	 *
-	 * @var RelatedIdEditor
+	 * @var PermissionsEditor
 	 */
 	private $permissions_editor;
 
@@ -17,12 +17,13 @@ class RoleEditControl extends DataEditControl
 	 * Creates a new RoleEditControl
 	 *
 	 * @param SiteSettings $settings
+	 * @param string $csrf_token
 	 */
-	public function __construct(SiteSettings $settings)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		$this->SetDataObjectClass('Role');
-		parent::__construct($settings);
-		$this->permissions_editor = new PermissionsEditor($this->GetSettings(), $this, "permissions", "Permissions");
+		parent::__construct($settings, $csrf_token);
+		$this->permissions_editor = new PermissionsEditor($this->GetSettings(), $this, "permissions", "Permissions", $csrf_token);
     }
     
 	/**

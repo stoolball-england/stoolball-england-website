@@ -7,6 +7,14 @@ class EmailPage extends StoolballPage
 {
 	private $b_success = false;
 
+	/**
+	 * Allow session writes beyond the usual point so that SignInValidUser() can be called
+	 */
+	protected function SessionWriteClosing()
+	{
+		return false;
+	}
+
 	function OnLoadPageData()
 	{
 		# if confirmation code specified, try to update email
@@ -23,6 +31,9 @@ class EmailPage extends StoolballPage
             $authentication->SignInValidUser($user, $authentication->HasCookies());
 		}
 		unset($authentication);
+		
+		# Safe to end session writes now
+		session_write_close();
 	}
 
 	function OnPrePageLoad()

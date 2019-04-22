@@ -6,12 +6,16 @@ class GroundEditControl extends DataEditControl
 {
 	var $o_address_edit;
 
-	function __construct(SiteSettings $o_settings)
+	/**
+	 * Creates a new GroundEditControl
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
+	 */
+	function __construct(SiteSettings $settings, $csrf_token)
 	{
-		# set up element
 		$this->SetDataObjectClass('Ground');
 		$this->o_address_edit = new PostalAddressEditControl();
-		parent::__construct($o_settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**

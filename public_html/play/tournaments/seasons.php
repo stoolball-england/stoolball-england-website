@@ -17,7 +17,7 @@ class CurrentPage extends StoolballPage
 	/**
 	 * Editor for the match
 	 *
-	 * @var TournamentEditControl
+	 * @var TournamentSeasonsControl
 	 */
 	private $editor;
 
@@ -41,7 +41,7 @@ class CurrentPage extends StoolballPage
 		$this->match_manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 
 		# new edit control
-		$this->editor = new TournamentSeasonsControl($this->GetSettings());
+		$this->editor = new TournamentSeasonsControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->editor->SetCssClass('panel');
         $this->editor->SetShowStepNumber($this->adding);
     	$this->RegisterControlForValidation($this->editor);
@@ -115,7 +115,7 @@ class CurrentPage extends StoolballPage
 	function OnLoadPageData()
 	{
 		/* @var $match_manager MatchManager */
-		/* @var $editor TournamentEditControl */
+		/* @var $editor TournamentSeasonsControl */
 
 		# get id of Match
 		$i_id = $this->editor->GetDataObjectId();

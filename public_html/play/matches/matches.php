@@ -119,7 +119,7 @@ class CurrentPage extends StoolballPage
         echo "<h1>Stoolball matches</h1>";
 		
 		# Filter controls
-		$filter_box = new XhtmlForm();
+		$filter_box = new XhtmlForm($this->GetCsrfToken());
 		$filter_box->SetCssClass('dataFilter');
 		$filter_box->AddAttribute('method', 'get');
 

@@ -14,7 +14,7 @@ class CurrentPage extends StoolballPage
 
     public function OnPageInit()
     {
-        $this->form = new ResetPasswordForm($this->GetSettings(), AuthenticationManager::GetUser());
+        $this->form = new ResetPasswordForm($this->GetSettings(), AuthenticationManager::GetUser(), $this->GetCsrfToken());
         $this->RegisterControlForValidation($this->form);
         
         $this->valid_token = isset($_GET['request']) and preg_match('/^[A-Z0-9]{8}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{4}-[A-Z0-9]{12}$/', $_GET['request']);

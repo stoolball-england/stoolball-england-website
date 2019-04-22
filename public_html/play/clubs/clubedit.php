@@ -28,7 +28,7 @@ class CurrentPage extends StoolballPage
 		$this->o_club_manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
 
 		# New edit control
-		$this->o_edit = new ClubEditControl($this->GetSettings());
+		$this->o_edit = new ClubEditControl($this->GetSettings(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->o_edit);
 
 		# run template method

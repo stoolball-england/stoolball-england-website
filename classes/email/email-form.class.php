@@ -3,12 +3,17 @@ require_once('data/data-edit-control.class.php');
 
 class EmailForm extends DataEditControl
 {
-    function __construct(SiteSettings $settings)
+	/**
+	 * Creates a new EmailForm
+	 * @param SiteSettings $settings
+	 * @param string $csrf_token
+	 */
+    public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		$this->SetDataObjectClass('Swift_Message');
 		$this->SetButtonText('Send email');
 
-        parent::__construct($settings);
+        parent::__construct($settings, $csrf_token);
 	}
 
 	/**

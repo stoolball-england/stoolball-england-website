@@ -7,13 +7,20 @@ class EssentialInfoForm extends DataEditControl
     private $authentication_manager;
     private $suppress_email_message = false;
 
-	public function __construct(SiteSettings $settings, User $user, AuthenticationManager $authentication_manager)
+	/**
+	 * Creates a new EssentialInfoForm
+	 * @param SiteSettings $settings
+	 * @param User $user
+	 * @param AuthenticationManager $authentication_manager
+	 * @param string $csrf_token
+	 */
+	public function __construct(SiteSettings $settings, User $user, AuthenticationManager $authentication_manager, $csrf_token)
 	{
 		$this->user = $user;
         $this->authentication_manager = $authentication_manager;
 		$this->SetDataObjectClass('User');
 
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**
@@ -138,7 +145,7 @@ class EssentialInfoForm extends DataEditControl
 		$this->AddValidator(new RequiredFieldValidator('known_as', 'Please enter a nickname'));
 		$this->AddValidator(new RequiredFieldValidator('email', 'Please enter your email address'));
 		$this->AddValidator(new EmailValidator('email', 'Please enter a valid email address'));
-		$this->AddValidator(new EmailRegisteredValidator('email'));
+		$this->AddValidator(new EmailRegisteredValidator('email', $this->authentication_manager));
 		$this->AddValidator(new LengthValidator('password2', 'Choose a password at least 10 characters long', 10, null));
 		$this->AddValidator(new RequiresOtherFieldsValidator(array('password2', 'password1'), 'Please fill in all three password fields to change your password'));
 		$this->AddValidator(new CompareValidator(array('password2', 'password3'), 'Please confirm your new password'));

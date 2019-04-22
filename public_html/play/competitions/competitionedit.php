@@ -25,7 +25,7 @@ class CurrentPage extends StoolballPage
         $this->o_season_manager = new SeasonManager($this->GetSettings(), $this->GetDataConnection());
 
         # data edit control
-        $this->o_edit = new CompetitionEditControl($this->GetSettings(), $this->GetCategories());
+        $this->o_edit = new CompetitionEditControl($this->GetSettings(), $this->GetCategories(), $this->GetCsrfToken());
         $this->RegisterControlForValidation($this->o_edit);
 
         parent::OnPageInit();

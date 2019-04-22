@@ -23,7 +23,7 @@ class CurrentPage extends StoolballPage
 		$this->o_category_manager = new CategoryManager($this->GetSettings(), $this->GetDataConnection());
 
 		# New edit control
-		$this->o_edit = new CategoryEditControl($this->GetSettings(), $this->GetCategories());
+		$this->o_edit = new CategoryEditControl($this->GetSettings(), $this->GetCategories(), $this->GetCsrfToken());
 		$this->RegisterControlForValidation($this->o_edit);
 
 		# run template method
