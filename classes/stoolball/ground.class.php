@@ -251,34 +251,34 @@ class Ground implements IHasShortUrl
 	 */
 	public function SuggestShortUrl($i_preference=1)
 	{
-		$s_url = strtolower(html_entity_decode($this->GetName()));
+		# Get possible components 
+		$s_locality = preg_replace('/[^a-z0-9 ]/i', '', strtolower(html_entity_decode($this->GetAddress()->GetLocality())));
+		$s_town = preg_replace('/[^a-z0-9 ]/i', '', strtolower(html_entity_decode($this->GetAddress()->GetTown())));
 
-		# Remove punctuation
-		$s_url = preg_replace('/[^a-z ]/i', '', $s_url);
-
-		# Remove noise words
-		$s_url = preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bplaying\b/i', '/\fields\b/i', '/\bfield\b/i', '/\bground\b/i', '/\bthe\b/i', '/\band\b/i'), '', $s_url);
+		$s_url = $s_town ? $s_town : $s_locality;
 
 		# Apply preference
 		if ($i_preference == 2)
 		{
 			# Append locality
-			$s_locality = preg_replace('/[^a-z0-9 ]/i', '', strtolower(html_entity_decode($this->GetAddress()->GetLocality())));
-			if ($s_locality and stristr($s_url, $s_locality) === false) $s_url .= $s_locality;
+			if ($s_locality and stristr($s_url, $s_locality) === false) $s_url .= "/" . $s_locality;
 		}
 		else if ($i_preference == 3)
 		{
-			# Append town
-			$s_town = preg_replace('/[^a-z0-9 ]/i', '', strtolower(html_entity_decode($this->GetAddress()->GetTown())));
-			if ($s_town and stristr($s_url, $s_town) === false) $s_url .= $s_town;
+			# Append ground name (remove noise words from the ground name)
+			$s_ground = strtolower(html_entity_decode($this->GetName()));
+			$s_ground = preg_replace(array('/\bstoolball\b/i', '/\bclub\b/i', '/\bplaying\b/i', '/\fields\b/i', '/\bfield\b/i', '/\bground\b/i', '/\bthe\b/i', '/\band\b/i'), '', $s_ground);
+			if (stristr($s_url, $s_ground) === false) $s_url .= "/" . $s_ground;
 		}
 		else if ($i_preference > 3)
 		{
 			$s_url = ShortUrl::SuggestShortUrl($s_url, $i_preference, 3, 'ground');
 		}
 
-		# Remove spaces
-		$s_url = str_replace(' ', '', $s_url);
+		# Remove punctuation, add dashes
+		$s_url = preg_replace('/[^a-z\/ ]/i', '', $s_url);
+		$s_url = str_replace(' ', '-', $s_url);
+        $s_url = rtrim($s_url, "-");
 
 		return "ground/$s_url";
 	}
