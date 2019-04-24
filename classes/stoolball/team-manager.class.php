@@ -597,7 +597,13 @@ class TeamManager extends DataManager
             # Before changing the short URL, important that $old_team has a note of the current resource URI
     		require_once('http/short-url-manager.class.php');
     		$o_url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
-    		$new_short_url = $o_url_manager->EnsureShortUrl($team);
+            $regenerate_url = false;
+            if (!$team->GetShortUrl() and !is_null($old_team) and $old_team->GetShortUrl())
+            {
+                $team->SetShortUrl($old_team->GetShortUrl());
+                $regenerate_url = true;
+            }
+            $new_short_url = $o_url_manager->EnsureShortUrl($team, $regenerate_url);
         }
         
 		# build query

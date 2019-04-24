@@ -167,29 +167,29 @@ class GroundManager extends DataManager
 	protected function BuildItems(MySqlRawData $o_result)
 	{
 		# use CollectionBuilder to handle duplicates
-		$o_ground_builder = new CollectionBuilder();
-		$o_ground = null;
+		$ground_builder = new CollectionBuilder();
+		$ground = null;
 
 		while($row = $o_result->fetch())
 		{
 			# check whether this is a new ground
-			if (!$o_ground_builder->IsDone($row->ground_id))
+			if (!$ground_builder->IsDone($row->ground_id))
 			{
 				# store any exisiting ground
-				if ($o_ground != null) $this->Add($o_ground);
+				if ($ground != null) $this->Add($ground);
 
 				# create the new ground
-				$o_ground = new Ground($this->o_settings);
-				$o_ground->SetId($row->ground_id);
-				$o_ground->SetDirections($row->directions);
-				$o_ground->SetParking($row->parking);
-				$o_ground->SetFacilities($row->facilities);
-				$o_ground->SetShortUrl($row->short_url);
-				$o_ground->SetDateUpdated($row->date_changed);
-                if (isset($row->update_search) and $row->update_search == 1) $o_ground->SetSearchUpdateRequired();
+				$ground = new Ground($this->o_settings);
+				$ground->SetId($row->ground_id);
+				$ground->SetDirections($row->directions);
+				$ground->SetParking($row->parking);
+				$ground->SetFacilities($row->facilities);
+				$ground->SetShortUrl($row->short_url);
+				$ground->SetDateUpdated($row->date_changed);
+                if (isset($row->update_search) and $row->update_search == 1) $ground->SetSearchUpdateRequired();
         
 
-				$o_address = $o_ground->GetAddress();
+				$o_address = $ground->GetAddress();
 				$o_address->SetSaon($row->saon);
 				$o_address->SetPaon($row->paon);
 				$o_address->SetStreetDescriptor($row->street_descriptor);
@@ -203,7 +203,7 @@ class GroundManager extends DataManager
 					$o_address->SetGeoLocation($row->latitude, $row->longitude, $row->geo_precision);
 				}
 
-				$o_ground->SetAddress($o_address);
+				$ground->SetAddress($o_address);
 			}
 
 			if (isset($row->team_name))
@@ -212,41 +212,56 @@ class GroundManager extends DataManager
 				$team->SetName($row->team_name);
 				$team->SetShortUrl($row->team_short_url);
 				$team->SetPlayerType($row->player_type_id);
-				$o_ground->Teams()->Add($team);
+				$ground->Teams()->Add($team);
 			}
 		}
 		# store final ground
-		if ($o_ground != null) $this->Add($o_ground);
+		if ($ground != null) $this->Add($ground);
 	}
 
 
 	/**
 	 * @return int
-	 * @param Ground $o_ground
+	 * @param Ground $ground
 	 * @desc Save the supplied Ground to the database, and return the id
 	 */
-	function SaveGround($o_ground, $save_school_ground_fields_only=false)
+	function SaveGround($ground, $save_school_ground_fields_only=false)
 	{
+        $adding = !(boolean)$ground->GetId();
+
+		$old_ground = null;
+        if (!$adding)
+        { 
+            $this->ReadById(array($ground->GetId()));
+            $old_ground = $this->GetFirst();
+        }
+
 		# Set up short URL manager
 		require_once('http/short-url-manager.class.php');
 		$o_url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
-		$new_short_url = $o_url_manager->EnsureShortUrl($o_ground);
+		$regenerate_url = false;
+		if (!$ground->GetShortUrl() and !is_null($old_ground) and $old_ground->GetShortUrl())
+		{
+			$ground->SetShortUrl($old_ground->GetShortUrl());
+			$regenerate_url = true;
+		}
+		$new_short_url = $o_url_manager->EnsureShortUrl($ground, $regenerate_url);
 
 		# build query
-		$o_address = $o_ground->GetAddress();
+		$o_address = $ground->GetAddress();
 
         $fields_not_used_by_schools = '';
         if (!$save_school_ground_fields_only) {
             $fields_not_used_by_schools = "saon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetSaon()) . ", " .
-                                          "directions = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetDirections()) . ", " .
-                                          "parking = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetParking()) . ", " .
-                                          "facilities = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetFacilities()) . ", ";
+                                          "directions = " . Sql::ProtectString($this->GetDataConnection(), $ground->GetDirections()) . ", " .
+                                          "parking = " . Sql::ProtectString($this->GetDataConnection(), $ground->GetParking()) . ", " .
+                                          "facilities = " . Sql::ProtectString($this->GetDataConnection(), $ground->GetFacilities()) . ", ";
         }
 
 		# if no id, it's a new ground; otherwise update the ground
-		if ($o_ground->GetId())
+		if ($ground->GetId())
 		{
-			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Ground') . ' SET ' .
+			$s_sql = 'UPDATE nsa_ground SET ' .
 			"sort_name = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GenerateSortName()) . ", " .
 			"paon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPaon()) . ", " .
 			"street_descriptor = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetStreetDescriptor()) . ", " .
@@ -255,20 +270,20 @@ class GroundManager extends DataManager
 			"administrative_area = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetAdministrativeArea()) . ", " .
 			"postcode = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPostcode()) . ", " .
             $fields_not_used_by_schools .
-			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
-			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
-			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .
-			'geo_precision = ' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
+			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $ground->GetShortUrl()) . ", " .
+			'latitude' . Sql::ProtectFloat($ground->GetAddress()->GetLatitude(), true, true) . ', ' .
+			'longitude' . Sql::ProtectFloat($ground->GetAddress()->GetLongitude(), true, true) . ', ' .
+			'geo_precision = ' . Sql::ProtectNumeric($ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
             "update_search = 1, " . 
 			'date_changed = ' . gmdate('U') . ' ' .
-			'WHERE ground_id = ' . Sql::ProtectNumeric($o_ground->GetId());
+			'WHERE ground_id = ' . Sql::ProtectNumeric($ground->GetId());
 
 			# run query
 			$this->GetDataConnection()->query($s_sql);
 		}
 		else
 		{
-			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Ground') . ' SET ' .
+			$s_sql = 'INSERT INTO nsa_ground SET ' .
 			"sort_name = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GenerateSortName()) . ", " .
 			"paon = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPaon()) . ", " .
 			"street_descriptor = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetStreetDescriptor()) . ", " .
@@ -277,10 +292,10 @@ class GroundManager extends DataManager
 			"administrative_area = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetAdministrativeArea()) . ", " .
 			"postcode = " . Sql::ProtectString($this->GetDataConnection(), $o_address->GetPostcode()) . ", " .
             $fields_not_used_by_schools .
-			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $o_ground->GetShortUrl()) . ", " .
-			'latitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLatitude(), true, true) . ', ' .
-			'longitude' . Sql::ProtectFloat($o_ground->GetAddress()->GetLongitude(), true, true) . ', ' .
-			'geo_precision = ' . Sql::ProtectNumeric($o_ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
+			"short_url = " . Sql::ProtectString($this->GetDataConnection(), $ground->GetShortUrl()) . ", " .
+			'latitude' . Sql::ProtectFloat($ground->GetAddress()->GetLatitude(), true, true) . ', ' .
+			'longitude' . Sql::ProtectFloat($ground->GetAddress()->GetLongitude(), true, true) . ', ' .
+			'geo_precision = ' . Sql::ProtectNumeric($ground->GetAddress()->GetGeoPrecision(), true, false) . ', ' .
             "update_search = 1, " . 
 			'date_added = ' . gmdate('U') . ', ' .
 			'date_changed = ' . gmdate('U');
@@ -289,27 +304,26 @@ class GroundManager extends DataManager
 			$o_result = $this->GetDataConnection()->query($s_sql);
 
 			# get autonumber
-			$o_ground->SetId($this->GetDataConnection()->insertID());
+			$ground->SetId($this->GetDataConnection()->insertID());
 		}
 
         # Request search update for objects which mention the ground
-        $sql = "UPDATE nsa_team SET update_search = 1 WHERE ground_id = " . SQL::ProtectNumeric($o_ground->GetId(),false);
+        $sql = "UPDATE nsa_team SET update_search = 1 WHERE ground_id = " . SQL::ProtectNumeric($ground->GetId(),false);
         $this->GetDataConnection()->query($sql);
 
 		$matches = $this->GetSettings()->GetTable("Match");
-        $sql = "UPDATE $matches SET update_search = 1 WHERE ground_id = " . SQL::ProtectNumeric($o_ground->GetId(),false);
+        $sql = "UPDATE $matches SET update_search = 1 WHERE ground_id = " . SQL::ProtectNumeric($ground->GetId(),false);
         $this->GetDataConnection()->query($sql);
 
         # Regenerate short URLs
 		if (is_object($new_short_url))
 		{
-			$new_short_url->SetParameterValuesFromObject($o_ground);
+			$new_short_url->SetParameterValuesFromObject($ground);
 			$o_url_manager->Save($new_short_url);
 		}
 		unset($o_url_manager);
 
-		return $o_ground->GetId();
-
+		return $ground->GetId();
 	}
 
     /**

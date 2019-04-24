@@ -123,15 +123,30 @@ class ClubManager extends DataManager
 	*/
 	public function Save(Club $club)
 	{
+		$adding = !(boolean)$club->GetId();
+
+		$old_club = null;
+        if (!$adding)
+        { 
+            $this->ReadById(array($club->GetId()));
+            $old_club = $this->GetFirst();
+        }
+
 		# Set up short URL manager
 		require_once('http/short-url-manager.class.php');
 		$url_manager = new ShortUrlManager($this->GetSettings(), $this->GetDataConnection());
-		$new_short_url = $url_manager->EnsureShortUrl($club);
+		$regenerate_url = false;
+		if (!$club->GetShortUrl() and !is_null($old_club) and $old_club->GetShortUrl())
+		{
+			$club->SetShortUrl($old_club->GetShortUrl());
+			$regenerate_url = true;
+		}
+		$new_short_url = $url_manager->EnsureShortUrl($club, $regenerate_url);
 
 		# if no id, it's a new club; otherwise update the club
 		if ($club->GetId())
 		{
-			$s_sql = 'UPDATE ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
+			$s_sql = 'UPDATE nsa_club SET ' .
 			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $club->GetName()) . ", 
             club_type = " . Sql::ProtectNumeric($club->GetTypeOfClub(), false, false) . ", 
             how_many_players = " . Sql::ProtectNumeric($club->GetHowManyPlayers(), true, false) . ", 
@@ -152,7 +167,7 @@ class ClubManager extends DataManager
 		}
 		else
 		{
-			$s_sql = 'INSERT INTO ' . $this->GetSettings()->GetTable('Club') . ' SET ' .
+			$s_sql = 'INSERT INTO nsa_club SET ' .
 			"club_name = " . Sql::ProtectString($this->GetDataConnection(), $club->GetName()) . ", 
             club_type = " . Sql::ProtectNumeric($club->GetTypeOfClub(), false, false) . ", 
             how_many_players = " . Sql::ProtectNumeric($club->GetHowManyPlayers(), true, false) . ", 
