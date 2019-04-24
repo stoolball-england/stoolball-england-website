@@ -181,7 +181,7 @@ class CurrentPage extends StoolballPage
 
     	# Get grounds
 		$o_ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
-		$o_ground_manager->ReadAll();
+		$o_ground_manager->ReadById();
 		$a_grounds = $o_ground_manager->GetItems();
 		$this->editor->Grounds()->SetItems($a_grounds);
 		unset($o_ground_manager);    

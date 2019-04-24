@@ -229,7 +229,7 @@ class CurrentPage extends StoolballPage
 				# get all grounds
 				require_once('stoolball/ground-manager.class.php');
 				$o_ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
-				$o_ground_manager->ReadAll();
+				$o_ground_manager->ReadById();
 				$this->editor->SetGrounds($o_ground_manager->GetItems());
 				unset($o_ground_manager);
 			}

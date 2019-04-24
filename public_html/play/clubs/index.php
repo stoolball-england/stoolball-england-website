@@ -15,7 +15,7 @@ class CurrentPage extends StoolballPage
 		$o_manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
 
 		# get teams
-		$o_manager->ReadAll();
+		$o_manager->ReadById();
 		$this->a_clubs = $o_manager->GetItems();
 
 		# tidy up

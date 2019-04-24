@@ -18,9 +18,6 @@ abstract class DataManager extends Collection
 	 * @var MySqlConnection
 	 */
 	private $o_db;
-	private $i_max_items = 0;
-	private $i_start_date = 0;
-	private $i_end_date = 0;
 
 	/**
 	 * @return DataManager
@@ -58,24 +55,6 @@ abstract class DataManager extends Collection
 	}
 
 	/**
-	 * @access public
-	 * @return void
-	 * @desc Read all items from the db
-	 */
-	function ReadAll()
-	{
-		return $this->ReadById();
-	}
-
-	/**
-	 * @access public
-	 * @return void
-	 * @param int[] $a_ids
-	 * @desc Read from the db the items matching the supplied ids, or all items
-	 */
-	function ReadById($a_ids=null) { die('DataManager::ReadById() is an abstract method'); }
-
-	/**
 	 * Locks the specified database tables for writing
 	 *
 	 * @param string[] $a_tables
@@ -100,67 +79,6 @@ abstract class DataManager extends Collection
 	}
 
 	/**
-	 * @return void
-	 * @param int $maximum
-	 * @desc Sets the maximum number of objects which should be returned by this data manager, if supported
-	 */
-	public function FilterByMaximumResults($maximum)
-	{
-		$this->i_max_items = (int)$maximum;
-	}
-
-	/**
-	 * @return int
-	 * @desc Gets the maximum number of objects which should be returned by this data manager, if supported
-	 */
-	public function FilterByMaximumResultsValue()
-	{
-		return $this->i_max_items;
-	}
-
-	/**
-	 * Sets the date from before which data should not be returned
-	 *
-	 * @param int $timestamp
-	 */
-	public function FilterByDateStart($timestamp)
-	{
-		$this->i_start_date = (int)$timestamp;
-	}
-
-	/**
-	 * Gets the date from before which data should not be returned
-	 *
-	 * @return int
-	 */
-	public function FilterByDateStartValue()
-	{
-		return $this->i_start_date;
-	}
-
-
-	/**
-	 * Sets the date after which data should not be returned
-	 *
-	 * @param int $timestamp
-	 */
-	public function FilterByDateEnd($timestamp)
-	{
-		$this->i_end_date = (int)$timestamp;
-	}
-
-	/**
-	 * Gets the date after which data should not be returned
-	 *
-	 * @return int
-	 */
-	public function FilterByDateEndValue()
-	{
-		return $this->i_end_date;
-	}
-
-
-	/**
 	 * @return bool
 	 * @param int[] $a_numeric
 	 * @desc Checks that the passed variable is an array of numeric values; removes it if not
@@ -174,25 +92,6 @@ abstract class DataManager extends Collection
 		{
 			$b_valid = ($b_valid and is_numeric($value));
 			if (!$b_valid) unset($a_numeric[$key]);
-		}
-		return $b_valid;
-	}
-
-	/**
-	 * @return bool
-	 * @param Category[] $a_categories
-	 * @desc Checks that the passed variable is an array of Category objects; dies if not
-	 */
-	function ValidateCategoryArray(&$a_categories)
-	{
-		$s_error = 'Category data not valid. Database will not be accessed.';
-		if (!is_array($a_categories)) die($s_error);
-
-		$b_valid = true;
-		foreach ($a_categories as $o_category)
-		{
-			$b_valid = $b_valid and $o_category instanceof Category;
-			if (!$b_valid) die($s_error);
 		}
 		return $b_valid;
 	}
@@ -249,26 +148,6 @@ abstract class DataManager extends Collection
 	{
 		if ($s_clause) $s_query .= ' WHERE ' . $s_clause;
 		return $s_query;
-	}
-
-	/**
-	 * Adds a condition to a WHERE clause limiting a given field to a date range
-	 *
-	 * @param string $s_clause
-	 * @param string $s_field_name
-	 * @param int $i_operator
-	 */
-	protected function SqlAddDateRange($s_clause, $s_field_name, $i_operator=1)
-	{
-		if ($this->FilterByDateStartValue() > 0)
-		{
-			$s_clause = $this->SqlAddCondition($s_clause, $s_field_name . ' >= ' . $this->FilterByDateStartValue(), $i_operator);
-		}
-		if ($this->FilterByDateEndValue() > 0)
-		{
-			$s_clause = $this->SqlAddCondition($s_clause, $s_field_name . ' <= ' . $this->FilterByDateEndValue(), $i_operator);
-		}
-		return $s_clause;
 	}
 
 	/**

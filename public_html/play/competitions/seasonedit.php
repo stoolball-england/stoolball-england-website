@@ -123,7 +123,7 @@ class CurrentPage extends StoolballPage
 
 		# get all teams
 		$this->team_manager->SetGroupInactiveLast(false);
-		$this->team_manager->ReadAll();
+		$this->team_manager->ReadById();
 		$this->edit->SetTeams($this->team_manager->GetItems());
 
 		# tidy up

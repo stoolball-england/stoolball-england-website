@@ -172,17 +172,6 @@ class CompetitionManager extends DataManager
 		if ($this->GetExcludeInactive()) $s_where = $this->SqlAddCondition($s_where, $s_comp . '.active = 1');
 		if (is_array($a_ids)) $s_where = $this->SqlAddCondition($s_where, $s_comp . '.competition_id IN (' . join(', ', $a_ids) . ') ');
 
-		# limit by date, if specified
-		if ($this->FilterByDateStartValue() > 0)
-		{
-			$year = gmdate('Y', $this->FilterByDateStartValue());
-			$s_where = $this->SqlAddCondition($s_where, 'start_year >= ' . Sql::ProtectNumeric($year));
-		}
-		if ($this->FilterByDateEndValue() > 0)
-		{
-			$year = gmdate('Y', $this->FilterByDateEndValue());
-			$s_where = $this->SqlAddCondition($s_where, 'end_year <= ' . Sql::ProtectNumeric($year));
-		}
 		if (count($this->a_player_types))
 		{
 			if ($this->ValidateNumericArray($this->a_player_types))

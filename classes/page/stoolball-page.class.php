@@ -71,7 +71,7 @@ class StoolballPage extends Page
 	{
 		require_once('category/category-manager.class.php');
 		$category_manager = new CategoryManager($this->GetSettings(), $this->GetDataConnection());
-		$category_manager->ReadAll();
+		$category_manager->ReadById();
 		$categories = $category_manager->GetItems();
 		unset($category_manager);
 

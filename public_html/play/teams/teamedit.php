@@ -9,8 +9,17 @@ require_once('stoolball/teams/team-edit-control.class.php');
 
 class CurrentPage extends StoolballPage
 {
+	/**
+	 * @var TeamManager
+	 */
 	private $team_manager;
+	/**
+	 * @var ClubManager
+	 */
 	private $club_manager;
+	/**
+	 * @var GroundManager
+	 */
 	private $ground_manager;
 	/**
 	 * The team to edit
@@ -112,11 +121,11 @@ class CurrentPage extends StoolballPage
         }
 
 		# get all clubs
-		$this->club_manager->ReadAll();
+		$this->club_manager->ReadById();
 		$this->edit->SetClubs($this->club_manager->GetItems());
 
 			# get all grounds
-		$this->ground_manager->ReadAll();
+		$this->ground_manager->ReadById();
 		$this->edit->SetGrounds($this->ground_manager->GetItems());
 
 		# tidy up

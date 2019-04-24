@@ -260,7 +260,6 @@ class TeamManager extends DataManager
 
         # sort teams
 		$sql .= 'ORDER BY team.team_name ASC ';
-		if ($this->FilterByMaximumResultsValue()) $sql .= 'LIMIT 0, ' . $this->FilterByMaximumResultsValue();
 
 		# run query
 		$o_result = $this->GetDataConnection()->query($sql);

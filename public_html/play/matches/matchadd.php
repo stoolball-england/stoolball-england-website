@@ -218,7 +218,7 @@ class CurrentPage extends StoolballPage
 
 					# get any other teams they might play, and combine with existing results
 					$team_manager->FilterExceptTeams($a_exclude_team_ids);
-					$team_manager->ReadAll();
+					$team_manager->ReadById();
 					$team_groups['Other teams'] = $team_manager->GetItems();
 				}
 
@@ -226,7 +226,7 @@ class CurrentPage extends StoolballPage
 				if (count($team_groups) == 1)
 				{
 					$team_manager->FilterExceptTeams($a_exclude_team_ids);
-					$team_manager->ReadAll();
+					$team_manager->ReadById();
 					$team_groups[] = $team_manager->GetItems();
 				}
 
@@ -311,7 +311,7 @@ class CurrentPage extends StoolballPage
 
 		# Get grounds
 		$o_ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
-		$o_ground_manager->ReadAll();
+		$o_ground_manager->ReadById();
 		$a_grounds = $o_ground_manager->GetItems();
 		$this->edit->SetGrounds($a_grounds);
 		unset($o_ground_manager);

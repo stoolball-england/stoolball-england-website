@@ -29,7 +29,7 @@ class CurrentPage extends StoolballPage
         require_once('search/team-search-adapter.class.php');
 		$manager = new TeamManager($this->GetSettings(), $this->GetDataConnection());
 		$manager->FilterByActive(true);
-		$manager->ReadAll();
+		$manager->ReadById();
 		$teams = $manager->GetItems();
 		unset($manager);
 
@@ -51,7 +51,7 @@ class CurrentPage extends StoolballPage
 
 		$manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 		$manager->FilterByActive(true);
-		$manager->ReadAll();
+		$manager->ReadById();
 		$grounds = $manager->GetItems();
 		unset($manager);
 
@@ -123,7 +123,7 @@ class CurrentPage extends StoolballPage
         $this->SearchIndexer()->DeleteFromIndexByType("competition");
 
 		$manager = new CompetitionManager($this->GetSettings(), $this->GetDataConnection());
-		$manager->ReadAll();
+		$manager->ReadById();
 		$results = $manager->GetItems();
 		unset($manager);
 

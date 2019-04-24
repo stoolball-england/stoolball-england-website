@@ -24,7 +24,7 @@ class CurrentPage extends Page
             $school_manager->FilterBySearch(implode(' ', $search_terms));
         }
         
-		$school_manager->ReadAll();
+		$school_manager->ReadById();
 		$schools = $school_manager->GetItems();
 		unset($school_manager);
 

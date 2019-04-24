@@ -41,7 +41,7 @@ class CurrentPage extends Page
 		require_once('stoolball/ground-manager.class.php');
 		$manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
 		$manager->FilterBySeason(array($competition->GetWorkingSeason()->GetId()));   
-    	$manager->ReadAll();
+    	$manager->ReadById();
 		$grounds = $manager->GetItems();
 		unset($manager);
 		?>

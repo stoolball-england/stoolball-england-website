@@ -15,12 +15,51 @@ class MatchManager extends DataManager
 	{
 		parent::__construct($o_settings, $o_db);
 		$this->s_item_class = 'Match';
+		$this->filter_by_max_items = 0;
+		$this->filter_by_start_date = 0;
+		$this->filter_by_end_date = 0;
 		$this->filter_by_match_types = array();
         $this->filter_by_player_types = array();
 		$this->filter_by_teams = array();
 		$this->filter_by_grounds = array();
 		$this->filter_by_competitions = array();
 		$this->filter_by_match_result = array();
+	}
+	
+	private $filter_by_max_items;
+
+	/**
+	 * @return void
+	 * @param int $maximum
+	 * @desc Sets the maximum number of objects which should be returned by this data manager, if supported
+	 */
+	public function FilterByMaximumResults($maximum)
+	{
+		$this->filter_by_max_items = (int)$maximum;
+	}
+
+	private $filter_by_start_date;
+	
+	/**
+	 * Sets the date from before which data should not be returned
+	 *
+	 * @param int $timestamp
+	 */
+	public function FilterByDateStart($timestamp)
+	{
+		$this->filter_by_start_date = (int)$timestamp;
+	}
+
+	private $filter_by_end_date;
+
+	/**
+	 * Sets the date after which data should not be returned
+	 *
+	 * @param int $timestamp
+	 */
+	public function FilterByDateEnd($timestamp)
+	{
+		$this->filter_by_end_date = (int)$timestamp;
 	}
 
 	private $filter_by_match_types;
@@ -174,8 +213,17 @@ class MatchManager extends DataManager
 		LEFT OUTER JOIN nsa_user AS user ON $s_match.modified_by_id = user.user_id ";
 
 		# limit to specific matches, if specified
-        $where = "";
-        $where = $this->SqlAddDateRange($where, "nsa_match.start_time");
+		$where = "";
+		
+		if ($this->filter_by_start_date > 0)
+		{
+			$where = $this->SqlAddCondition($where, 'nsa_match.start_time >= ' . $this->filter_by_start_date, 1);
+		}
+		if ($this->filter_by_end_date > 0)
+		{
+			$where = $this->SqlAddCondition($where, 'nsa_match.start_time <= ' . $this->filter_by_end_date, 1);
+		}
+
 		if (is_array($a_ids))
         {
             $where = $this->SqlAddCondition($where, $s_match . '.match_id IN (' . join(', ', $a_ids) . ') ');
@@ -570,16 +618,16 @@ class MatchManager extends DataManager
 		'WHERE ' . $s_match . '.match_type != ' .  MatchType::TOURNAMENT_MATCH . ' ' .
 		'AND ' . $s_season . '.season_id IN (' . join(', ', $a_ids) . ') ';
         
-        if ($this->FilterByDateStartValue())
+        if ($this->filter_by_start_date)
         {
-            $s_sql .= "AND start_time >= " . $this->FilterByDateStartValue() . ' ';
+            $s_sql .= "AND start_time >= " . $this->filter_by_start_date . ' ';
         }
         
 		$s_sql .= 'ORDER BY ' . $s_match . '.start_time ASC';
         
-        if ($this->FilterByMaximumResultsValue())
+        if ($this->filter_by_max_items)
         {
-            $s_sql .= " LIMIT 0," . $this->FilterByMaximumResultsValue();
+            $s_sql .= " LIMIT 0," . $this->filter_by_max_items;
         }
 
 		# run query
@@ -650,7 +698,15 @@ class MatchManager extends DataManager
 		"LEFT OUTER JOIN nsa_user AS user ON $s_match.modified_by_id = user.user_id ";
         
         $where = "";
-        $where = $this->SqlAddDateRange($where, "nsa_match.start_time");
+		
+		if ($this->filter_by_start_date > 0)
+		{
+			$where = $this->SqlAddCondition($where, 'nsa_match.start_time >= ' . $this->filter_by_start_date, 1);
+		}
+		if ($this->filter_by_end_date > 0)
+		{
+			$where = $this->SqlAddCondition($where, 'nsa_match.start_time <= ' . $this->filter_by_end_date, 1);
+		}
 
 		if ($by_team)
 		{
@@ -750,9 +806,9 @@ class MatchManager extends DataManager
             $s_sql .= 'ORDER BY ' . $s_match . '.start_time ASC ';   
         }
 
-        if ($this->FilterByMaximumResultsValue()) 
+        if ($this->filter_by_max_items) 
         {
-            $s_sql .= 'LIMIT 0, ' . $this->FilterByMaximumResultsValue();
+            $s_sql .= 'LIMIT 0, ' . $this->filter_by_max_items;
         }
         
         # run query

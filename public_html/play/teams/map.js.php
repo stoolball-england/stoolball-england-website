@@ -59,7 +59,7 @@ class CurrentPage extends Page
             $manager->FilterByPlayerType($a_player_types);
         }
     
-    	$manager->ReadAll();
+    	$manager->ReadById();
 		$grounds = $manager->GetItems();
 		unset($manager);
 

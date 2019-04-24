@@ -19,6 +19,30 @@ class SeasonManager extends DataManager
 		$this->s_item_class = 'Season';
 	}
 
+	private $filter_by_start_date = 0;
+
+	/**
+	 * Sets the date from before which data should not be returned
+	 *
+	 * @param int $timestamp
+	 */
+	public function FilterByDateStart($timestamp)
+	{
+		$this->filter_by_start_date = (int)$timestamp;
+	}
+
+	private $filter_by_end_date = 0;
+
+	/**
+	 * Sets the date after which data should not be returned
+	 *
+	 * @param int $timestamp
+	 */
+	public function FilterByDateEnd($timestamp)
+	{
+		$this->filter_by_end_date = (int)$timestamp;
+	}
+
 	/**
 	 * Restricts results to seasons with the specified match type(s)
 	 *
@@ -107,8 +131,8 @@ class SeasonManager extends DataManager
 		}
 
 		# Limit by dates if specified
-		if ($this->FilterByDateStartValue()) $where = $this->SqlAddCondition($where, "$s_season.start_year = " . gmdate('Y', $this->FilterByDateStartValue()));
-		if ($this->FilterByDateEndValue()) $where = $this->SqlAddCondition($where, "$s_season.end_year = " . gmdate('Y', $this->FilterByDateEndValue()));
+		if ($this->filter_by_start_date) $where = $this->SqlAddCondition($where, "$s_season.start_year = " . gmdate('Y', $this->filter_by_start_date));
+		if ($this->filter_by_end_date) $where = $this->SqlAddCondition($where, "$s_season.end_year = " . gmdate('Y', $this->filter_by_end_date));
 
 		# Limit by match types
 		if (count($this->a_match_types))
