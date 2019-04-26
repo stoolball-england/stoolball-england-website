@@ -8,6 +8,7 @@ class CurrentPage extends StoolballPage
 	private $i_match_id;
 	private $i_team_id;
 	private $i_season_id;
+	private $ground_id;
     private $tournament_player_type;
 	private $s_matches;
 	private $s_cal_title;
@@ -29,6 +30,11 @@ class CurrentPage extends StoolballPage
 		else if (isset($_GET['season']) and is_numeric($_GET['season']))
 		{
 			$this->i_season_id = (int)$_GET['season'];
+			$this->s_matches = 'matches';
+		}
+		else if (isset($_GET['ground']) and is_numeric($_GET['ground']))
+		{
+			$this->ground_id = (int)$_GET['ground'];
 			$this->s_matches = 'matches';
 		}
         else if (isset($_GET['tournaments']) and $_GET['tournaments']) 
@@ -83,6 +89,19 @@ class CurrentPage extends StoolballPage
 				$o_season = $o_comp->GetWorkingSeason();
 				$this->s_cal_title = $o_season->GetCompetitionName();
 				$this->s_cal_url = $o_season->GetCalendarNavigateUrl();
+			}
+			unset($o_manager);
+		}
+		else if (!is_null($this->ground_id))
+		{
+            require_once('stoolball/ground-manager.class.php');
+			$ground_manager = new GroundManager($this->GetSettings(), $this->GetDataConnection());
+			$ground_manager->ReadById(array($this->ground_id));
+			$ground = $ground_manager->GetFirst();
+			if ($ground instanceof Ground)
+			{
+				$this->s_cal_title = "Matches at " . $ground->GetNameAndTown();
+				$this->s_cal_url = $ground->GetCalendarUrl();
 			}
 			unset($o_manager);
 		}

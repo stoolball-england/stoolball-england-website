@@ -82,7 +82,17 @@ class CurrentPage extends StoolballPage
  		?>
         </div>
         </div>
-        <?php 
+		<?php 
+		if (is_array($this->matches) and count($this->matches))
+		{
+			$this->AddSeparator();
+
+			require_once('stoolball/user-edit-panel.class.php');
+			$o_user = new UserEditPanel($this->GetSettings(), 'this ground');
+			$o_user->AddCssClass("with-tabs");
+			$o_user->AddLink('add matches to your calendar', $this->ground->GetCalendarUrl());
+			echo $o_user;
+		}				
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

@@ -9,8 +9,8 @@ require_once('http/short-url.class.php');
  */
 class Ground implements IHasShortUrl
 {
-	var $o_settings;
-	var $i_id;
+	private $o_settings;
+	private $i_id;
 	private $s_facilities;
 	private $s_directions;
 	private $s_parking;
@@ -19,7 +19,7 @@ class Ground implements IHasShortUrl
 	 *
 	 * @var PostalAddress
 	 */
-	var $o_address;
+	private $o_address;
 	private $s_short_url;
 	private $i_updated;
 	private $teams;
@@ -170,6 +170,15 @@ class Ground implements IHasShortUrl
 	}
 
 	/**
+	 * @return string
+	 * @desc Gets the URL for downloading the iCalendar file
+	 */
+	public function GetCalendarUrl()
+	{
+        return $this->o_settings->GetClientRoot() . $this->GetShortUrl() . '/calendar';
+	}
+
+	/**
 	* @return string
 	* @desc Gets the URL to edit the ground
 	*/
@@ -228,7 +237,9 @@ class Ground implements IHasShortUrl
 			array('{0}' => '/play/grounds/ground.php?item={0}',
 				'{0}/matches' => '/play/matches/matches-at-ground.php?item={0}',
 				'{0}/statistics' => '/play/statistics/summary-ground.php?item={0}',
-                '{0}/edit' => '/play/grounds/groundedit.php?item={0}',
+				'{0}/calendar' => '/play/calendar.php?ground={0}',
+				'{0}/calendar.ics' => '/play/calendar.ics.php?ground={0}',
+				'{0}/edit' => '/play/grounds/groundedit.php?item={0}',
                 '{0}/delete' => '/play/grounds/grounddelete.php?item={0}'
 			));
 	}

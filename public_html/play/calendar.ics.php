@@ -22,6 +22,7 @@ function Abort()
 $match_id;
 $team_id;
 $season_id;
+$ground_id;
 $tournament_player_type;
 $matches;
 $calendar_title;
@@ -36,50 +37,67 @@ $yesterday = gmdate('U')-($one_day*1);
 
 if (isset($_GET['match']) and is_numeric($_GET['match']))
 {
-	$match_id = (int)$_GET['match'];
+		$match_id = (int)$_GET['match'];
     if ($match_id < 1) $match_id = null;
     if (!is_null($match_id)) {
-		$match_manager->ReadByMatchId(array($match_id));
-		$match = $match_manager->GetFirst();
-		$matches = array($match);
+			$match_manager->ReadByMatchId(array($match_id));
+			$match = $match_manager->GetFirst();
+			$matches = array($match);
 
-		$calendar_title = $match->GetTitle();
-        if ($match->GetMatchType() == MatchType::TOURNAMENT_MATCH) {
-            $calendar_title .= " in the " . $match->GetTournament()->GetTitle();
-        } 
-		$calendar_title .= ' - ' . $match->GetStartTimeFormatted(true, false);
-	}
+			$calendar_title = $match->GetTitle();
+					if ($match->GetMatchType() == MatchType::TOURNAMENT_MATCH) {
+							$calendar_title .= " in the " . $match->GetTournament()->GetTitle();
+					} 
+			$calendar_title .= ' - ' . $match->GetStartTimeFormatted(true, false);
+		}
 }
 else if (isset($_GET['team']) and is_numeric($_GET['team']))
 {
-	$team_id = (int)$_GET['team'];
+		$team_id = (int)$_GET['team'];
     if ($team_id < 1) $team_id = null;
     if (!is_null($team_id)) {
-		$match_manager->FilterByTeam(array($team_id));
-		$match_manager->FilterByDateStart($yesterday);
-		$match_manager->ReadMatchSummaries();
-		$matches = $match_manager->GetItems();
+			$match_manager->FilterByTeam(array($team_id));
+			$match_manager->FilterByDateStart($yesterday);
+			$match_manager->ReadMatchSummaries();
+			$matches = $match_manager->GetItems();
 
-		require_once('stoolball/team-manager.class.php');
-		$team_manager = new TeamManager($settings, $database);
-		$team_manager->ReadById(array($team_id));
-		$team = $team_manager->GetFirst();
-		$calendar_title = 'Matches for ' . $team->GetName() . ' stoolball team';
+			require_once('stoolball/team-manager.class.php');
+			$team_manager = new TeamManager($settings, $database);
+			$team_manager->ReadById(array($team_id));
+			$team = $team_manager->GetFirst();
+			$calendar_title = 'Matches for ' . $team->GetName() . ' stoolball team';
     }
 }
 else if (isset($_GET['season']) and is_numeric($_GET['season']))
 {
-	$season_id = (int)$_GET['season'];
+		$season_id = (int)$_GET['season'];
     if ($season_id < 1) $season_id = null;
     if (!is_null($season_id)) {
-		$match_manager->ReadBySeasonId(array($season_id));
-		$matches = $match_manager->GetItems();
+			$match_manager->ReadBySeasonId(array($season_id));
+			$matches = $match_manager->GetItems();
 
-		require_once('stoolball/season-manager.class.php');
-		$season_manager = new SeasonManager($settings, $database);
-		$season_manager->ReadById(array($season_id));
-		$season = $season_manager->GetFirst();
-		$calendar_title = 'Matches in the ' . $season->GetCompetitionName();
+			require_once('stoolball/season-manager.class.php');
+			$season_manager = new SeasonManager($settings, $database);
+			$season_manager->ReadById(array($season_id));
+			$season = $season_manager->GetFirst();
+			$calendar_title = 'Matches in the ' . $season->GetCompetitionName();
+    }
+}
+else if (isset($_GET['ground']) and is_numeric($_GET['ground']))
+{
+		$ground_id = (int)$_GET['ground'];
+    if ($ground_id < 1) $ground_id = null;
+    if (!is_null($ground_id)) {
+			$match_manager->FilterByGround(array($ground_id));
+			$match_manager->FilterByDateStart($yesterday);
+			$match_manager->ReadMatchSummaries();
+			$matches = $match_manager->GetItems();
+
+			require_once('stoolball/ground-manager.class.php');
+			$ground_manager = new GroundManager($settings, $database);
+			$ground_manager->ReadById(array($ground_id));
+			$ground = $ground_manager->GetFirst();
+			$calendar_title = 'Matches at ' . $ground->GetNameAndTown();
     }
 }
 else if (isset($_GET['tournaments']) and $_GET['tournaments']) 
