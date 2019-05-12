@@ -37,18 +37,12 @@ class TournamentEditControl extends DataEditControl
 	 * Creates a TournamentEditControl
 	 *
 	 * @param SiteSettings $o_settings
-	 * @param Match $match
 	 * @param string $csrf_token
 	 * @param bool $b_entire_form
 	 */
-	public function __construct(SiteSettings $o_settings, Match $match=null, $csrf_token, $b_entire_form=true)
+	public function __construct(SiteSettings $o_settings, $csrf_token, $b_entire_form=true)
 	{
 		$this->SetDataObjectClass('Match');
-		if (!is_null($match))
-		{
-			$match->SetMatchType(MatchType::TOURNAMENT);
-			$this->SetDataObject($match);
-		}
 		parent::__construct($o_settings, $csrf_token, $b_entire_form);
 
         $this->probable_teams = new Collection();
