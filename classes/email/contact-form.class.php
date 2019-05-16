@@ -58,7 +58,7 @@ class ContactForm extends DataEditControl
 		$body = isset($_POST['body']) ? $_POST['body'] : '';
 		if (isset($_POST['reply'])) $body .= "\n\n(The sender of this message has asked for a reply.)";
 		$o_email->SetBody($body);
-		if (isset($_POST['cc'])) $o_email->SetCC([$_POST['from']]);
+		if (isset($_POST['cc'])) $o_email->SetCC($_POST['from']);
 		$this->SetDataObject($o_email);
 	}
 
