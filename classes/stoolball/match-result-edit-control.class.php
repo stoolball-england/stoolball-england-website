@@ -10,14 +10,12 @@ class MatchResultEditControl extends DataEditControl
 	/**
 	 * Creates a new MatchResultEditControl
 	 * @param SiteSettings $settings
-	 * @param Match $match
 	 * @param string $csrf_token
 	 * @return void
 	 */
-	public function __construct(SiteSettings $settings, Match $match=null, $csrf_token)
+	public function __construct(SiteSettings $settings, $csrf_token)
 	{
 		$this->SetDataObjectClass('Match');
-		$this->SetDataObject($match);
 		parent::__construct($settings, $csrf_token, false);
 	}
 
