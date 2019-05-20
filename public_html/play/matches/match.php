@@ -138,7 +138,7 @@ class CurrentPage extends StoolballPage
     {
         /* @var $message ForumMessage */
 
-        if (trim($_POST['message']) and !$this->IsRefresh()) {
+        if (isset($_POST['message']) and trim($_POST['message']) and !$this->IsRefresh()) {
             $message = $topic_manager->SaveComment($this->review_item, $_POST['message']);
 
             # send subscription emails
