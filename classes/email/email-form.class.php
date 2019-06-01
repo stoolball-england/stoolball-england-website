@@ -1,5 +1,6 @@
 <?php
 require_once('data/data-edit-control.class.php');
+require_once('email/email-message.class.php');
 
 class EmailForm extends DataEditControl
 {
@@ -10,7 +11,7 @@ class EmailForm extends DataEditControl
 	 */
     public function __construct(SiteSettings $settings, $csrf_token)
 	{
-		$this->SetDataObjectClass('Swift_Message');
+		$this->SetDataObjectClass('EmailMessage');
 		$this->SetButtonText('Send email');
 
         parent::__construct($settings, $csrf_token);
@@ -22,18 +23,19 @@ class EmailForm extends DataEditControl
 	*/
 	function BuildPostedDataObject()
 	{
-		$email = new Swift_Message();
+		$email = new EmailMessage();
 		
 		if (isset($_POST['from']) and is_string($_POST['from'])) {
 	        $fromName = html_entity_decode((isset($_POST['fromName']) and is_string($_POST['fromName']) and $_POST['fromName']) ? $_POST['fromName'] : $_POST['from']);
-		    $email->setFrom([$_POST['from'] => $fromName]);
+			$email->SetFromAddress($_POST['from']);
+			$email->SetFromName($fromName);
         }
 		if (isset($_POST['subject']) and is_string($_POST['subject']) and $_POST['subject'])
 		{
-			$email->setSubject(html_entity_decode($_POST['subject']));
+			$email->SetSubject(html_entity_decode($_POST['subject']));
 		}
         $body = (isset($_POST['body']) and is_string($_POST['body'])) ? $_POST['body'] : '';
-        $email->setBody(html_entity_decode($body));
+        $email->SetBody(html_entity_decode($body));
 		$this->SetDataObject($email);
 	}
 

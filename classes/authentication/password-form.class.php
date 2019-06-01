@@ -33,7 +33,9 @@ class PasswordForm extends XhtmlForm
     public function CreateValidators()
     {
         require_once('data/validation/required-field-validator.class.php');
+		require_once('data/validation/email-validator.class.php');
         $this->AddValidator(new RequiredFieldValidator(array('email'), 'Please enter the email address you signed up with'));
+        $this->AddValidator(new EmailValidator(array('email'), 'Please enter a valid email address'));
     }
 }
  ?>

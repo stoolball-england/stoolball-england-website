@@ -52,7 +52,7 @@ class CurrentPage extends StoolballPage
 
 	function OnPostback()
 	{
-		/* @var $email Swift_Message */
+		/* @var $email EmailMessage */
 		$email = $this->form->GetDataObject();
 
         # Throttles sending rate to deter spam
@@ -76,10 +76,18 @@ class CurrentPage extends StoolballPage
 		# send email if valid
 		if ($this->IsValid() and $this->valid)
 		{
-			$email->setTo([$this->address]);
+			$email_to_send = new Swift_Message();
+			$email_to_send->setTo([$this->address]);
+			if ($email->GetFromAddress()) {
+				$email_to_send->setFrom([$email->GetFromAddress() => $email->GetFromName()]);
+			} else {
+				$email_to_send->setFrom(["do-not-reply@stoolball.org.uk"]);
+			}
+			$email_to_send->setSubject($email->GetSubject());
+			$email_to_send->setBody($email->GetBody());
 
 			$mailer = new Swift_Mailer($this->GetSettings()->GetEmailTransport());
-			$this->send_succeeded = $mailer->send($email);
+			$this->send_succeeded = $mailer->send($email_to_send);
 			$_SESSION['email_form_throttle'] = time();
 		}
 
