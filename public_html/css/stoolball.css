@@ -177,10 +177,6 @@ ul.tiles .facebook-tile { background: url(/images/play/facebook.jpg) no-repeat c
 .map-info p { margin: 0; }
 .map-info a { white-space: nowrap; }
 
-/* Buttons in right col, including advert for bats */
-a.promo { margin: 15px 0; display: block; }
-.topPromo { margin-top: 43px; }
-
 /* Subscribe to RSS feeds using blogTrottr */
 .rss-form label { display: inline; }
 

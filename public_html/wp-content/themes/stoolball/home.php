@@ -250,29 +250,7 @@ class CurrentPage extends StoolballPage
 <script type='text/javascript' src='//s3.amazonaws.com/downloads.mailchimp.com/js/mc-validate.js'></script><script type='text/javascript'>(function($) {window.fnames = new Array(); window.ftypes = new Array();fnames[0]='EMAIL';ftypes[0]='email';fnames[1]='FNAME';ftypes[1]='text';fnames[2]='LNAME';ftypes[2]='text';}(jQuery));var $mcj = jQuery.noConflict(true);</script>
 <!--End mc_embed_signup-->
 
-	<?php $this->AddSeparator();
-		/*$this->BuySomething();?>
-<h2 style="margin: 0">
-	<img src="/images/10-teams.gif" alt="10 new teams" width="185" height="78" />
-</h2>
-<div class="box display-box">
-	<ul class="articleList">
-		<li><a href="http://www.stoolball.org.uk/ashurstblackham">Ashurst and Blackham</a></li>
-		<li><a href="http://www.stoolball.org.uk/broadbridgeheath">Broadbridge Heath</a></li>
-		<li><a href="http://www.stoolball.org.uk/firleblues">Firle Blues</a></li>
-		<li><a href="http://www.stoolball.org.uk/glyndebutterflies">Glynde Butterflies</a></li>
-		<li><a href="http://www.stoolball.org.uk/lowerbeedinglemurs">Lower Beeding Lemurs</a></li>
-		<li><a href="http://www.stoolball.org.uk/selsey">Selsey</a></li>
-		<li><a href="http://www.stoolball.org.uk/southstreetbonfiresociety">South Street Bonfire Society</a></li>
-		<li><a href="http://www.stoolball.org.uk/southwater">Southwater</a></li>
-		<li><a href="http://www.stoolball.org.uk/warnham">Warnham</a></li>
-		<li><a href="http://www.stoolball.org.uk/worthing">Worthing</a></li>
-	</ul>
-	<p>
-		&#8230; and <a href="http://www.stoolball.org.uk/amey">Amey</a>'s moved!
-	</p>
-</div>
-	<?php */?>
+	<?php $this->AddSeparator();?>
 
 	<div class="large">
 	<h2 class="aural">Player statistics for this season</h2>
@@ -289,7 +267,7 @@ class CurrentPage extends StoolballPage
 	</div>
 
 	<?php
-	echo '<a class="promo large" href="/shop"><img alt="Bats &pound;36, Balls &pound;7, Wickets &pound;150, Scorebooks &pound;4. Buy yours now." width="185" height="214" src="/images/equipment/bat-ad-' . rand(1,2) . '.jpg" /></a>';
+	$this->BuySomething();
 	}
 }
 new CurrentPage(new StoolballSettings(), PermissionType::ViewPage(), false);

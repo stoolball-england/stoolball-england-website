@@ -525,9 +525,7 @@ class StoolballPage extends Page
 		*/
 		protected function BuySomething()
 		{
-		$spreadshirt = ((gmdate("U") % 10) >0);
-		if ($spreadshirt)
-		{
+		
 		$folder= SiteContext::IsWordPress() ? ABSPATH : $_SERVER['DOCUMENT_ROOT'];
 
 		// File downloaded from http://api.spreadshirt.net/api/v1/shops/629531/articles?limit=50
@@ -541,11 +539,7 @@ class StoolballPage extends Page
 		'<img src="' . Html::Encode($article->resources->resource->attributes("http://www.w3.org/1999/xlink")->href) . '" alt="' . Html::Encode($article->name) . '" width="159" height="159" />' .
 		'<p>' . $article->name . '</p>' .
 		'<p class="buy"><span>Buy it now</span></p></a></div></div>';
-		}
-		else
-		{
-		echo '<a class="promo large" href="/shop"><img alt="Bats &pound;39, Balls &pound;7, Wickets &pound;150, Scorebooks &pound;4. Buy yours now." width="185" height="214" src="' . $this->resource_root . '/images/equipment/bat-ad-' . rand(1,2) . '.jpg" /></a>';
-		}
+		
 		}
 
 		private $indexer;
