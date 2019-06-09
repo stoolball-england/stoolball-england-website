@@ -530,7 +530,7 @@ class StoolballPage extends Page
 
 		// File downloaded from http://api.spreadshirt.net/api/v1/shops/629531/articles?limit=50
 		$articles = simplexml_load_file($folder . "/spreadshirt.xml");
-		$article =  $articles->article[rand(0, 37)];
+		$article =  $articles->article[rand(0, 36)];
 		echo '<div class="spreadshirt large">';
 		#echo '<h2><img src="/images/christmas.gif" alt="Stoolball at Christmas" width="204" height="90" /></h2>';
 		echo '<h2><img src="/images/gifts.gif" alt="Visit our stoolball gift shop" width="204" height="90" /></h2>';
