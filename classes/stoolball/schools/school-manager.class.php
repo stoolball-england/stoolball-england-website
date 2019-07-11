@@ -1,28 +1,28 @@
 <?php
 require_once('data/data-manager.class.php');
-require_once('stoolball/clubs/club.class.php');
+require_once('stoolball/schools/school.class.php');
 
 class SchoolManager extends DataManager
 {
      private $filter_search = null;
    
     /**
-     * Filters the results of supporting queries to clubs with names matching the search term
+     * Filters the results of supporting queries to schools with names matching the search term
      */
     public function FilterBySearch($search_term) {
         $this->filter_search = explode(" ", preg_replace("/[^A-Za-z0-9-' ]/", '', (string)$search_term));
     }
     
 	/**
-	* @return ClubManager
+	* @return SchoolManager
 	* @param SiteSettings $settings
 	* @param MySqlConnection $db
-	* @desc Read and write Clubs
+	* @desc Read and write Schools
 	*/
 	function __construct(SiteSettings $settings, MySqlConnection $db)
 	{
 		parent::__construct($settings, $db);
-		$this->s_item_class = 'Club';
+		$this->s_item_class = 'School';
 	}
 
 
@@ -30,7 +30,7 @@ class SchoolManager extends DataManager
 	* @access public
 	* @return void
 	* @param int[] $a_ids
-	* @desc Read from the db the Clubs matching the supplied ids, or all Clubs
+	* @desc Read from the db the Schools matching the supplied ids, or all Schools
 	*/
 	function ReadById($a_ids=null)
 	{
@@ -137,7 +137,7 @@ class SchoolManager extends DataManager
 				$school->Add($team);
 			}
 		}
-		# store final club
+		# store final scho
 		if ($school != null) $this->Add($school);
 	}
 
