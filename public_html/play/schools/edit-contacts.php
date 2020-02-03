@@ -22,7 +22,7 @@ class CurrentPage extends StoolballPage
      
     public function OnPageInit()
     {
-        $this->edit = new EditSchoolContactsControl($this->GetSettings());
+        $this->edit = new EditSchoolContactsControl($this->GetSettings(), $this->GetCsrfToken());
         $this->RegisterControlForValidation($this->edit);
         
         $this->school_manager = new SchoolManager($this->GetSettings(), $this->GetDataConnection());
