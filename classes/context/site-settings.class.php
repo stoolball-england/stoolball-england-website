@@ -335,5 +335,12 @@ abstract class SiteSettings
         return $a_formats;
 
     }
+
+    /**
+     * Gets the origins which can call Stoolball England APIs from the client-side
+     */
+    public function GetCorsAllowedOrigins() {
+        return array();
+    }
 }
 ?>

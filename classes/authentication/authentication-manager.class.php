@@ -10,6 +10,9 @@ class AuthenticationManager extends DataManager
      */
     private $auto_sign_in;
 	private $i_permission_required_for_page;
+	private $filter_by_activated = null;
+	private $filter_by_disabled = null;
+	private $filter_by_minimum_sign_ins = null;
 
 	/**
 	 * @return AuthenticationManager
@@ -56,7 +59,31 @@ class AuthenticationManager extends DataManager
      */
     public function GetAutoSignInProvider() {
         return $this->auto_sign_in;
-    }
+	}
+	
+	/**
+	 * Sets supporting queries to filter by whether the user is activated
+	 * @param bool $activated
+	 */
+	public function FilterByActivated($activated) {
+		$this->filter_by_activated = $activated;
+	}
+
+	/**
+	 * Sets supporting queries to filter by whether the user is disabled
+	 * @param bool $disabled
+	 */
+	public function FilterByDisabled($disabled) {
+		$this->filter_by_disabled = $disabled;
+	}
+
+	/**
+	 * Sets supporting queries to filter by a minimum number of times a user has signed in
+	 * @param int $minimum
+	 */
+	public function FilterByMinimumSignIns($minimum) {
+		$this->filter_by_minimum_sign_ins = $minimum;
+	}
 
 	/**
 	 * @access public
@@ -72,15 +99,27 @@ class AuthenticationManager extends DataManager
         $role = $this->GetSettings()->GetTable("Role");
 
 		$sql = "SELECT $user.user_id, $user.known_as, $user.name_first, $user.name_last, $user.email, $user.short_url,
-		      date_added AS sign_up_date, sign_in_count, last_signed_in, total_messages, disabled, activated,
+		      date_added AS sign_up_date, date_changed, sign_in_count, last_signed_in, total_messages, disabled, activated,
 			  requested_email, requested_email_hash, password_reset_token, password_reset_request_date,
 		      $role.role_id, $role.role
     		  FROM $user LEFT JOIN $user_role ON $user.user_id = $user_role.user_id 
 		      LEFT JOIN $role ON $user_role.role_id = $role.role_id ";
 
 		# limit to specific ids, if specified
-		if (is_array($a_ids)) $sql .= "WHERE $user.user_id IN (" . join(', ', $a_ids) . ') ';
+		$where = "";
+		if (is_array($a_ids)) $where .= "$user.user_id IN (" . join(', ', $a_ids) . ') ';
+		if (!is_null($this->filter_by_activated)) {
+			$where = $this->SqlAddCondition($where, "activated = " . ($this->filter_by_activated ? "1" : "0"), DataManager::SqlAnd());
+		}
+		if (!is_null($this->filter_by_disabled)) {
+			$where = $this->SqlAddCondition($where, "disabled = " . ($this->filter_by_disabled ? "1" : "0"), DataManager::SqlAnd());
+		}
+		if (!is_null($this->filter_by_minimum_sign_ins)) {
+			$where = $this->SqlAddCondition($where, "sign_in_count >= " . $this->filter_by_minimum_sign_ins, DataManager::SqlAnd());
+		}
 
+		$sql = $this->SqlAddWhereClause($sql, $where);
+//die($sql);
 		# sort results
 		$sql .= "ORDER BY $user.known_as ASC, $user.name_last ASC, $user.name_first ASC";
 
@@ -485,6 +524,7 @@ class AuthenticationManager extends DataManager
 				if (isset($row->short_url)) $user->SetShortUrl($row->short_url);
 				if (isset($row->sign_in_count)) $user->SetTotalSignIns($row->sign_in_count);
 				if (isset($row->sign_up_date)) $user->SetSignUpDate($row->sign_up_date);
+				if (isset($row->date_changed)) $user->SetDateChanged($row->sign_up_date);
 				if (isset($row->last_signed_in)) $user->SetLastSignInDate($row->last_signed_in);
 				if (isset($row->total_messages)) $user->SetTotalMessages($row->total_messages);
                 if (isset($row->activated)) $user->SetAccountActivated($row->activated);

@@ -11,6 +11,7 @@ class User implements IHasShortUrl
 	private $s_last_name;
 	private $s_email;
 	private $i_sign_up_date;
+	private $date_changed;
 	private $last_sign_in_date;
 	private $total_sign_ins;
 	private $i_total_messages;
@@ -349,7 +350,7 @@ class User implements IHasShortUrl
 	 * Sets the date the user registered as a UNIX timestamp
 	 * @param int $timestamp
 	 */
-	public function SetSignUpdate($timestamp)
+	public function SetSignUpDate($timestamp)
 	{
 		if (is_numeric($timestamp))
 		{
@@ -363,6 +364,26 @@ class User implements IHasShortUrl
 	public function GetSignUpDate()
 	{
 		return $this->i_sign_up_date;
+	}
+
+	/**
+	 * Sets the date the user account last changed as a UNIX timestamp
+	 * @param int $timestamp
+	 */
+	public function SetDateChanged($timestamp)
+	{
+		if (is_numeric($timestamp))
+		{
+			$this->date_changed = (int)$timestamp;
+		}
+	}
+
+	/**
+	 * Gets the date the user account last changed as a UNIX timestamp
+	 */
+	public function GetDateChanged()
+	{
+		return $this->date_changed;
 	}
 
 	/**
