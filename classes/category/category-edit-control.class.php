@@ -18,7 +18,7 @@ class CategoryEditControl extends DataEditControl
 
 		# set up element
 		$this->SetDataObjectClass('Category');
-		parent::__construct($settings);
+		parent::__construct($settings, $csrf_token);
 	}
 
 	/**
