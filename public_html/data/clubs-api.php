@@ -3,6 +3,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 
 require_once('context/stoolball-settings.class.php');
 require_once('page/page.class.php');
+require_once('data/date.class.php');
 require_once('stoolball/clubs/club-manager.class.php');
 
 class CurrentPage extends Page
@@ -49,8 +50,9 @@ class CurrentPage extends Page
 		?>","clubmarkAccredited":<?php echo $club->GetClubmarkAccredited() ? "true" : "false"
 		?>,"howManyPlayers":<?php echo is_null($club->GetHowManyPlayers()) ? "null" : $club->GetHowManyPlayers()
 		?>,"route":"<?php echo $club->GetShortUrl()
-		?>"<?php
-		?>}<?php
+		?>","dateCreated":"<?php echo Date::Microformat($club->GetDateAdded()) 
+		?>","dateUpdated":"<?php echo Date::Microformat($club->GetDateChanged())
+		?>"}<?php
 		}
 		?>]<?php
 

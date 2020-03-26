@@ -36,6 +36,7 @@ class ClubManager extends DataManager
 	{
 		$sql = "SELECT club.club_id, club.club_name, club.club_type, club.how_many_players, club.age_range_lower, club.age_range_upper, 
 		club.plays_outdoors, club.plays_indoors, club.twitter, club.facebook, club.instagram, club.clubmark, club.short_url, 
+		club.date_added, club.date_changed,
 		team.team_id, team.team_name, team.short_url AS team_short_url 
 		FROM nsa_club AS club LEFT OUTER JOIN nsa_team AS team ON club.club_id = team.club_id ";
 
@@ -97,7 +98,9 @@ class ClubManager extends DataManager
                 $club->SetTwitterAccount($row->twitter);
                 $club->SetFacebookUrl($row->facebook);
                 $club->SetInstagramAccount($row->instagram);
-                $club->SetClubmarkAccredited($row->clubmark);
+				$club->SetClubmarkAccredited($row->clubmark);
+				$club->SetDateAdded($row->date_added);
+				$club->SetDateChanged($row->date_changed);
 
 			}
 

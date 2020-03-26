@@ -24,6 +24,8 @@ class Club extends Collection implements IHasShortUrl
     private $club_type;
     private $plays_outdoors;
     private $plays_indoors;
+	private $date_added;
+	private $date_changed;
 
 	/**
 	 * Instantiates a Club
@@ -230,6 +232,45 @@ class Club extends Collection implements IHasShortUrl
         return $this->clubmark;
     }
     
+	/**
+	 * Sets the date the club was added as a UNIX timestamp
+	 * @param int $timestamp
+	 */
+	public function SetDateAdded($timestamp)
+	{
+		if (is_numeric($timestamp))
+		{
+			$this->date_added = (int)$timestamp;
+		}
+	}
+
+	/**
+	 * Gets the date the club was added as a UNIX timestamp
+	 */
+	public function GetDateAdded()
+	{
+		return $this->date_added;
+    }
+    
+	/**
+	 * Sets the date the club last changed as a UNIX timestamp
+	 * @param int $timestamp
+	 */
+	public function SetDateChanged($timestamp)
+	{
+		if (is_numeric($timestamp))
+		{
+			$this->date_changed = (int)$timestamp;
+		}
+	}
+
+	/**
+	 * Gets the date the club last changed as a UNIX timestamp
+	 */
+	public function GetDateChanged()
+	{
+		return $this->date_changed;
+	}
     
 	/**
 	* @return string
