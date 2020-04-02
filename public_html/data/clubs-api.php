@@ -29,7 +29,11 @@ class CurrentPage extends Page
 	{
 		# Read all roles to be migrated
 		$manager = new ClubManager($this->GetSettings(), $this->GetDataConnection());
-		$manager->FilterByClubType(Club::STOOLBALL_CLUB);
+		if (isset($_GET['type']) && $_GET["type"] == "schools") {
+			$manager->FilterByClubType(Club::SCHOOL);
+		} else {
+			$manager->FilterByClubType(Club::STOOLBALL_CLUB);
+		}
 		$manager->ReadById();
 		$first = true;
 		?>[<?php
@@ -50,9 +54,9 @@ class CurrentPage extends Page
 		?>","clubmarkAccredited":<?php echo $club->GetClubmarkAccredited() ? "true" : "false"
 		?>,"howManyPlayers":<?php echo is_null($club->GetHowManyPlayers()) ? "null" : $club->GetHowManyPlayers()
 		?>,"route":"<?php echo $club->GetShortUrl()
-		?>","dateCreated":"<?php echo Date::Microformat($club->GetDateAdded()) 
-		?>","dateUpdated":"<?php echo Date::Microformat($club->GetDateChanged())
-		?>"}<?php
+		?>","dateCreated":<?php echo $club->GetDateAdded() === 0 ? "null" : "\"" . Date::Microformat($club->GetDateAdded()) . "\"" 
+		?>,"dateUpdated":<?php echo $club->GetDateChanged() === 0 ? "null" : "\"" . Date::Microformat($club->GetDateChanged()) . "\""
+		?>}<?php
 		}
 		?>]<?php
 
