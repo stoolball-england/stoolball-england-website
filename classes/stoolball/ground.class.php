@@ -21,6 +21,7 @@ class Ground implements IHasShortUrl
 	 */
 	private $o_address;
 	private $s_short_url;
+	private $i_added;
 	private $i_updated;
 	private $teams;
     private $update_search;
@@ -292,6 +293,26 @@ class Ground implements IHasShortUrl
         $s_url = rtrim($s_url, "-");
 
 		return "ground/$s_url";
+	}
+
+	/**
+	 * Sets the date the ground info was added
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateAdded($i_date)
+	{
+		$this->i_added = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the ground info was added
+	 *
+	 * @return int
+	 */
+	public function GetDateAdded()
+	{
+		return $this->i_added;
 	}
 
 	/**

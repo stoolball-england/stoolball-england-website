@@ -94,7 +94,8 @@ class GroundManager extends DataManager
 		
 		$sql = "SELECT $ground.ground_id, $ground.directions, $ground.parking, $ground.facilities, $ground.short_url,
 		$ground.saon, $ground.paon, $ground.street_descriptor, $ground.locality, $ground.town, $ground.administrative_area, $ground.postcode,
-		$ground.latitude, $ground.longitude, $ground.geo_precision, $ground.date_changed, $ground.update_search ";
+		$ground.latitude, $ground.longitude, $ground.geo_precision, $ground.date_changed, $ground.update_search,
+		$ground.date_added ";
 
 		if ($with_teams)
 		{
@@ -185,6 +186,7 @@ class GroundManager extends DataManager
 				$ground->SetParking($row->parking);
 				$ground->SetFacilities($row->facilities);
 				$ground->SetShortUrl($row->short_url);
+				$ground->SetDateAdded($row->date_added);
 				$ground->SetDateUpdated($row->date_changed);
                 if (isset($row->update_search) and $row->update_search == 1) $ground->SetSearchUpdateRequired();
         
