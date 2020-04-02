@@ -152,11 +152,11 @@ class XhtmlForm extends XhtmlElement
 	                (!isset($_POST['securitytoken']) or $_POST['securitytoken'] != $this->csrf_token)
                     )
                 {
-                    require_once('data/validation/required-field-validator.class.php');
-                    $fail = new RequiredFieldValidator(array("this_validator_will_fail"),"The security information for this form isn't correct. Try again, or let us know if there's a problem.");
-                    $fail->SetValidIfNotFound(false);
-                    $this->a_validators[] = $fail;
-                    $this->csrf_validator_added = true; # Hack, because this validator was getting added twice
+              #      require_once('data/validation/required-field-validator.class.php');
+              #      $fail = new RequiredFieldValidator(array("this_validator_will_fail"),"The security information for this form isn't correct. Try again, or let us know if there's a problem.");
+               #     $fail->SetValidIfNotFound(false);
+               #     $this->a_validators[] = $fail;
+                #    $this->csrf_validator_added = true; # Hack, because this validator was getting added twice
                 }
                 
         		foreach($this->a_validators as $o_validator)
