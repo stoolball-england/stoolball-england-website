@@ -73,12 +73,12 @@ class CurrentPage extends Page
 				?>,<?php
 			}
 	?>{"groundId":<?php echo $ground->GetId()
-		?>,"sortName":"<?php echo $ground->GetAddress()->GenerateSortName() 
+		?>,"sortName":"<?php echo str_replace('&amp;', '&', $ground->GetAddress()->GenerateSortName()) 
 		?>","directions":"<?php echo $s_directions 
 		?>","parking":"<?php echo $s_parking 
 		?>","facilities":"<?php echo $s_facilities 
 		?>","saon":"<?php echo $ground->GetAddress()->GetSaon() 
-		?>","paon":"<?php echo $ground->GetAddress()->GetPaon() 
+		?>","paon":"<?php echo str_replace('&amp;', '&', $ground->GetAddress()->GetPaon()) 
 		?>","street":"<?php echo $ground->GetAddress()->GetStreetDescriptor() 
 		?>","locality":"<?php echo $ground->GetAddress()->GetLocality() 
 		?>","town":"<?php echo $ground->GetAddress()->GetTown() 

@@ -173,9 +173,9 @@ class TeamManager extends DataManager
 
 		$s_sql = "SELECT team.team_id, team.team_name, team.website, team.active, team.team_type, 
 		team.intro, team.player_type_id, team.playing_times, team.cost, team.short_url, 
-		team.contact, team.contact_nsa, team.update_search, team.date_changed, team.modified_by_id,
+		team.contact, team.contact_nsa, team.update_search, team.date_added, team.date_changed, team.modified_by_id,
 		team.year1, team.year2, team.year3, team.year4, team.year5, team.year6, team.year7, team.year8, team.year9, team.year10, team.year11, team.year12,  
-	    club.club_id, club.club_name, club.twitter, club.facebook, club.instagram, club.clubmark, club.short_url AS club_short_url, 
+	    club.club_id, club.club_name, club.club_type, club.age_range_lower, club.age_range_upper, club.twitter, club.facebook, club.instagram, club.clubmark, club.short_url AS club_short_url, 
 		$s_season_link.withdrawn_league, " .
 		$s_season . '.season_id, ' . $s_season . '.season_name, ' . $s_season . '.is_latest, ' . $s_season . '.start_year, ' . $s_season . '.end_year, ' . $s_season . '.short_url AS season_short_url, ' .
 		$s_comp . '.competition_id, ' . $s_comp . '.competition_name, ' .
@@ -472,14 +472,19 @@ class TeamManager extends DataManager
                 if (isset($row->update_search) and $row->update_search == 1) $o_team->SetSearchUpdateRequired();
                 if (isset($row->date_changed))
                 {
+                    $o_team->SetDateUpdated($row->date_changed);
                     $o_team->SetLastAudit(new AuditData($row->modified_by_id, $row->known_as, $row->date_changed));
                 }
+                if (isset($row->date_added)) { $o_team->SetDateAdded($row->date_added); }
         
 				$club = new Club($this->GetSettings());
                 if (isset($row->club_id))
                 {
 					$club->SetId($row->club_id);
 					if (isset($row->club_name)) $club->SetName($row->club_name);
+                    if (isset($row->club_type)) $club->SetTypeOfClub($row->club_type);
+                    if (isset($row->age_range_lower)) $club->SetAgeRangeLower($row->age_range_lower);
+                    if (isset($row->age_range_upper)) $club->SetAgeRangeUpper($row->age_range_upper);
                     if (isset($row->twitter)) $club->SetTwitterAccount($row->twitter);
                     if (isset($row->facebook)) $club->SetFacebookUrl($row->facebook);
                     if (isset($row->instagram)) $club->SetInstagramAccount($row->instagram);
