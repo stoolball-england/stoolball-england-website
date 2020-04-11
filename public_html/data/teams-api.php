@@ -94,6 +94,7 @@ class CurrentPage extends Page
 		?>,"playerType":<?php echo $team->GetPlayerType()-1
 		?>,"ageRangeLower":<?php echo $age_lower
 		?>,"ageRangeUpper":<?php echo $age_upper
+		?>,"groundId":<?php echo is_null($team->GetGround()) || !$team->GetGround()->GetId() ? "null" : $team->GetGround()->GetId()
 		?>,"introduction":<?php echo $intro ? "\"" . $intro . "\"" : "null"
 		?>,"publicContactDetails":<?php echo $publicContact ? "\"" . $publicContact . "\"" : "null"
 		?>,"privateContactDetails":<?php echo $privateContact ? "\"" . $privateContact . "\"" : "null"
