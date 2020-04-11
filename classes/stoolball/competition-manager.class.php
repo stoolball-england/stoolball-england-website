@@ -93,7 +93,7 @@ class CompetitionManager extends DataManager
 
 		$s_sql = "SELECT $s_comp.competition_id, $s_comp.competition_name, $s_comp.category_id, $s_comp.intro, $s_comp.contact, $s_comp.notification_email, 
 		$s_comp.website, $s_comp.twitter, $s_comp.facebook, $s_comp.instagram, $s_comp.short_url, $s_comp.active, $s_comp.player_type_id, $s_comp.players_per_team, 
-		$s_comp.overs, $s_comp.update_search,
+		$s_comp.overs, $s_comp.update_search, $s_comp.date_added, $s_comp.date_changed,
 		$s_season_link.withdrawn_league,
 		$s_season.season_id, $s_season.season_name, $s_season.is_latest, $s_season.start_year,	$s_season.end_year, 
 		$s_season.intro AS season_intro, $s_season.results, $s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, $s_season.short_url AS season_short_url, 
@@ -311,6 +311,8 @@ class CompetitionManager extends DataManager
 				if (isset($o_row->active)) $o_competition->SetIsActive($o_row->active);
 				if (isset($o_row->players_per_team)) $o_competition->SetMaximumPlayersPerTeam($o_row->players_per_team);
 				if (isset($o_row->overs)) $o_competition->SetOvers($o_row->overs);
+				if (isset($o_row->date_added)) $o_competition->SetDateAdded($o_row->date_added);
+				if (isset($o_row->date_changed)) $o_competition->SetDateUpdated($o_row->date_changed);
 				$o_competition->SetPlayerType($o_row->player_type_id);
                 if (isset($o_row->update_search) and $o_row->update_search == 1) $o_competition->SetSearchUpdateRequired();
         

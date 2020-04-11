@@ -27,6 +27,8 @@ class Competition extends Collection implements IHasShortUrl
 	private $players_per_team = 11;
 	private $overs = 16;
     private $update_search;
+	private $date_created;
+	private $date_updated;
 
 	/**
 	 * An ongoing competition such as a league or cup
@@ -423,6 +425,46 @@ class Competition extends Collection implements IHasShortUrl
 	 * @return int
 	 */
 	public function GetOvers() { return $this->overs; }
+
+	/**
+	 * Sets the date the competition info was added
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateAdded($i_date)
+	{
+		$this->date_created = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the competition info was added
+	 *
+	 * @return int
+	 */
+	public function GetDateAdded()
+	{
+		return $this->date_created;
+	}
+
+	/**
+	 * Sets the date the competition info was last updated
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateUpdated($i_date)
+	{
+		$this->date_updated = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the competition info was last updated
+	 *
+	 * @return int
+	 */
+	public function GetDateUpdated()
+	{
+		return $this->date_updated;
+	}
 
 	/**
 	* @return string
