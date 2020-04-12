@@ -2,6 +2,7 @@
 require_once('data/data-manager.class.php');
 require_once('stoolball/competition.class.php');
 require_once('stoolball/season.class.php');
+require_once('stoolball/match-result.class.php');
 
 class SeasonManager extends DataManager
 {
@@ -71,7 +72,8 @@ class SeasonManager extends DataManager
 		$s_smt = $this->GetSettings()->GetTable('SeasonMatchType');
 
 		$s_sql = 'SELECT ' . $s_season . '.season_id, ' . $s_season . '.competition_id, ' . $s_season . '.season_name, ' . $s_season . ".is_latest,
-		$s_season.start_year, $s_season.end_year, $s_season.intro, $s_season.results, $s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, $s_season.short_url,
+		$s_season.start_year, $s_season.end_year, $s_season.intro, $s_season.results, $s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, 
+		$s_season.short_url, $s_season.date_added, $s_season.date_changed,
 		$s_season_link.withdrawn_league, 
 		$s_comp.competition_name, $s_comp.player_type_id, $s_comp.short_url AS competition_short_url, 
 		team.team_id, team.team_name, team.ground_id AS team_ground_id, team.short_url AS team_short_url, " .
@@ -176,8 +178,7 @@ class SeasonManager extends DataManager
 		$s_comp = $this->GetSettings()->GetTable('Competition');
 
 		$s_sql = 'SELECT ' . $s_season . '.season_id, ' . $s_season . '.season_name, ' . $s_season . '.is_latest, ' .
-		"$s_season.start_year, $s_season.end_year, $s_season.intro, $s_season.results, $s_season.short_url, 
-		$s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, $s_season.date_added, $s_season.date_changed,
+		"$s_season.start_year, $s_season.end_year, $s_season.short_url, 
 		$s_comp.competition_id, $s_comp.short_url AS competition_short_url " .
 		"FROM $s_season INNER JOIN $s_comp ON $s_season.competition_id = $s_comp.competition_id " .
 		'WHERE ' . $s_season . '.competition_id IN (' . join(', ', $a_ids) . ') ' .

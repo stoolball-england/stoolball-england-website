@@ -80,6 +80,9 @@ $first_season = true;
 				?>,<?php
 			}
 
+			$season_manager->ReadById([$season->GetId()]);
+			$season = $season_manager->GetFirst();
+
 			$season_intro = htmlentities($season->GetIntro(), ENT_QUOTES, "UTF-8", false);
             $season_intro = XhtmlMarkup::ApplyCharacterEntities($season_intro);
 			$season_intro = XhtmlMarkup::ApplyParagraphs($season_intro);
@@ -107,7 +110,24 @@ $first_season = true;
 	?>,"endYear":<?php echo $season->GetEndYear()
 	?>,"introduction":<?php echo $season_intro ? "\"" . $season_intro . "\"" : "null"
 	?>,"results":<?php echo $results ? "\"" . $results . "\"" : "null"
-	?>,"showTable":<?php echo $season->GetShowTable() ? "true" : "false"
+	?>,"teams":[<?php
+	$first_team = true;
+	foreach ($season->GetTeams() as $team) {
+		if ($first_team) {
+			$first_team = false;
+		} else {
+			?>,<?php
+		}
+		?>{"teamId":<?php echo $team->GetId()
+		?>,"withdrawnDate":<?php 
+		$withdrawn = is_object($season->TeamsWithdrawnFromLeague()->GetItemByProperty('GetId', $team->GetId()));
+		if ($withdrawn) {
+			$withdrawn_date = $season->GetStartYear() == $season->GetEndYear() ? mktime(0,0,0,5,1,$season->GetStartYear()) : mktime(0,0,0,12,1,$season->GetStartYear());
+			echo "\"" . Date::Microformat($withdrawn_date) . "\"";
+		} else { echo "null"; }
+		?>}<?php 
+	}
+	?>],"showTable":<?php echo $season->GetShowTable() ? "true" : "false"
 	?>,"showRunsScored":<?php echo $season->GetShowTableRunsScored() ? "true" : "false"
 	?>,"showRunsConceded":<?php echo $season->GetShowTableRunsConceded() ? "true" : "false"
 	?>,"route":"<?php echo $season->GetShortUrl()
