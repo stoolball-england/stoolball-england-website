@@ -23,6 +23,8 @@ class Season extends Collection implements IHasShortUrl
 	private $s_intro;
 	private $s_results;
 	private $a_teams;
+	private $date_created;
+	private $date_updated;
 
 	/**
 	 * Teams which joined the league but withdrew during the season
@@ -571,6 +573,46 @@ class Season extends Collection implements IHasShortUrl
 		 }
 		 */
 		return array($i_start, $i_end);
+	}
+
+	/**
+	 * Sets the date the season info was added
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateAdded($i_date)
+	{
+		$this->date_created = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the season info was added
+	 *
+	 * @return int
+	 */
+	public function GetDateAdded()
+	{
+		return $this->date_created;
+	}
+
+	/**
+	 * Sets the date the season info was last updated
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateUpdated($i_date)
+	{
+		$this->date_updated = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the season info was last updated
+	 *
+	 * @return int
+	 */
+	public function GetDateUpdated()
+	{
+		return $this->date_updated;
 	}
 
 	/**

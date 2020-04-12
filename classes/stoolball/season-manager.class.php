@@ -176,8 +176,9 @@ class SeasonManager extends DataManager
 		$s_comp = $this->GetSettings()->GetTable('Competition');
 
 		$s_sql = 'SELECT ' . $s_season . '.season_id, ' . $s_season . '.season_name, ' . $s_season . '.is_latest, ' .
-		$s_season . '.start_year, ' . $s_season . '.end_year, ' . $s_season . '.short_url, ' .
-		"$s_comp.competition_id, $s_comp.short_url AS competition_short_url " .
+		"$s_season.start_year, $s_season.end_year, $s_season.intro, $s_season.results, $s_season.short_url, 
+		$s_season.show_table, $s_season.show_runs_scored, $s_season.show_runs_conceded, $s_season.date_added, $s_season.date_changed,
+		$s_comp.competition_id, $s_comp.short_url AS competition_short_url " .
 		"FROM $s_season INNER JOIN $s_comp ON $s_season.competition_id = $s_comp.competition_id " .
 		'WHERE ' . $s_season . '.competition_id IN (' . join(', ', $a_ids) . ') ' .
 		'ORDER BY ' . $s_season . '.end_year DESC, ' . $s_season . '.season_id ';
@@ -354,6 +355,8 @@ class SeasonManager extends DataManager
 			if (isset($row->show_runs_scored)) $season->SetShowTableRunsScored($row->show_runs_scored);
 			if (isset($row->show_runs_conceded)) $season->SetShowTableRunsConceded($row->show_runs_conceded);
 			if (isset($row->short_url)) $season->SetShortUrl($row->short_url);
+			if (isset($row->date_added)) $season->SetDateAdded($row->date_added);
+			if (isset($row->date_changed)) $season->SetDateUpdated($row->date_changed);
 
 			$comp = new Competition($this->GetSettings());
 			if (isset($row->competition_id)) $comp->SetId($row->competition_id);
