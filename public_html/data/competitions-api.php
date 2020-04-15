@@ -45,6 +45,8 @@ class CurrentPage extends Page
 			$competition_intro = XhtmlMarkup::ApplySimpleXhtmlTags($competition_intro, false);
 			$competition_intro = XhtmlMarkup::ApplyLinks($competition_intro);
 			$competition_intro = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $competition_intro)))));
+			$competition_intro = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $competition_intro));
+			$competition_intro = preg_replace("/\s+/s", " ", $competition_intro);
 
 			$publicContact = htmlentities($competition->GetContact(), ENT_QUOTES, "UTF-8", false);
             $publicContact = XhtmlMarkup::ApplyCharacterEntities($publicContact);
@@ -53,6 +55,8 @@ class CurrentPage extends Page
 			$publicContact = XhtmlMarkup::ApplySimpleXhtmlTags($publicContact, false);
 			$publicContact = XhtmlMarkup::ApplyLinks($publicContact);
 			$publicContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $publicContact)))));
+			$publicContact = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $publicContact));
+			$publicContact = preg_replace("/\s+/s", " ", $publicContact);
 
 			if ($first) {
 				$first = false;
@@ -92,6 +96,7 @@ $first_season = true;
             $season_intro = XhtmlMarkup::ApplyTables($season_intro);
 			$season_intro = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $season_intro)))));
 			$season_intro = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $season_intro));
+			$season_intro = preg_replace("/\s+/s", " ", $season_intro);
 
 			$results = htmlentities($season->GetResults(), ENT_QUOTES, "UTF-8", false);
             $results = XhtmlMarkup::ApplyCharacterEntities($results);
@@ -102,6 +107,7 @@ $first_season = true;
             $results = XhtmlMarkup::ApplyTables($results);
 			$results = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $results)))));
 			$results = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $results));
+			$results = preg_replace("/\s+/s", " ", $results);
 
 	?>{"seasonId":<?php echo $season->GetId() 
 	?>,"name":"<?php echo $season->GetName()
