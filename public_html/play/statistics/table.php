@@ -161,7 +161,10 @@ class CurrentPage extends StoolballPage
         # Is this a request for CSV data?
         $csv = (isset($_GET["format"]) and $_GET["format"] == "csv");
         if ($csv) {
-            $statistics_manager->OutputAsCsv($this->statistic->ColumnHeaders());
+            require_once($_SERVER["DOCUMENT_ROOT"] . "/no-more-csv.html");
+            http_response_code(410);
+            die();
+            // $statistics_manager->OutputAsCsv($this->statistic->ColumnHeaders());
         }                
                     
         # Apply player filters first because it can be used to limit the choices for other filters
@@ -287,7 +290,7 @@ class CurrentPage extends StoolballPage
 	function OnPageLoad()
 	{
 		echo ("<h1>" . htmlentities($this->statistic->Title(), ENT_QUOTES, "UTF-8", false) . " " . htmlentities($this->filter, ENT_QUOTES, "UTF-8", false) . "</h1>");
-		$this->GetTheData("large");
+		#$this->GetTheData("large");
         
         if ($this->statistic->ShowDescription()) {
             require_once("markup/xhtml-markup.class.php");
