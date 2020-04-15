@@ -43,7 +43,9 @@ class CurrentPage extends Page
 				$s_directions = XhtmlMarkup::ApplyCharacterEntities($s_directions);
 				$s_directions = XhtmlMarkup::ApplyParagraphs($s_directions);
 				$s_directions = XhtmlMarkup::ApplySimpleTags($s_directions);
-				$s_directions = '<h2>Directions</h2>' . str_replace('&#039;', "'", str_replace("\r\n", '', str_replace("\n\n", '', $s_directions)));
+				$s_directions = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $s_directions)))));
+				$s_directions = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $s_directions));
+				$s_directions = '<h2>Directions</h2>' . $s_directions;
 			}
 	
 			if ($ground->GetParking())
@@ -53,7 +55,9 @@ class CurrentPage extends Page
 				$s_parking = XhtmlMarkup::ApplyParagraphs($s_parking);
 				$s_parking = XhtmlMarkup::ApplySimpleTags($s_parking);
 				$s_parking = XhtmlMarkup::ApplyLinks($s_parking);
-				$s_parking = '<h2>Parking</h2>' . str_replace('&#039;', "'", str_replace("\r\n", '', str_replace("\n\n", '', $s_parking)));
+				$s_parking = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $s_parking)))));
+				$s_parking = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $s_parking));
+				$s_parking = '<h2>Parking</h2>' . $s_parking;
 			}
 	
 			if ($ground->GetFacilities())
@@ -63,7 +67,9 @@ class CurrentPage extends Page
 				$s_facilities = XhtmlMarkup::ApplyParagraphs($s_facilities);
 				$s_facilities = XhtmlMarkup::ApplySimpleTags($s_facilities);
 				$s_facilities = XhtmlMarkup::ApplyLinks($s_facilities);
-				$s_facilities = '<h2>Facilities</h2>' . str_replace('&#039;', "'", str_replace("\r\n", '', str_replace("\n", '', $s_facilities)));
+				$s_facilities = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $s_facilities)))));
+				$s_facilities = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', $s_facilities));	
+				$s_facilities = '<h2>Facilities</h2>' . $s_facilities;
 			}
 
 
