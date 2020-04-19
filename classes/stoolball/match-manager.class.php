@@ -245,7 +245,44 @@ class MatchManager extends DataManager
 
 		# tidy up
 		$result->closeCursor();
-    }
+	}
+	
+	public function ReadTotalForMigration() {
+
+		$where = '';
+		if (count($this->filter_by_match_types)) {
+			$where = "WHERE m.match_type IN (" . join(', ', $this->filter_by_match_types) . ") ";
+		}
+
+		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_match m $where");
+		$row = $result->fetch();
+		return (int)$row->total;
+	}
+
+	public function ReadForMigration($from, $to) {
+		
+		$where = '';
+		if (count($this->filter_by_match_types)) {
+			$where = "WHERE m.match_type IN (" . join(', ', $this->filter_by_match_types) . ") ";
+		}
+
+		$result = $this->GetDataConnection()->query("SELECT m.match_id, m.match_title, m.custom_title, 
+			m.ground_id, m.match_type, m.qualification, m.player_type_id, m.players_per_team, m.overs AS overs_per_innings,
+			m.tournament_match_id, m.order_in_tournament, m.max_tournament_teams, m.tournament_spaces, m.start_time,
+			m.start_time_known, m.won_toss, m.home_bat_first, m.home_runs, m.home_wickets, m.away_runs, m.away_wickets,
+			m.match_result_id, m.player_of_match_id, m.player_of_match_home_id, m.player_of_match_away_id, m.match_notes,
+			m.short_url, m.date_added, m.added_by, m.date_changed, m.modified_by_id
+			FROM nsa_match m
+			$where
+			ORDER BY m.match_id
+			LIMIT $from,$to");
+
+		# build raw data into objects
+		$this->BuildItems($result);
+
+		# tidy up
+		$result->closeCursor();
+	}
 
     /**
      * Add full scorecard data to the currently selected matches
@@ -966,6 +1003,8 @@ class MatchManager extends DataManager
 
 				if ($o_match->GetMatchType() == MatchType::TOURNAMENT_MATCH and isset($o_row->tournament_match_id))
 				{
+					if (isset($o_row->order_in_tournament)) $o_match->SetOrderInTournament($o_row->order_in_tournament);
+
 					$o_tourn = new Match($this->o_settings);
 					$o_tourn->SetMatchType(MatchType::TOURNAMENT);
 					$o_tourn->SetId($o_row->tournament_match_id);
@@ -1058,27 +1097,27 @@ class MatchManager extends DataManager
 		{
 			$player = new Player($this->GetSettings());
 			$player->SetId($row->player_of_match_id);
-			$player->SetName($row->player_of_match);
-			$player->SetShortUrl($row->player_of_match_url);
-			$player->Team()->SetId($row->player_of_match_team_id);
+			if (isset($row->player_of_match)) $player->SetName($row->player_of_match);
+			if (isset($row->player_of_match_url)) $player->SetShortUrl($row->player_of_match_url);
+			if (isset($row->player_of_match_team_id)) $player->Team()->SetId($row->player_of_match_team_id);
 			$match->Result()->SetPlayerOfTheMatch($player);
 		}
 		if (isset($row->player_of_match_home_id))
 		{
 			$player = new Player($this->GetSettings());
 			$player->SetId($row->player_of_match_home_id);
-			$player->SetName($row->player_of_match_home);
-			$player->SetShortUrl($row->player_of_match_home_url);
-			$player->Team()->SetId($row->player_of_match_home_team_id);
+			if (isset($row->player_of_match_home)) $player->SetName($row->player_of_match_home);
+			if (isset($row->player_of_match_home_url)) $player->SetShortUrl($row->player_of_match_home_url);
+			if (isset($row->player_of_match_home_team_id)) $player->Team()->SetId($row->player_of_match_home_team_id);
 			$match->Result()->SetPlayerOfTheMatchHome($player);
 		}
 		if (isset($row->player_of_match_away_id))
 		{
 			$player = new Player($this->GetSettings());
 			$player->SetId($row->player_of_match_away_id);
-			$player->SetName($row->player_of_match_away);
-			$player->SetShortUrl($row->player_of_match_away_url);
-			$player->Team()->SetId($row->player_of_match_away_team_id);
+			if (isset($row->player_of_match_away)) $player->SetName($row->player_of_match_away);
+			if (isset($row->player_of_match_away_url)) $player->SetShortUrl($row->player_of_match_away_url);
+			if (isset($row->player_of_match_away_team_id)) $player->Team()->SetId($row->player_of_match_away_team_id);
 			$match->Result()->SetPlayerOfTheMatchAway($player);
 		}
 		if (isset($row->match_notes)) $match->SetNotes($row->match_notes);
@@ -1095,7 +1134,7 @@ class MatchManager extends DataManager
 		if (isset($row->match_result_id)) $match->Result()->SetResultType($row->match_result_id);
         if (isset($row->date_changed))
         {
-            $match->SetLastAudit(new AuditData($row->modified_by_id, $row->known_as, $row->date_changed));
+            $match->SetLastAudit(new AuditData($row->modified_by_id, isset($row->known_as) ? $row->known_as : '', $row->date_changed));
         }
 	}
 
