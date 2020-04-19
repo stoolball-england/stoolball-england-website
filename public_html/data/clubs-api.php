@@ -23,6 +23,14 @@ class CurrentPage extends Page
 				header("Access-Control-Allow-Origin: " . $_SERVER["HTTP_ORIGIN"]);
 			}
 		}
+
+		# Require an API key to include personal contact details to avoid spam bots picking them up
+        $api_keys = $this->GetSettings()->GetApiKeys();
+        $valid_key = false;
+        if (!isset($_GET['key']) or !in_array($_GET['key'], $api_keys)) 
+        {
+            exit();
+		}
 	}
 
 	public function OnLoadPageData()
