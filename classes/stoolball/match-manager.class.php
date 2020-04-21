@@ -266,16 +266,30 @@ class MatchManager extends DataManager
 			$where = "WHERE m.match_type IN (" . join(', ', $this->filter_by_match_types) . ") ";
 		}
 
+		$result = $this->GetDataConnection()->query("SELECT m.match_id FROM nsa_match m $where ORDER BY m.match_id LIMIT $from,$to");
+		$ids = [];
+		while($row = $result->fetch())
+		{
+			if (!in_array((int)$row->match_id, $ids, true)) {
+				$ids[] = (int)$row->match_id;
+			}
+		}
+
+		$where .= $where ? "AND " : "WHERE ";
+		$where .= "m.match_id IN (" . join(', ', $ids) . ") ";
+
 		$result = $this->GetDataConnection()->query("SELECT m.match_id, m.match_title, m.custom_title, 
 			m.ground_id, m.match_type, m.qualification, m.player_type_id, m.players_per_team, m.overs AS overs_per_innings,
 			m.tournament_match_id, m.order_in_tournament, m.max_tournament_teams, m.tournament_spaces, m.start_time,
 			m.start_time_known, m.won_toss, m.home_bat_first, m.home_runs, m.home_wickets, m.away_runs, m.away_wickets,
 			m.match_result_id, m.player_of_match_id, m.player_of_match_home_id, m.player_of_match_away_id, m.match_notes,
-			m.short_url, m.date_added, m.added_by, m.date_changed, m.modified_by_id
+			m.short_url, m.date_added, m.added_by, m.date_changed, m.modified_by_id,
+			home.team_id AS home_team_id, away.team_id AS away_team_id
 			FROM nsa_match m
+			LEFT JOIN nsa_match_team AS home ON m.match_id = home.match_id AND home.team_role = " . TeamRole::Home() . "
+			LEFT JOIN nsa_match_team AS away ON m.match_id = away.match_id AND away.team_role = " . TeamRole::Away() . "
 			$where
-			ORDER BY m.match_id
-			LIMIT $from,$to");
+			ORDER BY m.match_id");
 
 		# build raw data into objects
 		$this->BuildItems($result);

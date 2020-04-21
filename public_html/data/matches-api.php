@@ -17,7 +17,7 @@ class CurrentPage extends Page
 		}
 
 		# Check that parameters are specified
-		if (!isset($_GET['from']) or !isset($_GET['type']))
+		if (!isset($_GET['from']) or !isset($_GET['type']) or !isset($_GET['batchSize']))
 		{
 			http_response_code(400);
 			exit();
@@ -46,7 +46,7 @@ class CurrentPage extends Page
 		$manager = new MatchManager($this->GetSettings(), $this->GetDataConnection());
 		$manager->FilterByMatchType([(int)$_GET['type']]);
 		$total_matches = $manager->ReadTotalForMigration();
-		$manager->ReadForMigration((int)$_GET['from'],100);
+		$manager->ReadForMigration((int)$_GET['from'],(int)$_GET['batchSize']);
 		$first = true;
 		?>{"total":<?php echo $total_matches ?>,"matches":[<?php
 		foreach ($manager->GetItems() as $match) {
@@ -69,17 +69,17 @@ class CurrentPage extends Page
 				?>,<?php
 			}
 	?>{"matchId":<?php echo $match->GetId();
-		?>,"title":"<?php echo str_replace('&#039;', "'", $match->GetTitle())
+		?>,"title":"<?php echo str_replace('&#039;', "'", str_replace('&amp;', "&", $match->GetTitle()))
 		?>","customTitle": <?php echo $match->GetUseCustomTitle() ? "true" : "false"
 		?>,"groundId": <?php echo (!is_null($match->GetGround()) and $match->GetGround()->GetId()) ? $match->GetGround()->GetId() : "null"
 		?>,"matchType": <?php echo $match->GetMatchType()
 		?>,"qualification": <?php echo $match->GetQualificationType()
-		?>,"playerType": <?php echo $match->GetPlayerType()
+		?>,"playerType": <?php echo !is_null($match->GetPlayerType()) ? $match->GetPlayerType() : PlayerType::MIXED // no null instances are legit, so default to the most inclusive
 		?>,"playersPerTeam": <?php echo $match->GetIsMaximumPlayersPerTeamKnown() ? $match->GetMaximumPlayersPerTeam() : "null"
 		?>,"overs": <?php echo $match->GetIsOversKnown() ? $match->GetOvers() : "null"
 		?>,"tournamentMatchId": <?php echo (!is_null($match->GetTournament()) and $match->GetTournament()->GetId()) ? $match->GetTournament()->GetId() : "null"
 		?>,"orderInTournament": <?php echo $match->GetOrderInTournament() ? $match->GetOrderInTournament() : "null"
-		?>,"maxiumumTeamsInTournament": <?php echo $match->GetMaximumTeamsInTournament() ? $match->GetMaximumTeamsInTournament() : "null"
+		?>,"maximumTeamsInTournament": <?php echo $match->GetMaximumTeamsInTournament() ? $match->GetMaximumTeamsInTournament() : "null"
 		?>,"spacesInTournament": <?php echo $match->GetSpacesLeftInTournament() ? $match->GetSpacesLeftInTournament() : "null"
 		?>,"startTime":"<?php echo Date::Microformat($match->GetStartTime())
 		?>","startTimeKnown": <?php echo $match->GetIsStartTimeKnown() ? "true" : "false"
@@ -90,7 +90,26 @@ class CurrentPage extends Page
 		?>,"awayRuns": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetAwayRuns())) ? $match->Result()->GetAwayRuns() : "null"
 		?>,"awayWickets": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetAwayWickets())) ? $match->Result()->GetAwayWickets() : "null"
 		?>,"resultType": <?php echo (!is_null($match->Result()) and $match->Result()->GetResultType() > 0) ? $match->Result()->GetResultType() : "null"
-		?>,"playerOfTheMatchId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatch()) and $match->Result()->GetPlayerOfTheMatch()->GetId()) ? $match->Result()->GetPlayerOfTheMatch()->GetId() : "null"
+		?>,"teams":[<?php
+		$first_team = true;
+		if (!is_null($match->GetHomeTeam()) && $match->GetHomeTeamId()) {
+			$first_team = false;
+			?>{"teamId":<?php echo $match->GetHomeTeamId()
+			?>,"teamRole":<?php echo TeamRole::Home()
+			?>}<?php
+		}
+		foreach ($match->GetAwayTeams() as $team) {
+			if (!$team->GetId()) continue;
+			if ($first_team) {
+				$first_team = false;
+			} else {
+				?>,<?php
+			}
+			?>{"teamId":<?php echo $team->GetId()
+			?>,"teamRole":<?php echo TeamRole::Away()
+			?>}<?php
+		}
+		?>],"playerOfTheMatchId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatch()) and $match->Result()->GetPlayerOfTheMatch()->GetId()) ? $match->Result()->GetPlayerOfTheMatch()->GetId() : "null"
 		?>,"playerOfTheMatchHomeId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatchHome()) and $match->Result()->GetPlayerOfTheMatchHome()->GetId()) ? $match->Result()->GetPlayerOfTheMatchHome()->GetId() : "null"
 		?>,"playerOfTheMatchAwayId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatchAway()) and $match->Result()->GetPlayerOfTheMatchAway()->GetId()) ? $match->Result()->GetPlayerOfTheMatchAway()->GetId() : "null"
 		?>,"notes":"<?php echo $notes
