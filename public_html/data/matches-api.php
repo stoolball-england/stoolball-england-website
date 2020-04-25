@@ -109,6 +109,16 @@ class CurrentPage extends Page
 			?>,"teamRole":<?php echo TeamRole::Away()
 			?>}<?php
 		}
+		?>],"seasons":[<?php
+		$first_season = true;
+		foreach ($match->Seasons() as $season) {
+			if ($first_season) {
+				$first_season = false;
+			} else {
+				?>,<?php
+			}
+			echo $season->GetId();
+		}
 		?>],"playerOfTheMatchId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatch()) and $match->Result()->GetPlayerOfTheMatch()->GetId()) ? $match->Result()->GetPlayerOfTheMatch()->GetId() : "null"
 		?>,"playerOfTheMatchHomeId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatchHome()) and $match->Result()->GetPlayerOfTheMatchHome()->GetId()) ? $match->Result()->GetPlayerOfTheMatchHome()->GetId() : "null"
 		?>,"playerOfTheMatchAwayId": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetPlayerOfTheMatchAway()) and $match->Result()->GetPlayerOfTheMatchAway()->GetId()) ? $match->Result()->GetPlayerOfTheMatchAway()->GetId() : "null"

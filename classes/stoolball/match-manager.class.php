@@ -284,10 +284,12 @@ class MatchManager extends DataManager
 			m.start_time_known, m.won_toss, m.home_bat_first, m.home_runs, m.home_wickets, m.away_runs, m.away_wickets,
 			m.match_result_id, m.player_of_match_id, m.player_of_match_home_id, m.player_of_match_away_id, m.match_notes,
 			m.short_url, m.date_added, m.added_by, m.date_changed, m.modified_by_id,
-			home.team_id AS home_team_id, away.team_id AS away_team_id
+			home.team_id AS home_team_id, away.team_id AS away_team_id,
+			s.season_id
 			FROM nsa_match m
 			LEFT JOIN nsa_match_team AS home ON m.match_id = home.match_id AND home.team_role = " . TeamRole::Home() . "
 			LEFT JOIN nsa_match_team AS away ON m.match_id = away.match_id AND away.team_role = " . TeamRole::Away() . "
+			LEFT JOIN nsa_season_match AS s ON s.match_id = m.match_id
 			$where
 			ORDER BY m.match_id");
 
