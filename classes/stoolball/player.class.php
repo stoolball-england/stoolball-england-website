@@ -49,6 +49,8 @@ class Player implements IHasShortUrl
 	private $name;
 	private $comparable_name;
 	private $total_matches;
+	private $missed_matches;
+	private $probability;
 	private $short_url;
     private $update_search;
 	/**
@@ -58,6 +60,8 @@ class Player implements IHasShortUrl
 	private $first_played;
 	private $last_played;
 	private $role = Player::PLAYER;
+	private $date_added;
+	private $date_updated;
 	private $user;
 	private $total_player_of_match;
 
@@ -184,6 +188,32 @@ class Player implements IHasShortUrl
 	public function GetTotalMatches() { return $this->total_matches; }
 
 	/**
+	 * Sets the number of matches since the player was last recorded as playing
+	 * @param $total
+	 * @return void
+	 */
+	public function SetMissedMatches($total) { $this->missed_matches = (int)$total; }
+
+	/**
+	 * Gets the number of matches since the player was last recorded as playing
+	 * @return int
+	 */
+	public function GetMissedMatches() { return $this->missed_matches; }
+
+	/**
+	 * Sets a probability that a partial player name is referring to this player
+	 * @param $probability
+	 * @return void
+	 */
+	public function SetProbability($probability) { $this->probability = (int)$probability; }
+
+	/**
+	 * Gets a probability that a partial player name is referring to this player
+	 * @return int
+	 */
+	public function GetProbability() { return $this->probability; }
+
+	/**
 	 * Gets the team the player is in
 	 * @return Team
 	 */
@@ -252,6 +282,40 @@ class Player implements IHasShortUrl
 	 * @return int
 	 */
 	public function GetLastPlayedDate() { return $this->last_played; }
+	
+    /**
+     * Sets when the player was added to the website
+     *
+     * @param int $timestamp
+     */
+    public function SetDateAdded($timestamp) { $this->date_added = (int)$timestamp; }
+
+    /**
+     * Gets when the player was added to the website
+     *
+     * @return int
+     */
+	public function GetDateAdded() { return $this->date_added; }
+	
+	/**
+	 * Sets the date the player was last updated
+	 *
+	 * @param int $i_date
+	 */
+	public function SetDateUpdated($i_date)
+	{
+		$this->date_updated = (int)$i_date;
+	}
+
+	/**
+	 * Gets the date the player was last updated
+	 *
+	 * @return int
+	 */
+	public function GetDateUpdated()
+	{
+		return $this->date_updated;
+	}
 
 	/**
 	 * Gets the range of years when the player has been recorded

@@ -192,6 +192,37 @@ class PlayerManager extends DataManager
 		$result->closeCursor();
 	}
 
+	public function ReadTotalForMigration() {
+
+		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_player");
+		$row = $result->fetch();
+		return (int)$row->total;
+	}
+
+	public function ReadForMigration($from, $to) {
+		
+		$result = $this->GetDataConnection()->query("SELECT player_id FROM nsa_player ORDER BY player_id LIMIT $from,$to");
+		$ids = [];
+		while($row = $result->fetch())
+		{
+			if (!in_array((int)$row->player_id, $ids, true)) {
+				$ids[] = (int)$row->player_id;
+			}
+		}
+
+		$result = $this->GetDataConnection()->query("SELECT p.player_id, p.player_name, p.team_id, p.first_played, p.last_played,
+			p.total_matches, p.missed_matches, p.probability, p.player_role, p.short_url, p.date_added, p.date_changed
+			FROM nsa_player p
+			WHERE p.player_id IN (" . join(', ', $ids) . ") 
+			ORDER BY p.player_id");
+
+		# build raw data into objects
+		$this->BuildItems($result);
+
+		# tidy up
+		$result->closeCursor();
+	}
+
 	/**
 	 * Populates the collection of players from raw data
 	 *
@@ -208,14 +239,18 @@ class PlayerManager extends DataManager
 			$player->SetId($row->player_id);
 			$player->SetName($row->player_name);
 			if (isset($row->total_matches)) $player->SetTotalMatches($row->total_matches);
+			if (isset($row->missed_matches)) $player->SetMissedMatches($row->missed_matches);
+			if (isset($row->probability)) $player->SetProbability($row->probability);
 			if (isset($row->first_played)) $player->SetFirstPlayedDate($row->first_played);
 			if (isset($row->last_played)) $player->SetLastPlayedDate($row->last_played);
 			if (isset($row->player_role)) $player->SetPlayerRole($row->player_role);
 			if (isset($row->short_url)) $player->SetShortUrl($row->short_url);
 			if (isset($row->update_search) and $row->update_search == 1) $player->SetSearchUpdateRequired();
-            $player->Team()->SetId($row->team_id);
-			$player->Team()->SetName($row->team_name);
+            if (isset($row->team_id)) $player->Team()->SetId($row->team_id);
+			if (isset($row->team_name)) $player->Team()->SetName($row->team_name);
 			if (isset($row->team_short_url)) $player->Team()->SetShortUrl($row->team_short_url);
+			if (isset($row->date_added)) $player->SetDateAdded($row->date_added);
+			if (isset($row->date_changed)) $player->SetDateUpdated($row->date_changed);
 			$this->Add($player);
 		}
 	}
