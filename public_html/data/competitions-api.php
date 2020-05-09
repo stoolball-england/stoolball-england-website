@@ -141,6 +141,16 @@ $first_season = true;
 		} else { echo "null"; }
 		?>}<?php 
 	}
+	?>],"matchTypes":[<?php
+	$first_matchType = true;
+	foreach ($season->MatchTypes() as $matchType) {
+		if ($first_matchType) {
+			$first_matchType = false;
+		} else {
+			?>,<?php
+		}
+		echo $matchType;
+	}
 	?>],"showTable":<?php echo $season->GetShowTable() ? "true" : "false"
 	?>,"showRunsScored":<?php echo $season->GetShowTableRunsScored() ? "true" : "false"
 	?>,"showRunsConceded":<?php echo $season->GetShowTableRunsConceded() ? "true" : "false"
