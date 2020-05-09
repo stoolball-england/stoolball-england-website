@@ -151,6 +151,19 @@ $first_season = true;
 		}
 		echo $matchType;
 	}
+	?>],"pointsRules":[<?php
+	$first_rule = true;
+	foreach ($season->PossibleResults() as $rule) {
+		if ($first_rule) {
+			$first_rule = false;
+		} else {
+			?>,<?php
+		}
+		?>{"matchTypeId":<?php echo $rule->GetResultType()
+		?>,"homePoints":<?php echo $rule->GetHomePoints()
+		?>,"awayPoints":<?php echo $rule->GetAwayPoints()
+		?>}<?php 
+	}
 	?>],"showTable":<?php echo $season->GetShowTable() ? "true" : "false"
 	?>,"showRunsScored":<?php echo $season->GetShowTableRunsScored() ? "true" : "false"
 	?>,"showRunsConceded":<?php echo $season->GetShowTableRunsConceded() ? "true" : "false"
