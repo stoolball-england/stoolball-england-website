@@ -159,10 +159,23 @@ $first_season = true;
 		} else {
 			?>,<?php
 		}
-		?>{"matchTypeId":<?php echo $rule->GetResultType()
+		?>{"resultType":<?php echo $rule->GetResultType()
 		?>,"homePoints":<?php echo $rule->GetHomePoints()
 		?>,"awayPoints":<?php echo $rule->GetAwayPoints()
 		?>}<?php 
+	}
+	?>],"pointsAdjustments":[<?php
+	$first_point = true;
+	foreach ($season->PointsAdjustments() as $point) {
+		if ($first_point) {
+			$first_point = false;
+		} else {
+			?>,<?php
+		}
+		?>{"points":<?php echo $point->GetPoints()
+		?>,"teamId":<?php echo $point->GetTeam()->GetId()
+		?>,"reason":"<?php echo $point->GetReason()
+		?>"}<?php 
 	}
 	?>],"showTable":<?php echo $season->GetShowTable() ? "true" : "false"
 	?>,"showRunsScored":<?php echo $season->GetShowTableRunsScored() ? "true" : "false"
