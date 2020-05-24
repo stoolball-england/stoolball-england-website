@@ -108,6 +108,9 @@ class CurrentPage extends Page
 		?>,"privateContactDetails":<?php echo $privateContact ? "\"" . $privateContact . "\"" : "null"
 		?>,"playingTimes":<?php echo $playingTimes ? "\"" . $playingTimes . "\"" : "null"
 		?>,"cost":<?php echo $cost ? "\"" . $cost . "\"" : "null"
+		?>,"twitterAccount":<?php echo (!is_null($team->GetClub()) && $team->GetClub()->GetTwitterAccount()) ? "\"" . $team->GetClub()->GetTwitterAccount() . "\"" : "null"
+		?>,"facebookUrl":<?php echo (!is_null($team->GetClub()) && $team->GetClub()->GetFacebookUrl()) ? "\"" . $team->GetClub()->GetFacebookUrl() . "\"" : "null"
+		?>,"instagramAccount":<?php echo (!is_null($team->GetClub()) && $team->GetClub()->GetInstagramAccount()) ? "\"" . $team->GetClub()->GetInstagramAccount() . "\"" : "null"
 		?>,"website":<?php echo $team->GetWebsiteUrl() ? "\"" . $team->GetWebsiteUrl() . "\"" : "null"
 		?>,"route":"<?php echo $team->GetShortUrl()
 		?>","untilDate":<?php echo $team->GetIsActive() ? "null" : "\"" . Date::Microformat() . "\"" 
