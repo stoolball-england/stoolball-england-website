@@ -33,6 +33,11 @@ class CurrentPage extends Page
 		}
 	}
 
+	private function SanitiseEmail($text) {
+		$email_pattern = "((\"[^\"\f\n\r\t\v\b]+\")|([\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+(\.[\w\!\#\$\%\&\'\*\+\-\~\/\^\`\|\{\}]+)*))@((\[(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))\])|(((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9]))\.((25[0-5])|(2[0-4][0-9])|([0-1]?[0-9]?[0-9])))|((([A-Za-z0-9\-])+\.)+[A-Za-z\-]+))";
+        return preg_replace('/<a\s+href="mailto:(' . $email_pattern . ')">' . $email_pattern . '<\/a>/', '$1', $text);
+	}
+
 	public function OnLoadPageData()
 	{
 		# Read all to be migrated
@@ -67,14 +72,16 @@ class CurrentPage extends Page
 			$publicContact = XhtmlMarkup::ApplyLists($publicContact);
             $publicContact = XhtmlMarkup::ApplySimpleXhtmlTags($publicContact, false);
 			$publicContact = XhtmlMarkup::ApplyLinks($publicContact);
-			$publicContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $publicContact)))));
+			$publicContact = $this->SanitiseEmail($publicContact);
+			$publicContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', str_replace('&nbsp;', ' ', $publicContact))))));
 
 			$privateContact = htmlentities($team->GetPrivateContact(), ENT_QUOTES, "UTF-8", false);
 			$privateContact = XhtmlMarkup::ApplyParagraphs($privateContact);
 			$privateContact = XhtmlMarkup::ApplyLists($privateContact);
             $privateContact = XhtmlMarkup::ApplySimpleXhtmlTags($privateContact, false);
 			$privateContact = XhtmlMarkup::ApplyLinks($privateContact);
-			$privateContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $privateContact)))));
+			$privateContact = $this->SanitiseEmail($privateContact);
+			$privateContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', str_replace('&nbsp;', ' ', $privateContact))))));
 
 			$playingTimes = htmlentities($team->GetPlayingTimes(), ENT_QUOTES, "UTF-8", false);
 			$playingTimes = XhtmlMarkup::ApplyParagraphs($playingTimes);
