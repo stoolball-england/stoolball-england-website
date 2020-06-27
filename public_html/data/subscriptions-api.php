@@ -34,7 +34,8 @@ class CurrentPage extends Page
 
 	public function OnLoadPageData()
 	{
-		$result = $this->GetDataConnection()->query("SELECT item_id AS match_id, match_title, start_time, s.user_id, s.date_changed FROM nsa_email_subscription s
+		$result = $this->GetDataConnection()->query("SELECT item_id AS match_id, match_title, start_time, u.user_id, u.email, s.date_changed FROM nsa_email_subscription s
+			INNER JOIN nsa_user u ON s.user_id = u.user_id
 			INNER JOIN nsa_match m ON s.item_id = m.match_id");
 
 		$first = true;
@@ -49,7 +50,8 @@ class CurrentPage extends Page
 		?>{"matchId":<?php echo $row->match_id
 		?>,"displayName":"<?php echo "Comments on " . html_entity_decode($row->match_title) . ", " . Date::BritishDate($row->start_time)
 		?>","user_id":<?php echo $row->user_id
-		?>,"date_changed":"<?php echo Date::Microformat($row->date_changed)
+		?>,"email":"<?php echo $row->email
+		?>","date_changed":"<?php echo Date::Microformat($row->date_changed)
 		?>"}<?php
 		}
 		?>]<?php
