@@ -36,8 +36,8 @@ class CurrentPage extends Page
 	public function OnLoadPageData()
 	{
 		$result = $this->GetDataConnection()->query(
-			"SELECT item_id AS match_id, date_added, message, user_id
-			FROM nsa_forum_message
+			"SELECT item_id AS match_id, m.date_added, message, u.user_id, u.email
+			FROM nsa_forum_message m INNER JOIN nsa_user u ON m.user_id = u.user_id
 			WHERE item_type IS NOT NULL");
 
 		$first = true;
@@ -61,6 +61,7 @@ class CurrentPage extends Page
 		?>,"date_added":"<?php echo Date::Microformat($row->date_added)
 		?>","message":"<?php echo $message_html
 		?>","user_id":<?php echo $row->user_id ? $row->user_id : "null"
+		?>,"email":<?php echo $row->email ? "\"" . $row->email . "\"" : "null"
 		?>}<?php
 		}
 		?>]<?php
