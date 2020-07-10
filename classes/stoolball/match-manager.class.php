@@ -284,7 +284,7 @@ class MatchManager extends DataManager
 			m.start_time_known, m.won_toss, m.home_bat_first, m.home_runs, m.home_wickets, m.away_runs, m.away_wickets,
 			m.match_result_id, m.player_of_match_id, m.player_of_match_home_id, m.player_of_match_away_id, m.match_notes,
 			m.short_url, m.date_added, m.added_by, m.date_changed, m.modified_by_id,
-			home.team_id AS home_team_id, away.team_id AS away_team_id,
+			home.team_id AS home_team_id, home.match_team_id AS home_match_team_id, away.team_id AS away_team_id, away.match_team_id AS away_match_team_id,
 			s.season_id
 			FROM nsa_match m
 			LEFT JOIN nsa_match_team AS home ON m.match_id = home.match_id AND home.team_role = " . TeamRole::Home() . "
@@ -1034,6 +1034,7 @@ class MatchManager extends DataManager
 				{
 					$o_home = new Team($this->o_settings);
 					$o_home->SetId($o_row->home_team_id);
+					if (isset($o_row->home_match_team_id)) $o_home->SetMatchTeamId($o_row->home_match_team_id);
 					if (isset($o_row->home_team_name)) $o_home->SetName($o_row->home_team_name);
 					if (isset($o_row->home_short_url)) $o_home->SetShortUrl($o_row->home_short_url);
 					$o_match->SetHomeTeam($o_home);
@@ -1048,6 +1049,7 @@ class MatchManager extends DataManager
 			{
 				$o_away = new Team($this->o_settings);
 				$o_away->SetId($o_row->away_team_id);
+				if (isset($o_row->away_match_team_id)) $o_away->SetMatchTeamId($o_row->away_match_team_id);
 				if (isset($o_row->away_team_name)) $o_away->SetName($o_row->away_team_name);
 				if (isset($o_row->away_short_url)) $o_away->SetShortUrl($o_row->away_short_url);
 				$o_match->AddAwayTeam($o_away);

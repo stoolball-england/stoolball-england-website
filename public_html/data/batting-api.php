@@ -64,7 +64,7 @@ class CurrentPage extends Page
 
 		$result = $this->GetDataConnection()->query(
 			"SELECT player_id, position, how_out, dismissed_by_id, bowler_id, runs, balls_faced, b.date_added,
-			mt.match_id, mt.team_id
+			mt.match_id, mt.team_id, mt.match_team_id
 			FROM nsa_batting b INNER JOIN nsa_match_team mt ON b.match_team_id = mt.match_team_id
 			WHERE b.batting_id IN (" . join(', ', $ids) . ") 
 			ORDER BY b.batting_id");
@@ -80,6 +80,7 @@ class CurrentPage extends Page
 			}
 	?>{"matchId":<?php echo $row->match_id
 		?>,"teamId":<?php echo $row->team_id
+		?>,"matchTeamId":<?php echo $row->match_team_id
 		?>,"playerId":<?php echo $row->player_id
 		?>,"battingPosition":<?php echo $row->position
 		?>,"howOut":<?php echo $row->how_out == 11 ? "null" : $row->how_out 

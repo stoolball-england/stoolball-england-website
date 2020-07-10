@@ -95,6 +95,7 @@ class CurrentPage extends Page
 		if (!is_null($match->GetHomeTeam()) && $match->GetHomeTeamId()) {
 			$first_team = false;
 			?>{"teamId":<?php echo $match->GetHomeTeamId()
+			?>,"matchTeamId":<?php echo $match->GetHomeTeam()->GetMatchTeamId()
 			?>,"teamRole":<?php echo TeamRole::Home()
 			?>}<?php
 		}
@@ -106,6 +107,7 @@ class CurrentPage extends Page
 				?>,<?php
 			}
 			?>{"teamId":<?php echo $team->GetId()
+			?>,"matchTeamId":<?php echo $team->GetMatchTeamId()
 			?>,"teamRole":<?php echo TeamRole::Away()
 			?>}<?php
 		}

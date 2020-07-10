@@ -47,6 +47,7 @@ class Team implements IHasShortUrl
 	private $school_years = array();
 	private $date_created;
 	private $date_updated;
+	private $match_team_id;
     
 	/**
 	 * @return Team
@@ -72,6 +73,18 @@ class Team implements IHasShortUrl
 	 * @desc Get the database id of the team
 	 */
 	function GetId() { return $this->i_id; }
+
+	/**
+	 * @return void
+	 * @param int $i_input
+	 * @desc Set the database id of the team in a match
+	 */
+	function SetMatchTeamId($i_input) { $this->match_team_id = (int)$i_input; }
+	/**
+	 * @return int
+	 * @desc Get the database id of the team in a match
+	 */
+	function GetMatchTeamId() { return $this->match_team_id; }
 
 	/**
 	 * @return void
