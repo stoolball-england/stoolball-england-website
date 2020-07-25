@@ -245,6 +245,10 @@ class TeamManager extends DataManager
                 {
                     $name = substr($name, 0, 4) . " " . substr($name,4);
                 }
+                if (strpos($name, "basque") === 0) 
+                {
+                    $name = substr($name, 0, 6) . " " . substr($name,6);
+                }
                 $administrative_areas[] = $this->SqlString($name);
             }
             
