@@ -47,10 +47,61 @@ class CurrentPage extends Page
 		$manager->FilterByMatchType([(int)$_GET['type']]);
 		$total_matches = $manager->ReadTotalForMigration();
 		$manager->ReadForMigration((int)$_GET['from'],(int)$_GET['batchSize']);
+		$manager->ExpandMatchScorecards();
 		$first = true;
 		?>{"total":<?php echo $total_matches ?>,"matches":[<?php
 		foreach ($manager->GetItems() as $match) {
 			
+			$home_byes = $home_wides = $home_no_balls = $home_bonus = null;
+			$batting_data = $match->Result()->HomeBatting();
+			while ($batting_data->MoveNext())
+			{
+				$batting = $batting_data->GetItem();
+				/* @var $batting Batting */
+
+				# Grab the scores for extras players to use later
+				switch($batting->GetPlayer()->GetPlayerRole())
+				{
+					case Player::BYES:
+						$home_byes = $batting->GetRuns();
+						break;
+					case Player::WIDES:
+						$home_wides = $batting->GetRuns();
+						break;
+					case Player::NO_BALLS:
+						$home_no_balls = $batting->GetRuns();
+						break;
+					case Player::BONUS_RUNS:
+						$home_bonus = $batting->GetRuns();
+						break;
+				}
+			}
+
+			$away_byes = $away_wides = $away_no_balls = $away_bonus = null;
+			$batting_data = $match->Result()->AwayBatting();
+			while ($batting_data->MoveNext())
+			{
+				$batting = $batting_data->GetItem();
+				/* @var $batting Batting */
+
+				# Grab the scores for extras players to use later
+				switch($batting->GetPlayer()->GetPlayerRole())
+				{
+					case Player::BYES:
+						$away_byes = $batting->GetRuns();
+						break;
+					case Player::WIDES:
+						$away_wides = $batting->GetRuns();
+						break;
+					case Player::NO_BALLS:
+						$away_no_balls = $batting->GetRuns();
+						break;
+					case Player::BONUS_RUNS:
+						$away_bonus = $batting->GetRuns();
+						break;
+				}
+			}
+
 			$notes = htmlentities($match->GetNotes(), ENT_QUOTES, "UTF-8", false);
             $notes = XhtmlMarkup::ApplyCharacterEntities($notes);
 			$notes = XhtmlMarkup::ApplyHeadings($notes);
@@ -85,8 +136,16 @@ class CurrentPage extends Page
 		?>","startTimeKnown": <?php echo $match->GetIsStartTimeKnown() ? "true" : "false"
 		?>,"tossWonBy": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetTossWonBy())) ? $match->Result()->GetTossWonBy() : "null"
 		?>,"homeBatFirst": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetHomeBattedFirst())) ? $match->Result()->GetHomeBattedFirst() ? "true" : "false" : "null"
+		?>,"homeByes": <?php echo is_null($home_byes) ? "null" : $home_byes
+		?>,"homeWides": <?php echo is_null($home_wides) ? "null" : $home_wides
+		?>,"homeNoBalls": <?php echo is_null($home_no_balls) ? "null" : $home_no_balls
+		?>,"homeBonusRuns": <?php echo is_null($home_bonus) ? "null" : $home_bonus
 		?>,"homeRuns": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetHomeRuns())) ? $match->Result()->GetHomeRuns() : "null"
 		?>,"homeWickets": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetHomeWickets())) ? $match->Result()->GetHomeWickets() : "null"
+		?>,"awayByes": <?php echo is_null($away_byes) ? "null" : $away_byes
+		?>,"awayWides": <?php echo is_null($away_wides) ? "null" : $away_wides
+		?>,"awayNoBalls": <?php echo is_null($away_no_balls) ? "null" : $away_no_balls
+		?>,"awayBonusRuns": <?php echo is_null($away_bonus) ? "null" : $away_bonus
 		?>,"awayRuns": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetAwayRuns())) ? $match->Result()->GetAwayRuns() : "null"
 		?>,"awayWickets": <?php echo (!is_null($match->Result()) and !is_null($match->Result()->GetAwayWickets())) ? $match->Result()->GetAwayWickets() : "null"
 		?>,"resultType": <?php echo (!is_null($match->Result()) and $match->Result()->GetResultType() > 0) ? $match->Result()->GetResultType() : "null"

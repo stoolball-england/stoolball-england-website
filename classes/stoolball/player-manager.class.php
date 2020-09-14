@@ -194,14 +194,14 @@ class PlayerManager extends DataManager
 
 	public function ReadTotalForMigration() {
 
-		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_player");
+		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_player WHERE player_role = " . Player::PLAYER);
 		$row = $result->fetch();
 		return (int)$row->total;
 	}
 
 	public function ReadForMigration($from, $to) {
 		
-		$result = $this->GetDataConnection()->query("SELECT player_id FROM nsa_player ORDER BY player_id LIMIT $from,$to");
+		$result = $this->GetDataConnection()->query("SELECT player_id FROM nsa_player WHERE player_role = " . Player::PLAYER . " ORDER BY player_id LIMIT $from,$to");
 		$ids = [];
 		while($row = $result->fetch())
 		{
