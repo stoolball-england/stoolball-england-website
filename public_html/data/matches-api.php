@@ -51,8 +51,12 @@ class CurrentPage extends Page
 		$first = true;
 		?>{"total":<?php echo $total_matches ?>,"matches":[<?php
 		foreach ($manager->GetItems() as $match) {
-			
+		
 			$home_byes = $home_wides = $home_no_balls = $home_bonus = null;
+			$away_byes = $away_wides = $away_no_balls = $away_bonus = null;
+
+			if ($match->GetMatchType() != MatchType::TOURNAMENT) 
+			{
 			$batting_data = $match->Result()->HomeBatting();
 			while ($batting_data->MoveNext())
 			{
@@ -77,7 +81,6 @@ class CurrentPage extends Page
 				}
 			}
 
-			$away_byes = $away_wides = $away_no_balls = $away_bonus = null;
 			$batting_data = $match->Result()->AwayBatting();
 			while ($batting_data->MoveNext())
 			{
@@ -101,6 +104,7 @@ class CurrentPage extends Page
 						break;
 				}
 			}
+		}
 
 			$notes = htmlentities($match->GetNotes(), ENT_QUOTES, "UTF-8", false);
             $notes = XhtmlMarkup::ApplyCharacterEntities($notes);
