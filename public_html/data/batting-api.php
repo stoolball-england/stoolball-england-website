@@ -4,6 +4,7 @@ ini_set('include_path', ini_get('include_path') . PATH_SEPARATOR . $_SERVER['DOC
 require_once('context/stoolball-settings.class.php');
 require_once('page/page.class.php');
 require_once('data/date.class.php');
+require_once("stoolball/player.class.php");
 
 class CurrentPage extends Page
 {
@@ -41,7 +42,7 @@ class CurrentPage extends Page
 
 	public function ReadTotalForMigration() {
 
-		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_batting");
+		$result = $this->GetDataConnection()->query("SELECT COUNT(*) AS total FROM nsa_batting b INNER JOIN nsa_player p ON b.player_id = p.player_id AND p.player_role = " . Player::PLAYER);
 		$row = $result->fetch();
 		return (int)$row->total;
 	}
@@ -53,7 +54,7 @@ class CurrentPage extends Page
 		$from = (int)$_GET['from'];
 		$to = (int)$_GET['batchSize'];
 
-		$result = $this->GetDataConnection()->query("SELECT batting_id FROM nsa_batting ORDER BY batting_id LIMIT $from,$to");
+		$result = $this->GetDataConnection()->query("SELECT b.batting_id FROM nsa_batting b INNER JOIN nsa_player p ON b.player_id = p.player_id AND p.player_role = " . Player::PLAYER . " ORDER BY b.batting_id LIMIT $from,$to");
 		$ids = [];
 		while($row = $result->fetch())
 		{
@@ -63,9 +64,10 @@ class CurrentPage extends Page
 		}
 
 		$result = $this->GetDataConnection()->query(
-			"SELECT player_id, position, how_out, dismissed_by_id, bowler_id, runs, balls_faced, b.date_added,
+			"SELECT b.player_id, position, how_out, dismissed_by_id, bowler_id, runs, balls_faced, b.date_added,
 			mt.match_id, mt.team_id, mt.match_team_id
 			FROM nsa_batting b INNER JOIN nsa_match_team mt ON b.match_team_id = mt.match_team_id
+			INNER JOIN nsa_player p ON b.player_id = p.player_id AND p.player_role = " . Player::PLAYER . "
 			WHERE b.batting_id IN (" . join(', ', $ids) . ") 
 			ORDER BY b.batting_id");
 
