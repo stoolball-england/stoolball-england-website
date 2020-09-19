@@ -86,8 +86,6 @@ class CurrentPage extends Page
 		?>,"facebookUrl":<?php echo $competition->GetFacebookUrl() ? "\"" . $competition->GetFacebookUrl() . "\"" : "null"
 		?>,"instagramAccount":<?php echo $competition->GetInstagramAccount() ? "\"" . $competition->GetInstagramAccount() . "\"" : "null"
 		?>,"notificationEmail":<?php echo $competition->GetNotificationEmail() ? "\"" . $competition->GetNotificationEmail() . "\"" : "null"
-		?>,"playersPerTeam":<?php echo $competition->GetMaximumPlayersPerTeam()
-		?>,"overs":<?php echo $competition->GetOvers()
 		?>,"playerType":<?php echo $competition->GetPlayerType()-1
 		?>,"seasons":[<?php
 $first_season = true;
@@ -129,6 +127,8 @@ $first_season = true;
 	?>,"startYear":<?php echo $season->GetStartYear()
 	?>,"endYear":<?php echo $season->GetEndYear()
 	?>,"introduction":<?php echo $season_intro ? "\"" . $season_intro . "\"" : "null"
+	?>,"playersPerTeam":<?php echo $competition->GetMaximumPlayersPerTeam()
+	?>,"overs":<?php echo $competition->GetOvers()
 	?>,"results":<?php echo $results ? "\"" . $results . "\"" : "null"
 	?>,"teams":[<?php
 	$first_team = true;
