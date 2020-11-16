@@ -21,6 +21,7 @@ class CurrentPage extends Page
 			header("Content-Type: text/javascript; charset=utf-8");
 			if (isset($_SERVER["HTTP_ORIGIN"])) {
 				header("Access-Control-Allow-Origin: " . $_SERVER["HTTP_ORIGIN"]);
+				header("Access-Control-Allow-Headers: x-requested-with");
 			}
 		}
 
