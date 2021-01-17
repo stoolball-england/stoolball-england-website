@@ -105,6 +105,7 @@ class CurrentPage extends Page
 	?>{"teamId":<?php echo $team->GetId();
 		?>,"name":"<?php echo $team->GetName() 
 		?>","clubId":<?php echo is_null($team->GetClub()) || !$team->GetClub()->GetId() || $team->GetClub()->GetTypeOfClub() == Club::SCHOOL ? "null" : $team->GetClub()->GetId()
+		?>,"clubmarkAccredited":<?php echo $team->GetClub()->GetClubmarkAccredited() ? "true" : "false"
 		?>,"schoolId":<?php echo is_null($team->GetClub()) || !$team->GetClub()->GetId() || $team->GetClub()->GetTypeOfClub() == Club::STOOLBALL_CLUB ? "null" : $team->GetClub()->GetId()
 		?>,"teamType":<?php echo $team->GetTeamType()
 		?>,"playerType":<?php echo $team->GetPlayerType()-1
