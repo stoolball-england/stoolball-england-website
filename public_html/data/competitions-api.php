@@ -54,6 +54,7 @@ class CurrentPage extends Page
 			$seasons = $season_manager->GetItems();
 
 			$competition_intro = htmlentities($competition->GetIntro(), ENT_QUOTES, "UTF-8", false);
+			$competition_intro = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $competition_intro));
 			$competition_intro = XhtmlMarkup::ApplyParagraphs($competition_intro);
 			$competition_intro = XhtmlMarkup::ApplyLists($competition_intro);
 			$competition_intro = XhtmlMarkup::ApplySimpleXhtmlTags($competition_intro, false);
@@ -63,7 +64,8 @@ class CurrentPage extends Page
 			$competition_intro = preg_replace("/\s+/s", " ", $competition_intro);
 
 			$publicContact = htmlentities($competition->GetContact(), ENT_QUOTES, "UTF-8", false);
-            $publicContact = XhtmlMarkup::ApplyCharacterEntities($publicContact);
+			$publicContact = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $publicContact));
+			$publicContact = XhtmlMarkup::ApplyCharacterEntities($publicContact);
 			$publicContact = XhtmlMarkup::ApplyParagraphs($publicContact);
 			$publicContact = XhtmlMarkup::ApplyLists($publicContact);
 			$publicContact = XhtmlMarkup::ApplySimpleXhtmlTags($publicContact, false);
@@ -101,6 +103,7 @@ $first_season = true;
 			$season = $season_manager->GetFirst();
 
 			$season_intro = htmlentities($season->GetIntro(), ENT_QUOTES, "UTF-8", false);
+			$season_intro = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $season_intro));
             $season_intro = XhtmlMarkup::ApplyCharacterEntities($season_intro);
 			$season_intro = XhtmlMarkup::ApplyParagraphs($season_intro);
 			$season_intro = XhtmlMarkup::ApplyLinks($season_intro);
@@ -112,6 +115,7 @@ $first_season = true;
 			$season_intro = preg_replace("/\s+/s", " ", $season_intro);
 
 			$results = htmlentities($season->GetResults(), ENT_QUOTES, "UTF-8", false);
+			$results = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $results));
             $results = XhtmlMarkup::ApplyCharacterEntities($results);
 			$results = XhtmlMarkup::ApplyParagraphs($results);
 			$results = XhtmlMarkup::ApplyLinks($results);

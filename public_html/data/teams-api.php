@@ -50,6 +50,7 @@ class CurrentPage extends Page
 		foreach ($manager->GetItems() as $team) {
 
 			$intro = htmlentities($team->GetIntro(), ENT_QUOTES, "UTF-8", false);
+			$intro = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $intro));
 			$intro = XhtmlMarkup::ApplyParagraphs($intro);
 			$intro = XhtmlMarkup::ApplyLists($intro);
 			$intro = XhtmlMarkup::ApplySimpleXhtmlTags($intro, false);
@@ -69,6 +70,7 @@ class CurrentPage extends Page
 			}
 
 			$publicContact = htmlentities($team->GetContact(), ENT_QUOTES, "UTF-8", false);
+			$publicContact = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $publicContact));
 			$publicContact = XhtmlMarkup::ApplyParagraphs($publicContact);
 			$publicContact = XhtmlMarkup::ApplyLists($publicContact);
             $publicContact = XhtmlMarkup::ApplySimpleXhtmlTags($publicContact, false);
@@ -77,6 +79,7 @@ class CurrentPage extends Page
 			$publicContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', str_replace('&nbsp;', ' ', $publicContact))))));
 
 			$privateContact = htmlentities($team->GetPrivateContact(), ENT_QUOTES, "UTF-8", false);
+			$privateContact = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $privateContact));
 			$privateContact = XhtmlMarkup::ApplyParagraphs($privateContact);
 			$privateContact = XhtmlMarkup::ApplyLists($privateContact);
             $privateContact = XhtmlMarkup::ApplySimpleXhtmlTags($privateContact, false);
@@ -85,6 +88,7 @@ class CurrentPage extends Page
 			$privateContact = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', str_replace('&nbsp;', ' ', $privateContact))))));
 
 			$playingTimes = htmlentities($team->GetPlayingTimes(), ENT_QUOTES, "UTF-8", false);
+			$playingTimes = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $playingTimes));
 			$playingTimes = XhtmlMarkup::ApplyParagraphs($playingTimes);
 			$playingTimes = XhtmlMarkup::ApplyLists($playingTimes);
 			$playingTimes = XhtmlMarkup::ApplySimpleXhtmlTags($playingTimes, false);
@@ -92,6 +96,7 @@ class CurrentPage extends Page
 			$playingTimes = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $playingTimes)))));
 
 			$cost = XhtmlMarkup::ApplyParagraphs(htmlentities($team->GetCost(), ENT_QUOTES, "UTF-8", false));
+			$cost = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $cost));
             $cost = XhtmlMarkup::ApplyLists($cost);
             $cost = XhtmlMarkup::ApplySimpleXhtmlTags($cost, false);
             $cost = XhtmlMarkup::ApplyLinks($cost);

@@ -108,6 +108,7 @@ class CurrentPage extends Page
 		}
 
 			$notes = htmlentities($match->GetNotes(), ENT_QUOTES, "UTF-8", false);
+			$notes = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $notes));
             $notes = XhtmlMarkup::ApplyCharacterEntities($notes);
 			$notes = XhtmlMarkup::ApplyHeadings($notes);
 			$notes = XhtmlMarkup::ApplyParagraphs($notes);

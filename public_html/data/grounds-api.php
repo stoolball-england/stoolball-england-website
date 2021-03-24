@@ -49,6 +49,7 @@ class CurrentPage extends Page
 			if ($ground->GetDirections())
 			{
 				$s_directions = htmlentities($ground->GetDirections(), ENT_QUOTES, "UTF-8", false);
+				$s_directions = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $s_directions));
 				$s_directions = XhtmlMarkup::ApplyCharacterEntities($s_directions);
 				$s_directions = XhtmlMarkup::ApplyParagraphs($s_directions);
 				$s_directions = XhtmlMarkup::ApplySimpleTags($s_directions);
@@ -60,6 +61,7 @@ class CurrentPage extends Page
 			if ($ground->GetParking())
 			{
 				$s_parking = htmlentities($ground->GetParking(), ENT_QUOTES, "UTF-8", false);
+				$s_parking = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $s_parking));
 				$s_parking = XhtmlMarkup::ApplyCharacterEntities($s_parking);
 				$s_parking = XhtmlMarkup::ApplyParagraphs($s_parking);
 				$s_parking = XhtmlMarkup::ApplySimpleTags($s_parking);
@@ -72,6 +74,7 @@ class CurrentPage extends Page
 			if ($ground->GetFacilities())
 			{
 				$s_facilities = htmlentities($ground->GetFacilities(), ENT_QUOTES, "UTF-8", false);
+				$s_facilities = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $s_facilities));
 				$s_facilities = XhtmlMarkup::ApplyCharacterEntities($s_facilities);
 				$s_facilities = XhtmlMarkup::ApplyParagraphs($s_facilities);
 				$s_facilities = XhtmlMarkup::ApplySimpleTags($s_facilities);

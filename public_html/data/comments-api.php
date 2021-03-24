@@ -49,6 +49,7 @@ class CurrentPage extends Page
 			$message->SetBody($row->message);
 			$message_html = $message->GetFormattedBody($this->GetSettings());
 
+			$message_html = str_replace("&lt;cite&gt;", "", str_replace("&lt;/cite&gt;", "", $message_html));
 			$message_html = str_replace("\"", "\\\"", str_replace('&#039;', "'", str_replace("\r", '', str_replace("\r\n", '', str_replace("\n", '', $message_html)))));
 			$message_html = str_replace('\\\\"', '\\"', str_replace('\\', '\\\\', str_replace('&nbsp;', ' ', str_replace('&amp;', '&', str_replace('&quot;', '\"', $message_html)))));
 			$message_html = preg_replace("/\s+/s", " ", $message_html);
