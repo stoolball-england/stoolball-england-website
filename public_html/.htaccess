@@ -58,12 +58,14 @@ RewriteEngine On
 RewriteBase /
 
 RewriteCond %{HTTP_HOST}   !^www\.stoolball\.org\.uk [NC]
+RewriteCond %{HTTP_HOST}   !^www\.stoolball\.co\.uk [NC]
 RewriteCond %{HTTP_HOST}   !^stoolball\.local [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteRule ^(.*)         https://www.stoolball.org.uk/$1 [L,R=301]
 
 RewriteCond %{HTTP:X-Forwarded-Proto} !https
 RewriteCond %{HTTP_HOST}   !^stoolball\.local [NC]
+RewriteCond %{HTTP_HOST}   !^www\.stoolball\.co\.uk [NC]
 RewriteCond %{HTTP_HOST}   !^$
 RewriteRule ^(.*)$ https://www.stoolball.org.uk/$1 [R=301,L]
 
